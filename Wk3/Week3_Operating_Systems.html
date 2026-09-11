@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3: Operating Systems — How Software Manages Hardware</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(rgba(30, 58, 95, 0.85), rgba(30, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 5000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 1.2rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0.9rem; margin: 1rem 0; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Week 3: Operating Systems</h1>
+    <div class="subtitle">How Software Manages Hardware</div>
+    <div class="meta">
+        <span>English for Information Technology</span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 3: 2-hour Lesson</span>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#warmup">Warm-up</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#vocab">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LESSON OVERVIEW ──────────────────────────── -->
+    <section id="objectives">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">🎯</span> Learning Objectives
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header">By the end of this lesson, students will be able to:</div>
+                                <ol>
+                    <li>Identify at least <strong>3 major operating systems</strong> and their key features.</li>
+                    <li>Use <strong>imperatives</strong> to give clear technical instructions.</li>
+                    <li>Read and comprehend a short article about choosing an operating system.</li>
+                    <li>Expand OS vocabulary including file management, system settings, and troubleshooting terms.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- LESSON                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ── WARM-UP ──────────────────────────────────── -->
+    <section id="warmup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">💬</span> Warm-up &amp; Ice-Breaker
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+            <h3>"What Are You Running?" — Quick Poll</h3>
+
+            <div class="card card-task">
+                <div class="card-header">Setup</div>
+                <p>Look at the device you're using right now. What operating system is it running?</p>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header">Activity</div>
+                <p>Raise your hand for: Windows, macOS, Linux, ChromeOS, Other. We'll compare class statistics.</p>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>"I'm using Windows 11 on my laptop. My phone runs Android."</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ──────────────────────────────────── -->
+    <section id="reading">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📖</span> Reading
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
+        <p>Match these words to their meanings. Do this together as a class before reading the article.</p>
+
+        <div class="card card-vocab">
+            <div class="card-header">Match the Terms</div>
+            <table>
+                <thead>
+                    <tr><th style="width:15%;">#</th><th style="width:30%;">Word</th><th style="width:10%;">→</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>operating system (OS)</strong></td><td>→</td><td>software that manages computer hardware and software resources</td></tr>
+                    <tr><td>2</td><td><strong>interface</strong></td><td>→</td><td>the visual environment where users interact with the computer</td></tr>
+                    <tr><td>3</td><td><strong>file system</strong></td><td>→</td><td>method organizing and storing files on storage devices</td></tr>
+                    <tr><td>4</td><td><strong>driver</strong></td><td>→</td><td>software that allows the OS to communicate with hardware</td></tr>
+                    <tr><td>5</td><td><strong>update</strong></td><td>→</td><td>a newer version of software with improvements or fixes</td></tr>
+                    <tr><td>6</td><td><strong>compatibility</strong></td><td>→</td><td>the ability of software/hardware to work together</td></tr>
+                    <tr><td>7</td><td><strong>command line</strong></td><td>→</td><td>text-based interface for entering commands</td></tr>
+                    <tr><td>8</td><td><strong>application</strong></td><td>→</td><td>software designed for specific user tasks</td></tr>
+                </tbody>
+            </table>
+            <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
+            <div id="pre-read-answers" class="answers">
+                <p><strong>1-a, 2-b, 3-c, 4-d, 5-e, 6-f, 7-g, 8-h</strong></p>
+            </div>
+        </div>
+
+
+        <h3>Full Text: "Choosing the Right Operating System"</h3>
+
+        <div class="audio-player">
+            <span class="audio-player-icon">🔊</span>
+            <span class="audio-player-text">Listen to this article</span>
+            <audio controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <article class="article">
+            <div class="article-title">Choosing the Right Operating System</div>
+            <div class="article-subtitle">A guide for new IT students in Taiwan</div>
+            <div class="article-meta">
+                <span><strong>Name:</strong> Wang Junwei (王俊偉)</span>
+                <span><strong>Age:</strong> 22</span>
+                <span><strong>Job:</strong> IT Support Intern</span>
+            </div>
+            <div class="article-meta">
+                <span><strong>Company:</strong> A computer repair shop, Taoyuan</span>
+                <span><strong>Education:</strong> Third-year Information Management student</span>
+            </div>
+
+            <h4><span class="article-time">Background</span> — Why OS Choice Matters</h4>
+            <p>Junwei works part-time at a computer repair shop. Every day, customers bring in computers with different operating systems. He says, 'Understanding operating systems is essential for any IT professional. Each OS has its own strengths and weaknesses.'</p>
+            <h4><span class="article-time">Windows</span> — The Most Popular Choice</h4>
+            <p>Windows is the most common operating system in the world. There are many versions: Windows 10, Windows 11. Most office computers use Windows because there are many compatible programs. Junwei says, 'Windows is familiar to most users, but it can be slow if the computer has old hardware.'</p>
+            <h4><span class="article-time">macOS</span> — The Creative Professional's Choice</h4>
+            <p>macOS runs on Apple computers. It is popular with designers, video editors, and musicians. There are fewer viruses for macOS. The interface is clean and easy to use. However, Apple computers are expensive. Junwei notes, 'There aren't many games for macOS, but for creative work, it's excellent.'</p>
+            <h4><span class="article-time">Linux</span> — The Open Source Option</h4>
+            <p>Linux is free and open source. There are many versions (distributions) like Ubuntu, Fedora, and Debian. Linux is popular with programmers and server administrators. It is very secure and customizable. Junwei is learning Linux for his IT career. 'There isn't a graphical interface as polished as Windows or macOS, but the command line is powerful.'</p>
+
+            <blockquote>
+                "The best operating system is the one that fits your needs. Don't follow trends — understand what you need to do, and choose accordingly."
+                <cite>— — Wang Junwei, IT Support Intern</cite>
+            </blockquote>
+        </article>
+
+
+        <h3>Reading Comprehension</h3>
+        <p>Choose the best answer for each question.</p>
+        <div class="quiz-question">
+            <p>1. Why does Junwei think understanding operating systems is important?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q1" value="a"> a) Because he sells computers</label>
+                        <label><input type="radio" name="q1" value="b"> b) Because each OS has different strengths and weaknesses</label>
+                        <label><input type="radio" name="q1" value="c"> c) Because Windows is the best</label>
+                        <label><input type="radio" name="q1" value="d"> d) Because macOS is expensive</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>2. Which operating system is best for creative professionals according to the article?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q2" value="a"> a) Windows</label>
+                        <label><input type="radio" name="q2" value="b"> b) Linux</label>
+                        <label><input type="radio" name="q2" value="c"> c) macOS</label>
+                        <label><input type="radio" name="q2" value="d"> d) ChromeOS</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>3. What is one advantage of Linux mentioned in the article?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q3" value="a"> a) It has the most games</label>
+                        <label><input type="radio" name="q3" value="b"> b) It's free and open source</label>
+                        <label><input type="radio" name="q3" value="c"> c) It's the easiest to use</label>
+                        <label><input type="radio" name="q3" value="d"> d) It comes pre-installed on all computers</label>
+            </div>
+        </div>
+
+
+        <h3>Discussion Questions</h3>
+        <p>Discuss these questions with a partner or small group.</p>
+        <div class="card card-task">
+            <ol>
+                <li>Which operating system do you use? What do you like and dislike about it?</li>
+                <li>If you were setting up a computer lab for a company, which OS would you choose? Why?</li>
+                <li>How might operating systems change in the next 10 years?</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY ───────────────────────────────── -->
+    <section id="vocab">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📝</span> Vocabulary Builder
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <h3>Category: Operating Systems</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">Windows</div>
+                <div class="job-card-chinese">Windows</div>
+                <div class="job-card-def">Microsoft's OS, most common for PCs</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">macOS</div>
+                <div class="job-card-chinese">macOS</div>
+                <div class="job-card-def">Apple's OS for Mac computers</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">Linux</div>
+                <div class="job-card-chinese">Linux</div>
+                <div class="job-card-def">Free, open-source OS with many versions</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">Android</div>
+                <div class="job-card-chinese">Android</div>
+                <div class="job-card-def">Google's OS for mobile devices</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">iOS</div>
+                <div class="job-card-chinese">iOS</div>
+                <div class="job-card-def">Apple's OS for iPhone and iPad</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">ChromeOS</div>
+                <div class="job-card-chinese">ChromeOS</div>
+                <div class="job-card-def">Google's OS for Chromebooks</div>
+            </div>
+        </div>
+        <h3>Category: File Management</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">folder (directory)</div>
+                <div class="job-card-chinese">資料夾</div>
+                <div class="job-card-def">Container for organizing files</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">file</div>
+                <div class="job-card-chinese">檔案</div>
+                <div class="job-card-def">A unit of data stored on a computer</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">path</div>
+                <div class="job-card-chinese">路徑</div>
+                <div class="job-card-def">Location of a file in the file system</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">extension</div>
+                <div class="job-card-chinese">副檔名</div>
+                <div class="job-card-def">Suffix indicating file type (.txt, .pdf)</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">copy/paste</div>
+                <div class="job-card-chinese">複製/貼上</div>
+                <div class="job-card-def">Duplicate content to a new location</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">delete</div>
+                <div class="job-card-chinese">刪除</div>
+                <div class="job-card-def">Remove a file or folder</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">rename</div>
+                <div class="job-card-chinese">重新命名</div>
+                <div class="job-card-def">Change the name of a file or folder</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📁</div>
+                <div class="job-card-title">compress</div>
+                <div class="job-card-chinese">壓縮</div>
+                <div class="job-card-def">Reduce file size for storage or transfer</div>
+            </div>
+        </div>
+        <h3>Category: System Settings</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">control panel</div>
+                <div class="job-card-chinese">控制台</div>
+                <div class="job-card-def">Central location for system settings</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">display settings</div>
+                <div class="job-card-chinese">顯示設定</div>
+                <div class="job-card-def">Options for screen resolution and brightness</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">network settings</div>
+                <div class="job-card-chinese">網路設定</div>
+                <div class="job-card-def">Configuration for internet connection</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">user account</div>
+                <div class="job-card-chinese">使用者帳號</div>
+                <div class="job-card-def">Profile with personalized settings</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">firewall</div>
+                <div class="job-card-chinese">防火牆</div>
+                <div class="job-card-def">Security system monitoring network traffic</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">antivirus</div>
+                <div class="job-card-chinese">防毒軟體</div>
+                <div class="job-card-def">Software protecting against malware</div>
+            </div>
+        </div>
+        <h3>Category: Troubleshooting</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">restart (reboot)</div>
+                <div class="job-card-chinese">重新啟動</div>
+                <div class="job-card-def">Turn the computer off and on again</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">freeze</div>
+                <div class="job-card-chinese">當機</div>
+                <div class="job-card-def">When the computer stops responding</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">crash</div>
+                <div class="job-card-chinese">當機</div>
+                <div class="job-card-def">Unexpected system failure</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">error message</div>
+                <div class="job-card-chinese">錯誤訊息</div>
+                <div class="job-card-def">Notification of a problem</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">task manager</div>
+                <div class="job-card-chinese">工作管理員</div>
+                <div class="job-card-def">Tool for managing running programs</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">safe mode</div>
+                <div class="job-card-chinese">安全模式</div>
+                <div class="job-card-def">Minimal system state for troubleshooting</div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── GRAMMAR ──────────────────────────────────── -->
+    <section id="grammar">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✏️</span> Grammar Focus — Imperatives (Giving Instructions)
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <div class="card card-grammar">
+            <div class="card-header">Quick Review: What Are Imperatives?</div>
+            <p>Imperatives are commands or instructions. They are the base form of the verb with no subject.</p>
+            <table>
+                <thead>
+                    <tr><th>Pattern</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Positive imperative</td><td><strong>Click</strong> the Start button.</td></tr>
+                    <tr><td>Negative imperative</td><td><strong>Don't touch</strong> the screen.</td></tr>
+                    <tr><td>Polite imperative</td><td><strong>Please</strong> restart your computer.</td></tr>
+                    <tr><td>Let's + verb</td><td><strong>Let's check</strong> the settings.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Key Rules</div>
+            <ul>
+            <li>Use imperatives for clear instructions: <em>Open the Control Panel. Click Network Settings.</em></li>
+            <li>Add 'please' for politeness: <em>Please save your work before shutting down.</em></li>
+            <li>Negative: Don't + base form: <em>Don't delete system files.</em></li>
+            <li>For step-by-step instructions, use numbered imperatives: <em>1. Click Start. 2. Select Settings. 3. Choose Network.</em></li>
+            </ul>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Common Mistakes (Chinese L1 Speakers)</div>
+            <p>Chinese speakers: Don't add 'to' before the verb. <em>✗ Please <strong>to</strong> click the button.</em> → <em>✓ Please <strong>click</strong> the button.</em></p>
+        </div>
+
+
+        <div class="card card-task">
+            <div class="card-header">Activity A: Write Instructions</div>
+            <p>Write 5 imperative sentences to describe how to shut down a Windows computer.</p>
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>1. Click the Start button. 2. Select Power. 3. Choose Shut down. 4. Wait for the screen to go black. 5. Close the laptop lid (if applicable).</em></p>
+            </div>
+        </div>
+        <div class="card card-task">
+            <div class="card-header">Activity B: Pair Instructions</div>
+            <p>With a partner, take turns giving and following instructions to change a system setting on your device.</p>
+            <p><em>Use imperatives: <em>"Open Settings. Click Display. Change the brightness to 50%."</em></em></p>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ──────────────────────────────────── -->
+    <section id="wrapup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✅</span> Wrap-up &amp; Reflection
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <div class="card card-info">
+            <div class="card-header">Exit Ticket — Write on a sticky note:</div>
+            <ol>
+                <li>One operating system fact I didn't know before: __________</li>
+                <li>One technical instruction I can now give in English: __________</li>
+                <li>The OS I want to learn more about: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">Homework — Due Next Week</div>
+            <ol>
+                <li>Write 8 imperative sentences describing how to install a new program on your computer.</li>
+                <li>Find a YouTube tutorial (2-3 minutes) about an operating system. Note down 5 new vocabulary words.</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Dept. of Information Management · Yuan Ze University</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Section Toggle (Accordion) ───────────────────────
+function toggleSection(btn) {
+    const content = btn.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+
+    // Close all other sections
+    document.querySelectorAll('.section-content.open').forEach(function(el) {
+        if (el !== content) {
+            el.classList.remove('open');
+            el.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Toggle current section
+    content.classList.toggle('open');
+    btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ── Extract Section (Modal) ──────────────────────────
+function extractSection(btn) {
+    var section = btn.closest('section');
+    var content = section.querySelector('.section-content');
+    var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+    // Create modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'extract-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    // Create modal container
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+    // Create header
+    var header = document.createElement('div');
+    header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+    // Create close button
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+    closeBtn.onclick = function() { document.body.removeChild(overlay); };
+    header.appendChild(closeBtn);
+
+    // Create content area
+    var contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+    contentDiv.innerHTML = content.innerHTML;
+
+    // Create footer with print button
+    var footer = document.createElement('div');
+    footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+    var printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    printBtn.onclick = function() { window.print(); };
+
+    var closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    closeFooterBtn.onclick = function() { document.body.removeChild(overlay); };
+
+    footer.appendChild(printBtn);
+    footer.appendChild(closeFooterBtn);
+
+    // Assemble modal
+    modal.appendChild(header);
+    modal.appendChild(contentDiv);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+
+    // Close on overlay click
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+// ── Open first section by default ─────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var firstSection = document.querySelector('.section-content');
+    if (firstSection) {
+        firstSection.classList.add('open');
+        firstSection.previousElementSibling.setAttribute('aria-expanded', 'true');
+    }
+});
+</script>
+
+</body>
+</html>

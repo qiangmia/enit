@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: Working in IT — Careers & Roles</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(rgba(30, 58, 95, 0.85), rgba(30, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            text-decoration: none;
+            color: var(--accent);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .toc a:hover {
+            background: var(--accent-light);
+            color: var(--primary);
+        }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ── Section Headings ──────────────────────────── */
+        .section-number {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.4rem;
+            margin: 2.5rem 0 1.2rem;
+            font-weight: 700;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+            margin: 1.8rem 0 0.8rem;
+            font-weight: 600;
+        }
+        h4 {
+            font-size: 1.05rem;
+            color: var(--text);
+            margin: 1.2rem 0 0.6rem;
+            font-weight: 600;
+        }
+
+        /* ── Cards ─────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ── Colored Cards ─────────────────────────────── */
+        .card-grammar {
+            border-left: 4px solid #805ad5;
+            background: var(--grammar-bg);
+        }
+        .card-grammar .card-header { color: #6b46c1; border-bottom-color: #e9d8fd; }
+
+        .card-vocab {
+            border-left: 4px solid var(--warm);
+            background: var(--vocab-bg);
+        }
+        .card-vocab .card-header { color: var(--warm); border-bottom-color: #feebc8; }
+
+        .card-task {
+            border-left: 4px solid var(--success);
+            background: var(--task-bg);
+        }
+        .card-task .card-header { color: var(--success); border-bottom-color: #c6f6d5; }
+
+        .card-homework {
+            border-left: 4px solid #e53e3e;
+            background: var(--homework-bg);
+        }
+        .card-homework .card-header { color: #c53030; border-bottom-color: #fed7d7; }
+
+        .card-info {
+            border-left: 4px solid var(--accent);
+            background: var(--info-bg);
+        }
+        .card-info .card-header { color: var(--accent); border-bottom-color: #bee3f8; }
+
+        /* ── Tables ────────────────────────────────────── */
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.92rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.7rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        tbody tr:hover { background: #f7fafc; }
+        tbody tr:nth-child(even) { background: #fafbfc; }
+        tbody tr:nth-child(even):hover { background: #f0f4f8; }
+
+        /* ── Article Styling ───────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .article-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem;
+            background: #f7fafc;
+            border-radius: 6px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+        .article-meta strong { color: var(--text); }
+        .article h4 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 3px solid var(--accent);
+        }
+        .article p {
+            margin-bottom: 0.8rem;
+            text-indent: 1.5rem;
+        }
+        .article p:first-of-type { text-indent: 0; }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* ── Quiz / Exercise Styling ───────────────────── */
+        .quiz-question {
+            margin: 0.8rem 0;
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        .quiz-question:last-child { border-bottom: none; }
+        .quiz-question strong {
+            color: var(--primary);
+        }
+        .quiz-options {
+            margin-left: 1.5rem;
+            margin-top: 0.3rem;
+        }
+        .quiz-options label {
+            display: block;
+            padding: 0.15rem 0;
+            cursor: pointer;
+        }
+
+        /* ── Fill-in-blank ─────────────────────────────── */
+        .fill-blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--accent);
+            margin: 0 0.2rem;
+            padding: 0 0.3rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── Example Box ───────────────────────────────── */
+        .example-box {
+            background: #f0f4f8;
+            border-radius: 6px;
+            padding: 1rem 1.2rem;
+            margin: 0.8rem 0;
+            font-size: 0.93rem;
+            border-left: 3px solid var(--accent);
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Highlight / Emphasis ──────────────────────── */
+        .highlight {
+            background: #fefcbf;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+        .keyword {
+            color: var(--warm);
+            font-weight: 600;
+        }
+        .grammartag {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: #e9d8fd;
+            color: #6b46c1;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 0.1rem 0.15rem;
+            vertical-align: middle;
+        }
+
+        /* ── Columns ───────────────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 700px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        /* ── Lists ─────────────────────────────────────── */
+        ul, ol { margin: 0.5rem 0 0.8rem 1.5rem; }
+        li { margin-bottom: 0.3rem; }
+
+        /* ── Blockquote ────────────────────────────────── */
+        blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            background: var(--info-bg);
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+            color: var(--primary-light);
+        }
+        blockquote cite {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-style: normal;
+            color: var(--text-light);
+        }
+
+        /* ── Tip / Note Boxes ──────────────────────────── */
+        .tip-box {
+            display: flex;
+            gap: 0.8rem;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .tip-box.teacher { background: #ebf8ff; border: 1px solid #bee3f8; }
+        .tip-box.student { background: #f0fff4; border: 1px solid #c6f6d5; }
+        .tip-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+        /* ── Session Divider ───────────────────────────── */
+        .session-divider {
+            text-align: center;
+            margin: 3rem 0 1.5rem;
+            position: relative;
+        }
+        .session-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+        .session-divider span {
+            background: var(--bg);
+            padding: 0 1.5rem;
+            position: relative;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--primary);
+        }
+
+        /* ── Timeline ──────────────────────────────────── */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.8rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent-light);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.2rem;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.05rem;
+            top: 1.2rem;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+        .timeline-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Collapsible Sections ─────────────────────── */
+        .section-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.8rem 0;
+            font: inherit;
+            color: inherit;
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .section-content.open {
+            max-height: 50000px;
+            overflow-x: auto;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+        .activity-icon {
+            font-size: 1rem;
+            margin-right: 0.2rem;
+            vertical-align: middle;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Article Images ────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; overflow: visible !important; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            body { font-size: 11pt; }
+            .container { padding: 1rem; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 1.2rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .bingo-grid { grid-template-columns: repeat(4, 1fr); max-width: 100%; }
+
+            .quiz-options { margin-left: 0.8rem; }
+
+            .example-box { padding: 0.8rem 1rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0.9rem; margin: 1rem 0; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .bingo-grid { grid-template-columns: repeat(3, 1fr); gap: 1px; }
+            .bingo-cell { padding: 0.35rem; font-size: 0.65rem; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+            .fill-blank { min-width: 80px; font-size: 0.85rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .tip-box { padding: 0.7rem; font-size: 0.85rem; gap: 0.5rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+
+            .answers-toggle { font-size: 0.72rem; padding: 0.3rem 0.7rem; }
+
+            blockquote { padding: 0.7rem 0.9rem; margin: 0.7rem 0; font-size: 0.9rem; }
+        }
+
+        /* ── Answers (hidden by default, toggle with JS) ── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+            transition: background 0.2s;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Bingo Card ────────────────────────────────── */
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            max-width: 500px;
+            margin: 1rem auto;
+        }
+        .bingo-cell {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 0.5rem;
+            text-align: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .bingo-header {
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        /* ── Score Card ────────────────────────────────── */
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px dotted var(--border);
+        }
+        .score-label {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .score-circles {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .score-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Week 1: Working in IT</h1>
+    <div class="subtitle">Careers &amp; Roles in Information Technology</div>
+    <div class="meta">
+        <span>English for Information Technology</span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 1: 1-hr Course Intro + 2-hr Lesson</span>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#warmup">Warm-up</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#vocab">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LESSON OVERVIEW ──────────────────────────── -->
+    <section id="objectives">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">🎯</span> Learning Objectives
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header">By the end of this lesson, students will be able to:</div>
+                <ol>
+                    <li>Identify at least <strong>8 common IT job titles</strong> and describe their responsibilities.</li>
+                    <li>Use <strong>modals of ability</strong> (<em>can, could, be able to</em>) to describe skills and qualifications.</li>
+                    <li>Read and comprehend a short article about an IT professional's daily work.</li>
+                    <li>Expand IT workplace vocabulary including technical terms, soft skills, and job-related actions.</li>
+                    <li>Write a brief professional profile using target grammar and vocabulary.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- LESSON                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ── WARM-UP ──────────────────────────────────── -->
+    <section id="warmup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">💬</span> Warm-up &amp; Ice-Breaker
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <h3>"Table Talk" — Small Group Intros</h3>
+
+            <div class="card card-task">
+                <div class="card-header">Setup</div>
+                <p>Form groups of 5–6 with the students sitting near you.</p>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header">Each person introduces themselves with three things:</div>
+                <ol>
+                    <li>Your <strong>name</strong></li>
+                    <li>One thing you're <strong>good at</strong> (IT-related or not)</li>
+                    <li>One thing you <strong>suck at</strong> (IT-related or not)</li>
+                </ol>
+                <p style="margin-top:0.8rem; font-style:italic; color:var(--text-light);">Be honest — it's funnier that way.</p>
+            </div>
+
+            <div class="card card-task">
+                <div class="card-header">After 5 minutes</div>
+                <p>Each group shares <strong>one memorable introduction</strong> with the class.</p>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>"Hi, I'm Yichen. I'm good at Excel formulas. I suck at cooking — I burned instant noodles last week."</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ──────────────────────────────────── -->
+    <section id="reading">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">📖</span> Reading
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+
+        <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
+        <p>Match these words to their meanings. Do this together as a class before reading the article.</p>
+
+        <div class="card card-vocab">
+            <div class="card-header">Match the Terms</div>
+            <table>
+                <thead>
+                    <tr><th style="width:15%;">#</th><th style="width:30%;">Word</th><th style="width:10%;">→</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>database</strong></td><td>→</td><td>a. a person who manages computer systems</td></tr>
+                    <tr><td>2</td><td><strong>administrator</strong></td><td>→</td><td>b. a set of related data organized for easy access</td></tr>
+                    <tr><td>3</td><td><strong>query</strong></td><td>→</td><td>c. a request to get information from a database</td></tr>
+                    <tr><td>4</td><td><strong>backup</strong></td><td>→</td><td>d. a copy of data stored in case the original is lost</td></tr>
+                    <tr><td>5</td><td><strong>server</strong></td><td>→</td><td>e. a powerful computer that stores and sends data</td></tr>
+                    <tr><td>6</td><td><strong>troubleshoot</strong></td><td>→</td><td>f. to find and fix problems</td></tr>
+                    <tr><td>7</td><td><strong>spreadsheet</strong></td><td>→</td><td>g. a program like Excel for organizing numbers</td></tr>
+                    <tr><td>8</td><td><strong>deadline</strong></td><td>→</td><td>h. the date or time something must be finished</td></tr>
+                </tbody>
+            </table>
+            <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
+            <div id="pre-read-answers" class="answers">
+                <p><strong>1-b, 2-a, 3-c, 4-d, 5-e, 6-f, 7-g, 8-h</strong></p>
+            </div>
+        </div>
+
+        <h3>Full Text: "Day in the Life of a Database Administrator"</h3>
+
+        <div class="audio-player">
+            <span class="audio-player-icon">🔊</span>
+            <span class="audio-player-text">Listen to this article</span>
+            <audio controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <article class="article">
+            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=350&fit=crop" alt="Taipei cityscape with office buildings" class="article-img">
+            <div class="article-img-caption">Taipei's Neihu Technology Park — home to many of Taiwan's tech companies</div>
+            <div class="article-title">Day in the Life of a Database Administrator</div>
+            <div class="article-subtitle">A look at a typical workday in Taiwan's tech industry</div>
+            <div class="article-meta">
+                <span><strong>Name:</strong> Lin Yichen (林奕辰)</span>
+                <span><strong>Age:</strong> 26</span>
+                <span><strong>Job:</strong> Junior Database Administrator</span>
+            </div>
+            <div class="article-meta">
+                <span><strong>Company:</strong> A mid-sized e-commerce company, Taipei</span>
+                <span><strong>Education:</strong> B.A. in Information Management</span>
+            </div>
+
+            <h4><span class="article-time">7:30 AM</span> — Morning Routine</h4>
+            <p>Yichen wakes up and checks his phone. He looks at the monitoring app. The app shows the status of the company's databases. Everything looks normal. No alerts. No emergencies. He drinks his coffee and gets ready for work.</p>
+
+            <h4><span class="article-time">8:45 AM</span> — Arrival at the Office</h4>
+            <p>Yichen arrives at the office in the Neihu Technology Park. He turns on his computer and opens three screens. On the first screen, he checks the database performance dashboard. He can see how much data the system processed overnight. On the second screen, he reads his email. On the third screen, he reviews the task list for the day.</p>
+
+            <h4><span class="article-time">9:00 AM</span> — Morning Meeting</h4>
+            <p>The team has a short meeting. Yichen's manager, Ms. Chen, asks everyone about their tasks. Yichen says, "I can finish the data migration project by Friday." His colleague, Wei, says he is working on a security update. Ms. Chen reminds them about the deadline for the new system. It must be ready before the company's biggest online sale event next month.</p>
+
+            <h4><span class="article-time">9:30 AM</span> — Database Work</h4>
+            <p>Yichen starts his main task. He is migrating customer data from an old system to a new one. He writes SQL queries to extract the data. SQL is a language for talking to databases. He can read and write basic SQL very well. He is taking an online course to learn advanced SQL this month. He carefully checks that all the data is correct — customer names, addresses, and order history.</p>
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=300&fit=crop" alt="Code on a computer screen" class="article-img">
+            <div class="article-img-caption">Writing SQL queries to manage database operations</div>
+
+            <h4><span class="article-time">11:00 AM</span> — Problem Solving</h4>
+            <p>Yichen finds a problem. Some customer records have duplicate entries. He needs to clean the data. He writes a script to remove the duplicates. He is able to fix most of the problems in 30 minutes. One difficult case takes an hour. He asks Wei for help. Together, they solve the problem.</p>
+
+            <h4><span class="article-time">12:00 PM</span> — Lunch Break</h4>
+            <p>Yichen eats lunch with his team. They talk about work, but also about movies, games, and food. Yichen believes that good relationships with colleagues are important. "Technical skills are necessary," he says, "but you also need to communicate well with people."</p>
+
+            <h4><span class="article-time">1:30 PM</span> — Afternoon Tasks</h4>
+            <p>After lunch, Yichen works on a backup system. He cannot allow data loss. He creates automatic backup scripts. The system will save copies of the database every six hours. If the main database fails, the company can restore the data from the backup.</p>
+
+            <h4><span class="article-time">3:00 PM</span> — Report and Communication</h4>
+            <p>Yichen writes a weekly report for his manager. The report shows how the database performed this week. He uses a spreadsheet to create charts. He can use Excel well, but he is also learning Python for data analysis. Ms. Chen reads the report and asks questions about a spike in database usage on Tuesday.</p>
+
+            <h4><span class="article-time">4:30 PM</span> — Learning Time</h4>
+            <p>The company gives employees one hour per week for learning. Yichen watches an online tutorial about cloud databases. He wants to learn Amazon RDS and Google Cloud SQL. He believes cloud technology will be important for his career. He takes notes.</p>
+
+            <h4><span class="article-time">5:30 PM</span> — End of Day</h4>
+            <p>Yichen saves his work, closes his programs, and checks the monitoring app one more time. Everything is still normal. He says goodbye to his team and goes home. On the train, he reads a tech blog on his phone.</p>
+
+            <blockquote>
+                "Start learning SQL early. It is one of the most useful skills for working with data. Also, practice solving problems — not just with computers, but with people too."
+                <cite>— Lin Yichen, Database Administrator</cite>
+            </blockquote>
+        </article>
+
+        <!-- Reading Comprehension -->
+        <h3>Reading Comprehension</h3>
+        <div class="card card-task">
+            <div class="card-header">Answer these questions (pairs, 10 min)</div>
+
+            <div class="quiz-question">
+                <strong>1.</strong> Where does Yichen work?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1"> a. TSMC</label>
+                    <label><input type="radio" name="q1"> b. An e-commerce company</label>
+                    <label><input type="radio" name="q1"> c. A hospital</label>
+                    <label><input type="radio" name="q1"> d. A bank</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>2.</strong> What is Yichen's main task in the morning?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2"> a. Writing reports</label>
+                    <label><input type="radio" name="q2"> b. Migrating customer data</label>
+                    <label><input type="radio" name="q2"> c. Fixing computers</label>
+                    <label><input type="radio" name="q2"> d. Meeting clients</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>3.</strong> What programming language does Yichen use for databases?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3"> a. Python</label>
+                    <label><input type="radio" name="q3"> b. Java</label>
+                    <label><input type="radio" name="q3"> c. SQL</label>
+                    <label><input type="radio" name="q3"> d. C++</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>4.</strong> What problem does Yichen find in the data?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4"> a. Missing files</label>
+                    <label><input type="radio" name="q4"> b. Slow internet</label>
+                    <label><input type="radio" name="q4"> c. Duplicate records</label>
+                    <label><input type="radio" name="q4"> d. Broken screen</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>5.</strong> How often does the backup system save data?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5"> a. Every hour</label>
+                    <label><input type="radio" name="q5"> b. Every 6 hours</label>
+                    <label><input type="radio" name="q5"> c. Every day</label>
+                    <label><input type="radio" name="q5"> d. Every week</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>6.</strong> What does Yichen want to learn next?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6"> a. HTML</label>
+                    <label><input type="radio" name="q6"> b. Cloud databases</label>
+                    <label><input type="radio" name="q6"> c. Video editing</label>
+                    <label><input type="radio" name="q6"> d. Graphic design</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>7.</strong> What does Yichen believe is important besides technical skills?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q7"> a. Speaking English</label>
+                    <label><input type="radio" name="q7"> b. Driving</label>
+                    <label><input type="radio" name="q7"> c. Communication</label>
+                    <label><input type="radio" name="q7"> d. Cooking</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <strong>8.</strong> How much time does the company give for learning each week?
+                <div class="quiz-options">
+                    <label><input type="radio" name="q8"> a. 30 minutes</label>
+                    <label><input type="radio" name="q8"> b. 1 hour</label>
+                    <label><input type="radio" name="q8"> c. 2 hours</label>
+                    <label><input type="radio" name="q8"> d. No time</label>
+                </div>
+            </div>
+
+            <button class="answers-toggle" onclick="toggleAnswers('reading-answers')">Show Answers</button>
+            <div id="reading-answers" class="answers">
+                <p><strong>1-b, 2-b, 3-c, 4-c, 5-b, 6-b, 7-c, 8-b</strong></p>
+            </div>
+        </div>
+
+        <h3>Discussion Questions <span class="grammartag">Pairs → Class, 5 min</span></h3>
+        <div class="card card-task">
+            <div class="card-header">Discuss with a partner, then share with the class</div>
+            <ol>
+                <li>Yichen says technical skills alone aren't enough. Do you agree? Why?</li>
+                <li>What does Yichen's daily schedule tell you about work-life balance in Taiwan's tech industry?</li>
+                <li>If you were Yichen's manager, what one thing would you change about his workflow?</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY ───────────────────────────────── -->
+    <section id="vocab">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">📝</span> Vocabulary Builder
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+
+        <h3>Category 1: Job Titles in IT</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">Database Administrator (DBA)</div>
+                <div class="job-card-chinese">資料庫管理員</div>
+                <div class="job-card-def">Manages and maintains databases</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">System Administrator</div>
+                <div class="job-card-chinese">系統管理員</div>
+                <div class="job-card-def">Manages computer systems and networks</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📊</div>
+                <div class="job-card-title">Data Analyst</div>
+                <div class="job-card-chinese">資料分析師</div>
+                <div class="job-card-def">Examines data to find useful information</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📋</div>
+                <div class="job-card-title">Project Manager</div>
+                <div class="job-card-chinese">專案經理</div>
+                <div class="job-card-def">Plans and leads projects</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">UX Designer</div>
+                <div class="job-card-chinese">使用者體驗設計師</div>
+                <div class="job-card-def">Designs how products feel for users</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">👔</div>
+                <div class="job-card-title">CTO</div>
+                <div class="job-card-chinese">技術長</div>
+                <div class="job-card-def">Highest technology executive</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">💻</div>
+                <div class="job-card-title">Software Engineer</div>
+                <div class="job-card-chinese">軟體工程師</div>
+                <div class="job-card-def">Designs and builds software</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛠️</div>
+                <div class="job-card-title">IT Support Specialist</div>
+                <div class="job-card-chinese">IT 技術支援人員</div>
+                <div class="job-card-def">Helps users solve computer problems</div>
+            </div>
+        </div>
+
+        <div class="card card-task">
+            <div class="card-header">Quick Task: Which job suits you? <span class="grammartag">Pairs, 2 min</span></div>
+            <p>With a partner, discuss: <strong>Which of these 8 jobs would you be best at? Worst at? Why?</strong></p>
+            <p>Use: <em>"I think I would be best at __________ because __________."</em></p>
+        </div>
+
+        <h3>Category 2: Responsibilities &amp; Actions</h3>
+        <div class="card card-vocab">
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th><th>Example Sentence</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>manage</strong></td>
+                        <td>管理</td>
+                        <td>To be in charge of something</td>
+                        <td><em>She <span class="keyword">can</span> manage a team of five people.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>maintain</strong></td>
+                        <td>維護</td>
+                        <td>To keep something in good condition</td>
+                        <td><em>He <span class="keyword">is able to</span> maintain servers running 24 hours a day.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>troubleshoot</strong></td>
+                        <td>故障排除</td>
+                        <td>To find and fix problems</td>
+                        <td><em>They <span class="keyword">can</span> troubleshoot hardware issues very quickly.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>deploy</strong></td>
+                        <td>部署</td>
+                        <td>To make a system or software ready to use</td>
+                        <td><em>The team <span class="keyword">can</span> deploy the new software by next week.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>migrate</strong></td>
+                        <td>遷移</td>
+                        <td>To move data or systems from one place to another</td>
+                        <td><em>She <span class="keyword">is able to</span> migrate data from the old system to the new one.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>monitor</strong></td>
+                        <td>監控</td>
+                        <td>To watch and check something over time</td>
+                        <td><em>He <span class="keyword">can</span> monitor the network for security problems.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>optimize</strong></td>
+                        <td>優化</td>
+                        <td>To make something work better</td>
+                        <td><em>She <span class="keyword">is able to</span> optimize the database to make it faster.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>analyze</strong></td>
+                        <td>分析</td>
+                        <td>To examine something in detail</td>
+                        <td><em>He <span class="keyword">can</span> analyze data to find business trends.</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card card-task">
+            <div class="card-header">Quick Task: Match action to job <span class="grammartag">Individual, 3 min</span></div>
+            <p>Match each action to the job that does it most. Write the job title in the blank.</p>
+            <ol>
+                <li>__________ manages databases and ensures data is safe.</li>
+                <li>__________ migrates data from old systems to new ones.</li>
+                <li>__________ troubleshoots computer problems for users.</li>
+                <li>__________ deploys new software for the company.</li>
+                <li>__________ analyzes data to find business trends.</li>
+            </ol>
+            <button class="answers-toggle" onclick="toggleAnswers('cat2-answers')">Show Answers</button>
+            <div id="cat2-answers" class="answers">
+                <p><strong>1. DBA, 2. DBA/Data Analyst, 3. IT Support Specialist, 4. Software Engineer/Sysadmin, 5. Data Analyst</strong></p>
+            </div>
+        </div>
+
+        <h3>Category 3: Workplace &amp; Education</h3>
+        <div class="card card-vocab">
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th><th>Example Sentence</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>deadline</strong></td>
+                        <td>截止日期</td>
+                        <td>The latest time something must be finished</td>
+                        <td><em>We <span class="keyword">can</span> finish before the deadline if we work together.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>qualification</strong></td>
+                        <td>資格</td>
+                        <td>A skill or experience needed for a job</td>
+                        <td><em>She has the qualifications to become a project manager.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>experience</strong></td>
+                        <td>經驗</td>
+                        <td>Knowledge gained from doing things</td>
+                        <td><em>He has three years of experience in IT support.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>responsibility</strong></td>
+                        <td>責任</td>
+                        <td>Something you must do as part of your job</td>
+                        <td><em>One of her responsibilities is to write weekly reports.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>colleague</strong></td>
+                        <td>同事</td>
+                        <td>A person you work with</td>
+                        <td><em>He <span class="keyword">can</span> ask his colleagues for help when he has a problem.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>interview</strong></td>
+                        <td>面試</td>
+                        <td>A meeting to ask questions (for a job)</td>
+                        <td><em>She <span class="keyword">could</span> describe her skills clearly in the interview.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>resume / CV</strong></td>
+                        <td>履歷</td>
+                        <td>A document showing your education and work history</td>
+                        <td><em>He <span class="keyword">is able to</span> write a professional resume in English.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>internship</strong></td>
+                        <td>實習</td>
+                        <td>Temporary work experience for students</td>
+                        <td><em>She completed an internship at a technology company.</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Category 4: Skills &amp; Qualities</h3>
+        <div class="card card-vocab">
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th><th>Example Sentence</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>technical skills</strong></td>
+                        <td>技術能力</td>
+                        <td>Skills related to technology and machines</td>
+                        <td><em>She <span class="keyword">can</span> learn new technical skills quickly.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>soft skills</strong></td>
+                        <td>軟實力</td>
+                        <td>People skills like communication and teamwork</td>
+                        <td><em>He <span class="keyword">is able to</span> use both technical and soft skills at work.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>problem-solving</strong></td>
+                        <td>解決問題</td>
+                        <td>The ability to find solutions</td>
+                        <td><em>Problem-solving is one of the most important skills in IT.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>communication</strong></td>
+                        <td>溝通</td>
+                        <td>Sharing information with others</td>
+                        <td><em>Good communication <span class="keyword">can</span> help you work better with your team.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>teamwork</strong></td>
+                        <td>團隊合作</td>
+                        <td>Working together with others</td>
+                        <td><em>She <span class="keyword">is able to</span> work well in a team.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>attention to detail</strong></td>
+                        <td>注重細節</td>
+                        <td>Being careful and accurate</td>
+                        <td><em>A DBA must have attention to detail when handling data.</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Vocabulary Activity: "Job + Action Chain" <span class="grammartag">Speaking</span></h3>
+        <div class="card card-task">
+            <div class="card-header">How to Play (10 min)</div>
+            <ol>
+                <li>Teacher calls out a <strong>job title</strong> (e.g., "DBA").</li>
+                <li>Students race to say a <strong>responsibility</strong> that matches, using <em>can</em>, <em>could</em>, or <em>is able to</em>.</li>
+                <li>First correct answer earns a point for that student's row/column.</li>
+                <li>Teacher then calls a <strong>responsibility</strong> — students must name the <strong>job title</strong> that fits.</li>
+            </ol>
+        </div>
+
+        <div class="example-box">
+            <div class="label">Examples</div>
+            <p><strong>Teacher:</strong> "DBA!" → <strong>Student:</strong> "A DBA <em>can</em> migrate data."</p>
+            <p><strong>Teacher:</strong> "troubleshoot" → <strong>Student:</strong> "An IT support specialist <em>can</em> troubleshoot problems."</p>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── GRAMMAR ──────────────────────────────────── -->
+    <section id="grammar">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">✏️</span> Grammar Focus — Modals of Ability
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+
+        <div class="card card-grammar">
+            <div class="card-header">Review: Present Simple for Job Descriptions</div>
+            <p>We use the <strong>present simple</strong> to describe what people do in their jobs — their regular duties and responsibilities.</p>
+            <table>
+                <thead>
+                    <tr><th>Subject</th><th>Verb</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>I / You / We / They</td><td>base form</td><td><em>I <strong>manage</strong> databases.</em></td></tr>
+                    <tr><td>He / She / It</td><td>base form + <strong>-s</strong></td><td><em>She <strong>manages</strong> databases.</em></td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top:0.8rem;"><strong>Common mistake (Chinese L1 speakers):</strong> Don't forget the <strong>-s</strong> for he/she/it!</p>
+            <p><em>✗ He <strong>manage</strong> databases.</em> → <em>✓ He <strong>manages</strong> databases.</em></p>
+        </div>
+
+        <div class="card card-grammar">
+            <div class="card-header">Modals of Ability</div>
+            <table>
+                <thead>
+                    <tr><th>Modal</th><th>Meaning</th><th>When to Use</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>can</strong></td>
+                        <td>ability now</td>
+                        <td>Something you are able to do now</td>
+                        <td><em>She <strong>can</strong> write SQL queries.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>could</strong></td>
+                        <td>past ability / possibility</td>
+                        <td>Something you were able to do in the past, or a polite possibility</td>
+                        <td><em>He <strong>could</strong> fix computers when he was 15.</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>be able to</strong></td>
+                        <td>formal ability</td>
+                        <td>More formal than "can"; works in all tenses</td>
+                        <td><em>She <strong>is able to</strong> manage complex databases.</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card card-grammar">
+            <div class="card-header">Modals of Ability: Key Rules</div>
+            <ul>
+                <li><strong>Can</strong> = present ability (informal). <em>"I can use Python."</em></li>
+                <li><strong>Could</strong> = past ability OR polite possibility. <em>"I could swim when I was 10."</em> / <em>"Could you help me?"</em></li>
+                <li><strong>Be able to</strong> = formal, and can be used in <em>any</em> tense (will be able to, have been able to, etc.).</li>
+            </ul>
+            <p><strong>Contractions:</strong> can't = cannot &nbsp;|&nbsp; couldn't = could not &nbsp;|&nbsp; is not able to = isn't able to</p>
+        </div>
+
+        <h3>Practice Activity A: Fill in the Blanks <span class="grammartag">Individual, 5 min</span></h3>
+        <div class="card card-task">
+            <div class="card-header">Complete with <em>can</em>, <em>could</em>, or <em>be able to</em></div>
+            <ol>
+                <li>She ________ speak three programming languages.</li>
+                <li>He ________ fix computers when he was in high school.</li>
+                <li>After the training, we ________ use the new software.</li>
+                <li>________ you help me with this database problem?</li>
+                <li>They ________ finish the project by Friday.</li>
+                <li>I'm not ________ come to the meeting tomorrow.</li>
+                <li>She ________ start work next month if she gets the job.</li>
+                <li>He ________ solve difficult problems when he was a student.</li>
+            </ol>
+            <button class="answers-toggle" onclick="toggleAnswers('grammar-answers')">Show Answers</button>
+            <div id="grammar-answers" class="answers">
+                <ol>
+                    <li>can / could</li>
+                    <li>could</li>
+                    <li>will be able to</li>
+                    <li>Can</li>
+                    <li>can / could</li>
+                    <li>able to</li>
+                    <li>will be able to</li>
+                    <li>could</li>
+                </ol>
+            </div>
+        </div>
+
+        <h3>Practice Activity B: "Job Interview Role-Play" <span class="grammartag">Pairs, 10 min</span></h3>
+        <div class="card card-task">
+            <div class="card-header">Setup</div>
+            <ul>
+                <li><strong>Student A</strong> = Interviewer</li>
+                <li><strong>Student B</strong> = Candidate</li>
+                <li>Switch roles after 5 minutes.</li>
+            </ul>
+        </div>
+
+        <div class="two-col">
+            <div class="card card-info">
+                <div class="card-header">Interviewer Questions</div>
+                <ol>
+                    <li>"Can you tell me about your technical skills?"</li>
+                    <li>"Are you able to work in a team?"</li>
+                    <li>"Could you describe a problem you solved recently?"</li>
+                    <li>"What qualifications do you have?"</li>
+                    <li>"Can you use Excel / SQL / any other tool?"</li>
+                </ol>
+            </div>
+            <div class="card card-grammar">
+                <div class="card-header">Candidate — Use These Forms</div>
+                <ul>
+                    <li><em>"I can…"</em></li>
+                    <li><em>"I am able to…"</em></li>
+                    <li><em>"In the past, I could…"</em></li>
+                    <li><em>"I was able to…"</em></li>
+                    <li><em>"I believe I can…"</em></li>
+                </ul>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ──────────────────────────────────── -->
+    <section id="wrapup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+
+            <span class="section-icon">✅</span> Wrap-up &amp; Reflection
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+
+        <div class="card card-info">
+            <div class="card-header">Exit Ticket — Write on a sticky note:</div>
+            <ol>
+                <li>One new thing I learned today: __________</li>
+                <li>One thing I want to learn more about: __________</li>
+                <li>One IT skill I want to develop: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">Homework — Due Next Week</div>
+            <ol>
+                <li><strong>Find a real IT job posting</strong> in English (LinkedIn, Indeed, or 104.com.tw).
+                    <ul>
+                        <li>Highlight <strong>5 words</strong> from today's vocabulary.</li>
+                        <li>Write <strong>3 sentences</strong> about what the job requires.</li>
+                    </ul>
+                </li>
+                <li><strong>Study Categories 3 &amp; 4 vocabulary</strong> (Workplace &amp; Skills) — we'll review them briefly next class.</li>
+            </ol>
+        </div>
+
+        <div class="card card-info" style="background:var(--warm-light); border-color:#feebc8;">
+            <div class="card-header" style="color:var(--warm); border-bottom-color:#feebc8;">Preview of Next Week</div>
+            <p>"Next week, we will learn about <strong>IT systems — hardware and software</strong>. We will learn words like CPU, RAM, SSD, and we will compare different computers. Bring your laptop if you can!"</p>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; color:var(--text-light); font-size:0.8rem; border-top:1px solid var(--border); margin-top:2rem;">
+    English for Information Technology · Dept. of Information Management · Week 1 of 18
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    if (el.classList.contains('show')) {
+        el.classList.remove('show');
+    } else {
+        el.classList.add('show');
+    }
+}
+
+function toggleSection(btn) {
+    var content = btn.nextElementSibling;
+    var expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    content.classList.toggle('open');
+}
+
+function extractSection(btn) {
+    var section = btn.closest('section');
+    var content = section.querySelector('.section-content');
+    var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+    // Create modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'extract-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    // Create modal container
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+    // Create header
+    var header = document.createElement('div');
+    header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+    // Create close button
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+    closeBtn.onclick = function() { document.body.removeChild(overlay); };
+    header.appendChild(closeBtn);
+
+    // Create content area
+    var contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+    contentDiv.innerHTML = content.innerHTML;
+
+    // Create footer with print button
+    var footer = document.createElement('div');
+    footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+    var printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    printBtn.onclick = function() { window.print(); };
+
+    var closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    closeFooterBtn.onclick = function() { document.body.removeChild(overlay); };
+
+    footer.appendChild(printBtn);
+    footer.appendChild(closeFooterBtn);
+
+    // Assemble modal
+    modal.appendChild(header);
+    modal.appendChild(contentDiv);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+
+    // Close on overlay click
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.section-toggle').forEach(function(btn) {
+        btn.setAttribute('aria-expanded', 'false');
+    });
+});
+</script>
+
+</body>
+</html>

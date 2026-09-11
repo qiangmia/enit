@@ -1,0 +1,31 @@
+# Exclude everything
+*
+
+# Include specific files and folders
+!Wk1/
+!Wk2/
+!Wk3/
+!Wk4/
+!README.md
+!index.html
+!.gitignore
+
+# Only include HTML and MD files in Wk folders
+!Wk1/*.html
+!Wk1/*.md
+!Wk2/*.html
+!Wk3/*.html
+!Wk4/*.html
+
+# Exclude large files in Wk folders
+Wk1/*.7z
+Wk1/*.pptx
+Wk1/*.m4a
+Wk2/*.pptx
+Wk2/*.jpg
+Wk3/*.pptx
+Wk3/*.mp3
+Wk3/*.pdf
+Wk4/*.pptx
+Wk4/*.mp4
+Wk4/*.pdf

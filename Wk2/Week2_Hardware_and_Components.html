@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2: Hardware — Understanding Computer Components</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(rgba(30, 58, 95, 0.85), rgba(30, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 5000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 1.2rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0.9rem; margin: 1rem 0; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Week 2: Hardware & Components</h1>
+    <div class="subtitle">Understanding Computer Components</div>
+    <div class="meta">
+        <span>English for Information Technology</span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 2: 2-hour Lesson</span>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#warmup">Warm-up</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#vocab">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LESSON OVERVIEW ──────────────────────────── -->
+    <section id="objectives">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">🎯</span> Learning Objectives
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header">By the end of this lesson, students will be able to:</div>
+                                <ol>
+                    <li>Identify at least <strong>10 common computer hardware components</strong> and their functions.</li>
+                    <li>Use <strong>there is/there are</strong> to describe the presence and location of hardware.</li>
+                    <li>Read and comprehend a short article about building a computer.</li>
+                    <li>Expand hardware vocabulary including internal components, peripherals, and technical specifications.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- LESSON                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ── WARM-UP ──────────────────────────────────── -->
+    <section id="warmup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">💬</span> Warm-up &amp; Ice-Breaker
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+            <h3>"What's in Your Computer?" — Brainstorm</h3>
+
+            <div class="card card-task">
+                <div class="card-header">Setup</div>
+                <p>Think about your own computer (laptop or desktop). In pairs, list as many hardware components as you can think of in 3 minutes.</p>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header">Activity</div>
+                <p>Each pair shares their list. The class builds a master list on the board.</p>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>"There is a hard drive in my computer. There are two USB ports on the side."</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ──────────────────────────────────── -->
+    <section id="reading">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📖</span> Reading
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
+        <p>Match these words to their meanings. Do this together as a class before reading the article.</p>
+
+        <div class="card card-vocab">
+            <div class="card-header">Match the Terms</div>
+            <table>
+                <thead>
+                    <tr><th style="width:15%;">#</th><th style="width:30%;">Word</th><th style="width:10%;">→</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>processor (CPU)</strong></td><td>→</td><td>the 'brain' of the computer that executes instructions</td></tr>
+                    <tr><td>2</td><td><strong>memory (RAM)</strong></td><td>→</td><td>temporary storage for data being actively used</td></tr>
+                    <tr><td>3</td><td><strong>motherboard</strong></td><td>→</td><td>the main circuit board that connects all components</td></tr>
+                    <tr><td>4</td><td><strong>storage</strong></td><td>→</td><td>long-term data storage (SSD, HDD)</td></tr>
+                    <tr><td>5</td><td><strong>power supply</strong></td><td>→</td><td>converts electricity to power the computer</td></tr>
+                    <tr><td>6</td><td><strong>cooling system</strong></td><td>→</td><td>fans or liquid systems that prevent overheating</td></tr>
+                    <tr><td>7</td><td><strong>peripheral</strong></td><td>→</td><td>external devices like keyboard, mouse, monitor</td></tr>
+                    <tr><td>8</td><td><strong>interface</strong></td><td>→</td><td>a point where two systems meet and interact</td></tr>
+                </tbody>
+            </table>
+            <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
+            <div id="pre-read-answers" class="answers">
+                <p><strong>1-a, 2-b, 3-c, 4-d, 5-e, 6-f, 7-g, 8-h</strong></p>
+            </div>
+        </div>
+
+
+        <h3>Full Text: "Building My First Computer"</h3>
+
+        <div class="audio-player">
+            <span class="audio-player-icon">🔊</span>
+            <span class="audio-player-text">Listen to this article</span>
+            <audio controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <article class="article">
+            <div class="article-title">Building My First Computer</div>
+            <div class="article-subtitle">A Taiwanese student's hands-on learning experience</div>
+            <div class="article-meta">
+                <span><strong>Name:</strong> Chen Meilin (陳美玲)</span>
+                <span><strong>Age:</strong> 20</span>
+                <span><strong>Job:</strong> Information Management Student</span>
+            </div>
+            <div class="article-meta">
+                <span><strong>Company:</strong> Yuan Ze University</span>
+                <span><strong>Education:</strong> Second-year student</span>
+            </div>
+
+            <h4><span class="article-time">Saturday Morning</span> — The Decision</h4>
+            <p>Meilin decides to build her own desktop computer. She wants to understand how hardware works. Her friend Wei, a computer engineering student, offers to help. They go to a computer market in Taipei to buy the parts.</p>
+            <h4><span class="article-time">At the Computer Market</span> — Choosing the Parts</h4>
+            <p>There are many stores in the market. Each store specializes in different components. Meilin needs a processor, a motherboard, memory, storage, a power supply, a case, and a cooling system. Wei explains that the processor is the most important part. There are two main brands: Intel and AMD. Meilin chooses an Intel Core i5 processor.</p>
+            <h4><span class="article-time">Afternoon</span> — Building the Computer</h4>
+            <p>Back in Meilin's dorm room, she opens the case. There is a lot of space inside. First, she installs the motherboard. Then she puts the processor into the motherboard. There are small pins on the motherboard — she must be careful. Next, she installs the memory sticks. There are two memory slots, and she fills both with 8GB sticks.</p>
+            <h4><span class="article-time">Evening</span> — First Boot</h4>
+            <p>Meilin connects the power supply and turns on the computer. There is a moment of silence. Then the fan starts spinning. The screen shows the BIOS. Everything works. Wei says, 'There is no feeling like turning on something you built yourself.' Meilin agrees.</p>
+
+            <blockquote>
+                "Building a computer taught me more about hardware than any textbook. When you hold the parts in your hands, you understand how they work together."
+                <cite>— — Chen Meilin, Information Management Student</cite>
+            </blockquote>
+        </article>
+
+
+        <h3>Reading Comprehension</h3>
+        <p>Choose the best answer for each question.</p>
+        <div class="quiz-question">
+            <p>1. Why did Meilin want to build her own computer?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q1" value="a"> a) It was cheaper than buying one</label>
+                        <label><input type="radio" name="q1" value="b"> b) She wanted to understand how hardware works</label>
+                        <label><input type="radio" name="q1" value="c"> c) Her old computer was broken</label>
+                        <label><input type="radio" name="q1" value="d"> d) Wei told her to do it</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>2. How many memory sticks did Meilin install?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q2" value="a"> a) One 16GB stick</label>
+                        <label><input type="radio" name="q2" value="b"> b) Two 4GB sticks</label>
+                        <label><input type="radio" name="q2" value="c"> c) Two 8GB sticks</label>
+                        <label><input type="radio" name="q2" value="d"> d) Four 4GB sticks</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>3. What happened when Meilin first turned on the computer?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q3" value="a"> a) Nothing happened</label>
+                        <label><input type="radio" name="q3" value="b"> b) It made a loud noise</label>
+                        <label><input type="radio" name="q3" value="c"> c) The screen showed the BIOS</label>
+                        <label><input type="radio" name="q3" value="d"> d) It showed an error message</label>
+            </div>
+        </div>
+
+
+        <h3>Discussion Questions</h3>
+        <p>Discuss these questions with a partner or small group.</p>
+        <div class="card card-task">
+            <ol>
+                <li>What are the advantages and disadvantages of building your own computer?</li>
+                <li>If you were building a computer for a friend, what components would you prioritize? Why?</li>
+                <li>How is building a computer similar to or different from writing software?</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY ───────────────────────────────── -->
+    <section id="vocab">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📝</span> Vocabulary Builder
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <h3>Category: Internal Components</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">processor (CPU)</div>
+                <div class="job-card-chinese">處理器</div>
+                <div class="job-card-def">The 'brain' that executes instructions</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">memory (RAM)</div>
+                <div class="job-card-chinese">記憶體</div>
+                <div class="job-card-def">Temporary storage for active data</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">motherboard</div>
+                <div class="job-card-chinese">主機板</div>
+                <div class="job-card-def">Main circuit board connecting all parts</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">hard drive (HDD)</div>
+                <div class="job-card-chinese">硬碟</div>
+                <div class="job-card-def">Magnetic storage for long-term data</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">solid-state drive (SSD)</div>
+                <div class="job-card-chinese">固態硬碟</div>
+                <div class="job-card-def">Fast flash-based storage</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">graphics card (GPU)</div>
+                <div class="job-card-chinese">顯示卡</div>
+                <div class="job-card-def">Processes and outputs images</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">power supply unit (PSU)</div>
+                <div class="job-card-chinese">電源供應器</div>
+                <div class="job-card-def">Converts electricity for components</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔧</div>
+                <div class="job-card-title">cooling fan</div>
+                <div class="job-card-chinese">散熱風扇</div>
+                <div class="job-card-def">Prevents components from overheating</div>
+            </div>
+        </div>
+        <h3>Category: Peripherals & Ports</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">monitor</div>
+                <div class="job-card-chinese">螢幕</div>
+                <div class="job-card-def">Display screen for visual output</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">keyboard</div>
+                <div class="job-card-chinese">鍵盤</div>
+                <div class="job-card-def">Input device for typing</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">mouse</div>
+                <div class="job-card-chinese">滑鼠</div>
+                <div class="job-card-def">Pointing device for navigation</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">USB port</div>
+                <div class="job-card-chinese">USB 接口</div>
+                <div class="job-card-def">Universal connection for devices</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">HDMI port</div>
+                <div class="job-card-chinese">HDMI 接口</div>
+                <div class="job-card-def">High-definition video/audio output</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔌</div>
+                <div class="job-card-title">Ethernet port</div>
+                <div class="job-card-chinese">網路接口</div>
+                <div class="job-card-def">Wired network connection</div>
+            </div>
+        </div>
+        <h3>Category: Actions & Verbs</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">install</div>
+                <div class="job-card-chinese">安裝</div>
+                <div class="job-card-def">To set up hardware or software</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">connect</div>
+                <div class="job-card-chinese">連接</div>
+                <div class="job-card-def">To join components together</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">boot up</div>
+                <div class="job-card-chinese">開機</div>
+                <div class="job-card-def">To start a computer</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">troubleshoot</div>
+                <div class="job-card-chinese">故障排除</div>
+                <div class="job-card-def">To find and fix problems</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">upgrade</div>
+                <div class="job-card-chinese">升級</div>
+                <div class="job-card-def">To replace with a better component</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚡</div>
+                <div class="job-card-title">configure</div>
+                <div class="job-card-chinese">設定</div>
+                <div class="job-card-def">To set up settings and options</div>
+            </div>
+        </div>
+        <h3>Category: Specifications & Measurements</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">gigahertz (GHz)</div>
+                <div class="job-card-chinese">GHz</div>
+                <div class="job-card-def">Processor speed measurement</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">gigabyte (GB)</div>
+                <div class="job-card-chinese">GB</div>
+                <div class="job-card-def">Storage/memory capacity</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">watt (W)</div>
+                <div class="job-card-chinese">瓦特</div>
+                <div class="job-card-def">Power consumption measurement</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">cache</div>
+                <div class="job-card-chinese">快取</div>
+                <div class="job-card-def">High-speed temporary storage</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">clock speed</div>
+                <div class="job-card-chinese">時脈速度</div>
+                <div class="job-card-def">How fast the processor runs</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">📏</div>
+                <div class="job-card-title">bandwidth</div>
+                <div class="job-card-chinese">頻寬</div>
+                <div class="job-card-def">Data transfer capacity</div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── GRAMMAR ──────────────────────────────────── -->
+    <section id="grammar">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✏️</span> Grammar Focus — There is / There are
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <div class="card card-grammar">
+            <div class="card-header">Review: Singular vs. Plural</div>
+            <p>Use <strong>there is</strong> with one item (singular) and <strong>there are</strong> with multiple items (plural).</p>
+            <table>
+                <thead>
+                    <tr><th>Pattern</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>There is + singular noun</td><td>There <strong>is</strong> a CPU on the motherboard.</td></tr>
+                    <tr><td>There are + plural noun</td><td>There <strong>are</strong> two memory slots.</td></tr>
+                    <tr><td>There isn't + singular</td><td>There <strong>isn't</strong> a graphics card in this computer.</td></tr>
+                    <tr><td>There aren't + plural</td><td>There <strong>aren't</strong> enough USB ports.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Key Rules</div>
+            <ul>
+            <li>There is = There's (contraction): <em>There's a problem with the hard drive.</em></li>
+            <li>There are = There're (less common in speech): <em>There are three fans in the case.</em></li>
+            <li>Negative: There isn't / There aren't: <em>There isn't enough memory. There aren't any expansion slots.</em></li>
+            <li>Questions: Is there...? / Are there...?: <em>Is there a warranty? Are there any free ports?</em></li>
+            </ul>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Common Mistakes (Chinese L1 Speakers)</div>
+            <p>Chinese speakers: Don't use "have" instead of "there is/are." <em>✗ My computer has two USB ports on the side.</em> → <em>✓ There are two USB ports on the side of my computer.</em></p>
+        </div>
+
+
+        <div class="card card-task">
+            <div class="card-header">Activity A: Fill in the Blanks</div>
+            <p>Complete sentences with there is, there are, there isn't, or there aren't.</p>
+            <ol>
+                <li>________ a processor on the motherboard. <span class='keyword'>There is</span></li>
+                <li>________ two memory slots in this computer. <span class='keyword'>There are</span></li>
+                <li>________ enough power for the graphics card. <span class='keyword'>There isn't</span></li>
+                <li>________ any free USB ports. <span class='keyword'>There aren't</span></li>
+                <li>________ a problem with the hard drive. <span class='keyword'>There is</span></li>
+            </ol>
+        </div>
+        <div class="card card-task">
+            <div class="card-header">Activity B: Describe Your Computer</div>
+            <p>With a partner, describe what is inside your computer using there is/there are.</p>
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>"In my computer, there is an Intel i7 processor. There are 16 gigabytes of memory. There is a 512 gigabyte SSD."</em></p>
+            </div>
+            <p><em>Use: <em>"In my computer, there is/are..."</em></em></p>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ──────────────────────────────────── -->
+    <section id="wrapup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✅</span> Wrap-up &amp; Reflection
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <div class="card card-info">
+            <div class="card-header">Exit Ticket — Write on a sticky note:</div>
+            <ol>
+                <li>One new hardware term I learned today: __________</li>
+                <li>One thing I want to know more about: __________</li>
+                <li>If I could upgrade one part of my computer, it would be: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">Homework — Due Next Week</div>
+            <ol>
+                <li>Find a computer specification online (laptop or desktop). Write 5 sentences using there is/there are to describe the components.</li>
+                <li>Study Categories 3 & 4 vocabulary (Actions & Specifications) — we'll review them next class.</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Dept. of Information Management · Yuan Ze University</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Section Toggle (Accordion) ───────────────────────
+function toggleSection(btn) {
+    const content = btn.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+
+    // Close all other sections
+    document.querySelectorAll('.section-content.open').forEach(function(el) {
+        if (el !== content) {
+            el.classList.remove('open');
+            el.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Toggle current section
+    content.classList.toggle('open');
+    btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ── Extract Section (Modal) ──────────────────────────
+function extractSection(btn) {
+    var section = btn.closest('section');
+    var content = section.querySelector('.section-content');
+    var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+    // Create modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'extract-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    // Create modal container
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+    // Create header
+    var header = document.createElement('div');
+    header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+    // Create close button
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+    closeBtn.onclick = function() { document.body.removeChild(overlay); };
+    header.appendChild(closeBtn);
+
+    // Create content area
+    var contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+    contentDiv.innerHTML = content.innerHTML;
+
+    // Create footer with print button
+    var footer = document.createElement('div');
+    footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+    var printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    printBtn.onclick = function() { window.print(); };
+
+    var closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    closeFooterBtn.onclick = function() { document.body.removeChild(overlay); };
+
+    footer.appendChild(printBtn);
+    footer.appendChild(closeFooterBtn);
+
+    // Assemble modal
+    modal.appendChild(header);
+    modal.appendChild(contentDiv);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+
+    // Close on overlay click
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+// ── Open first section by default ─────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var firstSection = document.querySelector('.section-content');
+    if (firstSection) {
+        firstSection.classList.add('open');
+        firstSection.previousElementSibling.setAttribute('aria-expanded', 'true');
+    }
+});
+</script>
+
+</body>
+</html>
