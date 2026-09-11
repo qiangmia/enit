@@ -2,7 +2,7 @@
 
 ## Overview
 
-This system generates responsive HTML lesson plans for the 18-week "English for Information Technology" course at Yuan Ze University, Department of Information Management.
+This is a responsive HTML lesson plan system for the 18-week "English for Information Technology" course at Yuan Ze University, Department of Information Management.
 
 **Key features:**
 - Responsive design (desktop, tablet, phone)
