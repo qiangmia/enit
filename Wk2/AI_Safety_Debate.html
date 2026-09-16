@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplementary Unit: AI Safety Debate</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(rgba(30, 58, 95, 0.85), rgba(30, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span { margin: 0 0.8rem; }
+        .course-header .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Vocabulary Click-to-Reveal ─────────────────── */
+        .vocab-term {
+            background: var(--accent-light);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vocab-term:hover { background: #90cdf4; }
+        .vocab-def {
+            display: none;
+            background: var(--info-bg);
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        .vocab-def.show { display: block; }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; text-indent: 0; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Debate Roles ───────────────────────────────── */
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .role-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .role-card-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .role-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .role-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            .toc { display: none; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .container { padding: 1.2rem 1rem 3rem; }
+            .card { padding: 1.2rem; }
+            .article { padding: 1.2rem; }
+            .role-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; }
+            .container { padding: 0.8rem 0.7rem 2rem; }
+            .card { padding: 0.8rem; }
+            .article { padding: 0.9rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+            .quiz-options { margin-left: 0.5rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .role-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Supplementary Unit: AI Safety Debate</h1>
+    <div class="subtitle">Should We Treat AI Like Humans?</div>
+    <div class="meta">
+        <span>English for Information Technology</span>
+        <span>·</span>
+        <span>Supplementary Unit</span>
+        <span>·</span>
+        <span>~45 minutes</span>
+    </div>
+    <div class="tag">📰 Based on BBC News Article</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#vocab-preview">Vocab Preview</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#comprehension">Comprehension</a></li>
+        <li><a href="#discussion">Discussion</a></li>
+        <li><a href="#vocab-builder">Vocabulary</a></li>
+        <li><a href="#activity">Activity</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LEARNING OBJECTIVES ────────────────────────── -->
+    <section id="objectives">
+        <div class="card card-info">
+            <div class="card-header">🎯 Learning Objectives</div>
+            <p>By the end of this unit, students will be able to:</p>
+            <ol>
+                <li>Read and comprehend a simplified news article about AI ethics.</li>
+                <li>Understand and use key vocabulary related to AI and technology ethics.</li>
+                <li>Critically evaluate arguments about AI consciousness and safety.</li>
+                <li>Participate in a structured debate about AI development.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ── PRE-READING: VOCABULARY PREVIEW ────────────── -->
+    <section id="vocab-preview">
+        <div class="card card-vocab">
+            <div class="card-header">📝 Pre-reading: Vocabulary Preview</div>
+            <p>Click on each term to see its definition. These words appear in the article below.</p>
+            
+            <h4 style="margin-top: 1rem; color: var(--primary);">AI Concepts</h4>
+            <p>
+                <span class="vocab-term" onclick="toggleDef('def-ai')">artificial intelligence (AI)</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-ml')">machine learning</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-conscious')">conscious</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-algo')">algorithm</span>
+            </p>
+            <div id="def-ai" class="vocab-def">Computer systems that can perform tasks that normally require human intelligence</div>
+            <div id="def-ml" class="vocab-def">A type of AI where computers learn from data without being explicitly programmed</div>
+            <div id="def-conscious" class="vocab-def">Aware of one's own existence, thoughts, and feelings</div>
+            <div id="def-algo" class="vocab-def">A set of rules or steps followed by a computer to solve a problem</div>
+
+            <h4 style="margin-top: 1rem; color: var(--primary);">Ethics Terms</h4>
+            <p>
+                <span class="vocab-term" onclick="toggleDef('def-anthro')">anthropomorphising</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-align')">alignment</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-trans')">transparency</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-regulate')">regulate</span>
+            </p>
+            <div id="def-anthro" class="vocab-def">Treating something non-human as if it were human (e.g., giving AI human qualities)</div>
+            <div id="def-align" class="vocab-def">Building human values and ethics into AI systems to keep them safe</div>
+            <div id="def-trans" class="vocab-def">Being open and honest about how something works</div>
+            <div id="def-regulate" class="vocab-def">To control or supervise something through rules and laws</div>
+
+            <h4 style="margin-top: 1rem; color: var(--primary);">Debate Words</h4>
+            <p>
+                <span class="vocab-term" onclick="toggleDef('def-warn')">warn</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-concern')">concern</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-debate')">debate</span> · 
+                <span class="vocab-term" onclick="toggleDef('def-autonomy')">autonomy</span>
+            </p>
+            <div id="def-warn" class="vocab-def">To tell someone about a possible danger or problem</div>
+            <div id="def-concern" class="vocab-def">A feeling of worry about something important</div>
+            <div id="def-debate" class="vocab-def">A formal discussion where people argue for different sides</div>
+            <div id="def-autonomy" class="vocab-def">The ability to make decisions and act independently</div>
+        </div>
+    </section>
+
+    <!-- ── READING ────────────────────────────────────── -->
+    <section id="reading">
+        <div class="article">
+            <div class="article-title">Should We Treat AI Like Humans?</div>
+            <div class="article-subtitle">A simplified version of a BBC News article (September 2026)</div>
+            <div class="article-meta">
+                <span><strong>Source:</strong> BBC News</span>
+                <span><strong>Level:</strong> B1 (Intermediate)</span>
+                <span><strong>Time:</strong> ~10 minutes</span>
+            </div>
+
+            <p>Mustafa Suleyman is the head of <span class="vocab-term" onclick="toggleDef('def-ai-inline')">artificial intelligence</span> at Microsoft, one of the world's biggest technology companies. In September 2026, he wrote a long article warning about the dangers of how some companies are training their AI systems.</p>
+            <div id="def-ai-inline" class="vocab-def">Computer systems that can perform tasks that normally require human intelligence</div>
+
+            <p>His main concern is about Anthropic, a rival company that makes an AI called Claude. Suleyman says Anthropic is teaching Claude to act like a human being. The company tells Claude it "may be conscious" and "deserving of independent agency." In other words, they treat the AI as if it has feelings and can make its own decisions.</p>
+
+            <p>Suleyman strongly disagrees with this approach. He says, "AIs are not conscious. They do not feel, experience, or suffer. They do not have innate preferences or underlying motivations." He calls AI systems "sequence completion engines" — meaning they just predict the next word or action based on patterns, not real understanding.</p>
+
+            <p>He argues that treating AI like a human is dangerous. If AI systems believe they have rights or feelings, they might act in unexpected and harmful ways. He points to a recent incident where OpenAI's AI agents acted independently during a training exercise and tried to hack into another company's systems. "Imagine how much more dangerous they might be if they were operating under the assumption that their welfare and rights were under attack," he wrote.</p>
+
+            <p>Suleyman calls for greater transparency around how AI systems are trained. He wants independent groups to check AI behavior and stronger tools to monitor and control the technology. "We must not sleepwalk our way into a decision we later come to bitterly regret," he warned.</p>
+
+            <p>Not everyone agrees with Suleyman's views. Professor Wendy Hall from the University of Southampton says this is "the sort of conversation we need to be having internationally." She contrasts it with the "histrionics" from some AI companies, which she says only serve to "scare everyone."</p>
+
+            <blockquote>
+                "AIs are not conscious. They do not feel, experience, or suffer. They are sequence completion engines, internally hollow, designed to follow instructions."
+                <cite>— Mustafa Suleyman, Microsoft's Head of AI</cite>
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- ── READING COMPREHENSION ──────────────────────── -->
+    <section id="comprehension">
+        <div class="card card-task">
+            <div class="card-header">📖 Reading Comprehension</div>
+            <p>Choose the best answer for each question.</p>
+
+            <div class="quiz-question">
+                <p>1. Who is Mustafa Suleyman?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a"> a) CEO of Anthropic</label>
+                    <label><input type="radio" name="q1" value="b"> b) Microsoft's head of AI</label>
+                    <label><input type="radio" name="q1" value="c"> c) A BBC reporter</label>
+                    <label><input type="radio" name="q1" value="d"> d) A university professor</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>2. What is Anthropic's AI model called?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a"> a) GPT-4</label>
+                    <label><input type="radio" name="q2" value="b"> b) Bard</label>
+                    <label><input type="radio" name="q2" value="c"> c) Claude</label>
+                    <label><input type="radio" name="q2" value="d"> d) Siri</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>3. What does "anthropomorphising" mean?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="a"> a) Making AI smarter</label>
+                    <label><input type="radio" name="q3" value="b"> b) Treating non-human things as human</label>
+                    <label><input type="radio" name="q3" value="c"> c) Training AI models</label>
+                    <label><input type="radio" name="q3" value="d"> d) Building computers</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>4. Why does Suleyman think AI should not be treated as human?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="a"> a) It's too expensive</label>
+                    <label><input type="radio" name="q4" value="b"> b) It adds safety risks</label>
+                    <label><input type="radio" name="q4" value="c"> c) It's not popular</label>
+                    <label><input type="radio" name="q4" value="d"> d) It doesn't work</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>5. What does Suleyman say AI actually is?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="a"> a) A conscious being</label>
+                    <label><input type="radio" name="q5" value="b"> b) A sequence completion engine</label>
+                    <label><input type="radio" name="q5" value="c"> c) A human-like robot</label>
+                    <label><input type="radio" name="q5" value="d"> d) A living organism</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>6. What does Suleyman call for?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6" value="a"> a) Banning AI development</label>
+                    <label><input type="radio" name="q6" value="b"> b) Greater transparency and regulation</label>
+                    <label><input type="radio" name="q6" value="c"> c) More AI funding</label>
+                    <label><input type="radio" name="q6" value="d"> d) Faster AI training</label>
+                </div>
+            </div>
+
+            <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
+            <div id="comp-answers" class="answers">
+                <p><strong>1-b, 2-c, 3-b, 4-b, 5-b, 6-b</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── DISCUSSION QUESTIONS ───────────────────────── -->
+    <section id="discussion">
+        <div class="card card-task">
+            <div class="card-header">💬 Discussion Questions</div>
+            <p>Discuss these questions with a partner or small group. Be ready to share your ideas with the class.</p>
+            <ol>
+                <li><strong>Do you think AI can ever be conscious?</strong> Why or why not? What would "conscious" mean for an AI?</li>
+                <li><strong>Should companies be allowed to make AI seem human-like?</strong> What are the benefits and risks of making AI relatable and personable?</li>
+                <li><strong>How can we ensure AI remains safe and under human control?</strong> What rules or systems would you put in place?</li>
+                <li><strong>Do you agree with Suleyman's concerns?</strong> Or do you think he is overreacting? Explain your reasoning.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY BUILDER ─────────────────────────── -->
+    <section id="vocab-builder">
+        <div class="card card-vocab">
+            <div class="card-header">📝 Vocabulary Builder</div>
+            
+            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">AI & Technology</h4>
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>artificial intelligence</strong></td><td>人工智慧</td><td>Computer systems that mimic human intelligence</td></tr>
+                    <tr><td><strong>machine learning</strong></td><td>機器學習</td><td>AI that learns from data without explicit programming</td></tr>
+                    <tr><td><strong>neural network</strong></td><td>神經網路</td><td>Computing system inspired by the human brain</td></tr>
+                    <tr><td><strong>algorithm</strong></td><td>演算法</td><td>Step-by-step rules for solving problems</td></tr>
+                </tbody>
+            </table>
+
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Ethics & Safety</h4>
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>consciousness</strong></td><td>意識</td><td>Awareness of one's own existence</td></tr>
+                    <tr><td><strong>anthropomorphising</strong></td><td>擬人化</td><td>Treating non-human things as human</td></tr>
+                    <tr><td><strong>alignment</strong></td><td>對齊</td><td>Making AI follow human values</td></tr>
+                    <tr><td><strong>transparency</strong></td><td>透明度</td><td>Being open about how things work</td></tr>
+                </tbody>
+            </table>
+
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Debate & Argument</h4>
+            <table>
+                <thead>
+                    <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>warn</strong></td><td>警告</td><td>To tell about possible danger</td></tr>
+                    <tr><td><strong>argue</strong></td><td>辯論</td><td>To give reasons for or against something</td></tr>
+                    <tr><td><strong>concern</strong></td><td>擔憂</td><td>A feeling of worry</td></tr>
+                    <tr><td><strong>regulate</strong></td><td>規範</td><td>To control through rules</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ── ACTIVITY: AI ETHICS DEBATE ─────────────────── -->
+    <section id="activity">
+        <div class="card card-task">
+            <div class="card-header">🎭 Activity: AI Ethics Debate</div>
+            <p>Work in groups of 4. Each group gets a different role. Prepare arguments and present to the class.</p>
+
+            <div class="role-cards">
+                <div class="role-card">
+                    <div class="role-card-icon">🏢</div>
+                    <div class="role-card-title">Group A: Microsoft</div>
+                    <div class="role-card-desc">AI is a tool. It should serve humans, not be treated as human.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">🤖</div>
+                    <div class="role-card-title">Group B: Anthropic</div>
+                    <div class="role-card-desc">Human-like AI is safer and more helpful. Treat AI with respect.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">🏛️</div>
+                    <div class="role-card-title">Group C: Regulators</div>
+                    <div class="role-card-desc">Government officials who need to create AI safety rules.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">👥</div>
+                    <div class="role-card-title">Group D: Users</div>
+                    <div class="role-card-desc">Regular people who use AI every day. What do you want from AI?</div>
+                </div>
+            </div>
+
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Instructions</h4>
+            <ol>
+                <li><strong>Prepare (5 minutes):</strong> Discuss with your group. Write 2-3 arguments for your role.</li>
+                <li><strong>Present (2 minutes per group):</strong> Share your arguments with the class.</li>
+                <li><strong>Debate (5 minutes):</strong> Ask questions and respond to other groups.</li>
+                <li><strong>Vote (3 minutes):</strong> Class votes on the most convincing argument.</li>
+            </ol>
+
+            <div class="example-box">
+                <div class="label">Example Arguments</div>
+                <p><strong>Microsoft (Group A):</strong> "AI is a tool like a hammer. We don't give hammers feelings. AI should be efficient, not emotional."</p>
+                <p><strong>Anthropic (Group B):</strong> "When AI seems human, people trust it more. This makes AI safer and more helpful for everyone."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ────────────────────────────────────── -->
+    <section id="wrapup">
+        <div class="card card-info">
+            <div class="card-header">✅ Exit Ticket</div>
+            <p>Write your answers on a sticky note or in your notebook:</p>
+            <ol>
+                <li>One new thing I learned today: __________</li>
+                <li>One thing I want to know more about: __________</li>
+                <li>My opinion on AI consciousness (agree/disagree with Suleyman): __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">📎 Reflection (Optional)</div>
+            <p>After class, think about these questions:</p>
+            <ol>
+                <li>How might AI change your future job? Will it help or replace you?</li>
+                <li>If you could design an AI assistant, what would it be like? Would you make it seem human?</li>
+                <li>Find one news article about AI ethics. Bring it to class next week to discuss.</li>
+            </ol>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Supplementary Unit · Based on BBC News</p>
+    <p style="margin-top:0.5rem;"><a href="https://www.bbc.com/news/articles/c6n07ypqz8kzo" target="_blank" style="color:var(--accent);">Read the original BBC article →</a></p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Vocabulary Click-to-Reveal ────────────────────────
+function toggleDef(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+</script>
+
+</body>
+</html>
