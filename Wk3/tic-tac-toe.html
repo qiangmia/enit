@@ -1456,9 +1456,16 @@ function showSaveStatus(status, message) {
 
 // Save results to Google Sheets
 async function saveResultsToSheet(results) {
+    // Always save to localStorage first
+    try {
+        var existing = JSON.parse(localStorage.getItem('enit_results') || '[]');
+        results.forEach(function(r) { existing.push(r); });
+        localStorage.setItem('enit_results', JSON.stringify(existing));
+    } catch (e) {}
+
     var apiUrl = localStorage.getItem('enit_api_url');
     if (!apiUrl) {
-        showSaveStatus('error', '✗ No API URL configured');
+        showSaveStatus('saved', '✓ Results saved locally (no API URL configured)');
         return;
     }
 
@@ -1493,13 +1500,25 @@ async function saveResultsToSheet(results) {
     } catch (error) {
         showSaveStatus('error', '✗ Save failed: ' + error.message);
     }
+}
 
-    // Also save to localStorage as backup
-    try {
-        var existing = JSON.parse(localStorage.getItem('enit_results') || '[]');
-        results.forEach(function(r) { existing.push(r); });
-        localStorage.setItem('enit_results', JSON.stringify(existing));
-    } catch (e) {}
+// Normalize record field names from any format to expected snake_case
+function normalizeRecord(r) {
+    var out = {};
+    var keys = Object.keys(r);
+    for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        var v = r[k];
+        var nk = k.toLowerCase().replace(/[\s\-]+/g, '_').replace(/[^a-z0-9_]/g, '');
+        if (nk === 'studentname' || nk === 'student_name' || nk === 'name') nk = 'student_name';
+        else if (nk === 'studentid' || nk === 'student_id' || nk === 'id') nk = 'student_id';
+        else if (nk === 'englishname' || nk === 'english_name' || nk === 'english') nk = 'english_name';
+        else if (nk === 'sessionid' || nk === 'session_id') nk = 'session_id';
+        else if (nk === 'correct' || nk === 'result' || nk === 'is_correct') nk = 'correct';
+        else if (nk === 'pts' || nk === 'score') nk = 'points';
+        out[nk] = v;
+    }
+    return out;
 }
 
 // Load dashboard data
@@ -1528,7 +1547,7 @@ async function loadDashboardData() {
                     for (var j = 0; j < headers.length; j++) {
                         row[headers[j].trim()] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
                     }
-                    allResults.push(row);
+                    allResults.push(normalizeRecord(row));
                 }
                 loaded = true;
             }
@@ -1545,7 +1564,7 @@ async function loadDashboardData() {
                 var resp = await fetch(apiUrl + '?action=getResults');
                 var data = await resp.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    allResults = data;
+                    allResults = data.map(normalizeRecord);
                     loaded = true;
                 }
             } catch (e) {

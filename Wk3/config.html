@@ -820,6 +820,24 @@ function updateSettingsStatus(type, message) {
 // ── Results Dashboard ──────────────────────────────────
 function getCsvUrl() { return localStorage.getItem('enit_csv_url') || ''; }
 
+function normalizeRecord(r) {
+    var out = {};
+    var keys = Object.keys(r);
+    for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        var v = r[k];
+        var nk = k.toLowerCase().replace(/[\s\-]+/g, '_').replace(/[^a-z0-9_]/g, '');
+        if (nk === 'studentname' || nk === 'student_name' || nk === 'name') nk = 'student_name';
+        else if (nk === 'studentid' || nk === 'student_id' || nk === 'id') nk = 'student_id';
+        else if (nk === 'englishname' || nk === 'english_name' || nk === 'english') nk = 'english_name';
+        else if (nk === 'sessionid' || nk === 'session_id') nk = 'session_id';
+        else if (nk === 'correct' || nk === 'result' || nk === 'is_correct') nk = 'correct';
+        else if (nk === 'pts' || nk === 'score') nk = 'points';
+        out[nk] = v;
+    }
+    return out;
+}
+
 async function loadResultsData() {
     document.getElementById('summary-loading').style.display = 'block';
     document.getElementById('detail-loading').style.display = 'block';
@@ -843,7 +861,7 @@ async function loadResultsData() {
                     for (var j = 0; j < headers.length; j++) {
                         row[headers[j].trim()] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
                     }
-                    allResults.push(row);
+                    allResults.push(normalizeRecord(row));
                 }
             }
         } catch (e) {
@@ -859,7 +877,7 @@ async function loadResultsData() {
                 var resp = await fetch(url + '?action=getResults');
                 var data = await resp.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    allResults = data;
+                    allResults = data.map(normalizeRecord);
                 }
             } catch (e) {
                 console.log('[Dashboard] Apps Script GET failed:', e.message);
