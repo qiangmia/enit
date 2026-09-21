@@ -159,7 +159,10 @@
         .modal-overlay.active { display: flex; }
         .modal { background: white; border-radius: 16px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { font-size: 1rem; color: var(--primary); }
+        .modal-header h3 { font-size: 1rem; color: var(--primary); margin-bottom: 0.2rem; }
+        .modal-team-info { font-size: 0.9rem; font-weight: 700; margin-top: 0.15rem; }
+        .modal-team-info.team-a-text { color: var(--team-a); }
+        .modal-team-info.team-b-text { color: var(--team-b); }
         .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); padding: 0.2rem 0.5rem; }
         .modal-body { padding: 1.5rem; }
         .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.8rem; justify-content: flex-end; flex-wrap: wrap; }
@@ -493,7 +496,10 @@
 <div class="modal-overlay" id="question-modal">
     <div class="modal">
         <div class="modal-header">
-            <h3 id="modal-question-number">Question 1</h3>
+            <div>
+                <h3 id="modal-question-number">Question 1</h3>
+                <div class="modal-team-info" id="modal-team-info"></div>
+            </div>
             <button class="modal-close" onclick="closeModal()">&times;</button>
         </div>
         <div class="modal-body">
@@ -506,6 +512,7 @@
             <div id="answer-area"></div>
         </div>
         <div class="modal-footer">
+            <button class="btn btn-warm" onclick="repickFromModal()">&#127922; Re-pick Spokesperson</button>
             <button class="btn btn-success" onclick="judgeAnswer(true)">&#10003; Correct (+<span id="modal-points">1</span>)</button>
             <button class="btn btn-danger" onclick="judgeAnswer(false)">&#10007; Wrong</button>
             <button class="btn btn-secondary" onclick="passTurn()">&#10151; Pass to Other Team</button>
@@ -1041,6 +1048,15 @@ function openQuestionModal() {
     document.getElementById('modal-question-text').textContent = q.question;
     document.getElementById('modal-points').textContent = q.points;
 
+    var modalTeam = document.getElementById('modal-team-info');
+    var team = gameState.currentTeam;
+    var teamLabel = 'Team ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
+    var subLabel = gameState.currentSubgroup ? ' \u2014 ' + gameState.currentSubgroup : '';
+    var spk = gameState.currentSpokesperson;
+    var spkLabel = spk ? (spk.englishName ? spk.chineseName + ' (' + spk.englishName + ')' : spk.chineseName) : '';
+    modalTeam.textContent = teamLabel + subLabel + (spkLabel ? ' \u2014 ' + spkLabel : '');
+    modalTeam.className = 'modal-team-info ' + (team === 'A' ? 'team-a-text' : 'team-b-text');
+
     var answerArea = document.getElementById('answer-area');
     answerArea.innerHTML = '';
 
@@ -1208,6 +1224,20 @@ function closeModal() {
     document.getElementById('question-modal').classList.remove('active');
     gameState.isModalOpen = false;
     clearInterval(gameState.timerInterval);
+}
+
+function repickFromModal() {
+    pickSpokesperson();
+    var spk = gameState.currentSpokesperson;
+    if (spk) {
+        var spkLabel = spk.englishName ? spk.chineseName + ' (' + spk.englishName + ')' : spk.chineseName;
+        document.getElementById('spokesperson-name').textContent = spkLabel;
+        var modalTeam = document.getElementById('modal-team-info');
+        var team = gameState.currentTeam;
+        var teamLabel = 'Team ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
+        var subLabel = gameState.currentSubgroup ? ' \u2014 ' + gameState.currentSubgroup : '';
+        modalTeam.textContent = teamLabel + subLabel + ' \u2014 ' + spkLabel;
+    }
 }
 
 // ── Pick Spokesperson ──────────────────────────────────
