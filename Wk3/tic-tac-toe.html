@@ -499,6 +499,7 @@
             <div>
                 <h3 id="modal-question-number">Question 1</h3>
                 <div class="modal-team-info" id="modal-team-info"></div>
+                <button class="btn btn-warm btn-sm" onclick="repickFromModal()" style="margin-top:0.4rem;">&#127922; Re-pick Spokesperson</button>
             </div>
             <button class="modal-close" onclick="closeModal()">&times;</button>
         </div>
@@ -512,7 +513,6 @@
             <div id="answer-area"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-warm" onclick="repickFromModal()">&#127922; Re-pick Spokesperson</button>
             <button class="btn btn-success" onclick="judgeAnswer(true)">&#10003; Correct (+<span id="modal-points">1</span>)</button>
             <button class="btn btn-danger" onclick="judgeAnswer(false)">&#10007; Wrong</button>
             <button class="btn btn-secondary" onclick="passTurn()">&#10151; Pass to Other Team</button>
