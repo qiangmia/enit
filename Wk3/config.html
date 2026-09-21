@@ -261,6 +261,11 @@
                 <input type="text" id="api-url" placeholder="https://script.google.com/macros/s/.../exec">
             </div>
             <div class="form-hint">Enter the deployment URL from your Google Apps Script.</div>
+            <div class="form-row">
+                <label>Published CSV URL:</label>
+                <input type="text" id="csv-url" placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv">
+            </div>
+            <div class="form-hint">Published CSV URL for dashboard (avoids CORS). Publish your sheet via File → Share → Publish to web → CSV.</div>
             <div class="btn-group" style="margin-top: 0.8rem;">
                 <button class="btn btn-primary" onclick="testConnection()">&#128269; Test Connection</button>
                 <button class="btn btn-success" onclick="saveApiConfig()">&#128190; Save Config</button>
@@ -672,20 +677,31 @@ function getApiUrl() { return localStorage.getItem('enit_api_url') || ''; }
 
 function saveApiConfig() {
     var url = document.getElementById('api-url').value.trim();
+    var csvUrl = document.getElementById('csv-url').value.trim();
     if (url) {
         localStorage.setItem('enit_api_url', url);
-        updateSheetsStatus('success', '&#10003; API URL saved.');
     } else {
         localStorage.removeItem('enit_api_url');
-        updateSheetsStatus('warning', '&#9888; No URL entered.');
     }
+    if (csvUrl) {
+        localStorage.setItem('enit_csv_url', csvUrl);
+    } else {
+        localStorage.removeItem('enit_csv_url');
+    }
+    updateSheetsStatus('success', '&#10003; Config saved.');
 }
 
 function loadApiConfig() {
     var url = getApiUrl();
+    var csvUrl = getCsvUrl();
     if (url) {
         document.getElementById('api-url').value = url;
-        updateSheetsStatus('success', '&#10003; API URL loaded from saved config.');
+    }
+    if (csvUrl) {
+        document.getElementById('csv-url').value = csvUrl;
+    }
+    if (url) {
+        updateSheetsStatus('success', '&#10003; Config loaded.');
     }
 }
 
@@ -799,30 +815,98 @@ function updateSettingsStatus(type, message) {
 }
 
 // ── Results Dashboard ──────────────────────────────────
+function getCsvUrl() { return localStorage.getItem('enit_csv_url') || ''; }
+
 async function loadResultsData() {
-    var url = getApiUrl();
-    if (!url) {
-        document.getElementById('summary-loading').textContent = '⚠ Google Sheets not configured. Configure in Google Sheets tab.';
-        document.getElementById('detail-loading').textContent = '⚠ Google Sheets not configured.';
-        return;
-    }
     document.getElementById('summary-loading').style.display = 'block';
     document.getElementById('detail-loading').style.display = 'block';
     document.getElementById('summary-table').style.display = 'none';
     document.getElementById('detail-table').style.display = 'none';
-    try {
-        await fetch(url, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ action: 'getResults' })
-        });
-        document.getElementById('summary-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS. Data is saved server-side.)';
-        document.getElementById('detail-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS. Data is saved server-side.)';
-    } catch (e) {
-        document.getElementById('summary-loading').textContent = '✗ Failed to load: ' + e.message;
-        document.getElementById('detail-loading').textContent = '✗ Failed to load: ' + e.message;
+    allResults = [];
+
+    // 1. Try published CSV URL
+    var csvUrl = getCsvUrl();
+    if (csvUrl) {
+        try {
+            var csvResp = await fetch(csvUrl);
+            var csvText = await csvResp.text();
+            csvText = csvText.replace(/^\uFEFF/, '');
+            var rows = csvText.split('\n').map(function(line) { return line.split(','); });
+            if (rows.length >= 2) {
+                var headers = rows[0];
+                for (var i = 1; i < rows.length; i++) {
+                    if (rows[i].length < 2) continue;
+                    var row = {};
+                    for (var j = 0; j < headers.length; j++) {
+                        row[headers[j].trim()] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
+                    }
+                    allResults.push(row);
+                }
+            }
+        } catch (e) {
+            console.log('[Dashboard] CSV fetch failed:', e.message);
+        }
     }
+
+    // 2. Try Apps Script GET
+    if (!allResults || allResults.length === 0) {
+        var url = getApiUrl();
+        if (url) {
+            try {
+                var resp = await fetch(url + '?action=getResults');
+                var data = await resp.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    allResults = data;
+                }
+            } catch (e) {
+                console.log('[Dashboard] Apps Script GET failed:', e.message);
+            }
+        }
+    }
+
+    // 3. Fall back to localStorage
+    if (!allResults || allResults.length === 0) {
+        try {
+            var local = JSON.parse(localStorage.getItem('enit_results') || '[]');
+            if (local.length > 0) allResults = local;
+        } catch (e) {}
+    }
+
+    if (!allResults || allResults.length === 0) {
+        document.getElementById('summary-loading').textContent = 'No results found. Play a game first.';
+        document.getElementById('detail-loading').textContent = 'No results found.';
+        return;
+    }
+
+    // Build summary
+    var summaryMap = {};
+    allResults.forEach(function(r) {
+        var key = r.student_id || r.student_name;
+        if (!summaryMap[key]) {
+            summaryMap[key] = {
+                student_id: r.student_id, student_name: r.student_name, english_name: r.english_name,
+                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
+            };
+        }
+        var s = summaryMap[key];
+        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
+        s.total_attempted++;
+        if (r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1') s.total_correct++;
+        s.total_points += parseInt(r.points) || 0;
+    });
+    allSummary = Object.values(summaryMap).map(function(s) {
+        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
+        delete s.sessions;
+        return s;
+    });
+    populateSubgroupFilter();
+    renderSummaryTable(allSummary);
+    renderDetailTable(allResults);
+    document.getElementById('summary-loading').style.display = 'none';
+    document.getElementById('detail-loading').style.display = 'none';
+    document.getElementById('summary-table').style.display = 'table';
+    document.getElementById('detail-table').style.display = 'table';
 }
 
 function populateSubgroupFilter() {
@@ -853,8 +937,10 @@ function renderDetailTable(data) {
     var tbody = document.getElementById('detail-body');
     tbody.innerHTML = '';
     data.forEach(function(r) {
-        var resultClass = (r.correct === true || r.correct === 'TRUE') ? 'result-correct' : (r.correct === 'skip' ? 'result-skip' : 'result-wrong');
-        var resultText = (r.correct === true || r.correct === 'TRUE') ? '✓' : (r.correct === 'skip' ? '⏭' : '✗');
+        var isCorr = r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1';
+        var isSkp = r.correct === 'skip' || r.correct === 'SKIP' || r.correct === 'Skip';
+        var resultClass = isCorr ? 'result-correct' : (isSkp ? 'result-skip' : 'result-wrong');
+        var resultText = isCorr ? '✓' : (isSkp ? '⏭' : '✗');
         var row = document.createElement('tr');
         row.innerHTML = '<td>' + (r.date || '') + '</td><td>' + (r.round || '') + '</td><td>' + (r.team || '') + '</td><td>' + (r.subgroup || '') + '</td><td>' + (r.student_name || '') + '</td><td>' + ((r.question || '').substring(0, 30) + ((r.question || '').length > 30 ? '...' : '')) + '</td><td>' + (r.category || '') + '</td><td class="' + resultClass + '">' + resultText + '</td><td>' + (r.points || 0) + '</td>';
         tbody.appendChild(row);
@@ -882,7 +968,7 @@ function applyFilters() {
         var s = summaryMap[key];
         if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
         s.total_attempted++;
-        if (r.correct === true || r.correct === 'TRUE') s.total_correct++;
+        if (r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1') s.total_correct++;
         s.total_points += parseInt(r.points) || 0;
     });
     var filteredSummary = Object.values(summaryMap).map(function(s) {

@@ -527,8 +527,9 @@
 const ROWS = 7;
 const COLS = 10;
 const COLS_PER_TEAM = 5;
-const TOTAL_ROUNDS = 3;
-const TIMER_SECONDS = 30;
+var gameSettings = JSON.parse(localStorage.getItem('enit_game_settings') || '{}');
+const TOTAL_ROUNDS = gameSettings.rounds || 3;
+const TIMER_SECONDS = gameSettings.timer || 30;
 
 // ── Student Data ───────────────────────────────────────
 let allStudents = [];
@@ -1456,70 +1457,150 @@ function showSaveStatus(status, message) {
 // Save results to Google Sheets
 async function saveResultsToSheet(results) {
     var apiUrl = localStorage.getItem('enit_api_url');
-    if (!apiUrl) return;
+    if (!apiUrl) {
+        showSaveStatus('error', '✗ No API URL configured');
+        return;
+    }
 
     showSaveStatus('saving', '⏳ Saving to Google Sheets...');
 
     var payload = {
-        results: results.map(function(r) {
-            return {
-                timestamp: r.timestamp,
-                date: r.date,
-                session_id: r.session_id,
-                round: r.round,
-                team: r.team,
-                subgroup: r.subgroup,
-                student_id: r.student_id,
-                student_name: r.student_name,
-                english_name: r.english_name,
-                question: r.question,
-                category: r.category,
-                correct: r.correct,
-                points: r.points
-            };
-        })
+        action: 'postResult',
+        data: {
+            timestamp: results[0].timestamp,
+            date: results[0].date,
+            session_id: results[0].session_id,
+            round: results[0].round,
+            team: results[0].team,
+            subgroup: results[0].subgroup,
+            student_id: results[0].student_id,
+            student_name: results[0].student_name,
+            english_name: results[0].english_name,
+            question: results[0].question,
+            category: results[0].category,
+            correct: results[0].correct,
+            points: results[0].points
+        }
     };
 
     try {
         await fetch(apiUrl, {
             method: 'POST',
-            mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(payload)
         });
-        showSaveStatus('saved', '✓ Results sent to Google Sheets');
+        showSaveStatus('saved', '✓ Results saved to Google Sheets');
     } catch (error) {
         showSaveStatus('error', '✗ Save failed: ' + error.message);
     }
+
+    // Also save to localStorage as backup
+    try {
+        var existing = JSON.parse(localStorage.getItem('enit_results') || '[]');
+        results.forEach(function(r) { existing.push(r); });
+        localStorage.setItem('enit_results', JSON.stringify(existing));
+    } catch (e) {}
 }
 
-// Load dashboard data from Google Sheets
+// Load dashboard data
 async function loadDashboardData() {
-    var apiUrl = localStorage.getItem('enit_api_url');
-    if (!apiUrl) {
-        document.getElementById('summary-loading').textContent = '⚠ Google Sheets not configured. Configure in Setup screen.';
-        document.getElementById('detail-loading').textContent = '⚠ Google Sheets not configured.';
-        return;
-    }
-
     document.getElementById('summary-loading').style.display = 'block';
     document.getElementById('detail-loading').style.display = 'block';
     document.getElementById('summary-table').style.display = 'none';
     document.getElementById('detail-table').style.display = 'none';
 
-    try {
-        await fetch(apiUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ action: 'getResults' })
-        });
-        document.getElementById('summary-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS)';
-        document.getElementById('detail-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS)';
-    } catch (error) {
-        document.getElementById('summary-loading').textContent = '✗ Failed to load: ' + error.message;
-        document.getElementById('detail-loading').textContent = '✗ Failed to load: ' + error.message;
+    var loaded = false;
+
+    // 1. Try published CSV URL
+    var csvUrl = localStorage.getItem('enit_csv_url');
+    if (csvUrl) {
+        try {
+            var csvResp = await fetch(csvUrl);
+            var csvText = await csvResp.text();
+            csvText = csvText.replace(/^\uFEFF/, '');
+            var rows = csvText.split('\n').map(function(line) { return line.split(','); });
+            if (rows.length >= 2) {
+                var headers = rows[0];
+                allResults = [];
+                for (var i = 1; i < rows.length; i++) {
+                    if (rows[i].length < 2) continue;
+                    var row = {};
+                    for (var j = 0; j < headers.length; j++) {
+                        row[headers[j].trim()] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
+                    }
+                    allResults.push(row);
+                }
+                loaded = true;
+            }
+        } catch (e) {
+            console.log('[Dashboard] CSV failed:', e.message);
+        }
     }
+
+    // 2. Try Apps Script GET
+    if (!loaded) {
+        var apiUrl = localStorage.getItem('enit_api_url');
+        if (apiUrl) {
+            try {
+                var resp = await fetch(apiUrl + '?action=getResults');
+                var data = await resp.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    allResults = data;
+                    loaded = true;
+                }
+            } catch (e) {
+                console.log('[Dashboard] Apps Script GET failed:', e.message);
+            }
+        }
+    }
+
+    // 3. Fall back to localStorage
+    if (!loaded) {
+        try {
+            var local = JSON.parse(localStorage.getItem('enit_results') || '[]');
+            if (local.length > 0) {
+                allResults = local;
+                loaded = true;
+            }
+        } catch (e) {}
+    }
+
+    if (!loaded || allResults.length === 0) {
+        document.getElementById('summary-loading').textContent = 'No results found. Play a game first.';
+        document.getElementById('detail-loading').textContent = 'No results found.';
+        return;
+    }
+
+    // Build summary
+    var summaryMap = {};
+    allResults.forEach(function(r) {
+        var key = r.student_id || r.student_name;
+        if (!summaryMap[key]) {
+            summaryMap[key] = {
+                student_id: r.student_id, student_name: r.student_name, english_name: r.english_name,
+                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
+            };
+        }
+        var s = summaryMap[key];
+        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
+        s.total_attempted++;
+        var isCorr = r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1';
+        if (isCorr) s.total_correct++;
+        s.total_points += parseInt(r.points) || 0;
+    });
+    allSummary = Object.values(summaryMap).map(function(s) {
+        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
+        delete s.sessions;
+        return s;
+    });
+    populateSubgroupFilter();
+    renderSummaryTable(allSummary);
+    renderDetailTable(allResults);
+    document.getElementById('summary-loading').style.display = 'none';
+    document.getElementById('detail-loading').style.display = 'none';
+    document.getElementById('summary-table').style.display = 'table';
+    document.getElementById('detail-table').style.display = 'table';
 }
 
 // Populate subgroup filter dropdown
@@ -1563,10 +1644,10 @@ function renderDetailTable(data) {
     var tbody = document.getElementById('detail-body');
     tbody.innerHTML = '';
     data.forEach(function(r) {
-        var resultClass = r.correct === true || r.correct === 'TRUE' ? 'result-correct' :
-                         (r.correct === 'skip' ? 'result-skip' : 'result-wrong');
-        var resultText = r.correct === true || r.correct === 'TRUE' ? '✓ Correct' :
-                        (r.correct === 'skip' ? '⏭ Skip' : '✗ Wrong');
+        var isCorr = r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1';
+        var isSkp = r.correct === 'skip' || r.correct === 'SKIP' || r.correct === 'Skip';
+        var resultClass = isCorr ? 'result-correct' : (isSkp ? 'result-skip' : 'result-wrong');
+        var resultText = isCorr ? '✓ Correct' : (isSkp ? '⏭ Skip' : '✗ Wrong');
         var row = document.createElement('tr');
         row.innerHTML =
             '<td>' + (r.date || '') + '</td>' +
