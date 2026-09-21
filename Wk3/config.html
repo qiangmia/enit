@@ -170,6 +170,11 @@
         .accuracy-mid { color: var(--warm); font-weight: 700; }
         .accuracy-low { color: var(--error); font-weight: 700; }
         .loading-spinner { text-align: center; padding: 2rem; color: var(--text-light); }
+        .data-source-info {
+            margin: 0.5rem 0 1rem; padding: 0.6rem 0.9rem;
+            background: #f0f7ff; border: 1px solid #bcd9f0; border-radius: 8px;
+            font-size: 0.85rem; color: #1a4d80;
+        }
         .loading-spinner::before {
             content: ''; display: inline-block; width: 20px; height: 20px;
             border: 2px solid var(--border); border-top-color: var(--accent);
@@ -320,6 +325,8 @@
             <button class="btn btn-success" onclick="exportResultsCSV()">&#128229; Export Results CSV</button>
             <button class="btn btn-success" onclick="exportSummaryCSV()">&#128229; Export Summary CSV</button>
         </div>
+
+        <div id="data-source-info" class="data-source-info">Click "Refresh" to load results.</div>
 
         <div class="filters" id="results-filters">
             <label style="font-weight:600; font-size:0.8rem;">Filters:</label>
@@ -833,7 +840,17 @@ function parseCSVLine(line) {
     return fields;
 }
 
+var CANON_COLS = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+
+function recordFromArray(arr) {
+    var out = {};
+    for (var i = 0; i < CANON_COLS.length && i < arr.length; i++) out[CANON_COLS[i]] = arr[i];
+    return out;
+}
+
 function normalizeRecord(r) {
+    if (Array.isArray(r)) return recordFromArray(r);
+    if (r === null || typeof r !== 'object') return {};
     var out = {};
     var keys = Object.keys(r);
     for (var i = 0; i < keys.length; i++) {
@@ -843,22 +860,32 @@ function normalizeRecord(r) {
         if (nk === 'studentname' || nk === 'student_name' || nk === 'name') nk = 'student_name';
         else if (nk === 'studentid' || nk === 'student_id' || nk === 'id') nk = 'student_id';
         else if (nk === 'englishname' || nk === 'english_name' || nk === 'english') nk = 'english_name';
-        else if (nk === 'sessionid' || nk === 'session_id') nk = 'session_id';
+        else if (nk === 'sessionid' || nk === 'session_id' || nk === 'session') nk = 'session_id';
         else if (nk === 'correct' || nk === 'result' || nk === 'is_correct') nk = 'correct';
-        else if (nk === 'pts' || nk === 'score') nk = 'points';
-        out[nk] = v;
+        else if (nk === 'pts' || nk === 'score' || nk === 'points_') nk = 'points';
+        if (nk !== '') out[nk] = v;
     }
     return out;
 }
 
 function hasValidFields(records) {
     if (!records || records.length === 0) return false;
-    var hasAny = false;
     for (var i = 0; i < records.length; i++) {
         var r = records[i];
-        if (r.student_id || r.student_name || r.correct || r.team || r.question) { hasAny = true; break; }
+        if (r.student_id || r.student_name || r.correct || r.team || r.question) return true;
     }
-    return hasAny;
+    return false;
+}
+
+var KNOWN_HEADERS = ['timestamp','date','session_id','sessionid','round','team','subgroup','student_id','studentid','student_name','studentname','english_name','englishname','question','category','correct','result','is_correct','points','pts','score'];
+
+function detectHeaderRow(row) {
+    if (!row) return false;
+    for (var j = 0; j < row.length; j++) {
+        var nk = String(row[j]).toLowerCase().replace(/[\s\-]+/g, '_').replace(/[^a-z0-9_]/g, '');
+        if (KNOWN_HEADERS.indexOf(nk) !== -1) return true;
+    }
+    return false;
 }
 
 async function loadResultsData() {
@@ -877,18 +904,22 @@ async function loadResultsData() {
             csvText = csvText.replace(/^\uFEFF/, '');
             var rows = csvText.split('\n').map(function(line) { return parseCSVLine(line); });
             if (rows.length >= 2) {
-                var headers = rows[0];
                 var csvResults = [];
-                for (var i = 1; i < rows.length; i++) {
-                    if (rows[i].length < 2) continue;
-                    var row = {};
-                    for (var j = 0; j < headers.length; j++) {
-                        row[headers[j].trim()] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
+                if (detectHeaderRow(rows[0])) {
+                    var headers = rows[0].map(function(h) { return h.trim(); });
+                    for (var i = 1; i < rows.length; i++) {
+                        if (rows[i].length < 2) continue;
+                        var row = {};
+                        for (var j = 0; j < headers.length; j++) {
+                            if (headers[j] !== '') row[headers[j]] = (rows[i][j] || '').replace(/^"|"$/g, '').trim();
+                        }
+                        csvResults.push(normalizeRecord(row));
                     }
-                    csvResults.push(normalizeRecord(row));
+                } else {
+                    csvResults = rows.filter(function(r) { return r.length >= 2; }).map(normalizeRecord);
                 }
-                if (hasValidFields(csvResults)) { allResults = csvResults; }
-                else { console.log('[Dashboard] CSV data has no recognizable fields, skipping'); }
+                if (hasValidFields(csvResults)) { allResults = csvResults; console.log('[Dashboard] Loaded ' + allResults.length + ' records from CSV'); }
+                else { allResults = []; console.log('[Dashboard] CSV data has no usable rows, skipping'); }
             }
         } catch (e) {
             console.log('[Dashboard] CSV fetch failed:', e.message);
@@ -903,9 +934,24 @@ async function loadResultsData() {
                 var resp = await fetch(url + '?action=getResults');
                 var data = await resp.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    var normalized = data.map(normalizeRecord);
-                    if (hasValidFields(normalized)) { allResults = normalized; }
-                    else { console.log('[Dashboard] GET data has no recognizable fields, skipping'); }
+                    var getResults = [];
+                    if (Array.isArray(data[0])) {
+                        if (detectHeaderRow(data[0])) {
+                            var gHdr = data[0];
+                            for (var i = 1; i < data.length; i++) {
+                                if (data[i].length < 2) continue;
+                                var gRow = {};
+                                data[i].forEach(function(v, j) { if (j < gHdr.length && gHdr[j] !== '') gRow[gHdr[j]] = v; });
+                                getResults.push(normalizeRecord(gRow));
+                            }
+                        } else {
+                            getResults = data.filter(function(r) { return r.length >= 2; }).map(normalizeRecord);
+                        }
+                    } else {
+                        getResults = data.map(normalizeRecord);
+                    }
+                    if (hasValidFields(getResults)) { allResults = getResults; console.log('[Dashboard] Loaded ' + allResults.length + ' records from Sheets API'); }
+                    else { console.log('[Dashboard] GET data has no usable rows, skipping'); }
                 }
             } catch (e) {
                 console.log('[Dashboard] Apps Script GET failed:', e.message);
@@ -924,8 +970,13 @@ async function loadResultsData() {
     if (!allResults || allResults.length === 0) {
         document.getElementById('summary-loading').textContent = 'No results found. Play a game first.';
         document.getElementById('detail-loading').textContent = 'No results found.';
+        document.getElementById('data-source-info').textContent = 'No results found in CSV, Sheets API, or local storage.';
         return;
     }
+
+    document.getElementById('data-source-info').textContent =
+        'Loaded ' + allResults.length + ' results. First record fields: ' +
+        Object.keys(allResults[0]).join(', ') + '. Sample student: ' + (allResults[0].student_name || '(empty)');
 
     // Build summary
     var summaryMap = {};
