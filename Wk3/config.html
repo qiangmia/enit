@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENIT Class Configuration</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --error: #c53030;
+            --error-bg: #fff5f5;
+            --team-a: #2b6cb0;
+            --team-a-bg: #ebf8ff;
+            --team-b: #805ad5;
+            --team-b-bg: #faf5ff;
+        }
+        html { font-size: 16px; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6; color: var(--text); background: var(--bg); min-height: 100vh;
+        }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; padding: 1.5rem 2rem; text-align: center;
+        }
+        .page-header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .page-header .subtitle { font-size: 0.9rem; opacity: 0.9; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+        /* ── Tabs ──────────────────────────────────────────── */
+        .tab-nav {
+            display: flex; gap: 0; background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0; overflow: hidden; flex-wrap: wrap;
+        }
+        .tab-btn {
+            flex: 1; padding: 0.8rem 1.2rem; border: none; background: none;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            color: var(--text-light); border-bottom: 3px solid transparent; min-width: 120px;
+        }
+        .tab-btn:hover { background: var(--accent-light); color: var(--primary); }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(43,108,176,0.05); }
+        .tab-content { display: none; padding: 1.5rem; background: var(--card-bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; }
+        .tab-content.active { display: block; }
+
+        /* ── Buttons ───────────────────────────────────────── */
+        .btn {
+            padding: 0.6rem 1.2rem; border: none; border-radius: 8px; font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex;
+            align-items: center; gap: 0.4rem;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--primary); }
+        .btn-secondary { background: var(--border); color: var(--text); }
+        .btn-secondary:hover { background: #cbd5e1; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #22543d; }
+        .btn-danger { background: var(--error); color: white; }
+        .btn-danger:hover { background: #9b2c2c; }
+        .btn-warm { background: var(--warm); color: white; }
+        .btn-warm:hover { background: #9c4221; }
+        .btn-lg { padding: 0.8rem 2rem; font-size: 1.1rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+        /* ── Status Messages ───────────────────────────────── */
+        .status-bar {
+            padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .status-bar.success { background: var(--success-bg); color: var(--success); }
+        .status-bar.error { background: var(--error-bg); color: var(--error); }
+        .status-bar.warning { background: var(--warm-light); color: var(--warm); }
+        .status-bar.info { background: var(--accent-light); color: var(--accent); }
+
+        /* ── Seating Grid ──────────────────────────────────── */
+        .seating-section { margin-bottom: 1.5rem; }
+        .seating-grid {
+            display: grid; grid-template-columns: 40px repeat(10, 1fr); gap: 3px;
+            margin-bottom: 1rem;
+        }
+        .seating-header {
+            background: var(--primary); color: white; padding: 0.3rem; text-align: center;
+            font-size: 0.7rem; font-weight: 700; border-radius: 4px;
+        }
+        .seating-row-label {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; color: var(--text-light);
+        }
+        .seat {
+            aspect-ratio: 1.3; border: 2px dashed var(--border); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; font-size: 0.55rem;
+            text-align: center; padding: 2px; cursor: pointer; transition: all 0.2s;
+            background: white; min-height: 40px; position: relative;
+        }
+        .seat:hover { border-color: var(--accent); background: var(--accent-light); }
+        .seat.filled { border-style: solid; font-weight: 600; }
+        .seat.team-a-seat { background: var(--team-a-bg); border-color: var(--team-a); color: var(--primary); }
+        .seat.team-b-seat { background: var(--team-b-bg); border-color: var(--team-b); color: var(--primary); }
+        .seat.selected { box-shadow: 0 0 0 3px var(--warm); transform: scale(1.05); }
+        .seat .remove-btn {
+            display: none; position: absolute; top: -6px; right: -6px;
+            width: 16px; height: 16px; background: var(--error); color: white;
+            border-radius: 50%; font-size: 10px; line-height: 16px; text-align: center; cursor: pointer;
+        }
+        .seat.filled:hover .remove-btn { display: block; }
+
+        /* ── Student Pool ──────────────────────────────────── */
+        .student-pool {
+            background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; margin-bottom: 1rem;
+        }
+        .student-pool h3 { font-size: 0.9rem; margin-bottom: 0.8rem; }
+        .student-list {
+            display: flex; flex-wrap: wrap; gap: 6px; max-height: 200px; overflow-y: auto;
+        }
+        .student-chip {
+            display: inline-flex; align-items: center; gap: 4px; padding: 0.3rem 0.6rem;
+            background: white; border: 1px solid var(--border); border-radius: 20px;
+            font-size: 0.75rem; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .student-chip:hover { background: var(--accent-light); border-color: var(--accent); }
+        .student-chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+        .student-chip .en-name { color: var(--text-light); font-size: 0.7rem; }
+
+        /* ── Config Forms ──────────────────────────────────── */
+        .config-section { margin-bottom: 1.5rem; }
+        .config-section h3 { font-size: 1rem; margin-bottom: 0.8rem; color: var(--primary); }
+        .form-row {
+            display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem;
+        }
+        .form-row label { font-weight: 600; min-width: 100px; font-size: 0.85rem; }
+        .form-row input[type="text"], .form-row input[type="number"] {
+            flex: 1; min-width: 200px; padding: 0.6rem; border: 1px solid var(--border);
+            border-radius: 6px; font-size: 0.85rem;
+        }
+        .form-row input[type="number"] { max-width: 100px; }
+        .form-hint { font-size: 0.75rem; color: var(--text-light); margin-top: 0.3rem; }
+
+        /* ── Data Tables ───────────────────────────────────── */
+        .table-container {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .table-container h3 { margin-bottom: 1rem; font-size: 0.95rem; color: var(--primary); }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .data-table th {
+            background: var(--primary); color: white; padding: 0.5rem 0.6rem;
+            text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em;
+            position: sticky; top: 0;
+        }
+        .data-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border); }
+        .data-table tr:hover td { background: rgba(0,0,0,0.02); }
+        .result-correct { color: var(--success); font-weight: 700; }
+        .result-wrong { color: var(--error); font-weight: 700; }
+        .result-skip { color: var(--text-light); font-style: italic; }
+        .accuracy-high { color: var(--success); font-weight: 700; }
+        .accuracy-mid { color: var(--warm); font-weight: 700; }
+        .accuracy-low { color: var(--error); font-weight: 700; }
+        .loading-spinner { text-align: center; padding: 2rem; color: var(--text-light); }
+        .loading-spinner::before {
+            content: ''; display: inline-block; width: 20px; height: 20px;
+            border: 2px solid var(--border); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            vertical-align: middle; margin-right: 0.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Filters ───────────────────────────────────────── */
+        .filters {
+            display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem;
+            padding: 0.8rem; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .filters select, .filters input {
+            padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.8rem;
+        }
+        .filters select { min-width: 100px; }
+        .filters input[type="text"] { min-width: 180px; }
+
+        /* ── Action Bar ────────────────────────────────────── */
+        .action-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem; background: var(--warm-light); border-radius: 8px;
+            margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;
+        }
+        .action-bar .info { font-size: 0.85rem; color: var(--warm); }
+
+        /* ── Responsive ────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .seating-grid { grid-template-columns: 30px repeat(10, 1fr); gap: 2px; }
+            .seat { font-size: 0.45rem; min-height: 32px; }
+            .tab-btn { font-size: 0.75rem; padding: 0.6rem 0.8rem; min-width: 80px; }
+            .form-row input[type="text"] { min-width: 150px; }
+        }
+        @media (max-width: 600px) {
+            .seating-grid { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="page-header">
+    <h1>&#9881; ENIT Class Configuration</h1>
+    <div class="subtitle">English for Information Technology · Yuan Ze University</div>
+</header>
+
+<div class="container">
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('seating')">&#129681; Seating</button>
+        <button class="tab-btn" onclick="switchTab('sheets')">&#128202; Google Sheets</button>
+        <button class="tab-btn" onclick="switchTab('settings')">&#127918; Game Settings</button>
+        <button class="tab-btn" onclick="switchTab('results')">&#128221; Results</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SEATING TAB                                        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-seating" class="tab-content active">
+        <div class="btn-group">
+            <button class="btn btn-warm" onclick="randomizeSeating()">&#127922; Randomize</button>
+            <button class="btn btn-success" onclick="saveSeating()">&#128190; Save Seating</button>
+            <button class="btn btn-secondary" onclick="loadSeating()">&#128194; Load</button>
+            <button class="btn btn-danger" onclick="clearSeating()">&#128465;&#65039; Clear</button>
+        </div>
+
+        <div id="seating-status" class="status-bar info">
+            &#9888; No seating configured yet. Click "Randomize" or manually place students.
+        </div>
+
+        <div class="seating-section">
+            <div class="seating-grid" id="seating-grid"></div>
+        </div>
+
+        <div class="student-pool">
+            <h3>&#128101; Unassigned Students (<span id="unassigned-count">0</span>) — Click to place in seat</h3>
+            <div class="student-list" id="student-pool"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- GOOGLE SHEETS TAB                                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-sheets" class="tab-content">
+        <div class="config-section">
+            <h3>&#128202; Google Sheets API Configuration</h3>
+            <div class="form-row">
+                <label>API URL:</label>
+                <input type="text" id="api-url" placeholder="https://script.google.com/macros/s/.../exec">
+            </div>
+            <div class="form-hint">Enter the deployment URL from your Google Apps Script.</div>
+            <div class="btn-group" style="margin-top: 0.8rem;">
+                <button class="btn btn-primary" onclick="testConnection()">&#128269; Test Connection</button>
+                <button class="btn btn-success" onclick="saveApiConfig()">&#128190; Save Config</button>
+            </div>
+            <div id="sheets-status" class="status-bar info">
+                &#9888; Not configured. Enter your Google Apps Script URL above.
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>&#128228; Seating Sync</h3>
+            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.8rem;">
+                Sync your seating arrangement to Google Sheets for backup and cross-device access.
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="syncSeatingToSheets()">&#11014;&#65039; Upload Seating to Sheets</button>
+                <button class="btn btn-secondary" onclick="loadSeatingFromSheets()">&#11015;&#65039; Download Seating from Sheets</button>
+            </div>
+            <div id="sync-status" class="status-bar info" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- GAME SETTINGS TAB                                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-settings" class="tab-content">
+        <div class="config-section">
+            <h3>&#127918; Game Settings</h3>
+            <div class="form-row">
+                <label>Timer (seconds):</label>
+                <input type="number" id="setting-timer" value="30" min="10" max="120">
+            </div>
+            <div class="form-row">
+                <label>Number of rounds:</label>
+                <input type="number" id="setting-rounds" value="3" min="1" max="10">
+            </div>
+            <div class="btn-group" style="margin-top: 0.8rem;">
+                <button class="btn btn-success" onclick="saveGameSettings()">&#128190; Save Settings</button>
+            </div>
+            <div id="settings-status" class="status-bar info">
+                &#9888; Settings not saved yet.
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- RESULTS TAB                                        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-results" class="tab-content">
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="loadResultsData()">&#128260; Refresh</button>
+            <button class="btn btn-success" onclick="exportResultsCSV()">&#128229; Export Results CSV</button>
+            <button class="btn btn-success" onclick="exportSummaryCSV()">&#128229; Export Summary CSV</button>
+        </div>
+
+        <div class="filters" id="results-filters">
+            <label style="font-weight:600; font-size:0.8rem;">Filters:</label>
+            <select id="filter-team" onchange="applyFilters()">
+                <option value="">All Teams</option>
+                <option value="A">Team A</option>
+                <option value="B">Team B</option>
+            </select>
+            <select id="filter-subgroup" onchange="applyFilters()">
+                <option value="">All Subgroups</option>
+            </select>
+            <input type="text" id="filter-search" placeholder="Search student name..." oninput="applyFilters()">
+            <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+        </div>
+
+        <div class="table-container">
+            <h3>&#128100; Student Summary</h3>
+            <div id="summary-loading" class="loading-spinner">Click "Refresh" to load data from Google Sheets.</div>
+            <table class="data-table" id="summary-table" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Team</th><th>Subgroup</th>
+                        <th>Games</th><th>Correct</th><th>Points</th><th>Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-body"></tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>&#128221; Detailed Results</h3>
+            <div id="detail-loading" class="loading-spinner">Click "Refresh" to load data from Google Sheets.</div>
+            <table class="data-table" id="detail-table" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Date</th><th>Round</th><th>Team</th><th>Subgroup</th>
+                        <th>Student</th><th>Question</th><th>Category</th><th>Result</th><th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody id="detail-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- ACTION BAR                                         -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="action-bar">
+        <div class="info" id="action-info">Configure seating, then click "Start Game" to begin.</div>
+        <a href="tic-tac-toe.html" class="btn btn-primary btn-lg">&#127918; Start Game &rarr;</a>
+    </div>
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────
+var ROWS = 7;
+var COLS = 10;
+var COLS_PER_TEAM = 5;
+
+// ── State ──────────────────────────────────────────────
+var allStudents = [];
+var seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
+var selectedStudent = null;
+var allResults = [];
+var allSummary = [];
+
+// ── Embedded Rollcall Data ─────────────────────────────
+var ROLLCALL_RAW = '1141752\t\u7AF6\u6167\u5982\t\n' +
+'1142603\t\u6797\u5B87\u5747\t\n' +
+'1150002\t\u5F90\u8EE8\u58FD\t\n' +
+'1151602\t\u8521\u6DE4\u5B87\t\n' +
+'1151604\t\u738B\u4E88\u8B1D\t\n' +
+'1151605\t\u6C5F\u5B87\u55AC\t\n' +
+'1151606\t\u5085\u54A9\u7DAE\t\n' +
+'1151609\t\u90B1\u54F2\u8B1D\t\n' +
+'1151612\t\u7C16\u5EF7\u65ED\tEvan\n' +
+'1151613\t\u83EF\u82AF\u6148\tSandra\n' +
+'1151615\t\u674E\u52E4\u6167\tJuliana\n' +
+'1151618\t\u91D1\u6C9B\u7487\t\n' +
+'1151619\t\u674E\u80B2\u7DAD\tAdrian\n' +
+'1151622\t\u8521\u5B50\u5BEC\tRyan\n' +
+'1151626\t\u9673\u51A0\u746E\t\n' +
+'1151633\t\u8607\u632F\u5609\tClay\n' +
+'1151634\t\u6797\u4F51\u5C55\tDaniel\n' +
+'1151635\t\u51F8\u5B87\u5B89\tAndy\n' +
+'1151639\t\u5415\u79C9\u5B78\tRyan\n' +
+'1151641\t\u8CF4\u4ED5\u8EE8\tWinnie\n' +
+'1151645\t\u7C16\u7C83\u8535\t\n' +
+'1151647\t\u738B\u5B87\u7530\tAlan\n' +
+'1151650\t\u694A\u529B\u6052\t\n' +
+'1151668\t\u502B\u90C1\u7FD4\t\n' +
+'1151703\t\u80E1\u5B87\u82AF\tCathy\n' +
+'1151705\t\u694A\u558F\u5B89\t\n' +
+'1151706\t\u694A\u5F97\u6FBE\tTravis\n' +
+'1151707\t\u5F35\u54C1\u5A01\t\n' +
+'1151708\t\u9EC3\u67CF\u777F\t\n' +
+'1151709\t\u7FC5\u6977\u80FD\t\n' +
+'1151710\t\u90B1\u54C1\u8A6B\tCalvin\n' +
+'1151716\t\u674E\u7DAD\u5BB9\t\n' +
+'1151717\t\u6797\u4E9E\u7FB2\t\n' +
+'1151718\t\u8D99\u5B50\u5BB9\t\n' +
+'1151719\t\u8A79\u6D51\u8C6A\t\n' +
+'1151720\t\u9EC3\u6977\u7FD4\t\n' +
+'1151721\t\u5EC9\u5B87\u9293\t\n' +
+'1151724\t\u5F90\u6D69\u54F2\tKoluki\n' +
+'1151725\t\u8CF4\u51A0\u5EF7\t\n' +
+'1151726\t\u738B\u6BDD\u9830\tSteven\n' +
+'1151728\t\u77F3\u5C1A\u6069\tNailong\n' +
+'1151730\t\u65B9\u6631\u51EF\t\n' +
+'1151732\t\u90ED\u5B6D\u627F\t\n' +
+'1151733\t\u8521\u54C1\u5B87\t\n' +
+'1151737\t\u5F35\u5609\u6069\tElaine\n' +
+'1151738\t\u5289\u6069\u599D\tBetty\n' +
+'1151739\t\u738B\u4E8E\u65B9\tSophia\n' +
+'1151743]\u5434\u73D7\u8EE8\tIvy\n' +
+'1151745\t\u9673\u73A5\u5B87\t\n' +
+'1151746\t\u9EC3\u5553\u7DBA\t\n' +
+'1151747\t\u5289\u829D\u5AB6\tBonnie\n' +
+'1151748\t\u9673\u7FBD\u5BA3\t\n' +
+'1151749\t\u8463\u5B9C\u6D5C\t\n' +
+'1151750\t\u59D3\u5170\u82F1\tAngie\n' +
+'1151762\t\u65BD\u4F73\u599D\t\n' +
+'1151764\t\u6797\u6B23\u856C\t\n' +
+'1151767\t\u9673\u6B63\u52DB\t\n' +
+'1151768\t\u5434\u82B8\u5BB6\tMina';
+
+// ── Parse Rollcall ─────────────────────────────────────
+function parseRollcall(text) {
+    var lines = text.trim().split('\n');
+    var students = [];
+    for (var i = 0; i < lines.length; i++) {
+        var parts = lines[i].split('\t');
+        if (parts.length >= 2) {
+            var id = parts[0].trim();
+            var chineseName = parts[1].trim();
+            var englishName = (parts[2] || '').trim();
+            if (id && chineseName) {
+                students.push({ id: id, chineseName: chineseName, englishName: englishName });
+            }
+        }
+    }
+    return students;
+}
+
+// ── Load Rollcall ──────────────────────────────────────
+function loadRollcall() {
+    allStudents = parseRollcall(ROLLCALL_RAW);
+    renderStudentPool();
+    renderSeatingGrid();
+}
+
+// ── Render Student Pool ────────────────────────────────
+function renderStudentPool() {
+    var pool = document.getElementById('student-pool');
+    pool.innerHTML = '';
+    var assigned = {};
+    for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+            if (seating[r][c]) assigned[seating[r][c].id] = true;
+        }
+    }
+    var unassigned = allStudents.filter(function(s) { return !assigned[s.id]; });
+    document.getElementById('unassigned-count').textContent = unassigned.length;
+    for (var i = 0; i < unassigned.length; i++) {
+        (function(s) {
+            var chip = document.createElement('span');
+            chip.className = 'student-chip' + (selectedStudent && selectedStudent.id === s.id ? ' selected' : '');
+            chip.textContent = s.chineseName + (s.englishName ? ' (' + s.englishName + ')' : '');
+            chip.onclick = function() { selectStudent(s); };
+            pool.appendChild(chip);
+        })(unassigned[i]);
+    }
+}
+
+// ── Render Seating Grid ────────────────────────────────
+function renderSeatingGrid() {
+    var grid = document.getElementById('seating-grid');
+    grid.innerHTML = '';
+
+    var emptyHdr = document.createElement('div');
+    emptyHdr.className = 'seating-header';
+    grid.appendChild(emptyHdr);
+
+    var teamLabels = ['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5'];
+    for (var c = 0; c < COLS; c++) {
+        var hdr = document.createElement('div');
+        hdr.className = 'seating-header';
+        hdr.style.background = c < COLS_PER_TEAM ? 'var(--team-a)' : 'var(--team-b)';
+        hdr.textContent = teamLabels[c];
+        grid.appendChild(hdr);
+    }
+
+    for (var r = 0; r < ROWS; r++) {
+        var rowLabel = document.createElement('div');
+        rowLabel.className = 'seating-row-label';
+        rowLabel.textContent = 'R' + (r + 1);
+        grid.appendChild(rowLabel);
+
+        for (var cc = 0; cc < COLS; cc++) {
+            (function(row, col) {
+                var seat = document.createElement('div');
+                var student = seating[row][col];
+                seat.className = 'seat' +
+                    (student ? ' filled' : '') +
+                    (col < COLS_PER_TEAM ? ' team-a-seat' : ' team-b-seat');
+
+                if (student) {
+                    var name = student.englishName || student.chineseName;
+                    seat.textContent = name.length > 4 ? name.substring(0, 4) + '.' : name;
+                    var removeBtn = document.createElement('span');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = '\u00d7';
+                    removeBtn.onclick = function(e) { e.stopPropagation(); removeFromSeat(row, col); };
+                    seat.appendChild(removeBtn);
+                }
+
+                seat.onclick = function() { clickSeat(row, col); };
+                grid.appendChild(seat);
+            })(r, cc);
+        }
+    }
+}
+
+// ── Select Student ─────────────────────────────────────
+function selectStudent(student) {
+    if (selectedStudent && selectedStudent.id === student.id) {
+        selectedStudent = null;
+    } else {
+        selectedStudent = student;
+    }
+    renderStudentPool();
+}
+
+// ── Click Seat ─────────────────────────────────────────
+function clickSeat(r, c) {
+    if (selectedStudent) {
+        seating[r][c] = selectedStudent;
+        selectedStudent = null;
+        renderStudentPool();
+        renderSeatingGrid();
+    } else if (seating[r][c]) {
+        selectedStudent = seating[r][c];
+        seating[r][c] = null;
+        renderStudentPool();
+        renderSeatingGrid();
+    }
+}
+
+// ── Remove from Seat ───────────────────────────────────
+function removeFromSeat(r, c) {
+    seating[r][c] = null;
+    selectedStudent = null;
+    renderStudentPool();
+    renderSeatingGrid();
+}
+
+// ── Randomize Seating ──────────────────────────────────
+function randomizeSeating() {
+    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
+    var shuffled = allStudents.slice().sort(function() { return Math.random() - 0.5; });
+    var idx = 0;
+    for (var c = 0; c < COLS; c++) {
+        for (var r = 0; r < ROWS; r++) {
+            if (idx < shuffled.length) {
+                seating[r][c] = shuffled[idx];
+                idx++;
+            }
+        }
+    }
+    selectedStudent = null;
+    renderStudentPool();
+    renderSeatingGrid();
+    updateSeatingStatus('warning', '&#9888; Seating randomized but not saved yet. Click "Save Seating" to persist.');
+}
+
+// ── Clear Seating ──────────────────────────────────────
+function clearSeating() {
+    if (!confirm('Clear all seating? This cannot be undone.')) return;
+    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
+    selectedStudent = null;
+    localStorage.removeItem('enit_seating');
+    renderStudentPool();
+    renderSeatingGrid();
+    updateSeatingStatus('info', '&#9888; Seating cleared.');
+}
+
+// ── Save Seating ───────────────────────────────────────
+function saveSeating() {
+    var assigned = 0;
+    for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+            if (seating[r][c]) assigned++;
+        }
+    }
+
+    var data = {
+        savedAt: new Date().toISOString(),
+        students: assigned,
+        grid: seating.map(function(row) {
+            return row.map(function(cell) {
+                if (cell) return { id: cell.id, chineseName: cell.chineseName, englishName: cell.englishName };
+                return null;
+            });
+        })
+    };
+
+    localStorage.setItem('enit_seating', JSON.stringify(data));
+    updateSeatingStatus('success', '&#10003; Seating saved! (' + assigned + ' students, ' + new Date().toLocaleTimeString() + ')');
+}
+
+// ── Load Seating ───────────────────────────────────────
+function loadSeating() {
+    var raw = localStorage.getItem('enit_seating');
+    if (!raw) {
+        updateSeatingStatus('warning', '&#9888; No saved seating found in local storage.');
+        return;
+    }
+
+    try {
+        var data = JSON.parse(raw);
+        seating = data.grid.map(function(row) {
+            return row.map(function(cell) {
+                if (cell) {
+                    var student = allStudents.find(function(s) { return s.id === cell.id; });
+                    return student || cell;
+                }
+                return null;
+            });
+        });
+        renderStudentPool();
+        renderSeatingGrid();
+        updateSeatingStatus('success', '&#10003; Seating loaded! (Saved: ' + new Date(data.savedAt).toLocaleString() + ', ' + data.students + ' students)');
+    } catch (e) {
+        updateSeatingStatus('error', '&#10007; Failed to load seating: ' + e.message);
+    }
+}
+
+// ── Update Seating Status ──────────────────────────────
+function updateSeatingStatus(type, message) {
+    var el = document.getElementById('seating-status');
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+// ── Tab Navigation ─────────────────────────────────────
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
+    document.getElementById('tab-' + tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// ── Google Sheets Functions ────────────────────────────
+function getApiUrl() { return localStorage.getItem('enit_api_url') || ''; }
+
+function saveApiConfig() {
+    var url = document.getElementById('api-url').value.trim();
+    if (url) {
+        localStorage.setItem('enit_api_url', url);
+        updateSheetsStatus('success', '&#10003; API URL saved.');
+    } else {
+        localStorage.removeItem('enit_api_url');
+        updateSheetsStatus('warning', '&#9888; No URL entered.');
+    }
+}
+
+function loadApiConfig() {
+    var url = getApiUrl();
+    if (url) {
+        document.getElementById('api-url').value = url;
+        updateSheetsStatus('success', '&#10003; API URL loaded from saved config.');
+    }
+}
+
+function updateSheetsStatus(type, message) {
+    var el = document.getElementById('sheets-status');
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+async function testConnection() {
+    var url = document.getElementById('api-url').value.trim();
+    if (!url) { updateSheetsStatus('warning', '&#9888; Please enter an API URL first.'); return; }
+    updateSheetsStatus('info', '&#9203; Testing connection...');
+    try {
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'getResults' })
+        });
+        updateSheetsStatus('success', '&#10003; Connected! (Response opaque due to CORS — cannot read data, but URL is valid)');
+    } catch (e) {
+        updateSheetsStatus('error', '&#10007; Connection failed: ' + e.message);
+    }
+}
+
+async function syncSeatingToSheets() {
+    var url = getApiUrl();
+    if (!url) { alert('Please save your Google Sheets API URL first.'); return; }
+    var assigned = 0;
+    var seatingData = [];
+    for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+            if (seating[r][c]) {
+                assigned++;
+                seatingData.push({
+                    student_id: seating[r][c].id,
+                    student_name: seating[r][c].chineseName,
+                    english_name: seating[r][c].englishName,
+                    row: r,
+                    col: c,
+                    team: c < COLS_PER_TEAM ? 'A' : 'B',
+                    subgroup: (c < COLS_PER_TEAM ? 'A' : 'B') + ((c % COLS_PER_TEAM) + 1)
+                });
+            }
+        }
+    }
+
+    showSyncStatus('info', '&#9203; Uploading seating to Google Sheets...');
+    try {
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'saveSeating', seating: seatingData })
+        });
+        showSyncStatus('success', '&#10003; Seating synced to Google Sheets (' + assigned + ' students).');
+    } catch (e) {
+        showSyncStatus('error', '&#10007; Sync failed: ' + e.message);
+    }
+}
+
+async function loadSeatingFromSheets() {
+    var url = getApiUrl();
+    if (!url) { alert('Please save your Google Sheets API URL first.'); return; }
+    showSyncStatus('info', '&#9203; Downloading seating from Google Sheets...');
+    try {
+        var response = await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'getSeating' })
+        });
+        showSyncStatus('success', '&#10003; Request sent. (Response opaque — cannot verify download due to CORS)');
+    } catch (e) {
+        showSyncStatus('error', '&#10007; Download failed: ' + e.message);
+    }
+}
+
+function showSyncStatus(type, message) {
+    var el = document.getElementById('sync-status');
+    el.style.display = 'block';
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+// ── Game Settings ──────────────────────────────────────
+function saveGameSettings() {
+    var settings = {
+        timer: parseInt(document.getElementById('setting-timer').value) || 30,
+        rounds: parseInt(document.getElementById('setting-rounds').value) || 3
+    };
+    localStorage.setItem('enit_game_settings', JSON.stringify(settings));
+    updateSettingsStatus('success', '&#10003; Settings saved! (Timer: ' + settings.timer + 's, Rounds: ' + settings.rounds + ')');
+}
+
+function loadGameSettings() {
+    var raw = localStorage.getItem('enit_game_settings');
+    if (raw) {
+        var settings = JSON.parse(raw);
+        document.getElementById('setting-timer').value = settings.timer || 30;
+        document.getElementById('setting-rounds').value = settings.rounds || 3;
+        updateSettingsStatus('success', '&#10003; Settings loaded. (Timer: ' + settings.timer + 's, Rounds: ' + settings.rounds + ')');
+    }
+}
+
+function updateSettingsStatus(type, message) {
+    var el = document.getElementById('settings-status');
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+// ── Results Dashboard ──────────────────────────────────
+async function loadResultsData() {
+    var url = getApiUrl();
+    if (!url) {
+        document.getElementById('summary-loading').textContent = '⚠ Google Sheets not configured. Configure in Google Sheets tab.';
+        document.getElementById('detail-loading').textContent = '⚠ Google Sheets not configured.';
+        return;
+    }
+    document.getElementById('summary-loading').style.display = 'block';
+    document.getElementById('detail-loading').style.display = 'block';
+    document.getElementById('summary-table').style.display = 'none';
+    document.getElementById('detail-table').style.display = 'none';
+    try {
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'getResults' })
+        });
+        document.getElementById('summary-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS. Data is saved server-side.)';
+        document.getElementById('detail-loading').innerHTML = '&#10003; Request sent. (Response opaque — cannot read data due to CORS. Data is saved server-side.)';
+    } catch (e) {
+        document.getElementById('summary-loading').textContent = '✗ Failed to load: ' + e.message;
+        document.getElementById('detail-loading').textContent = '✗ Failed to load: ' + e.message;
+    }
+}
+
+function populateSubgroupFilter() {
+    var select = document.getElementById('filter-subgroup');
+    select.innerHTML = '<option value="">All Subgroups</option>';
+    var subgroups = {};
+    allResults.forEach(function(r) { if (r.subgroup) subgroups[r.subgroup] = true; });
+    Object.keys(subgroups).sort().forEach(function(sg) {
+        var option = document.createElement('option');
+        option.value = sg;
+        option.textContent = sg;
+        select.appendChild(option);
+    });
+}
+
+function renderSummaryTable(data) {
+    var tbody = document.getElementById('summary-body');
+    tbody.innerHTML = '';
+    data.forEach(function(s) {
+        var accClass = s.accuracy_pct >= 70 ? 'accuracy-high' : (s.accuracy_pct >= 40 ? 'accuracy-mid' : 'accuracy-low');
+        var row = document.createElement('tr');
+        row.innerHTML = '<td>' + (s.student_id || '') + '</td><td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td><td>' + (s.team || '') + '</td><td>' + (s.subgroup || '') + '</td><td>' + (s.games_played || 0) + '</td><td>' + (s.total_correct || 0) + '</td><td>' + (s.total_points || 0) + '</td><td class="' + accClass + '">' + (s.accuracy_pct || 0) + '%</td>';
+        tbody.appendChild(row);
+    });
+}
+
+function renderDetailTable(data) {
+    var tbody = document.getElementById('detail-body');
+    tbody.innerHTML = '';
+    data.forEach(function(r) {
+        var resultClass = (r.correct === true || r.correct === 'TRUE') ? 'result-correct' : (r.correct === 'skip' ? 'result-skip' : 'result-wrong');
+        var resultText = (r.correct === true || r.correct === 'TRUE') ? '✓' : (r.correct === 'skip' ? '⏭' : '✗');
+        var row = document.createElement('tr');
+        row.innerHTML = '<td>' + (r.date || '') + '</td><td>' + (r.round || '') + '</td><td>' + (r.team || '') + '</td><td>' + (r.subgroup || '') + '</td><td>' + (r.student_name || '') + '</td><td>' + ((r.question || '').substring(0, 30) + ((r.question || '').length > 30 ? '...' : '')) + '</td><td>' + (r.category || '') + '</td><td class="' + resultClass + '">' + resultText + '</td><td>' + (r.points || 0) + '</td>';
+        tbody.appendChild(row);
+    });
+}
+
+function applyFilters() {
+    var teamFilter = document.getElementById('filter-team').value;
+    var subgroupFilter = document.getElementById('filter-subgroup').value;
+    var searchFilter = document.getElementById('filter-search').value.toLowerCase();
+    var filteredResults = allResults.filter(function(r) {
+        if (teamFilter && r.team !== teamFilter) return false;
+        if (subgroupFilter && r.subgroup !== subgroupFilter) return false;
+        if (searchFilter) {
+            var name = (r.student_name || '').toLowerCase();
+            var english = (r.english_name || '').toLowerCase();
+            if (name.indexOf(searchFilter) === -1 && english.indexOf(searchFilter) === -1) return false;
+        }
+        return true;
+    });
+    var summaryMap = {};
+    filteredResults.forEach(function(r) {
+        var key = r.student_id || r.student_name;
+        if (!summaryMap[key]) summaryMap[key] = { student_id: r.student_id, student_name: r.student_name, english_name: r.english_name, team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0, total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {} };
+        var s = summaryMap[key];
+        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
+        s.total_attempted++;
+        if (r.correct === true || r.correct === 'TRUE') s.total_correct++;
+        s.total_points += parseInt(r.points) || 0;
+    });
+    var filteredSummary = Object.values(summaryMap).map(function(s) {
+        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 100 * 10) / 10 : 0;
+        delete s.sessions;
+        return s;
+    });
+    renderSummaryTable(filteredSummary);
+    renderDetailTable(filteredResults);
+}
+
+function clearFilters() {
+    document.getElementById('filter-team').value = '';
+    document.getElementById('filter-subgroup').value = '';
+    document.getElementById('filter-search').value = '';
+    renderSummaryTable(allSummary);
+    renderDetailTable(allResults);
+}
+
+function exportResultsCSV() {
+    if (!allResults || allResults.length === 0) { alert('No data. Click Refresh first.'); return; }
+    var headers = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+    var csv = headers.join(',') + '\n';
+    allResults.forEach(function(row) {
+        csv += headers.map(function(h) { return '"' + String(row[h] || '').replace(/"/g, '""') + '"'; }).join(',') + '\n';
+    });
+    downloadCSV(csv, 'enit_results_' + new Date().toISOString().split('T')[0] + '.csv');
+}
+
+function exportSummaryCSV() {
+    if (!allSummary || allSummary.length === 0) { alert('No data. Click Refresh first.'); return; }
+    var headers = ['student_id','student_name','english_name','team','subgroup','games_played','total_correct','total_points','accuracy_pct'];
+    var csv = headers.join(',') + '\n';
+    allSummary.forEach(function(row) {
+        csv += headers.map(function(h) { return '"' + String(row[h] || '').replace(/"/g, '""') + '"'; }).join(',') + '\n';
+    });
+    downloadCSV(csv, 'enit_summary_' + new Date().toISOString().split('T')[0] + '.csv');
+}
+
+function downloadCSV(csv, filename) {
+    var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// ── Initialize ─────────────────────────────────────────
+loadRollcall();
+loadSeating();
+loadApiConfig();
+loadGameSettings();
+</script>
+</body>
+</html>
