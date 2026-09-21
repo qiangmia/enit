@@ -1536,6 +1536,19 @@ async function saveResultsToSheet(results) {
 }
 
 // Normalize record field names from any format to expected snake_case
+function parseCSVLine(line) {
+    var fields = [];
+    var current = '';
+    var inQuotes = false;
+    for (var i = 0; i < line.length; i++) {
+        if (line[i] === '"') { inQuotes = !inQuotes; }
+        else if (line[i] === ',' && !inQuotes) { fields.push(current.trim()); current = ''; }
+        else { current += line[i]; }
+    }
+    fields.push(current.trim());
+    return fields;
+}
+
 function normalizeRecord(r) {
     var out = {};
     var keys = Object.keys(r);
@@ -1554,6 +1567,16 @@ function normalizeRecord(r) {
     return out;
 }
 
+function hasValidFields(records) {
+    if (!records || records.length === 0) return false;
+    var hasAny = false;
+    for (var i = 0; i < records.length; i++) {
+        var r = records[i];
+        if (r.student_id || r.student_name || r.correct || r.team || r.question) { hasAny = true; break; }
+    }
+    return hasAny;
+}
+
 // Load dashboard data
 async function loadDashboardData() {
     document.getElementById('summary-loading').style.display = 'block';
@@ -1570,7 +1593,7 @@ async function loadDashboardData() {
             var csvResp = await fetch(csvUrl);
             var csvText = await csvResp.text();
             csvText = csvText.replace(/^\uFEFF/, '');
-            var rows = csvText.split('\n').map(function(line) { return line.split(','); });
+            var rows = csvText.split('\n').map(function(line) { return parseCSVLine(line); });
             if (rows.length >= 2) {
                 var headers = rows[0];
                 allResults = [];
@@ -1582,7 +1605,8 @@ async function loadDashboardData() {
                     }
                     allResults.push(normalizeRecord(row));
                 }
-                loaded = true;
+                if (hasValidFields(allResults)) { loaded = true; }
+                else { allResults = []; console.log('[Dashboard] CSV data has no recognizable fields, skipping'); }
             }
         } catch (e) {
             console.log('[Dashboard] CSV failed:', e.message);
@@ -1597,8 +1621,9 @@ async function loadDashboardData() {
                 var resp = await fetch(apiUrl + '?action=getResults');
                 var data = await resp.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    allResults = data.map(normalizeRecord);
-                    loaded = true;
+                    var normalized = data.map(normalizeRecord);
+                    if (hasValidFields(normalized)) { allResults = normalized; loaded = true; }
+                    else { console.log('[Dashboard] GET data has no recognizable fields, skipping'); }
                 }
             } catch (e) {
                 console.log('[Dashboard] Apps Script GET failed:', e.message);
