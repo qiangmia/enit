@@ -143,16 +143,17 @@
         .cell-label { font-size: 0.65rem; color: var(--text-light); margin-top: 0.3rem; }
 
         .turn-info {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-            padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between;
+            background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px;
+            padding: 1rem 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between;
             align-items: center; flex-wrap: wrap; gap: 1rem;
+            box-shadow: 0 2px 12px rgba(43,108,176,0.15);
         }
-        .turn-team { font-weight: 700; font-size: 1rem; }
+        .turn-team { font-weight: 900; font-size: 1.6rem; letter-spacing: 0.02em; }
         .turn-team.team-a-text { color: var(--team-a); }
         .turn-team.team-b-text { color: var(--team-b); }
         .turn-subgroup { color: var(--text-light); font-size: 0.9rem; }
         .spokesperson-display { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
-        .spokesperson-name { font-size: 1.2rem; font-weight: 700; color: var(--primary); background: var(--warm-light); padding: 0.3rem 1rem; border-radius: 8px; }
+        .spokesperson-name { font-size: 1.3rem; font-weight: 700; color: var(--primary); background: var(--warm-light); padding: 0.3rem 1rem; border-radius: 8px; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
@@ -370,10 +371,6 @@
         <button class="btn btn-secondary" onclick="showSetup()">&#9881; Setup</button>
     </div>
 
-    <div class="board-container">
-        <div class="board" id="board"></div>
-    </div>
-
     <div class="turn-info" id="turn-info">
         <div>
             <span class="turn-team" id="turn-team-label">Team A's Turn</span>
@@ -384,6 +381,10 @@
             <span class="spokesperson-name" id="spokesperson-name">&mdash;</span>
             <button class="btn btn-warm" onclick="pickSpokesperson()" id="pick-btn">&#127922; Who's Next?</button>
         </div>
+    </div>
+
+    <div class="board-container">
+        <div class="board" id="board"></div>
     </div>
 </div>
 
@@ -939,7 +940,7 @@ function shuffleArray(arr) {
 function startGame() {
     currentSessionId = generateSessionId();
     gameState.currentRound = 1;
-    gameState.currentTeam = 'A';
+    gameState.currentTeam = Math.random() < 0.5 ? 'A' : 'B';
     gameState.scores = { A: 0, B: 0 };
     gameState.board = Array(9).fill(null);
     gameState.questionOrder = shuffleArray(questionBank.map(function(_, i) { return i; }));
@@ -1272,6 +1273,8 @@ function updateTurnInfo() {
     } else {
         name.textContent = '\u2014';
         pickBtn.textContent = "\uD83C\uDFB2 Who's Next?";
+        pickSpokesperson();
+        return;
     }
 
     document.getElementById('score-box-a').classList.toggle('active', team === 'A');
@@ -1357,7 +1360,7 @@ function showResults() {
 // ── Reset All Rounds ───────────────────────────────────
 function resetAllRounds() {
     gameState.currentRound = 1;
-    gameState.currentTeam = 'A';
+    gameState.currentTeam = Math.random() < 0.5 ? 'A' : 'B';
     gameState.scores = { A: 0, B: 0 };
     gameState.board = Array(9).fill(null);
     gameState.questionOrder = shuffleArray(questionBank.map(function(_, i) { return i; }));
