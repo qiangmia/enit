@@ -222,6 +222,14 @@
         }
         .action-bar .info { font-size: 0.85rem; color: var(--warm); }
 
+        .week-strip { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .week-chip {
+            border: 1px solid var(--primary); background: #fff; color: var(--primary);
+            padding: 0.35rem 0.7rem; border-radius: 999px; cursor: pointer;
+            font-size: 0.85rem; font-family: inherit; font-weight: 600;
+        }
+        .week-chip.on { background: var(--primary); color: #fff; }
+
         /* ── Responsive ────────────────────────────────────── */
         @media (max-width: 768px) {
             .seating-grid { grid-template-columns: 30px repeat(10, 1fr); gap: 2px; }
@@ -328,6 +336,10 @@
                 <label>Number of rounds:</label>
                 <input type="number" id="setting-rounds" value="3" min="1" max="10">
             </div>
+            <div class="form-row">
+                <label>Active weeks:</label>
+                <div class="week-strip" id="settings-week-strip"></div>
+            </div>
             <div class="btn-group" style="margin-top: 0.8rem;">
                 <button class="btn btn-success" onclick="saveGameSettings()">&#128190; Save Settings</button>
             </div>
@@ -343,6 +355,7 @@
     <div id="tab-questions" class="tab-content">
         <div class="btn-group">
             <button class="btn btn-primary" onclick="newQuestion()">&#10133; Add Question</button>
+            <button class="btn btn-primary" onclick="openBulkPanel()">&#128221; Bulk Add Vocabulary</button>
             <button class="btn btn-success" onclick="saveQuestionsToDevice()">&#128190; Save to Device</button>
             <button class="btn btn-warm" onclick="restoreDefaultQuestions()">&#128257; Load Defaults</button>
             <button class="btn btn-secondary" onclick="exportQuestionsJSON()">&#128229; Export JSON</button>
@@ -351,6 +364,33 @@
 
         <div id="questions-status" class="status-bar info">
             &#9888; Question bank not saved yet. The built-in 31 questions are shown below.
+        </div>
+
+        <div class="editor-panel" id="bulk-panel" style="display:none;">
+            <h3>&#128221; Bulk Add Vocabulary</h3>
+            <p style="font-size:0.85rem; color:var(--text-light);">
+                Paste one <strong>term &lt;TAB&gt; definition</strong> per line. Generates a translation question
+                per term, plus a multiple-choice "What does it mean?" question (with distractors) when at least 4 terms are provided.
+            </p>
+            <div class="form-row" style="display:flex; gap:1rem;">
+                <div style="flex:1;">
+                    <label>Category:</label>
+                    <input type="text" id="bulk-category" list="q-category-list" placeholder="e.g. Hardware">
+                </div>
+                <div style="flex:1;">
+                    <label>Week:</label>
+                    <select id="bulk-week"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Term &lt;TAB&gt; definition (one per line):</label>
+                <textarea id="bulk-text" style="height:160px;" placeholder="RAM&#9;a type of computer memory
+CPU&#9;the central processing unit"></textarea>
+            </div>
+            <div class="q-editor-actions">
+                <button class="btn btn-success" onclick="generateBulkQuestions()">&#9889; Generate</button>
+                <button class="btn btn-secondary" onclick="closeBulkPanel()">Cancel</button>
+            </div>
         </div>
 
         <div class="editor-panel" id="question-editor" style="display:none;">
@@ -369,6 +409,10 @@
                         <option value="fill">Fill in the blank</option>
                         <option value="open">Open (teacher judges)</option>
                     </select>
+                </div>
+                <div style="flex:1; max-width:130px;">
+                    <label>Week:</label>
+                    <select id="q-week"></select>
                 </div>
             </div>
             <div class="form-row">
@@ -406,10 +450,11 @@
 
         <div class="table-container">
             <h3>&#10067; Question Bank (<span id="question-count">0</span>)</h3>
+            <div class="week-strip" id="question-week-filter" style="margin-bottom:0.8rem;"></div>
             <div class="question-table-wrap">
                 <table class="data-table" id="question-table">
                     <thead>
-                        <tr><th>#</th><th>Category</th><th>Type</th><th>Question</th><th>Points</th><th>Answer</th><th>Actions</th></tr>
+                        <tr><th>Week</th><th>#</th><th>Category</th><th>Type</th><th>Question</th><th>Points</th><th>Answer</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="question-body"></tbody>
                 </table>
@@ -419,8 +464,9 @@
         <div class="config-section">
             <h3>&#128202; Sync Question Bank to Google Sheets</h3>
             <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.8rem;">
-                Upload your question bank as a JSON blob (cell A1 of a sheet named "Questions"), then download it from
-                the published CSV of that sheet on any other device.
+                Upload your question bank as <strong>one row per week</strong> (col A = week number, col B = that week's
+                questions as a JSON array) on a sheet named "Questions", then download it from the published CSV of that
+                sheet on any other device.
             </p>
             <div class="form-row">
                 <label>Published Questions CSV URL:</label>
@@ -432,15 +478,21 @@
             </div>
             <div id="q-sync-status" class="status-bar info" style="display:none;"></div>
             <div class="form-hint" style="margin-top:0.8rem;">
-                <strong>Apps Script requirement:</strong> add this to your <code>doPost</code> handler, then
-                File &rarr; Share &rarr; Publish (CSV) for the "Questions" sheet:
+                <strong>Apps Script requirement:</strong> replace the <code>saveQuestions</code> section of your
+                <code>doPost</code> handler with the snippet below, then File &rarr; Share &rarr; Publish (CSV) for the "Questions" sheet:
             </div>
             <pre style="background:#f6f8fa; border:1px solid var(--border); border-radius:6px; padding:0.8rem; font-size:0.75rem; overflow-x:auto;">if (action === 'saveQuestions') {
-    var f = req.questions;
-    var val = typeof f === 'string' ? JSON.parse(f) : f;
+    var weeks = req.weeks;
+    if (typeof weeks === 'string') weeks = JSON.parse(weeks);
     var sheet = ss.getSheetByName('Questions');
     if (!sheet) sheet = ss.insertSheet('Questions');
-    sheet.getRange('A1').setValue(JSON.stringify(val));
+    sheet.clear();
+    var weekKeys = Object.keys(weeks);
+    for (var i = 0; i < weekKeys.length; i++) {
+        var w = weekKeys[i];
+        sheet.getRange(i + 1, 1).setValue(String(w));
+        sheet.getRange(i + 1, 2).setValue(JSON.stringify(weeks[w]));
+    }
 }</pre>
         </div>
     </div>
@@ -931,10 +983,11 @@ function showSyncStatus(type, message) {
 function saveGameSettings() {
     var settings = {
         timer: parseInt(document.getElementById('setting-timer').value) || 30,
-        rounds: parseInt(document.getElementById('setting-rounds').value) || 3
+        rounds: parseInt(document.getElementById('setting-rounds').value) || 3,
+        activeWeeks: getSettingsActiveWeeks()
     };
     localStorage.setItem('enit_game_settings', JSON.stringify(settings));
-    updateSettingsStatus('success', '&#10003; Settings saved! (Timer: ' + settings.timer + 's, Rounds: ' + settings.rounds + ')');
+    updateSettingsStatus('success', '&#10003; Settings saved! (Timer: ' + settings.timer + 's, Rounds: ' + settings.rounds + ', Weeks: ' + (settings.activeWeeks.length > 0 ? settings.activeWeeks.join(', ') : 'All') + ')');
 }
 
 function loadGameSettings() {
@@ -945,6 +998,7 @@ function loadGameSettings() {
         document.getElementById('setting-rounds').value = settings.rounds || 3;
         updateSettingsStatus('success', '&#10003; Settings loaded. (Timer: ' + settings.timer + 's, Rounds: ' + settings.rounds + ')');
     }
+    renderSettingsWeekStrip();
 }
 
 function updateSettingsStatus(type, message) {
@@ -1000,7 +1054,7 @@ function normalizeRecord(r) {
         else if (nk === 'sessionid' || nk === 'session_id' || nk === 'session') nk = 'session_id';
         else if (nk === 'correct' || nk === 'result' || nk === 'is_correct') nk = 'correct';
         else if (nk === 'pts' || nk === 'score' || nk === 'points_') nk = 'points';
-        if (nk !== '') out[nk] = v;
+        if (nk !== '') out[nk] = scrubValue(v);
     }
     return out;
 }
@@ -1012,6 +1066,73 @@ function hasValidFields(records) {
         if (r.student_id || r.student_name || r.correct || r.team || r.question) return true;
     }
     return false;
+}
+
+function scrubValue(v) {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return JSON.stringify(v);
+    return String(v).replace(/^"|"$/g, '').replace(/[\r\n]+/g, ' ').trim();
+}
+
+function looksLikeStudentId(v) {
+    if (!v) return false;
+    if (typeof v !== 'string') v = String(v);
+    if (v.length < 3 || v.length > 20) return false;
+    if (/\s/.test(v)) return false;
+    if (/[:\-TZ]/.test(v)) return false;
+    return true;
+}
+
+function plausibleStudentValue(v) {
+    if (!v) return false;
+    var s = String(v);
+    if (s.length === 0 || s.length > 50) return false;
+    if (s.indexOf('{') !== -1 || s.indexOf('}') !== -1 || s.indexOf('[') !== -1 || s.indexOf(']') !== -1 || s.indexOf(',') !== -1 || s.indexOf(':') !== -1) return false;
+    return true;
+}
+
+function isWellStructured(records) {
+    if (!records || records.length === 0) return false;
+    var withStudent = 0;
+    var withGame = 0;
+    for (var i = 0; i < records.length; i++) {
+        var r = records[i];
+        if (plausibleStudentValue(r.student_name) || (r.student_id && looksLikeStudentId(r.student_id))) withStudent++;
+        if (r.question || r.correct !== undefined || r.team || r.round) withGame++;
+    }
+    var total = records.length;
+    return (withStudent / total) >= 0.6 && (withGame / total) >= 0.6;
+}
+
+function buildSummaryFromResults(results) {
+    var summaryMap = {};
+    results.forEach(function(r) {
+        var idCleaned = looksLikeStudentId(r.student_id) ? String(r.student_id) : '';
+        var parts = [];
+        if (idCleaned) parts.push('id:' + idCleaned);
+        if (r.student_name) parts.push('nm:' + String(r.student_name));
+        var key = parts.length > 0 ? parts.join('|') : 'unknown';
+        if (!summaryMap[key]) {
+            summaryMap[key] = {
+                student_id: idCleaned, student_name: r.student_name || '', english_name: r.english_name,
+                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
+            };
+        }
+        var s = summaryMap[key];
+        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
+        s.total_attempted++;
+        var corr = r.correct;
+        var isCorr = corr === true || corr === 1 || corr === 'TRUE' || corr === 'true' || corr === 'True' || corr === '1';
+        if (isCorr) s.total_correct++;
+        s.total_points += parseInt(r.points) || 0;
+    });
+    return Object.keys(summaryMap).map(function(key) {
+        var s = summaryMap[key];
+        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
+        delete s.sessions;
+        return s;
+    });
 }
 
 var KNOWN_HEADERS = ['timestamp','date','session_id','sessionid','round','team','subgroup','student_id','studentid','student_name','studentname','english_name','englishname','question','category','correct','result','is_correct','points','pts','score'];
@@ -1031,6 +1152,7 @@ async function loadResultsData() {
     document.getElementById('summary-table').style.display = 'none';
     document.getElementById('detail-table').style.display = 'none';
     allResults = [];
+    var dataSource = 'localStorage';
 
     // 1. Try published CSV URL
     var csvUrl = getCsvUrl();
@@ -1055,8 +1177,8 @@ async function loadResultsData() {
                 } else {
                     csvResults = rows.filter(function(r) { return r.length >= 2; }).map(normalizeRecord);
                 }
-                if (hasValidFields(csvResults)) { allResults = csvResults; console.log('[Dashboard] Loaded ' + allResults.length + ' records from CSV'); }
-                else { allResults = []; console.log('[Dashboard] CSV data has no usable rows, skipping'); }
+                if (isWellStructured(csvResults)) { allResults = csvResults; dataSource = 'CSV'; console.log('[Dashboard] Loaded ' + allResults.length + ' records from CSV'); }
+                else { allResults = []; console.log('[Dashboard] CSV data rejected: not well-structured'); }
             }
         } catch (e) {
             console.log('[Dashboard] CSV fetch failed:', e.message);
@@ -1087,8 +1209,8 @@ async function loadResultsData() {
                     } else {
                         getResults = data.map(normalizeRecord);
                     }
-                    if (hasValidFields(getResults)) { allResults = getResults; console.log('[Dashboard] Loaded ' + allResults.length + ' records from Sheets API'); }
-                    else { console.log('[Dashboard] GET data has no usable rows, skipping'); }
+                    if (isWellStructured(getResults)) { allResults = getResults; dataSource = 'Sheets API'; console.log('[Dashboard] Loaded ' + allResults.length + ' records from Sheets API'); }
+                    else { console.log('[Dashboard] GET data rejected: not well-structured'); }
                 }
             } catch (e) {
                 console.log('[Dashboard] Apps Script GET failed:', e.message);
@@ -1112,31 +1234,11 @@ async function loadResultsData() {
     }
 
     document.getElementById('data-source-info').textContent =
-        'Loaded ' + allResults.length + ' results. First record fields: ' +
-        Object.keys(allResults[0]).join(', ') + '. Sample student: ' + (allResults[0].student_name || '(empty)');
+        'Source: ' + dataSource + '. Loaded ' + allResults.length + ' results. Sample record: ' +
+        JSON.stringify(allResults[0]).slice(0, 240);
 
     // Build summary
-    var summaryMap = {};
-    allResults.forEach(function(r) {
-        var key = r.student_id || r.student_name;
-        if (!summaryMap[key]) {
-            summaryMap[key] = {
-                student_id: r.student_id, student_name: r.student_name, english_name: r.english_name,
-                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
-                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
-            };
-        }
-        var s = summaryMap[key];
-        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
-        s.total_attempted++;
-        if (r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1') s.total_correct++;
-        s.total_points += parseInt(r.points) || 0;
-    });
-    allSummary = Object.values(summaryMap).map(function(s) {
-        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
-        delete s.sessions;
-        return s;
-    });
+    allSummary = buildSummaryFromResults(allResults);
     populateSubgroupFilter();
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
@@ -1165,7 +1267,7 @@ function renderSummaryTable(data) {
     data.forEach(function(s) {
         var accClass = s.accuracy_pct >= 70 ? 'accuracy-high' : (s.accuracy_pct >= 40 ? 'accuracy-mid' : 'accuracy-low');
         var row = document.createElement('tr');
-        row.innerHTML = '<td>' + (s.student_id || '') + '</td><td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td><td>' + (s.team || '') + '</td><td>' + (s.subgroup || '') + '</td><td>' + (s.games_played || 0) + '</td><td>' + (s.total_correct || 0) + '</td><td>' + (s.total_points || 0) + '</td><td class="' + accClass + '">' + (s.accuracy_pct || 0) + '%</td>';
+        row.innerHTML = '<td>' + (s.student_id || '&mdash;') + '</td><td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td><td>' + (s.team || '') + '</td><td>' + (s.subgroup || '') + '</td><td>' + (s.games_played || 0) + '</td><td>' + (s.total_correct || 0) + '</td><td>' + (s.total_points || 0) + '</td><td class="' + accClass + '">' + (s.accuracy_pct || 0) + '%</td>';
         tbody.appendChild(row);
     });
 }
@@ -1198,22 +1300,8 @@ function applyFilters() {
         }
         return true;
     });
-    var summaryMap = {};
-    filteredResults.forEach(function(r) {
-        var key = r.student_id || r.student_name;
-        if (!summaryMap[key]) summaryMap[key] = { student_id: r.student_id, student_name: r.student_name, english_name: r.english_name, team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0, total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {} };
-        var s = summaryMap[key];
-        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
-        s.total_attempted++;
-        if (r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1') s.total_correct++;
-        s.total_points += parseInt(r.points) || 0;
-    });
-    var filteredSummary = Object.values(summaryMap).map(function(s) {
-        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 100 * 10) / 10 : 0;
-        delete s.sessions;
-        return s;
-    });
-    renderSummaryTable(filteredSummary);
+    // Recalculate summary from filtered results
+    renderSummaryTable(buildSummaryFromResults(filteredResults));
     renderDetailTable(filteredResults);
 }
 
@@ -1334,6 +1422,118 @@ const DEFAULT_QUESTIONS = [
 
 var cfgQuestions = [];
 var editingQuestionIndex = -1;
+var cfgWeekFilter = '';
+var DEFAULT_WEEK = 3;
+
+function normalizeWeek(w) {
+    var n = parseInt(w, 10);
+    if (!n || n < 1 || n > 18) n = DEFAULT_WEEK;
+    return n;
+}
+
+function withWeek(q) {
+    var c = JSON.parse(JSON.stringify(q));
+    c.week = normalizeWeek(q.week);
+    return c;
+}
+
+function weeksInCfg() {
+    var weeks = {};
+    cfgQuestions.forEach(function(q) { weeks[normalizeWeek(q.week)] = true; });
+    return Object.keys(weeks).map(Number).sort(function(a, b) { return a - b; });
+}
+
+function weekCounts() {
+    var counts = {};
+    cfgQuestions.forEach(function(q) { var w = normalizeWeek(q.week); counts[w] = (counts[w] || 0) + 1; });
+    return counts;
+}
+
+function populateWeekSelects(defaultWeek) {
+    var w = normalizeWeek(defaultWeek);
+    ['q-week', 'bulk-week'].forEach(function(id) {
+        var sel = document.getElementById(id);
+        if (!sel) return;
+        sel.innerHTML = '';
+        for (var i = 1; i <= 18; i++) {
+            var o = document.createElement('option');
+            o.value = String(i);
+            o.textContent = 'Week ' + i;
+            if (i === w) o.selected = true;
+            sel.appendChild(o);
+        }
+    });
+}
+
+function renderWeekFilter() {
+    var strip = document.getElementById('question-week-filter');
+    if (!strip) return;
+    var weeks = weeksInCfg();
+    var counts = weekCounts();
+    strip.innerHTML = '';
+    var allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = 'week-chip' + (cfgWeekFilter === '' ? ' on' : '');
+    allChip.textContent = 'All \u00b7 ' + cfgQuestions.length;
+    allChip.onclick = function() { cfgWeekFilter = ''; renderWeekFilter(); renderQuestionList(); };
+    strip.appendChild(allChip);
+    weeks.forEach(function(w) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'week-chip' + (String(cfgWeekFilter) === String(w) ? ' on' : '');
+        chip.textContent = 'W' + w + ' \u00b7 ' + counts[w];
+        (function(week) {
+            chip.onclick = function() { cfgWeekFilter = String(week); renderWeekFilter(); renderQuestionList(); };
+        })(w);
+        strip.appendChild(chip);
+    });
+}
+
+function getSettingsActiveWeeks() {
+    try {
+        var gs = JSON.parse(localStorage.getItem('enit_game_settings') || '{}');
+        if (Array.isArray(gs.activeWeeks) && gs.activeWeeks.length > 0) {
+            return gs.activeWeeks.map(normalizeWeek).filter(function(w) { return w >= 1 && w <= 18; });
+        }
+    } catch (e) {}
+    return [];
+}
+
+function renderSettingsWeekStrip() {
+    var strip = document.getElementById('settings-week-strip');
+    if (!strip) return;
+    var weeks = weeksInCfg();
+    if (weeks.length === 0) return;
+    var counts = weekCounts();
+    var active = getSettingsActiveWeeks();
+    var allActive = active.length === 0;
+    var activeSet = {};
+    active.forEach(function(w) { activeSet[w] = true; });
+    strip.innerHTML = '';
+    weeks.forEach(function(w) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'week-chip' + (allActive || activeSet[w] ? ' on' : '');
+        chip.textContent = 'W' + w;
+        (function(week) {
+            chip.onclick = function() {
+                var cur = getSettingsActiveWeeks();
+                var set = {};
+                cur.forEach(function(x) { set[x] = true; });
+                if (set[week]) delete set[week]; else set[week] = true;
+                var arr = Object.keys(set).map(Number).sort(function(a, b) { return a - b; });
+                if (arr.length === weeks.length) arr = [];
+                try {
+                    var gs = JSON.parse(localStorage.getItem('enit_game_settings') || '{}');
+                    gs.activeWeeks = arr;
+                    localStorage.setItem('enit_game_settings', JSON.stringify(gs));
+                } catch (e) {}
+                renderSettingsWeekStrip();
+            };
+        })(w);
+        strip.appendChild(chip);
+    });
+}
 
 function isValidQuestion(q) {
     return q && typeof q === 'object' &&
@@ -1361,6 +1561,7 @@ function showQuestionSyncStatus(type, message) {
 function persistQuestions() {
     localStorage.setItem('enit_questions', JSON.stringify(cfgQuestions));
     updateQuestionsStatus('success', '&#10003; Question bank saved to device (' + cfgQuestions.length + ' questions).');
+    renderSettingsWeekStrip();
 }
 
 function saveQuestionsToDevice() {
@@ -1400,10 +1601,17 @@ function updateCategoryList() {
 function renderQuestionList() {
     var tbody = document.getElementById('question-body');
     var count = document.getElementById('question-count');
-    count.textContent = cfgQuestions.length;
-    tbody.innerHTML = '';
+    var visible = [];
     cfgQuestions.forEach(function(q, i) {
+        if (cfgWeekFilter === '' || String(normalizeWeek(q.week)) === String(cfgWeekFilter)) visible.push(i);
+    });
+    count.textContent = visible.length + ' / ' + cfgQuestions.length;
+    tbody.innerHTML = '';
+    visible.forEach(function(i) {
+        var q = cfgQuestions[i];
         var tr = document.createElement('tr');
+        var wk = document.createElement('td');
+        wk.textContent = 'W' + normalizeWeek(q.week);
         var qid = document.createElement('td');
         qid.textContent = q.id || (i + 1);
         var cat = document.createElement('td');
@@ -1424,6 +1632,7 @@ function renderQuestionList() {
             '<button class="btn btn-danger" onclick="deleteQuestion(' + i + ')">&#128465;&#65039;</button>' +
             '<button class="btn btn-secondary" onclick="moveQuestion(' + i + ',-1)">&#8593;</button>' +
             '<button class="btn btn-secondary" onclick="moveQuestion(' + i + ',1)">&#8595;</button>';
+        tr.appendChild(wk);
         tr.appendChild(qid);
         tr.appendChild(cat);
         tr.appendChild(typ);
@@ -1434,6 +1643,7 @@ function renderQuestionList() {
         tbody.appendChild(tr);
     });
     updateCategoryList();
+    renderWeekFilter();
 }
 
 function updateEditorOptions() {
@@ -1450,6 +1660,7 @@ function openEditorFor(index) {
     document.getElementById('editor-title').textContent = '&#9997; Edit Question #' + (q.id || (index + 1));
     document.getElementById('q-category').value = q.category || '';
     document.getElementById('q-type').value = q.type || 'mc';
+    populateWeekSelects(q.week || cfgWeekFilter || DEFAULT_WEEK);
     document.getElementById('q-question').value = q.question || '';
     for (var o = 0; o < 4; o++) {
         document.getElementById('q-opt-' + o).value = (q.options && q.options[o]) ? q.options[o] : '';
@@ -1471,6 +1682,7 @@ function newQuestion() {
     document.getElementById('editor-title').textContent = '&#9997; Add Question';
     document.getElementById('q-category').value = '';
     document.getElementById('q-type').value = 'mc';
+    populateWeekSelects(cfgWeekFilter || DEFAULT_WEEK);
     document.getElementById('q-question').value = '';
     for (var o = 0; o < 4; o++) document.getElementById('q-opt-' + o).value = '';
     document.getElementById('q-answer-index').value = '0';
@@ -1492,6 +1704,7 @@ function saveQuestion() {
     var type = document.getElementById('q-type').value;
     var question = document.getElementById('q-question').value.trim();
     var points = parseInt(document.getElementById('q-points').value) || 1;
+    var week = normalizeWeek(document.getElementById('q-week').value);
 
     if (!category) { alert('Please enter a Category.'); return; }
     if (!question) { alert('Please enter the Question text.'); return; }
@@ -1505,6 +1718,7 @@ function saveQuestion() {
         }
         if (opts.length < 2) { alert('Multiple choice questions need at least 2 options.'); return; }
         q = {
+            week: week,
             category: category,
             type: type,
             question: question,
@@ -1516,6 +1730,7 @@ function saveQuestion() {
         var ans = document.getElementById('q-answer-text').value.trim();
         if (!ans) { alert('Please enter acceptable answer(s) separated by |, or "true" for teacher-judged.'); return; }
         q = {
+            week: week,
             category: category,
             type: type,
             question: question,
@@ -1554,27 +1769,79 @@ function moveQuestion(index, dir) {
     renderQuestionList();
 }
 
+// ── Bulk Add Vocabulary ────────────────────────────────
+function openBulkPanel() {
+    populateWeekSelects(cfgWeekFilter || DEFAULT_WEEK);
+    document.getElementById('bulk-text').value = '';
+    document.getElementById('bulk-category').value = '';
+    document.getElementById('bulk-panel').style.display = 'block';
+    document.getElementById('bulk-text').focus();
+    document.getElementById('bulk-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeBulkPanel() {
+    document.getElementById('bulk-panel').style.display = 'none';
+}
+
+function generateBulkQuestions() {
+    var week = normalizeWeek(document.getElementById('bulk-week').value);
+    var category = document.getElementById('bulk-category').value.trim();
+    var text = document.getElementById('bulk-text').value;
+    if (!category) { alert('Please enter a Category (e.g. Hardware).'); return; }
+    var pairs = text.split('\n').map(function(line) { return line.split('\t'); })
+        .filter(function(parts) { return parts.length >= 2 && parts[0].trim() && parts[1].trim(); })
+        .map(function(parts) { return { term: parts[0].trim(), def: parts[1].trim() }; });
+    if (pairs.length === 0) { alert('No valid lines. Use one `term<TAB>definition` per line.'); return; }
+    var maxId = 0;
+    cfgQuestions.forEach(function(x) { if (x.id && x.id > maxId) maxId = x.id; });
+    pairs.forEach(function(p, i) {
+        maxId++;
+        cfgQuestions.push({ week: week, id: maxId, category: category, type: 'translation', question: 'What is "' + p.term + '" in Chinese?', answer: p.def, points: 1 });
+        if (pairs.length >= 4) {
+            var distractors = pairs.filter(function(o) { return o.term !== p.term; })
+                .map(function(o) { return o.def; });
+            var opts = [p.def];
+            for (var k = 0; k < distractors.length && opts.length < 4; k++) {
+                if (opts.indexOf(distractors[k]) === -1) opts.push(distractors[k]);
+            }
+            while (opts.length < 4) opts.push('None of the above');
+            var answerIndex = opts.indexOf(p.def);
+            maxId++;
+            cfgQuestions.push({
+                week: week, id: maxId, category: category, type: 'mc',
+                question: 'What does "' + p.term + '" mean?', options: opts, answer: answerIndex, points: 1
+            });
+        }
+    });
+    persistQuestions();
+    renderQuestionList();
+    closeBulkPanel();
+    alert('Added ' + cfgQuestions.length + ' question(s). Don\'t forget to click "Save to Device".');
+}
+
 function loadQuestionsIntoEditor() {
     try {
         var raw = localStorage.getItem('enit_questions');
         if (raw) {
             var arr = JSON.parse(raw);
             if (Array.isArray(arr) && arr.length > 0 && arr.every(isValidQuestion)) {
-                cfgQuestions = arr;
+                cfgQuestions = arr.map(withWeek);
                 updateQuestionsStatus('success', '&#10003; Loaded ' + arr.length + ' custom question(s) from device.');
                 renderQuestionList();
+                renderSettingsWeekStrip();
                 return;
             }
         }
     } catch (e) {}
-    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS);
+    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS).map(withWeek);
     updateQuestionsStatus('info', '&#9888; Showing the built-in question bank (' + cfgQuestions.length + ' questions). Make changes, then click "Save to Device".');
     renderQuestionList();
+    renderSettingsWeekStrip();
 }
 
 function restoreDefaultQuestions() {
     if (!confirm('Replace the current question bank with the built-in 31 questions?')) return;
-    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS);
+    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS).map(withWeek);
     persistQuestions();
     renderQuestionList();
 }
@@ -1606,7 +1873,7 @@ function importQuestionsJSON() {
                 var arr = JSON.parse(String(reader.result).replace(/^\uFEFF/, ''));
                 if (!Array.isArray(arr) || arr.length === 0) throw new Error('Not a question array');
                 if (!arr.every(isValidQuestion)) throw new Error('Some questions are missing required fields');
-                cfgQuestions = arr;
+                cfgQuestions = arr.map(withWeek);
                 persistQuestions();
                 renderQuestionList();
             } catch (e) {
@@ -1626,15 +1893,21 @@ function loadQuestionsCsvUrl() {
 async function uploadQuestionsToSheets() {
     var url = getApiUrl();
     if (!url) { alert('Please save your Google Sheets API URL first (Google Sheets tab).'); return; }
-    showQuestionSyncStatus('info', '&#9203; Uploading question bank (' + cfgQuestions.length + ' questions) to Google Sheets...');
+    var weeks = {};
+    cfgQuestions.forEach(function(q) {
+        var w = normalizeWeek(q.week);
+        if (!weeks[w]) weeks[w] = [];
+        weeks[w].push(q);
+    });
+    showQuestionSyncStatus('info', '&#9203; Uploading question bank (' + cfgQuestions.length + ' questions across ' + Object.keys(weeks).length + ' week(s)) to Google Sheets...');
     try {
         await fetch(url, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ action: 'saveQuestions', questions: cfgQuestions })
+            body: JSON.stringify({ action: 'saveQuestions', weeks: weeks })
         });
-        showQuestionSyncStatus('success', '&#10003; Question bank uploaded to Google Sheets. (Response opaque due to CORS; the Apps Script must have the saveQuestions handler.)');
+        showQuestionSyncStatus('success', '&#10003; Question bank uploaded to Google Sheets (one row per week). (Response opaque due to CORS; the Apps Script must have the saveQuestions handler.)');
     } catch (e) {
         showQuestionSyncStatus('error', '&#10007; Upload failed: ' + e.message);
     }
@@ -1650,16 +1923,33 @@ async function downloadQuestionsFromSheets() {
         var resp = await fetch(url);
         var text = await resp.text();
         text = text.replace(/^\uFEFF/, '');
-        var line = text.split(/\r?\n/)[0];
-        var cells = parseCSVLine(line);
-        if (!cells.length) throw new Error('Empty CSV');
-        var arr = JSON.parse(cells[0]);
-        if (!Array.isArray(arr) || arr.length === 0) throw new Error('Not a question array');
-        if (!arr.every(isValidQuestion)) throw new Error('Some questions are missing required fields');
-        cfgQuestions = arr;
+        var rows = text.split(/\r?\n/).map(function(line) { return parseCSVLine(line); })
+            .filter(function(r) { return r.length > 0 && (r[0] || '').trim() !== ''; });
+        if (rows.length === 0) throw new Error('Empty CSV');
+        var merged = [];
+        var singleBlobUsed = false;
+        rows.forEach(function(cells, idx) {
+            var colA = String(cells[0] || '').trim();
+            var colB = String(cells[1] || '').trim();
+            if (idx === 0 && !colB && colA.charAt(0) === '[' && colA.indexOf('{') !== -1) {
+                singleBlobUsed = true;
+                var arr0 = JSON.parse(colA);
+                if (!Array.isArray(arr0) || arr0.length === 0) throw new Error('Not a question array');
+                merged = merged.concat(arr0);
+                return;
+            }
+            var week = parseInt(colA, 10);
+            if (!week || week < 1 || week > 18) { if (!colB) return; week = DEFAULT_WEEK; }
+            var arr = JSON.parse(colB);
+            if (!Array.isArray(arr)) throw new Error('Row ' + (idx + 1) + ': not a question array');
+            arr.forEach(function(q) { q.week = week; merged.push(q); });
+        });
+        if (merged.length === 0) throw new Error('No questions found');
+        if (!merged.every(isValidQuestion)) throw new Error('Some questions are missing required fields');
+        cfgQuestions = merged.map(withWeek);
         persistQuestions();
         renderQuestionList();
-        showQuestionSyncStatus('success', '&#10003; Downloaded ' + arr.length + ' questions from Google Sheets.');
+        showQuestionSyncStatus('success', '&#10003; Downloaded ' + cfgQuestions.length + ' questions from Google Sheets' + (singleBlobUsed ? ' (single-blob format).' : ' (by week).'));
     } catch (e) {
         showQuestionSyncStatus('error', '&#10007; Download failed: ' + e.message);
     }

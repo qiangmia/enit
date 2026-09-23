@@ -315,6 +315,13 @@
         .save-status.saving { background: var(--warm-light); color: var(--warm); }
         .save-status.saved { background: var(--success-bg); color: var(--success); }
         .save-status.error { background: var(--error-bg); color: var(--error); }
+        .week-strip { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+        .week-chip {
+            border: 1px solid var(--primary); background: #fff; color: var(--primary);
+            padding: 0.35rem 0.7rem; border-radius: 999px; cursor: pointer;
+            font-size: 0.85rem; font-family: inherit; font-weight: 600;
+        }
+        .week-chip.on { background: var(--primary); color: #fff; }
     </style>
 </head>
 <body>
@@ -359,6 +366,13 @@
             <button class="btn btn-secondary" onclick="testConnection()">Test</button>
         </div>
         <div class="config-status disconnected" id="config-status">&#9888; Not configured — results will only be saved locally</div>
+    </div>
+
+    <!-- Active Question Weeks -->
+    <div class="config-section">
+        <h2>&#128197; Active Question Weeks</h2>
+        <div class="week-strip" id="setup-week-strip"></div>
+        <div class="config-status" id="setup-week-status" style="margin-top:0.5rem;font-size:0.85rem;"></div>
     </div>
 </div>
 
@@ -646,6 +660,8 @@ const BUILTIN_QUESTIONS = [
 ];
 
 // ── Custom Question Bank (editable via Class Config page) ──
+var DEFAULT_WEEK = 3;
+
 function isValidQuestion(q) {
     return q && typeof q === 'object' &&
         q.question && q.category && q.type &&
@@ -653,16 +669,99 @@ function isValidQuestion(q) {
 }
 
 function loadQuestions() {
+    function backfill(arr) {
+        return arr.map(function(q) {
+            var w = parseInt(q.week, 10);
+            if (!w || w < 1 || w > 18) w = DEFAULT_WEEK;
+            return cloneQuestionWithWeek(q, w);
+        });
+    }
     try {
         var raw = localStorage.getItem('enit_questions');
         if (raw) {
             var arr = JSON.parse(raw);
             if (Array.isArray(arr) && arr.length > 0 && arr.every(isValidQuestion)) {
-                return arr;
+                return backfill(arr);
             }
         }
     } catch (e) {}
-    return BUILTIN_QUESTIONS;
+    return backfill(BUILTIN_QUESTIONS);
+}
+
+function cloneQuestionWithWeek(q, w) {
+    var c = {};
+    var keys = Object.keys(q);
+    for (var i = 0; i < keys.length; i++) c[keys[i]] = q[keys[i]];
+    c.week = w;
+    return c;
+}
+
+function getActiveWeeks() {
+    try {
+        var gs = JSON.parse(localStorage.getItem('enit_game_settings') || '{}');
+        if (Array.isArray(gs.activeWeeks) && gs.activeWeeks.length > 0) {
+            return gs.activeWeeks.filter(function(w) { return parseInt(w, 10) >= 1 && parseInt(w, 10) <= 18; });
+        }
+    } catch (e) {}
+    return [];
+}
+
+function weeksInBank(bank) {
+    var weeks = {};
+    bank.forEach(function(q) { weeks[q.week] = true; });
+    return Object.keys(weeks).map(Number).sort(function(a, b) { return a - b; });
+}
+
+function questionPoolForActiveWeeks(bank) {
+    var active = getActiveWeeks();
+    if (active.length === 0) return bank;
+    var pool = bank.filter(function(q) { return active.indexOf(q.week) !== -1; });
+    return pool.length > 0 ? pool : bank;
+}
+
+function saveActiveWeeks(weeks) {
+    var gs = {};
+    try { gs = JSON.parse(localStorage.getItem('enit_game_settings') || '{}'); } catch (e) {}
+    gs.activeWeeks = weeks;
+    localStorage.setItem('enit_game_settings', JSON.stringify(gs));
+}
+
+function renderWeekStrip() {
+    var strip = document.getElementById('setup-week-strip');
+    if (!strip) return;
+    var weeks = weeksInBank(questionBank);
+    if (weeks.length === 0) return;
+    var active = getActiveWeeks();
+    var activeSet = {};
+    active.forEach(function(w) { activeSet[w] = true; });
+    var allActive = active.length === 0;
+    var counts = {};
+    questionBank.forEach(function(q) { counts[q.week] = (counts[q.week] || 0) + 1; });
+    strip.innerHTML = '';
+    var onList = [];
+    weeks.forEach(function(w) {
+        var on = allActive || !!activeSet[w];
+        if (on) onList.push(w);
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'week-chip' + (on ? ' on' : '');
+        chip.textContent = 'W' + w + ' \u00b7 ' + counts[w];
+        (function(week) {
+            chip.onclick = function() {
+                var cur = getActiveWeeks();
+                var set = {};
+                cur.forEach(function(x) { set[x] = true; });
+                if (set[week]) delete set[week]; else set[week] = true;
+                var arr = Object.keys(set).map(Number).sort(function(a, b) { return a - b; });
+                if (arr.length === weeks.length) arr = [];
+                saveActiveWeeks(arr);
+                renderWeekStrip();
+            };
+        })(w);
+        strip.appendChild(chip);
+    });
+    var status = document.getElementById('setup-week-status');
+    if (status) status.textContent = 'Active for this game: ' + (onList.length === weeks.length ? 'ALL weeks' : 'Week ' + onList.join(', '));
 }
 
 var questionBank = loadQuestions();
@@ -1059,11 +1158,11 @@ function selectCell(idx) {
 // ── Open Question Modal ────────────────────────────────
 function openQuestionModal() {
     if (gameState.questionIndex >= gameState.questionOrder.length) {
-        gameState.questionOrder = shuffleArray(questionBank.map(function(_, i) { return i; }));
+        gameState.questionOrder = shuffleArray(gameState.pool.map(function(_, i) { return i; }));
         gameState.questionIndex = 0;
     }
     var qIdx = gameState.questionOrder[gameState.questionIndex];
-    gameState.currentQuestion = questionBank[qIdx];
+    gameState.currentQuestion = gameState.pool[qIdx];
 
     if (!gameState.currentSpokesperson) {
         pickSpokesperson();
@@ -1359,7 +1458,8 @@ function endRound() {
         if (proceed) {
             gameState.currentRound++;
             gameState.board = Array(9).fill(null);
-            gameState.questionOrder = shuffleArray(questionBank.map(function(_, i) { return i; }));
+gameState.pool = questionPoolForActiveWeeks(questionBank);
+    gameState.questionOrder = shuffleArray(gameState.pool.map(function(_, i) { return i; }));
             gameState.questionIndex = 0;
             gameState.currentSpokesperson = null;
             renderBoard();
@@ -1609,7 +1709,7 @@ function normalizeRecord(r) {
         else if (nk === 'sessionid' || nk === 'session_id' || nk === 'session') nk = 'session_id';
         else if (nk === 'correct' || nk === 'result' || nk === 'is_correct') nk = 'correct';
         else if (nk === 'pts' || nk === 'score' || nk === 'points_') nk = 'points';
-        if (nk !== '') out[nk] = v;
+        if (nk !== '') out[nk] = scrubValue(v);
     }
     return out;
 }
@@ -1621,6 +1721,73 @@ function hasValidFields(records) {
         if (r.student_id || r.student_name || r.correct || r.team || r.question) return true;
     }
     return false;
+}
+
+function scrubValue(v) {
+    if (v === null || v === undefined) return '';
+    if (typeof v === 'object') return JSON.stringify(v);
+    return String(v).replace(/^"|"$/g, '').replace(/[\r\n]+/g, ' ').trim();
+}
+
+function looksLikeStudentId(v) {
+    if (!v) return false;
+    if (typeof v !== 'string') v = String(v);
+    if (v.length < 3 || v.length > 20) return false;
+    if (/\s/.test(v)) return false;
+    if (/[:\-TZ]/.test(v)) return false;
+    return true;
+}
+
+function plausibleStudentValue(v) {
+    if (!v) return false;
+    var s = String(v);
+    if (s.length === 0 || s.length > 50) return false;
+    if (s.indexOf('{') !== -1 || s.indexOf('}') !== -1 || s.indexOf('[') !== -1 || s.indexOf(']') !== -1 || s.indexOf(',') !== -1 || s.indexOf(':') !== -1) return false;
+    return true;
+}
+
+function isWellStructured(records) {
+    if (!records || records.length === 0) return false;
+    var withStudent = 0;
+    var withGame = 0;
+    for (var i = 0; i < records.length; i++) {
+        var r = records[i];
+        if (plausibleStudentValue(r.student_name) || (r.student_id && looksLikeStudentId(r.student_id))) withStudent++;
+        if (r.question || r.correct !== undefined || r.team || r.round) withGame++;
+    }
+    var total = records.length;
+    return (withStudent / total) >= 0.6 && (withGame / total) >= 0.6;
+}
+
+function buildSummaryFromResults(results) {
+    var summaryMap = {};
+    results.forEach(function(r) {
+        var idCleaned = looksLikeStudentId(r.student_id) ? String(r.student_id) : '';
+        var parts = [];
+        if (idCleaned) parts.push('id:' + idCleaned);
+        if (r.student_name) parts.push('nm:' + String(r.student_name));
+        var key = parts.length > 0 ? parts.join('|') : 'unknown';
+        if (!summaryMap[key]) {
+            summaryMap[key] = {
+                student_id: idCleaned, student_name: r.student_name || '', english_name: r.english_name,
+                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
+            };
+        }
+        var s = summaryMap[key];
+        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
+        s.total_attempted++;
+        var corr = r.correct;
+        var isCorr = corr === true || corr === 1 || corr === 'TRUE' || corr === 'true' || corr === 'True' || corr === '1';
+        if (isCorr) s.total_correct++;
+        s.total_points += parseInt(r.points) || 0;
+    });
+    return Object.keys(summaryMap).map(function(key) {
+        var s = summaryMap[key];
+        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
+        delete s.sessions;
+        return s;
+    });
 }
 
 var KNOWN_HEADERS = ['timestamp','date','session_id','sessionid','round','team','subgroup','student_id','studentid','student_name','studentname','english_name','englishname','question','category','correct','result','is_correct','points','pts','score'];
@@ -1642,6 +1809,7 @@ async function loadDashboardData() {
     document.getElementById('detail-table').style.display = 'none';
 
     var loaded = false;
+    var dataSource = 'localStorage';
 
     // 1. Try published CSV URL
     var csvUrl = localStorage.getItem('enit_csv_url');
@@ -1666,13 +1834,14 @@ async function loadDashboardData() {
                 } else {
                     csvResults = rows.filter(function(r) { return r.length >= 2; }).map(normalizeRecord);
                 }
-                if (hasValidFields(csvResults)) {
+                if (isWellStructured(csvResults)) {
                     allResults = csvResults;
                     loaded = true;
+                    dataSource = 'CSV';
                     console.log('[Dashboard] Loaded ' + allResults.length + ' records from CSV');
                 } else {
                     allResults = [];
-                    console.log('[Dashboard] CSV data has no usable rows, skipping');
+                    console.log('[Dashboard] CSV data rejected: not well-structured');
                 }
             }
         } catch (e) {
@@ -1704,12 +1873,13 @@ async function loadDashboardData() {
                     } else {
                         getResults = data.map(normalizeRecord);
                     }
-                    if (hasValidFields(getResults)) {
+                    if (isWellStructured(getResults)) {
                         allResults = getResults;
                         loaded = true;
+                        dataSource = 'Sheets API';
                         console.log('[Dashboard] Loaded ' + allResults.length + ' records from Sheets API');
                     } else {
-                        console.log('[Dashboard] GET data has no usable rows, skipping');
+                        console.log('[Dashboard] GET data rejected: not well-structured');
                     }
                 }
             } catch (e) {
@@ -1738,32 +1908,11 @@ async function loadDashboardData() {
     }
 
     document.getElementById('data-source-info').textContent =
-        'Loaded ' + allResults.length + ' results. First record fields: ' +
-        Object.keys(allResults[0]).join(', ') + '. Sample student: ' + (allResults[0].student_name || '(empty)');
+        'Source: ' + dataSource + '. Loaded ' + allResults.length + ' results. Sample record: ' +
+        JSON.stringify(allResults[0]).slice(0, 240);
 
     // Build summary
-    var summaryMap = {};
-    allResults.forEach(function(r) {
-        var key = r.student_id || r.student_name;
-        if (!summaryMap[key]) {
-            summaryMap[key] = {
-                student_id: r.student_id, student_name: r.student_name, english_name: r.english_name,
-                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
-                total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
-            };
-        }
-        var s = summaryMap[key];
-        if (r.session_id && !s.sessions[r.session_id]) { s.sessions[r.session_id] = true; s.games_played++; }
-        s.total_attempted++;
-        var isCorr = r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1';
-        if (isCorr) s.total_correct++;
-        s.total_points += parseInt(r.points) || 0;
-    });
-    allSummary = Object.values(summaryMap).map(function(s) {
-        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 1000) / 10 : 0;
-        delete s.sessions;
-        return s;
-    });
+    allSummary = buildSummaryFromResults(allResults);
     populateSubgroupFilter();
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
@@ -1797,7 +1946,7 @@ function renderSummaryTable(data) {
         var accClass = s.accuracy_pct >= 70 ? 'accuracy-high' : (s.accuracy_pct >= 40 ? 'accuracy-mid' : 'accuracy-low');
         var row = document.createElement('tr');
         row.innerHTML =
-            '<td>' + (s.student_id || '') + '</td>' +
+            '<td>' + (s.student_id || '&mdash;') + '</td>' +
             '<td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td>' +
             '<td>' + (s.team || '') + '</td>' +
             '<td>' + (s.subgroup || '') + '</td>' +
@@ -1851,41 +2000,7 @@ function applyFilters() {
     });
 
     // Recalculate summary from filtered results
-    var summaryMap = {};
-    filteredResults.forEach(function(r) {
-        var key = r.student_id || r.student_name;
-        if (!summaryMap[key]) {
-            summaryMap[key] = {
-                student_id: r.student_id,
-                student_name: r.student_name,
-                english_name: r.english_name,
-                team: r.team,
-                subgroup: r.subgroup,
-                games_played: 0,
-                total_correct: 0,
-                total_points: 0,
-                total_attempted: 0,
-                accuracy_pct: 0,
-                sessions: {}
-            };
-        }
-        var s = summaryMap[key];
-        if (r.session_id && !s.sessions[r.session_id]) {
-            s.sessions[r.session_id] = true;
-            s.games_played++;
-        }
-        s.total_attempted++;
-        if (r.correct === true || r.correct === 'TRUE' || r.correct === 'true' || r.correct === 'True' || r.correct === '1') s.total_correct++;
-        s.total_points += parseInt(r.points) || 0;
-    });
-
-    var filteredSummary = Object.values(summaryMap).map(function(s) {
-        s.accuracy_pct = s.total_attempted > 0 ? Math.round((s.total_correct / s.total_attempted) * 100 * 10) / 10 : 0;
-        delete s.sessions;
-        return s;
-    });
-
-    renderSummaryTable(filteredSummary);
+    renderSummaryTable(buildSummaryFromResults(filteredResults));
     renderDetailTable(filteredResults);
 }
 
@@ -1967,6 +2082,7 @@ document.addEventListener('keydown', function(e) {
 // ── Initialize ─────────────────────────────────────────
 loadRollcall();
 loadConfig();
+renderWeekStrip();
 </script>
 </body>
 </html>
