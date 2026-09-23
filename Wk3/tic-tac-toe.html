@@ -570,8 +570,8 @@ let gameState = {
     selectedCellIndex: -1
 };
 
-// ── Question Bank ──────────────────────────────────────
-const questionBank = [
+// ── Built-in Question Bank (fallback) ──────────────────
+const BUILTIN_QUESTIONS = [
     { id:1, category:"Hardware", type:"mc", question:"What does 'CPU' stand for?",
       options:["Central Processing Unit","Computer Processing Unit","Central Processor Unit","Core Processing Unit"],
       answer:0, points:1 },
@@ -644,6 +644,28 @@ const questionBank = [
       options:["To ignore","To control through rules and laws","To build","To delete"],
       answer:1, points:1 }
 ];
+
+// ── Custom Question Bank (editable via Class Config page) ──
+function isValidQuestion(q) {
+    return q && typeof q === 'object' &&
+        q.question && q.category && q.type &&
+        (q.type !== 'mc' || (Array.isArray(q.options) && q.options.length >= 2));
+}
+
+function loadQuestions() {
+    try {
+        var raw = localStorage.getItem('enit_questions');
+        if (raw) {
+            var arr = JSON.parse(raw);
+            if (Array.isArray(arr) && arr.length > 0 && arr.every(isValidQuestion)) {
+                return arr;
+            }
+        }
+    } catch (e) {}
+    return BUILTIN_QUESTIONS;
+}
+
+var questionBank = loadQuestions();
 
 // ── Embedded Rollcall Data ─────────────────────────────
 const ROLLCALL_RAW = `1141752\t\u7AF6\u6167\u5982\t
@@ -1053,7 +1075,7 @@ function openQuestionModal() {
     document.getElementById('modal-question-number').textContent = 'Question ' + (gameState.questionIndex + 1);
     document.getElementById('modal-category').textContent = q.category;
     document.getElementById('modal-question-text').textContent = q.question;
-    document.getElementById('modal-points').textContent = q.points;
+    document.getElementById('modal-points').textContent = q.points || 1;
 
     var modalTeam = document.getElementById('modal-team-info');
     var team = gameState.currentTeam;
@@ -1091,12 +1113,12 @@ function openQuestionModal() {
         answerArea.appendChild(input);
         var hint = document.createElement('div');
         hint.className = 'answer-hint';
-        hint.textContent = 'Acceptable: ' + q.answer.split('|').join(', ');
+        hint.textContent = 'Acceptable: ' + String(q.answer || '').split('|').join(', ');
         answerArea.appendChild(hint);
     } else {
         var hint2 = document.createElement('div');
         hint2.className = 'answer-hint';
-        hint2.textContent = q.answer === true ? 'Teacher judges the answer' : 'Acceptable: ' + q.answer.split('|').join(', ');
+        hint2.textContent = q.answer === true ? 'Teacher judges the answer' : 'Acceptable: ' + String(q.answer || '').split('|').join(', ');
         answerArea.appendChild(hint2);
     }
 
@@ -1147,7 +1169,7 @@ function judgeAnswer(correct) {
 
     if (correct) {
         gameState.board[idx] = team;
-        gameState.scores[team] += q.points;
+        gameState.scores[team] += (q.points || 1);
     }
 
     var logEntry = {
@@ -1548,9 +1570,17 @@ function parseCSVLine(line) {
     var current = '';
     var inQuotes = false;
     for (var i = 0; i < line.length; i++) {
-        if (line[i] === '"') { inQuotes = !inQuotes; }
-        else if (line[i] === ',' && !inQuotes) { fields.push(current.trim()); current = ''; }
-        else { current += line[i]; }
+        var c = line[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (line[i + 1] === '"') { current += '"'; i++; }
+                else { inQuotes = false; }
+            } else { current += c; }
+        } else {
+            if (c === '"') { inQuotes = true; }
+            else if (c === ',') { fields.push(current.trim()); current = ''; }
+            else { current += c; }
+        }
     }
     fields.push(current.trim());
     return fields;

@@ -183,6 +183,26 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ── Question Editor ───────────────────────────────── */
+        .editor-panel {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 1rem; margin: 1rem 0;
+        }
+        .editor-panel h3 { margin-bottom: 0.8rem; font-size: 1rem; color: var(--primary); }
+        .editor-panel .form-row { margin-bottom: 0.7rem; }
+        .editor-panel input[type="text"], .editor-panel textarea,
+        .editor-panel select, .editor-panel input[type="number"] {
+            width: 100%; padding: 0.5rem; border: 1px solid var(--border);
+            border-radius: 6px; font-size: 0.85rem; box-sizing: border-box;
+        }
+        .editor-panel textarea { min-height: 60px; resize: vertical; }
+        .q-opt-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+        .q-opt-row .option-label { min-width: 1.4rem; font-weight: 700; color: var(--primary); font-size: 0.85rem; }
+        .q-editor-actions { display: flex; gap: 0.6rem; margin-top: 0.8rem; }
+        .question-table-wrap { overflow-x: auto; }
+        .q-row-actions button { margin-right: 0.3rem; padding: 0.2rem 0.5rem; font-size: 0.75rem; }
+        .q-answer-preview { color: var(--text-light); font-size: 0.75rem; font-style: italic; }
+
         /* ── Filters ───────────────────────────────────────── */
         .filters {
             display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem;
@@ -227,6 +247,7 @@
         <button class="tab-btn active" onclick="switchTab('seating')">&#129681; Seating</button>
         <button class="tab-btn" onclick="switchTab('sheets')">&#128202; Google Sheets</button>
         <button class="tab-btn" onclick="switchTab('settings')">&#127918; Game Settings</button>
+        <button class="tab-btn" onclick="switchTab('questions')">&#10067; Questions</button>
         <button class="tab-btn" onclick="switchTab('results')">&#128221; Results</button>
     </div>
 
@@ -313,6 +334,114 @@
             <div id="settings-status" class="status-bar info">
                 &#9888; Settings not saved yet.
             </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- QUESTIONS TAB                                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-questions" class="tab-content">
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="newQuestion()">&#10133; Add Question</button>
+            <button class="btn btn-success" onclick="saveQuestionsToDevice()">&#128190; Save to Device</button>
+            <button class="btn btn-warm" onclick="restoreDefaultQuestions()">&#128257; Load Defaults</button>
+            <button class="btn btn-secondary" onclick="exportQuestionsJSON()">&#128229; Export JSON</button>
+            <button class="btn btn-secondary" onclick="importQuestionsJSON()">&#128228; Import JSON</button>
+        </div>
+
+        <div id="questions-status" class="status-bar info">
+            &#9888; Question bank not saved yet. The built-in 31 questions are shown below.
+        </div>
+
+        <div class="editor-panel" id="question-editor" style="display:none;">
+            <h3 id="editor-title">&#9997; Edit Question</h3>
+            <div class="form-row" style="display:flex; gap:1rem;">
+                <div style="flex:1;">
+                    <label>Category:</label>
+                    <input type="text" id="q-category" list="q-category-list" placeholder="e.g. Hardware">
+                    <datalist id="q-category-list"></datalist>
+                </div>
+                <div style="flex:1;">
+                    <label>Type:</label>
+                    <select id="q-type" onchange="updateEditorOptions()">
+                        <option value="mc">Multiple Choice</option>
+                        <option value="translation">Translation</option>
+                        <option value="fill">Fill in the blank</option>
+                        <option value="open">Open (teacher judges)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Question:</label>
+                <textarea id="q-question" placeholder="Enter the question text..."></textarea>
+            </div>
+            <div id="q-options-area">
+                <label>Options:</label>
+                <div class="q-opt-row"><span class="option-label">A</span><input type="text" id="q-opt-0" placeholder="Option A"></div>
+                <div class="q-opt-row"><span class="option-label">B</span><input type="text" id="q-opt-1" placeholder="Option B"></div>
+                <div class="q-opt-row"><span class="option-label">C</span><input type="text" id="q-opt-2" placeholder="Option C"></div>
+                <div class="q-opt-row"><span class="option-label">D</span><input type="text" id="q-opt-3" placeholder="Option D"></div>
+            </div>
+            <div class="form-row">
+                <label>Answer:</label>
+                <div id="q-answer-mc" style="display:none;">
+                    <select id="q-answer-index">
+                        <option value="0">A</option>
+                        <option value="1">B</option>
+                        <option value="2">C</option>
+                        <option value="3">D</option>
+                    </select>
+                </div>
+                <input type="text" id="q-answer-text" placeholder="Acceptable answers separated by | e.g. memory|RAM">
+            </div>
+            <div class="form-row">
+                <label>Points:</label>
+                <input type="number" id="q-points" value="1" min="0" max="10" style="width: 100px;">
+            </div>
+            <div class="q-editor-actions">
+                <button class="btn btn-success" id="q-save-btn" onclick="saveQuestion()">&#128190; Save Question</button>
+                <button class="btn btn-secondary" onclick="closeEditor()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h3>&#10067; Question Bank (<span id="question-count">0</span>)</h3>
+            <div class="question-table-wrap">
+                <table class="data-table" id="question-table">
+                    <thead>
+                        <tr><th>#</th><th>Category</th><th>Type</th><th>Question</th><th>Points</th><th>Answer</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="question-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>&#128202; Sync Question Bank to Google Sheets</h3>
+            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.8rem;">
+                Upload your question bank as a JSON blob (cell A1 of a sheet named "Questions"), then download it from
+                the published CSV of that sheet on any other device.
+            </p>
+            <div class="form-row">
+                <label>Published Questions CSV URL:</label>
+                <input type="text" id="questions-csv-url" placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv">
+            </div>
+            <div class="btn-group" style="margin-top: 0.8rem;">
+                <button class="btn btn-primary" onclick="uploadQuestionsToSheets()">&#11014;&#65039; Upload to Sheets</button>
+                <button class="btn btn-secondary" onclick="downloadQuestionsFromSheets()">&#11015;&#65039; Download from Sheets</button>
+            </div>
+            <div id="q-sync-status" class="status-bar info" style="display:none;"></div>
+            <div class="form-hint" style="margin-top:0.8rem;">
+                <strong>Apps Script requirement:</strong> add this to your <code>doPost</code> handler, then
+                File &rarr; Share &rarr; Publish (CSV) for the "Questions" sheet:
+            </div>
+            <pre style="background:#f6f8fa; border:1px solid var(--border); border-radius:6px; padding:0.8rem; font-size:0.75rem; overflow-x:auto;">if (action === 'saveQuestions') {
+    var f = req.questions;
+    var val = typeof f === 'string' ? JSON.parse(f) : f;
+    var sheet = ss.getSheetByName('Questions');
+    if (!sheet) sheet = ss.insertSheet('Questions');
+    sheet.getRange('A1').setValue(JSON.stringify(val));
+}</pre>
         </div>
     </div>
 
@@ -832,9 +961,17 @@ function parseCSVLine(line) {
     var current = '';
     var inQuotes = false;
     for (var i = 0; i < line.length; i++) {
-        if (line[i] === '"') { inQuotes = !inQuotes; }
-        else if (line[i] === ',' && !inQuotes) { fields.push(current.trim()); current = ''; }
-        else { current += line[i]; }
+        var c = line[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (line[i + 1] === '"') { current += '"'; i++; }
+                else { inQuotes = false; }
+            } else { current += c; }
+        } else {
+            if (c === '"') { inQuotes = true; }
+            else if (c === ',') { fields.push(current.trim()); current = ''; }
+            else { current += c; }
+        }
     }
     fields.push(current.trim());
     return fields;
@@ -1120,11 +1257,421 @@ function downloadCSV(csv, filename) {
     URL.revokeObjectURL(url);
 }
 
+// ── Question Bank ──────────────────────────────────────
+const DEFAULT_QUESTIONS = [
+    { id:1, category:"Hardware", type:"mc", question:"What does 'CPU' stand for?",
+      options:["Central Processing Unit","Computer Processing Unit","Central Processor Unit","Core Processing Unit"],
+      answer:0, points:1 },
+    { id:2, category:"Hardware", type:"translation", question:"What is '\u8A18\u61B6\u9AD4' in English?",
+      answer:"memory|RAM", points:2 },
+    { id:3, category:"Hardware", type:"mc", question:"Which component is called the 'brain' of the computer?",
+      options:["RAM","CPU","SSD","Motherboard"], answer:1, points:1 },
+    { id:4, category:"Hardware", type:"mc", question:"What does an SSD use instead of magnetic storage?",
+      options:["Flash memory","Magnetic disks","Optical discs","Tape"], answer:0, points:1 },
+    { id:5, category:"Hardware", type:"mc", question:"What does 'GPU' stand for?",
+      options:["General Processing Unit","Graphics Processing Unit","Graphics Power Unit","General Purpose Unit"],
+      answer:1, points:1 },
+    { id:6, category:"Hardware", type:"mc", question:"What converts electricity to power computer components?",
+      options:["CPU","RAM","Power Supply Unit","Cooling Fan"], answer:2, points:1 },
+    { id:7, category:"Hardware", type:"mc", question:"What prevents components from overheating?",
+      options:["SSD","Cooling fan","USB port","Ethernet port"], answer:1, points:1 },
+    { id:8, category:"Hardware", type:"open", question:"Name 2 types of computer storage.",
+      answer:"SSD|HDD|USB drive|SD card", points:2 },
+    { id:9, category:"Hardware", type:"mc", question:"What connects all components on the main circuit board?",
+      options:["CPU","RAM","Motherboard","Power supply"], answer:2, points:1 },
+    { id:10, category:"Hardware", type:"translation", question:"What is '\u56FA\u614B\u786C\u789F' in English?",
+      answer:"SSD|solid-state drive", points:2 },
+    { id:11, category:"Hardware", type:"open", question:"Name the two main processor brands.",
+      answer:"Intel|AMD", points:2 },
+    { id:12, category:"Hardware", type:"mc", question:"What does 'HDD' stand for?",
+      options:["High-density Data Drive","Hard Disk Drive","High-speed Data Device","Hardware Disk Drive"],
+      answer:1, points:1 },
+    { id:13, category:"Peripherals", type:"mc", question:"Which port carries both video and audio signals?",
+      options:["USB","HDMI","Ethernet","Power"], answer:1, points:1 },
+    { id:14, category:"Peripherals", type:"translation", question:"What is '\u87F2\u5E55' in English?",
+      answer:"monitor", points:1 },
+    { id:15, category:"Peripherals", type:"open", question:"Name 2 input devices.",
+      answer:"keyboard|mouse|microphone|webcam", points:2 },
+    { id:16, category:"Peripherals", type:"mc", question:"What type of cable provides wired network connection?",
+      options:["USB cable","HDMI cable","Ethernet cable","Power cable"], answer:2, points:1 },
+    { id:17, category:"Peripherals", type:"mc", question:"What is 'USB' short for?",
+      options:["Universal Serial Bus","Unified System Bus","Universal System Bridge","Unified Serial Bridge"],
+      answer:0, points:1 },
+    { id:18, category:"Peripherals", type:"mc", question:"What is an 'Ethernet port' used for?",
+      options:["Audio output","Video output","Wired network","Wireless connection"], answer:2, points:1 },
+    { id:19, category:"Actions", type:"mc", question:"What does 'troubleshoot' mean?",
+      options:["To install software","To find and fix problems","To upgrade hardware","To shut down a computer"],
+      answer:1, points:1 },
+    { id:20, category:"Actions", type:"mc", question:"What is the opposite of 'install'?",
+      options:["Configure","Uninstall","Upgrade","Connect"], answer:1, points:1 },
+    { id:21, category:"Actions", type:"mc", question:"What does 'boot up' mean?",
+      options:["To shut down","To restart","To start a computer","To delete files"], answer:2, points:1 },
+    { id:22, category:"Actions", type:"open", question:"Use 'configure' in a sentence about computers.",
+      answer:true, points:2 },
+    { id:23, category:"Actions", type:"mc", question:"What does 'upgrade' mean?",
+      options:["To remove","To replace with a better component","To connect","To troubleshoot"],
+      answer:1, points:1 },
+    { id:24, category:"Grammar", type:"fill", question:"_____ a CPU on the motherboard.",
+      answer:"There is", points:1 },
+    { id:25, category:"Grammar", type:"fill", question:"_____ two memory slots in this computer.",
+      answer:"There are", points:1 },
+    { id:26, category:"Grammar", type:"fill", question:"_____ enough USB ports for all devices.",
+      answer:"There aren't|There are not", points:1 },
+    { id:27, category:"Grammar", type:"open", question:"Write a sentence using 'there are' + a hardware term.",
+      answer:true, points:2 },
+    { id:28, category:"AI Safety", type:"mc", question:"What does 'conscious' mean?",
+      options:["Aware of one's own existence","Very smart","Fast-moving","Made of plastic"],
+      answer:0, points:1 },
+    { id:29, category:"AI Safety", type:"translation", question:"What is 'anthropomorphising' in Chinese?",
+      answer:"\u64EC\u4EBA\u5316", points:2 },
+    { id:30, category:"AI Safety", type:"mc", question:"What does 'transparency' mean in AI context?",
+      options:["Being see-through","Being fast","Being open and honest about how something works","Being expensive"],
+      answer:2, points:1 },
+    { id:31, category:"AI Safety", type:"mc", question:"What does 'regulate' mean?",
+      options:["To ignore","To control through rules and laws","To build","To delete"],
+      answer:1, points:1 }
+];
+
+var cfgQuestions = [];
+var editingQuestionIndex = -1;
+
+function isValidQuestion(q) {
+    return q && typeof q === 'object' &&
+        q.question && q.category && q.type &&
+        (q.type !== 'mc' || (Array.isArray(q.options) && q.options.length >= 2));
+}
+
+function cloneQuestions(arr) {
+    return arr.map(function(q) { return JSON.parse(JSON.stringify(q)); });
+}
+
+function updateQuestionsStatus(type, message) {
+    var el = document.getElementById('questions-status');
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+function showQuestionSyncStatus(type, message) {
+    var el = document.getElementById('q-sync-status');
+    el.style.display = 'block';
+    el.className = 'status-bar ' + type;
+    el.innerHTML = message;
+}
+
+function persistQuestions() {
+    localStorage.setItem('enit_questions', JSON.stringify(cfgQuestions));
+    updateQuestionsStatus('success', '&#10003; Question bank saved to device (' + cfgQuestions.length + ' questions).');
+}
+
+function saveQuestionsToDevice() {
+    if (!cfgQuestions || cfgQuestions.length === 0) { alert('No questions to save.'); return; }
+    persistQuestions();
+}
+
+function typeLabel(type) {
+    if (type === 'mc') return 'Multiple Choice';
+    if (type === 'translation') return 'Translation';
+    if (type === 'fill') return 'Fill-in';
+    if (type === 'open') return 'Open';
+    return type;
+}
+
+function answerPreview(q) {
+    if (q.type === 'mc') {
+        var idx = parseInt(q.answer) || 0;
+        return Array.isArray(q.options) && q.options[idx] ? q.options[idx] : '(mc index ' + (q.answer || 0) + ')';
+    }
+    if (q.answer === true) return 'teacher judges';
+    return String(q.answer || '');
+}
+
+function updateCategoryList() {
+    var dl = document.getElementById('q-category-list');
+    dl.innerHTML = '';
+    var seen = {};
+    cfgQuestions.forEach(function(q) { if (q.category && !seen[q.category]) { seen[q.category] = true; } });
+    Object.keys(seen).forEach(function(cat) {
+        var o = document.createElement('option');
+        o.value = cat;
+        dl.appendChild(o);
+    });
+}
+
+function renderQuestionList() {
+    var tbody = document.getElementById('question-body');
+    var count = document.getElementById('question-count');
+    count.textContent = cfgQuestions.length;
+    tbody.innerHTML = '';
+    cfgQuestions.forEach(function(q, i) {
+        var tr = document.createElement('tr');
+        var qid = document.createElement('td');
+        qid.textContent = q.id || (i + 1);
+        var cat = document.createElement('td');
+        cat.textContent = q.category || '';
+        var typ = document.createElement('td');
+        typ.textContent = typeLabel(q.type);
+        var qtxt = document.createElement('td');
+        qtxt.textContent = (q.question || '').substring(0, 60) + ((q.question || '').length > 60 ? '...' : '');
+        var pts = document.createElement('td');
+        pts.textContent = q.points || 0;
+        var ans = document.createElement('td');
+        ans.className = 'q-answer-preview';
+        ans.textContent = answerPreview(q);
+        var act = document.createElement('td');
+        act.className = 'q-row-actions';
+        act.innerHTML =
+            '<button class="btn btn-secondary" onclick="openEditorFor(' + i + ')">&#9998; Edit</button>' +
+            '<button class="btn btn-danger" onclick="deleteQuestion(' + i + ')">&#128465;&#65039;</button>' +
+            '<button class="btn btn-secondary" onclick="moveQuestion(' + i + ',-1)">&#8593;</button>' +
+            '<button class="btn btn-secondary" onclick="moveQuestion(' + i + ',1)">&#8595;</button>';
+        tr.appendChild(qid);
+        tr.appendChild(cat);
+        tr.appendChild(typ);
+        tr.appendChild(qtxt);
+        tr.appendChild(pts);
+        tr.appendChild(ans);
+        tr.appendChild(act);
+        tbody.appendChild(tr);
+    });
+    updateCategoryList();
+}
+
+function updateEditorOptions() {
+    var type = document.getElementById('q-type').value;
+    var isMc = type === 'mc';
+    document.getElementById('q-options-area').style.display = isMc ? 'block' : 'none';
+    document.getElementById('q-answer-mc').style.display = isMc ? 'block' : 'none';
+    document.getElementById('q-answer-text').style.display = isMc ? 'none' : 'block';
+}
+
+function openEditorFor(index) {
+    editingQuestionIndex = index;
+    var q = cfgQuestions[index];
+    document.getElementById('editor-title').textContent = '&#9997; Edit Question #' + (q.id || (index + 1));
+    document.getElementById('q-category').value = q.category || '';
+    document.getElementById('q-type').value = q.type || 'mc';
+    document.getElementById('q-question').value = q.question || '';
+    for (var o = 0; o < 4; o++) {
+        document.getElementById('q-opt-' + o).value = (q.options && q.options[o]) ? q.options[o] : '';
+    }
+    if (q.type === 'mc') {
+        document.getElementById('q-answer-index').value = String(q.answer || 0);
+    } else {
+        document.getElementById('q-answer-text').value = q.answer === true ? 'true' : String(q.answer || '');
+    }
+    document.getElementById('q-points').value = q.points || 1;
+    updateEditorOptions();
+    document.getElementById('question-editor').style.display = 'block';
+    document.getElementById('q-question').focus();
+    document.getElementById('question-editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function newQuestion() {
+    editingQuestionIndex = -1;
+    document.getElementById('editor-title').textContent = '&#9997; Add Question';
+    document.getElementById('q-category').value = '';
+    document.getElementById('q-type').value = 'mc';
+    document.getElementById('q-question').value = '';
+    for (var o = 0; o < 4; o++) document.getElementById('q-opt-' + o).value = '';
+    document.getElementById('q-answer-index').value = '0';
+    document.getElementById('q-answer-text').value = '';
+    document.getElementById('q-points').value = 1;
+    updateEditorOptions();
+    document.getElementById('question-editor').style.display = 'block';
+    document.getElementById('q-category').focus();
+    document.getElementById('question-editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeEditor() {
+    document.getElementById('question-editor').style.display = 'none';
+    editingQuestionIndex = -1;
+}
+
+function saveQuestion() {
+    var category = document.getElementById('q-category').value.trim();
+    var type = document.getElementById('q-type').value;
+    var question = document.getElementById('q-question').value.trim();
+    var points = parseInt(document.getElementById('q-points').value) || 1;
+
+    if (!category) { alert('Please enter a Category.'); return; }
+    if (!question) { alert('Please enter the Question text.'); return; }
+
+    var q;
+    if (type === 'mc') {
+        var opts = [];
+        for (var o = 0; o < 4; o++) {
+            var v = document.getElementById('q-opt-' + o).value.trim();
+            if (v) opts.push(v);
+        }
+        if (opts.length < 2) { alert('Multiple choice questions need at least 2 options.'); return; }
+        q = {
+            category: category,
+            type: type,
+            question: question,
+            options: opts,
+            answer: parseInt(document.getElementById('q-answer-index').value) || 0,
+            points: points
+        };
+    } else {
+        var ans = document.getElementById('q-answer-text').value.trim();
+        if (!ans) { alert('Please enter acceptable answer(s) separated by |, or "true" for teacher-judged.'); return; }
+        q = {
+            category: category,
+            type: type,
+            question: question,
+            answer: ans === 'true' ? true : ans,
+            points: points
+        };
+    }
+
+    if (editingQuestionIndex >= 0) {
+        q.id = cfgQuestions[editingQuestionIndex].id || (editingQuestionIndex + 1);
+        cfgQuestions[editingQuestionIndex] = q;
+    } else {
+        var maxId = 0;
+        cfgQuestions.forEach(function(x) { if (x.id && x.id > maxId) maxId = x.id; });
+        q.id = maxId + 1;
+        cfgQuestions.push(q);
+    }
+    persistQuestions();
+    renderQuestionList();
+    closeEditor();
+}
+
+function deleteQuestion(index) {
+    if (!confirm('Delete this question?')) return;
+    cfgQuestions.splice(index, 1);
+    persistQuestions();
+    renderQuestionList();
+}
+
+function moveQuestion(index, dir) {
+    var target = index + dir;
+    if (target < 0 || target >= cfgQuestions.length) return;
+    var tmp = cfgQuestions[index];
+    cfgQuestions[index] = cfgQuestions[target];
+    cfgQuestions[target] = tmp;
+    renderQuestionList();
+}
+
+function loadQuestionsIntoEditor() {
+    try {
+        var raw = localStorage.getItem('enit_questions');
+        if (raw) {
+            var arr = JSON.parse(raw);
+            if (Array.isArray(arr) && arr.length > 0 && arr.every(isValidQuestion)) {
+                cfgQuestions = arr;
+                updateQuestionsStatus('success', '&#10003; Loaded ' + arr.length + ' custom question(s) from device.');
+                renderQuestionList();
+                return;
+            }
+        }
+    } catch (e) {}
+    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS);
+    updateQuestionsStatus('info', '&#9888; Showing the built-in question bank (' + cfgQuestions.length + ' questions). Make changes, then click "Save to Device".');
+    renderQuestionList();
+}
+
+function restoreDefaultQuestions() {
+    if (!confirm('Replace the current question bank with the built-in 31 questions?')) return;
+    cfgQuestions = cloneQuestions(DEFAULT_QUESTIONS);
+    persistQuestions();
+    renderQuestionList();
+}
+
+function exportQuestionsJSON() {
+    var json = JSON.stringify(cfgQuestions, null, 2);
+    var BOM = '\ufeff';
+    var blob = new Blob([BOM + json], { type: 'application/json;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'enit_questions_' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function importQuestionsJSON() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = function() {
+        var file = input.files && input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function() {
+            try {
+                var arr = JSON.parse(String(reader.result).replace(/^\uFEFF/, ''));
+                if (!Array.isArray(arr) || arr.length === 0) throw new Error('Not a question array');
+                if (!arr.every(isValidQuestion)) throw new Error('Some questions are missing required fields');
+                cfgQuestions = arr;
+                persistQuestions();
+                renderQuestionList();
+            } catch (e) {
+                alert('Import failed: ' + e.message);
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+// ── Question Bank → Google Sheets Sync ─────────────────
+function loadQuestionsCsvUrl() {
+    document.getElementById('questions-csv-url').value = localStorage.getItem('enit_questions_csv_url') || '';
+}
+
+async function uploadQuestionsToSheets() {
+    var url = getApiUrl();
+    if (!url) { alert('Please save your Google Sheets API URL first (Google Sheets tab).'); return; }
+    showQuestionSyncStatus('info', '&#9203; Uploading question bank (' + cfgQuestions.length + ' questions) to Google Sheets...');
+    try {
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'saveQuestions', questions: cfgQuestions })
+        });
+        showQuestionSyncStatus('success', '&#10003; Question bank uploaded to Google Sheets. (Response opaque due to CORS; the Apps Script must have the saveQuestions handler.)');
+    } catch (e) {
+        showQuestionSyncStatus('error', '&#10007; Upload failed: ' + e.message);
+    }
+}
+
+async function downloadQuestionsFromSheets() {
+    var url = document.getElementById('questions-csv-url').value.trim();
+    if (url) localStorage.setItem('enit_questions_csv_url', url);
+    else localStorage.removeItem('enit_questions_csv_url');
+    if (!url) { showQuestionSyncStatus('warning', '&#9888; Please enter the published Questions CSV URL first.'); return; }
+    showQuestionSyncStatus('info', '&#9203; Downloading question bank from Google Sheets...');
+    try {
+        var resp = await fetch(url);
+        var text = await resp.text();
+        text = text.replace(/^\uFEFF/, '');
+        var line = text.split(/\r?\n/)[0];
+        var cells = parseCSVLine(line);
+        if (!cells.length) throw new Error('Empty CSV');
+        var arr = JSON.parse(cells[0]);
+        if (!Array.isArray(arr) || arr.length === 0) throw new Error('Not a question array');
+        if (!arr.every(isValidQuestion)) throw new Error('Some questions are missing required fields');
+        cfgQuestions = arr;
+        persistQuestions();
+        renderQuestionList();
+        showQuestionSyncStatus('success', '&#10003; Downloaded ' + arr.length + ' questions from Google Sheets.');
+    } catch (e) {
+        showQuestionSyncStatus('error', '&#10007; Download failed: ' + e.message);
+    }
+}
+
 // ── Initialize ─────────────────────────────────────────
 loadRollcall();
 loadSeating();
 loadApiConfig();
 loadGameSettings();
+loadQuestionsIntoEditor();
+loadQuestionsCsvUrl();
 </script>
 </body>
 </html>
