@@ -449,11 +449,13 @@
 
             <h4 style="margin-top: 1rem; color: var(--primary);">Useful Phrases</h4>
             <p>
+                <span class="vocab-term" onclick="toggleDef('def-went-viral')">went viral</span> ·
                 <span class="vocab-term" onclick="toggleDef('def-shelf')">shelf life</span> ·
                 <span class="vocab-term" onclick="toggleDef('def-cascade')">cascade of kindness</span> ·
                 <span class="vocab-term" onclick="toggleDef('def-overlooked')">overlooked</span> ·
                 <span class="vocab-term" onclick="toggleDef('def-contagion')">social contagion</span>
             </p>
+            <div id="def-went-viral" class="vocab-def">Became extremely popular and spread very quickly online (爆紅 / 病毒式廣傳)</div>
             <div id="def-shelf" class="vocab-def">How long something stays useful or popular (保存期限 / 壽命)</div>
             <div id="def-cascade" class="vocab-def">A chain reaction, where one kind act leads to many more (善意連鎖效應)</div>
             <div id="def-overlooked" class="vocab-def">Not noticed or not given attention (被忽略的)</div>
@@ -464,7 +466,8 @@
     <!-- ── READING ────────────────────────────────────── -->
     <section id="reading">
         <div class="article">
-            <div class="article-title">The Internet Vigilantes Who Weaponise Kindness</div>
+            <div class="article-title">The Internet <span class="vocab-term" onclick="toggleDef('def-vigilante-inline')">Vigilantes</span> Who Weaponise Kindness</div>
+            <div id="def-vigilante-inline" class="vocab-def">A person who acts to punish or help others outside the rules or legal system (義警 / 私自行動者)</div>
             <div class="article-subtitle">A simplified version of a BBC Future article (September 2026)</div>
             <div class="article-meta">
                 <span><strong>Source:</strong> BBC Future</span>
@@ -472,15 +475,17 @@
                 <span><strong>Time:</strong> ~10 minutes</span>
             </div>
 
-            <p>Every day, Laura Tigeleiro from Staten Island, New York, opened TikTok and saw hatred. "Everyone was making fun of my eye," she says. Tigeleiro has multiple sclerosis, an autoimmune disease that makes one of her eyes droop sideways. "I just wanted to share healthy recipes, and maybe make some friends," she says. "But they said terrible things. It really hurt."</p>
+            <p>Every day, Laura Tigeleiro from Staten Island, New York, opened TikTok and saw hatred. "Everyone was making fun of my eye," she says. Tigeleiro has multiple sclerosis, an <span class="vocab-term" onclick="toggleDef('def-autoimmune-inline')">autoimmune</span> disease that makes one of her eyes droop sideways. "I just wanted to share healthy recipes, and maybe make some friends," she says. "But they said terrible things. It really hurt."</p>
+            <div id="def-autoimmune-inline" class="vocab-def">The body's immune system attacking its own cells; here: her immune system damaged her eyelid muscle (自體免疫的)</div>
 
-            <p>Then one of her videos went viral with more than 15,000 friendly comments. "I didn't know what was going on. I was shocked," says Tigeleiro. Days later, she understood: she was under attack — by the <span class="vocab-term" onclick="toggleDef('def-kindmob-inline')">Kindness Mob</span>.</p>
+            <p>Then one of her videos <span class="vocab-term" onclick="toggleDef('def-went-viral-inline')">went viral</span> with more than 15,000 friendly comments. "I didn't know what was going on. I was shocked," says Tigeleiro. Days later, she understood: she was under attack — by the <span class="vocab-term" onclick="toggleDef('def-kindmob-inline')">Kindness Mob</span>.</p>
+            <div id="def-went-viral-inline" class="vocab-def">Became extremely popular and spread very quickly online (爆紅)</div>
             <div id="def-kindmob-inline" class="vocab-def">A TikTok channel that sends a large crowd to leave kind comments on a person's posts</div>
 
-            <p>The Kindness Mob is a TikTok channel run by Tyler Brickley, a digital marketer from Kansas City, US. He started the project in 2023. "It's a form of <span class="vocab-term" onclick="toggleDef('def-trolling-inline')">trolling</span>," he says. Every day, Brickley points his half-a-million followers at someone who is being bullied or <span class="vocab-term" onclick="toggleDef('def-overlooked-inline')">overlooked</span>, and the crowd <span class="vocab-term" onclick="toggleDef('def-flood-inline')">floods</span> that person's comments with kindness. "We're hijacking the machinery of online harassment — like coordination and <span class="vocab-term" onclick="toggleDef('def-anonymity-inline')">anonymity</span> — and using them for <span class="vocab-term" onclick="toggleDef('def-benevolence-inline')">benevolence</span>. And I gotta say, it works."</p>
+            <p>The Kindness Mob is a TikTok channel run by Tyler Brickley, a digital marketer from Kansas City, US. He started the project in 2023. "It's a form of <span class="vocab-term" onclick="toggleDef('def-trolling-inline')">trolling</span>," he says. Every day, Brickley points his half-a-million followers at someone who is being bullied or <span class="vocab-term" onclick="toggleDef('def-overlooked-inline')">overlooked</span>, and the crowd floods that person's comments with kindness. "We're <span class="vocab-term" onclick="toggleDef('def-hijacking-inline')">hijacking</span> the machinery of online harassment — like coordination and <span class="vocab-term" onclick="toggleDef('def-anonymity-inline')">anonymity</span> — and using them for <span class="vocab-term" onclick="toggleDef('def-benevolence-inline')">benevolence</span>. And I gotta say, it works."</p>
             <div id="def-trolling-inline" class="vocab-def">Posting rude or provoking messages online to upset people</div>
             <div id="def-overlooked-inline" class="vocab-def">Not noticed or not given attention</div>
-            <div id="def-flood-inline" class="vocab-def">To fill something completely with comments</div>
+            <div id="def-hijacking-inline" class="vocab-def">Taking over and controlling something to use it for your own purpose (劫持 / 控制)</div>
             <div id="def-anonymity-inline" class="vocab-def">The state of not showing your real name or identity</div>
             <div id="def-benevolence-inline" class="vocab-def">Kindness; the desire to do good (善意)</div>
 
@@ -494,8 +499,7 @@
             <div id="def-shelf-inline" class="vocab-def">How long something stays useful or popular</div>
             <div id="def-burnout-inline" class="vocab-def">Physical and emotional exhaustion from doing too much</div>
 
-            <p>Still, Brickley continues. After he had back surgery, his wife secretly posted a video of him. He woke up and read 1,000 kind comments from his own mob — and cried. "It feels like a <span class="vocab-term" onclick="toggleDef('def-calling-inline')">calling</span>," he says. "The Kindness Mob is just one step. But kindness, for everyone, always, feels like a good place to start."</p>
-            <div id="def-calling-inline" class="vocab-def">A strong feeling that you must do a particular job; a purpose in life</div>
+            <p>Still, Brickley continues. After he had back surgery, his wife secretly posted a video of him. He woke up and read 1,000 kind comments from his own mob — and cried. "It feels like a calling," he says. "The Kindness Mob is just one step. But kindness, for everyone, always, feels like a good place to start."</p>
 
             <blockquote>
                 "It's a form of trolling. We're hijacking the machinery of online harassment and using it for benevolence."
