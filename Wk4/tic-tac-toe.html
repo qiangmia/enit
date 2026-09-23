@@ -322,10 +322,25 @@
             font-size: 0.85rem; font-family: inherit; font-weight: 600;
         }
         .week-chip.on { background: var(--primary); color: #fff; }
+    .home-link {
+            display: inline-block;
+            margin: 0.75rem 0 0 1.2rem;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            padding: 0.35rem 0.85rem;
+            text-decoration: none;
+        }
+        .home-link:hover { background: var(--primary); color: #fff; }
     </style>
     <script src="../theme.js"></script>
 </head>
 <body>
+<a class="home-link" href="../index.html">← Back to Home</a>
 
 <header class="game-header">
     <h1>&#127918; Tic Tac Toe</h1>
