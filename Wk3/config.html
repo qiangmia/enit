@@ -570,7 +570,7 @@ CPU&#9;the central processing unit"></textarea>
             </p>
             <div class="form-row">
                 <label>Website theme:</label>
-                <select id="theme-select" onchange="updateThemeSelectUI()"></select>
+                <select id="theme-select" onchange="handleThemeSelectChange()"></select>
             </div>
             <div id="theme-preview" class="theme-preview"></div>
             <div class="btn-group" style="margin-top: 0.8rem;">
@@ -910,6 +910,23 @@ function populateThemeSelect() {
         sel.appendChild(opt);
     });
     updateThemeSelectUI();
+}
+function handleThemeSelectChange() {
+    var sel = document.getElementById('theme-select');
+    var id = sel ? sel.value : 'default';
+    var applied = window.ENIT_Theme.current();
+    var label = (window.ENIT_Theme.THEMES[id] || {}).label || 'ENIT Default';
+    updateThemePreview(id);
+    var st = document.getElementById('theme-status');
+    if (!st) return;
+    if (id === applied) {
+        st.className = 'status-bar info';
+        st.innerHTML = 'Current theme: <span id="theme-status-name">' + label + '</span>.';
+    } else {
+        st.className = 'status-bar warning';
+        st.innerHTML = 'Selected: <span id="theme-status-name">' + label +
+            '</span> &mdash; click &ldquo;Save &amp; Apply&rdquo; to change the whole site.';
+    }
 }
 function updateThemeSelectUI() {
     var current = window.ENIT_Theme.current();
