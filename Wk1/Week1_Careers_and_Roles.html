@@ -801,25 +801,18 @@
             border: 2px solid var(--border);
             border-radius: 50%;
         }
-    .home-link {
-            display: inline-block;
-            margin: 0.75rem 0 0 1.2rem;
-            font-family: sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-            background: var(--card-bg, #fff);
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            padding: 0.35rem 0.85rem;
+    .header-home-link {
+            color: inherit;
             text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.75);
+            position: relative;
+            z-index: 2;
         }
-        .home-link:hover { background: var(--primary); color: #fff; }
+        .header-home-link:hover { border-bottom-style: solid; }
     </style>
     <script src="../theme.js"></script>
 </head>
 <body>
-<a class="home-link" href="../index.html">← Back to Home</a>
 
 <!-- ═══════════════════════════════════════════════════ -->
 <!-- HEADER                                             -->
@@ -828,7 +821,7 @@
     <h1>Week 1: Working in IT</h1>
     <div class="subtitle">Careers &amp; Roles in Information Technology</div>
     <div class="meta">
-        <span>English for Information Technology</span>
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
         <span>·</span>
         <span>Dept. of Information Management</span>
         <span>·</span>
