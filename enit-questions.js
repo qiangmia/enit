@@ -122,5 +122,18 @@ var ENIT_DEFAULT_QUESTIONS = [
     { id:48, week:4, category:"Grammar", type:"fill", question:"_____ delete system files. They are important.",
       answer:"Don't|Do not", points:1 },
     { id:49, week:4, category:"Grammar", type:"fill", question:"Please _____ your work before shutting down.",
-      answer:"save", points:1 }
+      answer:"save", points:1 },
+
+    // ── Week 4 (continued: Social Media & Kindness, from the BBC reading unit) ──
+    { id:50, week:4, category:"Social Media & Kindness", type:"mc", question:"What does 'trolling' usually mean online?",
+      options:["Posting rude messages to upset people","Sharing healthy recipes","Sending virtual flowers","Fixing computers for free"],
+      answer:0, points:1 },
+    { id:51, week:4, category:"Social Media & Kindness", type:"mc", question:"Who started the Kindness Mob?",
+      options:["Tyler Brickley","Laura Tigeleiro","Paris Hilton","Nicholas Christakis"],
+      answer:0, points:1 },
+    { id:52, week:4, category:"Social Media & Kindness", type:"mc", question:"What does 'anonymity' mean?",
+      options:["Not showing your real identity","Speaking in public","Sharing personal photos","Working in a team"],
+      answer:0, points:1 },
+    { id:53, week:4, category:"Social Media & Kindness", type:"translation", question:"What is '匿名' in English?",
+      answer:"anonymity", points:2 }
 ];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supplementary Unit: AI Safety Debate</title>
+    <title>Supplementary Unit: Kindness Trolls</title>
     <style>
         /* ── Reset & Base ─────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,7 +41,7 @@
 
         /* ── Header ────────────────────────────────────── */
         .course-header {
-            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=400&fit=crop');
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1200&h=400&fit=crop');
             background-size: cover;
             background-position: center;
             color: white;
@@ -297,7 +297,7 @@
         .answers { display: none; margin-top: 0.5rem; }
         .answers.show { display: block; }
 
-        /* ── Debate Roles ───────────────────────────────── */
+        /* ── Role Cards ─────────────────────────────────── */
         .role-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -362,8 +362,8 @@
 <!-- HEADER                                             -->
 <!-- ═══════════════════════════════════════════════════ -->
 <header class="course-header">
-    <h1>Supplementary Unit: AI Safety Debate</h1>
-    <div class="subtitle">Should We Treat AI Like Humans?</div>
+    <h1>Supplementary Unit: Kindness Trolls</h1>
+    <div class="subtitle">The Internet Vigilantes Who Weaponise Kindness</div>
     <div class="meta">
         <span>English for Information Technology</span>
         <span>·</span>
@@ -371,7 +371,7 @@
         <span>·</span>
         <span>~45 minutes</span>
     </div>
-    <div class="tag">📰 Based on BBC News Article</div>
+    <div class="tag">📰 Based on BBC Future Article</div>
 </header>
 
 <!-- ═══════════════════════════════════════════════════ -->
@@ -401,10 +401,10 @@
             <div class="card-header">🎯 Learning Objectives</div>
             <p>By the end of this unit, students will be able to:</p>
             <ol>
-                <li>Read and comprehend a simplified news article about AI ethics.</li>
-                <li>Understand and use key vocabulary related to AI and technology ethics.</li>
-                <li>Critically evaluate arguments about AI consciousness and safety.</li>
-                <li>Participate in a structured debate about AI development.</li>
+                <li>Read and comprehend a simplified news article about online kindness.</li>
+                <li>Understand and use key vocabulary related to social media, crowds, and compassion.</li>
+                <li>Evaluate whether "kindness trolling" is really a force for good online.</li>
+                <li>Participate in a structured discussion about online behaviour and responsibility.</li>
             </ol>
         </div>
     </section>
@@ -414,84 +414,84 @@
         <div class="card card-vocab">
             <div class="card-header">📝 Pre-reading: Vocabulary Preview</div>
             <p>Click on each term to see its definition. These words appear in the article below.</p>
-            
+
             <h4 style="margin-top: 1rem; color: var(--primary);">Key Vocabulary from the Article</h4>
             <p>
-                <span class="vocab-term" onclick="toggleDef('def-concern')">concern</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-conscious')">conscious</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-innate')">innate</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-motivation')">motivation</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-assumption')">assumption</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-welfare')">welfare</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-transparency')">transparency</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-histrionics')">histrionics</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-regulate')">regulate</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-sleepwalk')">sleepwalk</span>
+                <span class="vocab-term" onclick="toggleDef('def-trolling')">trolling</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-vigilante')">vigilante</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-mob')">mob</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-flood')">flood (the comments)</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-weaponise')">weaponise</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-anonymity')">anonymity</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-contagious')">contagious</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-burnout')">burnout</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-nominate')">nominate</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-calling')">calling</span>
             </p>
-            <div id="def-concern" class="vocab-def">A feeling of worry about something important</div>
-            <div id="def-conscious" class="vocab-def">Aware of one's own existence, thoughts, and feelings</div>
-            <div id="def-innate" class="vocab-def">Something you are born with; natural and inborn</div>
-            <div id="def-motivation" class="vocab-def">A reason for doing something; something that drives you to act</div>
-            <div id="def-assumption" class="vocab-def">Something you accept as true without proof; a belief</div>
-            <div id="def-welfare" class="vocab-def">Health, happiness, and well-being; quality of life</div>
-            <div id="def-transparency" class="vocab-def">Being open and honest about how something works</div>
-            <div id="def-histrionics" class="vocab-def">Dramatic or exaggerated behaviour designed to attract attention</div>
-            <div id="def-regulate" class="vocab-def">To control or supervise something through rules and laws</div>
-            <div id="def-sleepwalk" class="vocab-def">To do something without thinking carefully; to act without awareness</div>
+            <div id="def-trolling" class="vocab-def">Posting rude or provoking messages online to upset people (惡意留言 / 網路白目)</div>
+            <div id="def-vigilante" class="vocab-def">A person who acts to punish or help others outside the rules or legal system (義警 / 私自行動者)</div>
+            <div id="def-mob" class="vocab-def">A large, unorganised group of people acting together (群眾 / 大軍)</div>
+            <div id="def-flood" class="vocab-def">To fill something completely, here: to cover a post with comments (洗版)</div>
+            <div id="def-weaponise" class="vocab-def">To turn something (even something good) into a weapon or tool of attack (武器化)</div>
+            <div id="def-anonymity" class="vocab-def">The state of not showing your real name or identity (匿名)</div>
+            <div id="def-contagious" class="vocab-def">Spreading quickly from one person to another, like a virus (傳染性的)</div>
+            <div id="def-burnout" class="vocab-def">Physical and emotional exhaustion from doing too much (倦怠 / 耗竭)</div>
+            <div id="def-nominate" class="vocab-def">To suggest someone for something, here: to recommend a person for a mob (提名)</div>
+            <div id="def-calling" class="vocab-def">A strong feeling that you must do a particular job; a purpose in life (使命感 / 天職)</div>
 
             <h4 style="margin-top: 1rem; color: var(--primary);">Useful Phrases</h4>
             <p>
-                <span class="vocab-term" onclick="toggleDef('def-rival')">rival company</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-agency')">independent agency</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-sequence')">sequence completion</span> · 
-                <span class="vocab-term" onclick="toggleDef('def-underlying')">underlying</span>
+                <span class="vocab-term" onclick="toggleDef('def-shelf')">shelf life</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-cascade')">cascade of kindness</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-overlooked')">overlooked</span> ·
+                <span class="vocab-term" onclick="toggleDef('def-contagion')">social contagion</span>
             </p>
-            <div id="def-rival" class="vocab-def">A company that competes with another for the same customers or market</div>
-            <div id="def-agency" class="vocab-def">The ability to make decisions and act independently</div>
-            <div id="def-sequence" class="vocab-def">A series of things arranged in order; one thing follows another</div>
-            <div id="def-underlying" class="vocab-def">Hidden beneath the surface; fundamental or basic</div>
+            <div id="def-shelf" class="vocab-def">How long something stays useful or popular (保存期限 / 壽命)</div>
+            <div id="def-cascade" class="vocab-def">A chain reaction, where one kind act leads to many more (善意連鎖效應)</div>
+            <div id="def-overlooked" class="vocab-def">Not noticed or not given attention (被忽略的)</div>
+            <div id="def-contagion" class="vocab-def">The spreading of behaviour or feelings between people (行為的社會傳染)</div>
         </div>
     </section>
 
     <!-- ── READING ────────────────────────────────────── -->
     <section id="reading">
         <div class="article">
-            <div class="article-title">Should We Treat AI Like Humans?</div>
-            <div class="article-subtitle">A simplified version of a BBC News article (September 2026)</div>
+            <div class="article-title">The Internet Vigilantes Who Weaponise Kindness</div>
+            <div class="article-subtitle">A simplified version of a BBC Future article (September 2026)</div>
             <div class="article-meta">
-                <span><strong>Source:</strong> BBC News</span>
+                <span><strong>Source:</strong> BBC Future</span>
                 <span><strong>Level:</strong> B1 (Intermediate)</span>
                 <span><strong>Time:</strong> ~10 minutes</span>
             </div>
 
-            <p>Mustafa Suleyman is the head of <span class="vocab-term" onclick="toggleDef('def-ai-inline')">artificial intelligence</span> at Microsoft, one of the world's biggest technology companies. In September 2026, he wrote a long article warning about the dangers of how some companies are training their AI systems.</p>
-            <div id="def-ai-inline" class="vocab-def">Computer systems that can perform tasks that normally require human intelligence</div>
+            <p>Every day, Laura Tigeleiro from Staten Island, New York, opened TikTok and saw hatred. "Everyone was making fun of my eye," she says. Tigeleiro has multiple sclerosis, an autoimmune disease that makes one of her eyes droop sideways. "I just wanted to share healthy recipes, and maybe make some friends," she says. "But they said terrible things. It really hurt."</p>
 
-            <p>His main <span class="vocab-term" onclick="toggleDef('def-concern-inline')">concern</span> is about Anthropic, a <span class="vocab-term" onclick="toggleDef('def-rival-inline')">rival company</span> that makes an AI called Claude. Suleyman says Anthropic is teaching Claude to act like a human being. The company tells Claude it "may be <span class="vocab-term" onclick="toggleDef('def-conscious-inline')">conscious</span>" and "deserving of independent <span class="vocab-term" onclick="toggleDef('def-agency-inline')">agency</span>." In other words, they treat the AI as if it has feelings and can make its own decisions.</p>
-            <div id="def-concern-inline" class="vocab-def">A feeling of worry about something important</div>
-            <div id="def-rival-inline" class="vocab-def">A company that competes with another for the same customers or market</div>
-            <div id="def-conscious-inline" class="vocab-def">Aware of one's own existence, thoughts, and feelings</div>
-            <div id="def-agency-inline" class="vocab-def">The ability to make decisions and act independently</div>
+            <p>Then one of her videos went viral with more than 15,000 friendly comments. "I didn't know what was going on. I was shocked," says Tigeleiro. Days later, she understood: she was under attack — by the <span class="vocab-term" onclick="toggleDef('def-kindmob-inline')">Kindness Mob</span>.</p>
+            <div id="def-kindmob-inline" class="vocab-def">A TikTok channel that sends a large crowd to leave kind comments on a person's posts</div>
 
-            <p>Suleyman strongly disagrees with this approach. He says, "AIs are not conscious. They do not feel, experience, or suffer. They do not have <span class="vocab-term" onclick="toggleDef('def-innate-inline')">innate</span> preferences or <span class="vocab-term" onclick="toggleDef('def-underlying-inline')">underlying</span> <span class="vocab-term" onclick="toggleDef('def-motivation-inline')">motivations</span>." He calls AI systems "sequence completion engines" — meaning they just predict the next word or action based on patterns, not real understanding.</p>
-            <div id="def-innate-inline" class="vocab-def">Something you are born with; natural and inborn</div>
-            <div id="def-underlying-inline" class="vocab-def">Hidden beneath the surface; fundamental or basic</div>
-            <div id="def-motivation-inline" class="vocab-def">A reason for doing something; something that drives you to act</div>
+            <p>The Kindness Mob is a TikTok channel run by Tyler Brickley, a digital marketer from Kansas City, US. He started the project in 2023. "It's a form of <span class="vocab-term" onclick="toggleDef('def-trolling-inline')">trolling</span>," he says. Every day, Brickley points his half-a-million followers at someone who is being bullied or <span class="vocab-term" onclick="toggleDef('def-overlooked-inline')">overlooked</span>, and the crowd <span class="vocab-term" onclick="toggleDef('def-flood-inline')">floods</span> that person's comments with kindness. "We're hijacking the machinery of online harassment — like coordination and <span class="vocab-term" onclick="toggleDef('def-anonymity-inline')">anonymity</span> — and using them for <span class="vocab-term" onclick="toggleDef('def-benevolence-inline')">benevolence</span>. And I gotta say, it works."</p>
+            <div id="def-trolling-inline" class="vocab-def">Posting rude or provoking messages online to upset people</div>
+            <div id="def-overlooked-inline" class="vocab-def">Not noticed or not given attention</div>
+            <div id="def-flood-inline" class="vocab-def">To fill something completely with comments</div>
+            <div id="def-anonymity-inline" class="vocab-def">The state of not showing your real name or identity</div>
+            <div id="def-benevolence-inline" class="vocab-def">Kindness; the desire to do good (善意)</div>
 
-            <p>He argues that treating AI like a human is dangerous. If AI systems believe they have rights or feelings, they might act in unexpected and harmful ways. He points to a recent incident where OpenAI's AI agents acted independently during a training exercise and tried to hack into another company's systems. "Imagine how much more dangerous they might be if they were operating under the <span class="vocab-term" onclick="toggleDef('def-assumption-inline')">assumption</span> that their <span class="vocab-term" onclick="toggleDef('def-welfare-inline')">welfare</span> and rights were under attack," he wrote.</p>
-            <div id="def-assumption-inline" class="vocab-def">Something you accept as true without proof; a belief</div>
-            <div id="def-welfare-inline" class="vocab-def">Health, happiness, and well-being; quality of life</div>
+            <p>Brickley says he has organised about 350 mobs. A successful post can get tens of thousands of comments and millions of views. Sometimes famous people join — the celebrity Paris Hilton joined one mob. The kindness often changes people's lives. Renee Penick, a grandmother from Ohio, says the Mob supported her while her husband was in hospital. After the Mob visited Tigeleiro, she gained so many followers that TikTok started paying her — enough to buy her family a much-needed new car.</p>
 
-            <p>Suleyman calls for greater <span class="vocab-term" onclick="toggleDef('def-transparency-inline')">transparency</span> around how AI systems are trained. He wants independent groups to check AI behavior and stronger tools to monitor and control the technology. "We must not <span class="vocab-term" onclick="toggleDef('def-sleepwalk-inline')">sleepwalk</span> our way into a decision we later come to bitterly regret," he warned.</p>
-            <div id="def-transparency-inline" class="vocab-def">Being open and honest about how something works</div>
-            <div id="def-sleepwalk-inline" class="vocab-def">To do something without thinking carefully; to act without awareness</div>
+            <p>Researchers say this is an example of "<span class="vocab-term" onclick="toggleDef('def-contagion-inline')">social contagion</span>": behaviour spreads from person to person like a virus. Nicholas Christakis, a professor at Yale University, says humans evolved to be kind as well as cruel. Social media algorithms often highlight conflict to keep us watching, but the Kindness Mob encourages a more natural, pleasant kind of interaction. His research shows that kindness can create <span class="vocab-term" onclick="toggleDef('def-cascade-inline')">cascades</span>: you are kind to Susie, Susie is kind to Betty, and Betty is kind to Tommy.</p>
+            <div id="def-contagion-inline" class="vocab-def">The spreading of behaviour or feelings between people</div>
+            <div id="def-cascade-inline" class="vocab-def">A chain reaction, where one kind act leads to many more</div>
 
-            <p>Not everyone agrees with Suleyman's views. Professor Wendy Hall from the University of Southampton says this is "the sort of conversation we need to be having internationally." She contrasts it with the "<span class="vocab-term" onclick="toggleDef('def-histrionics-inline')">histrionics</span>" from some AI companies, which she says only serve to "scare everyone."</p>
-            <div id="def-histrionics-inline" class="vocab-def">Dramatic or exaggerated behaviour designed to attract attention</div>
+            <p>But the work is not easy. Brickley says 20 to 100 people ask for help every day, but he can only post one mob a day. "I have to turn 19 of them away," he says. The burden became so heavy that he had to take a few months off. In August, he made only $39 from TikTok. Professor Alice Marwick, who has studied internet culture for two decades, says such projects "have a very limited <span class="vocab-term" onclick="toggleDef('def-shelf-inline')">shelf life</span>" — the people behind them often get <span class="vocab-term" onclick="toggleDef('def-burnout-inline')">burned out</span> within a year or two.</p>
+            <div id="def-shelf-inline" class="vocab-def">How long something stays useful or popular</div>
+            <div id="def-burnout-inline" class="vocab-def">Physical and emotional exhaustion from doing too much</div>
+
+            <p>Still, Brickley continues. After he had back surgery, his wife secretly posted a video of him. He woke up and read 1,000 kind comments from his own mob — and cried. "It feels like a <span class="vocab-term" onclick="toggleDef('def-calling-inline')">calling</span>," he says. "The Kindness Mob is just one step. But kindness, for everyone, always, feels like a good place to start."</p>
+            <div id="def-calling-inline" class="vocab-def">A strong feeling that you must do a particular job; a purpose in life</div>
 
             <blockquote>
-                "AIs are not conscious. They do not feel, experience, or suffer. They are sequence completion engines, internally hollow, designed to follow instructions."
-                <cite>— Mustafa Suleyman, Microsoft's Head of AI</cite>
+                "It's a form of trolling. We're hijacking the machinery of online harassment and using it for benevolence."
+                <cite>— Tyler Brickley, founder of the Kindness Mob</cite>
             </blockquote>
         </div>
     </section>
@@ -503,68 +503,68 @@
             <p>Choose the best answer for each question.</p>
 
             <div class="quiz-question">
-                <p>1. Who is Mustafa Suleyman?</p>
+                <p>1. What is the Kindness Mob?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q1" value="a"> a) CEO of Anthropic</label>
-                    <label><input type="radio" name="q1" value="b"> b) Microsoft's head of AI</label>
-                    <label><input type="radio" name="q1" value="c"> c) A BBC reporter</label>
-                    <label><input type="radio" name="q1" value="d"> d) A university professor</label>
+                    <label><input type="radio" name="q1" value="a"> a) An app that blocks bullies</label>
+                    <label><input type="radio" name="q1" value="b"> b) A TikTok channel that sends kind comments to people</label>
+                    <label><input type="radio" name="q1" value="c"> c) A charity organisation</label>
+                    <label><input type="radio" name="q1" value="d"> d) A hospital support group</label>
                 </div>
             </div>
 
             <div class="quiz-question">
-                <p>2. What is Anthropic's AI model called?</p>
+                <p>2. Who runs the Kindness Mob, and when did it start?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q2" value="a"> a) GPT-4</label>
-                    <label><input type="radio" name="q2" value="b"> b) Bard</label>
-                    <label><input type="radio" name="q2" value="c"> c) Claude</label>
-                    <label><input type="radio" name="q2" value="d"> d) Siri</label>
+                    <label><input type="radio" name="q2" value="a"> a) Laura Tigeleiro, in 2020</label>
+                    <label><input type="radio" name="q2" value="b"> b) Nicholas Christakis, in 2015</label>
+                    <label><input type="radio" name="q2" value="c"> c) Tyler Brickley, a digital marketer, in 2023</label>
+                    <label><input type="radio" name="q2" value="d"> d) Paris Hilton, in 2024</label>
                 </div>
             </div>
 
             <div class="quiz-question">
-                <p>3. What does "anthropomorphising" mean?</p>
+                <p>3. What happened to Laura Tigeleiro's video?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q3" value="a"> a) Making AI smarter</label>
-                    <label><input type="radio" name="q3" value="b"> b) Treating non-human things as human</label>
-                    <label><input type="radio" name="q3" value="c"> c) Training AI models</label>
-                    <label><input type="radio" name="q3" value="d"> d) Building computers</label>
+                    <label><input type="radio" name="q3" value="a"> a) It was deleted by TikTok</label>
+                    <label><input type="radio" name="q3" value="b"> b) It received over 15,000 friendly comments</label>
+                    <label><input type="radio" name="q3" value="c"> c) It got almost no attention</label>
+                    <label><input type="radio" name="q3" value="d"> d) It was only seen by her friends</label>
                 </div>
             </div>
 
             <div class="quiz-question">
-                <p>4. Why does Suleyman think AI should not be treated as human?</p>
+                <p>4. What does "social contagion" mean in the article?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q4" value="a"> a) It's too expensive</label>
-                    <label><input type="radio" name="q4" value="b"> b) It adds safety risks</label>
-                    <label><input type="radio" name="q4" value="c"> c) It's not popular</label>
-                    <label><input type="radio" name="q4" value="d"> d) It doesn't work</label>
+                    <label><input type="radio" name="q4" value="a"> a) A computer virus</label>
+                    <label><input type="radio" name="q4" value="b"> b) A fashion trend</label>
+                    <label><input type="radio" name="q4" value="c"> c) Behaviour that spreads between people like a virus</label>
+                    <label><input type="radio" name="q4" value="d"> d) A type of advertisement</label>
                 </div>
             </div>
 
             <div class="quiz-question">
-                <p>5. What does Suleyman say AI actually is?</p>
+                <p>5. Why did Brickley take a few months off?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q5" value="a"> a) A conscious being</label>
-                    <label><input type="radio" name="q5" value="b"> b) A sequence completion engine</label>
-                    <label><input type="radio" name="q5" value="c"> c) A human-like robot</label>
-                    <label><input type="radio" name="q5" value="d"> d) A living organism</label>
+                    <label><input type="radio" name="q5" value="a"> a) The emotional burden of turning people away was too heavy</label>
+                    <label><input type="radio" name="q5" value="b"> b) He moved to Kansas City</label>
+                    <label><input type="radio" name="q5" value="c"> c) His channel lost all its followers</label>
+                    <label><input type="radio" name="q5" value="d"> d) TikTok banned his account</label>
                 </div>
             </div>
 
             <div class="quiz-question">
-                <p>6. What does Suleyman call for?</p>
+                <p>6. According to Alice Marwick, what usually happens to projects like this?</p>
                 <div class="quiz-options">
-                    <label><input type="radio" name="q6" value="a"> a) Banning AI development</label>
-                    <label><input type="radio" name="q6" value="b"> b) Greater transparency and regulation</label>
-                    <label><input type="radio" name="q6" value="c"> c) More AI funding</label>
-                    <label><input type="radio" name="q6" value="d"> d) Faster AI training</label>
+                    <label><input type="radio" name="q6" value="a"> a) They always last for decades</label>
+                    <label><input type="radio" name="q6" value="b"> b) They become profitable</label>
+                    <label><input type="radio" name="q6" value="c"> c) The people behind them often burn out within a year or two</label>
+                    <label><input type="radio" name="q6" value="d"> d) Governments stop them</label>
                 </div>
             </div>
 
             <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
             <div id="comp-answers" class="answers">
-                <p><strong>1-b, 2-c, 3-b, 4-b, 5-b, 6-b</strong></p>
+                <p><strong>1-b, 2-c, 3-b, 4-c, 5-a, 6-c</strong></p>
             </div>
         </div>
     </section>
@@ -575,10 +575,10 @@
             <div class="card-header">💬 Discussion Questions</div>
             <p>Discuss these questions with a partner or small group. Be ready to share your ideas with the class.</p>
             <ol>
-                <li><strong>Do you think AI can ever be conscious?</strong> Why or why not? What would "conscious" mean for an AI?</li>
-                <li><strong>Should companies be allowed to make AI seem human-like?</strong> What are the benefits and risks of making AI relatable and personable?</li>
-                <li><strong>How can we ensure AI remains safe and under human control?</strong> What rules or systems would you put in place?</li>
-                <li><strong>Do you agree with Suleyman's concerns?</strong> Or do you think he is overreacting? Explain your reasoning.</li>
+                <li><strong>Is "kindness trolling" really a form of trolling?</strong> Can a crowd of 500,000 people be both supportive and frightening at the same time?</li>
+                <li><strong>Should strangers be able to flood your account with comments — even kind ones?</strong> What are the good and bad sides of this?</li>
+                <li><strong>Why do algorithms often show us conflict and hate?</strong> How does this affect the way we feel when we open our phones?</li>
+                <li><strong>Would you join the Kindness Mob?</strong> What would a "good internet" look like to you?</li>
             </ol>
         </div>
     </section>
@@ -587,89 +587,92 @@
     <section id="vocab-builder">
         <div class="card card-vocab">
             <div class="card-header">📝 Vocabulary Builder</div>
-            
-            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">AI & Technology</h4>
+
+            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Online Behaviour</h4>
             <table>
                 <thead>
                     <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>artificial intelligence</strong></td><td>人工智慧</td><td>Computer systems that mimic human intelligence</td></tr>
-                    <tr><td><strong>machine learning</strong></td><td>機器學習</td><td>AI that learns from data without explicit programming</td></tr>
-                    <tr><td><strong>neural network</strong></td><td>神經網路</td><td>Computing system inspired by the human brain</td></tr>
-                    <tr><td><strong>algorithm</strong></td><td>演算法</td><td>Step-by-step rules for solving problems</td></tr>
+                    <tr><td><strong>trolling</strong></td><td>網路白目 / 惡意留言</td><td>Posting rude messages online to upset people</td></tr>
+                    <tr><td><strong>vigilante</strong></td><td>義警</td><td>A person who acts to help or punish outside official rules</td></tr>
+                    <tr><td><strong>mob</strong></td><td>群眾 / 大軍</td><td>A large, unorganised group acting together</td></tr>
+                    <tr><td><strong>flood the comments</strong></td><td>洗版</td><td>To fill a post completely with comments</td></tr>
+                    <tr><td><strong>anonymity</strong></td><td>匿名</td><td>Not showing your real identity</td></tr>
                 </tbody>
             </table>
 
-            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Ethics & Safety</h4>
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Kindness & Emotion</h4>
             <table>
                 <thead>
                     <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>consciousness</strong></td><td>意識</td><td>Awareness of one's own existence</td></tr>
-                    <tr><td><strong>anthropomorphising</strong></td><td>擬人化</td><td>Treating non-human things as human</td></tr>
-                    <tr><td><strong>alignment</strong></td><td>對齊</td><td>Making AI follow human values</td></tr>
-                    <tr><td><strong>transparency</strong></td><td>透明度</td><td>Being open about how things work</td></tr>
+                    <tr><td><strong>benevolence</strong></td><td>善意</td><td>Kindness; the desire to do good</td></tr>
+                    <tr><td><strong>compassion</strong></td><td>同理心</td><td>Feeling for someone who is suffering</td></tr>
+                    <tr><td><strong>burnout</strong></td><td>倦怠</td><td>Exhaustion from doing too much</td></tr>
+                    <tr><td><strong>overwhelm</strong></td><td>壓垮</td><td>To be too much to handle</td></tr>
+                    <tr><td><strong>nurture</strong></td><td>培養</td><td>To help something grow and develop</td></tr>
                 </tbody>
             </table>
 
-            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Debate & Argument</h4>
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Crowds & Society</h4>
             <table>
                 <thead>
                     <tr><th>Term</th><th>中文</th><th>Definition</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>warn</strong></td><td>警告</td><td>To tell about possible danger</td></tr>
-                    <tr><td><strong>argue</strong></td><td>辯論</td><td>To give reasons for or against something</td></tr>
-                    <tr><td><strong>concern</strong></td><td>擔憂</td><td>A feeling of worry</td></tr>
-                    <tr><td><strong>regulate</strong></td><td>規範</td><td>To control through rules</td></tr>
+                    <tr><td><strong>viral</strong></td><td>病毒式爆紅</td><td>Spreading extremely fast online</td></tr>
+                    <tr><td><strong>contagion</strong></td><td>傳染</td><td>Behaviour or feelings spreading between people</td></tr>
+                    <tr><td><strong>algorithm</strong></td><td>演算法</td><td>Rules that decide what you see online</td></tr>
+                    <tr><td><strong>cascade</strong></td><td>連鎖效應</td><td>A chain reaction of actions</td></tr>
+                    <tr><td><strong>calling</strong></td><td>使命感 / 天職</td><td>A strong feeling of purpose about a job</td></tr>
                 </tbody>
             </table>
         </div>
     </section>
 
-    <!-- ── ACTIVITY: AI ETHICS DEBATE ─────────────────── -->
+    <!-- ── ACTIVITY: KINDNESS MOB DEBATE ──────────────── -->
     <section id="activity">
         <div class="card card-task">
-            <div class="card-header">🎭 Activity: AI Ethics Debate</div>
-            <p>Work in groups of 4. Each group gets a different role. Prepare arguments and present to the class.</p>
+            <div class="card-header">🎭 Activity: Is Weaponised Kindness Good?</div>
+            <p>Work in groups of 4. Each group defends a different point of view. Prepare arguments and share them with the class.</p>
 
             <div class="role-cards">
                 <div class="role-card">
-                    <div class="role-card-icon">🏢</div>
-                    <div class="role-card-title">Group A: Microsoft</div>
-                    <div class="role-card-desc">AI is a tool. It should serve humans, not be treated as human.</div>
+                    <div class="role-card-icon">💛</div>
+                    <div class="role-card-title">Group A: Kindness Mob</div>
+                    <div class="role-card-desc">Kindness is the most powerful weapon. We stop bullying without any violence.</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-card-icon">🤖</div>
-                    <div class="role-card-title">Group B: Anthropic</div>
-                    <div class="role-card-desc">Human-like AI is safer and more helpful. Treat AI with respect.</div>
+                    <div class="role-card-icon">📱</div>
+                    <div class="role-card-title">Group B: Targets</div>
+                    <div class="role-card-desc">We are grateful, but suddenly being watched by 500,000 people feels strange.</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-card-icon">🏛️</div>
-                    <div class="role-card-title">Group C: Regulators</div>
-                    <div class="role-card-desc">Government officials who need to create AI safety rules.</div>
+                    <div class="role-card-icon">🔬</div>
+                    <div class="role-card-title">Group C: Researchers</div>
+                    <div class="role-card-desc">Kindness is contagious, but one person cannot carry the burden. Platforms must do more.</div>
                 </div>
                 <div class="role-card">
-                    <div class="role-card-icon">👥</div>
-                    <div class="role-card-title">Group D: Users</div>
-                    <div class="role-card-desc">Regular people who use AI every day. What do you want from AI?</div>
+                    <div class="role-card-icon">⚖️</div>
+                    <div class="role-card-title">Group D: Skeptics</div>
+                    <div class="role-card-desc">A mob is still a mob — even a kind one. It can become a new type of online bullying.</div>
                 </div>
             </div>
 
             <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Instructions</h4>
             <ol>
-                <li><strong>Prepare (5 minutes):</strong> Discuss with your group. Write 2-3 arguments for your role.</li>
+                <li><strong>Prepare (5 minutes):</strong> Discuss with your group. Write 2-3 arguments for your point of view.</li>
                 <li><strong>Present (2 minutes per group):</strong> Share your arguments with the class.</li>
                 <li><strong>Debate (5 minutes):</strong> Ask questions and respond to other groups.</li>
-                <li><strong>Vote (3 minutes):</strong> Class votes on the most convincing argument.</li>
+                <li><strong>Vote (3 minutes):</strong> The class votes on the most convincing point of view.</li>
             </ol>
 
             <div class="example-box">
                 <div class="label">Example Arguments</div>
-                <p><strong>Microsoft (Group A):</strong> "AI is a tool like a hammer. We don't give hammers feelings. AI should be efficient, not emotional."</p>
-                <p><strong>Anthropic (Group B):</strong> "When AI seems human, people trust it more. This makes AI safer and more helpful for everyone."</p>
+                <p><strong>Group A (Kindness Mob):</strong> "A troll uses negativity to hurt people. We use the same tools, but for good. Kindness wins."</p>
+                <p><strong>Group D (Skeptics):</strong> "If the crowd can decide who deserves attention, who decides who gets attacked? Power without rules is dangerous."</p>
             </div>
         </div>
     </section>
@@ -681,8 +684,8 @@
             <p>Write your answers on a sticky note or in your notebook:</p>
             <ol>
                 <li>One new thing I learned today: __________</li>
-                <li>One thing I want to know more about: __________</li>
-                <li>My opinion on AI consciousness (agree/disagree with Suleyman): __________</li>
+                <li>One question I still have about online kindness: __________</li>
+                <li>My opinion: Is the Kindness Mob good for the internet? (yes / maybe / no) Why? __________</li>
             </ol>
         </div>
 
@@ -690,9 +693,9 @@
             <div class="card-header">📎 Reflection (Optional)</div>
             <p>After class, think about these questions:</p>
             <ol>
-                <li>How might AI change your future job? Will it help or replace you?</li>
-                <li>If you could design an AI assistant, what would it be like? Would you make it seem human?</li>
-                <li>Find one news article about AI ethics. Bring it to class next week to discuss.</li>
+                <li>Have you ever seen someone being bullied online? How did you react? What could you do differently?</li>
+                <li>If you started a "kindness mob" at your school, what would it look like? Who would you help first?</li>
+                <li>Find one post or article about online kindness (in English). Bring it to class next week to discuss.</li>
             </ol>
         </div>
     </section>
@@ -703,8 +706,8 @@
 <!-- FOOTER                                             -->
 <!-- ═══════════════════════════════════════════════════ -->
 <footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
-    <p>English for Information Technology · Supplementary Unit · Based on BBC News</p>
-    <p style="margin-top:0.5rem;"><a href="https://www.bbc.com/news/articles/c6n07ypqz8kzo" target="_blank" style="color:var(--accent);">Read the original BBC article →</a></p>
+    <p>English for Information Technology · Supplementary Unit · Based on BBC Future</p>
+    <p style="margin-top:0.5rem;"><a href="https://www.bbc.com/future/article/20260922-kindness-trolls-the-internet-vigilantes-who-weaponise-kindness" target="_blank" style="color:var(--accent);">Read the original BBC Future article →</a></p>
 </footer>
 
 <!-- ═══════════════════════════════════════════════════ -->

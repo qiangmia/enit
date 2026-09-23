@@ -41,7 +41,7 @@
 
         /* ── Header ────────────────────────────────────── */
         .course-header {
-            background: linear-gradient(rgba(30, 58, 95, 0.85), rgba(30, 58, 95, 0.9)), url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&h=400&fit=crop');
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&h=400&fit=crop');
             background-size: cover;
             background-position: center;
             color: white;
@@ -550,6 +550,7 @@
             .audio-player audio { width: 100%; height: 32px; }
         }
     </style>
+    <script src="../theme.js"></script>
 </head>
 <body>
 

@@ -85,6 +85,10 @@
         .status-bar.warning { background: var(--warm-light); color: var(--warm); }
         .status-bar.info { background: var(--accent-light); color: var(--accent); }
 
+        /* ── Theme Picker ──────────────────────────────────── */
+        .theme-preview { display: flex; gap: 0.5rem; margin-top: 0.4rem; flex-wrap: wrap; }
+        .theme-swatch { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--border); display: inline-block; }
+
         /* ── Seating Grid ──────────────────────────────────── */
         .seating-section { margin-bottom: 1.5rem; }
         .seating-grid {
@@ -241,6 +245,7 @@
             .seating-grid { display: none; }
         }
     </style>
+    <script src="../theme.js"></script>
 </head>
 <body>
 
@@ -257,6 +262,7 @@
         <button class="tab-btn" onclick="switchTab('settings')">&#127918; Game Settings</button>
         <button class="tab-btn" onclick="switchTab('questions')">&#10067; Questions</button>
         <button class="tab-btn" onclick="switchTab('results')">&#128221; Results</button>
+        <button class="tab-btn" onclick="switchTab('appearance')">&#127912; Appearance</button>
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
@@ -549,6 +555,31 @@ CPU&#9;the central processing unit"></textarea>
                 </thead>
                 <tbody id="detail-body"></tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- APPEARANCE TAB                                      -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="tab-appearance" class="tab-content">
+        <div class="config-section">
+            <h3>&#127912; Change Skin for the Website</h3>
+            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.8rem;">
+                Pick a colour skin. The choice is applied to the whole site (homepage, lessons,
+                quiz game, this config page) and remembered on this device.
+            </p>
+            <div class="form-row">
+                <label>Website theme:</label>
+                <select id="theme-select" onchange="updateThemeSelectUI()"></select>
+            </div>
+            <div id="theme-preview" class="theme-preview"></div>
+            <div class="btn-group" style="margin-top: 0.8rem;">
+                <button class="btn btn-success" onclick="applyThemeFromConfig()">&#128190; Save &amp; Apply</button>
+                <button class="btn btn-secondary" onclick="resetThemeFromConfig()">&#128260; Reset to Default</button>
+            </div>
+            <div id="theme-status" class="status-bar info">
+                Current theme: <span id="theme-status-name">ENIT Default</span>.
+            </div>
         </div>
     </div>
 
@@ -862,6 +893,64 @@ function switchTab(tabName) {
     tabs.forEach(function(btn) {
         if (btn.getAttribute('onclick').indexOf(tabName) !== -1) btn.classList.add('active');
     });
+    if (tabName === 'appearance') updateThemeSelectUI();
+}
+
+// ── Appearance / Theme ─────────────────────────────────
+function populateThemeSelect() {
+    var sel = document.getElementById('theme-select');
+    var themes = window.ENIT_Theme.list();
+    var current = window.ENIT_Theme.current();
+    sel.innerHTML = '';
+    themes.forEach(function (t) {
+        var opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = t.label + ' — ' + t.desc;
+        if (t.id === current) opt.selected = true;
+        sel.appendChild(opt);
+    });
+    updateThemeSelectUI();
+}
+function updateThemeSelectUI() {
+    var current = window.ENIT_Theme.current();
+    var sel = document.getElementById('theme-select');
+    if (sel) sel.value = current;
+    updateThemePreview(current);
+    updateThemeStatus(current);
+}
+function updateThemePreview(id) {
+    var box = document.getElementById('theme-preview');
+    if (!box || !window.ENIT_Theme.THEMES) return;
+    var t = window.ENIT_Theme.THEMES[id] || window.ENIT_Theme.THEMES.default;
+    box.innerHTML = '';
+    ['primary', 'accent', 'warm', 'bg', 'card-bg'].forEach(function (name) {
+        var sw = document.createElement('span');
+        sw.className = 'theme-swatch';
+        sw.style.background = t.vars[name];
+        sw.title = name;
+        box.appendChild(sw);
+    });
+}
+function updateThemeStatus(id) {
+    var name = document.getElementById('theme-status-name');
+    if (!name) return;
+    name.textContent = (window.ENIT_Theme.THEMES[id] || {}).label || 'ENIT Default';
+}
+function applyThemeFromConfig() {
+    var id = document.getElementById('theme-select').value;
+    window.ENIT_Theme.apply(id, true);
+    updateThemeSelectUI();
+    var st = document.getElementById('theme-status');
+    st.className = 'status-bar success';
+    st.innerHTML = '&#10003; Theme saved &amp; applied site-wide: ' +
+        '<span id="theme-status-name">' + window.ENIT_Theme.THEMES[id].label + '</span>.';
+}
+function resetThemeFromConfig() {
+    window.ENIT_Theme.reset();
+    updateThemeSelectUI();
+    var st = document.getElementById('theme-status');
+    st.className = 'status-bar info';
+    st.innerHTML = '&#8635; Theme reset to the ENIT Default.';
 }
 
 // ── Google Sheets Functions ────────────────────────────
@@ -1900,6 +1989,7 @@ loadApiConfig();
 loadGameSettings();
 loadQuestionsIntoEditor();
 loadQuestionsCsvUrl();
+populateThemeSelect();
 </script>
 </body>
 </html>
