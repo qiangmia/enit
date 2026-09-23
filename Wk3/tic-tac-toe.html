@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe — ENIT Week 3 Game</title>
+    <title>Tic Tac Toe — ENIT Classroom Game</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -328,7 +328,7 @@
 
 <header class="game-header">
     <h1>&#127918; Tic Tac Toe</h1>
-    <div class="subtitle">ENIT Week 3 &mdash; Reviewing Week 2 Content</div>
+    <div class="subtitle">ENIT &mdash; Reviewing last week's vocabulary &amp; grammar</div>
 </header>
 
 <!-- SETUP SCREEN -->
@@ -551,6 +551,7 @@
     <div class="shortcut"><kbd>Esc</kbd> Close Modal</div>
 </div>
 
+<script src="../enit-questions.js"></script>
 <script>
 // ── Constants ──────────────────────────────────────────
 const ROWS = 7;
@@ -585,79 +586,31 @@ let gameState = {
 };
 
 // ── Built-in Question Bank (fallback) ──────────────────
-const BUILTIN_QUESTIONS = [
-    { id:1, category:"Hardware", type:"mc", question:"What does 'CPU' stand for?",
+// Default content lives in ../enit-questions.js (loaded above). This tiny
+// embedded set is only a safety net so the game still runs (with a warning)
+// if that shared file is missing, e.g. a single file copied elsewhere.
+const EMERGENCY_QUESTIONS = [
+    { id:1, category:"Emergency", type:"mc", question:"Emergency fallback: what does 'CPU' stand for?",
       options:["Central Processing Unit","Computer Processing Unit","Central Processor Unit","Core Processing Unit"],
       answer:0, points:1 },
-    { id:2, category:"Hardware", type:"translation", question:"What is '\u8A18\u61B6\u9AD4' in English?",
-      answer:"memory|RAM", points:2 },
-    { id:3, category:"Hardware", type:"mc", question:"Which component is called the 'brain' of the computer?",
+    { id:2, category:"Emergency", type:"mc", question:"Which component is called the 'brain' of the computer?",
       options:["RAM","CPU","SSD","Motherboard"], answer:1, points:1 },
-    { id:4, category:"Hardware", type:"mc", question:"What does an SSD use instead of magnetic storage?",
-      options:["Flash memory","Magnetic disks","Optical discs","Tape"], answer:0, points:1 },
-    { id:5, category:"Hardware", type:"mc", question:"What does 'GPU' stand for?",
-      options:["General Processing Unit","Graphics Processing Unit","Graphics Power Unit","General Purpose Unit"],
-      answer:1, points:1 },
-    { id:6, category:"Hardware", type:"mc", question:"What converts electricity to power computer components?",
-      options:["CPU","RAM","Power Supply Unit","Cooling Fan"], answer:2, points:1 },
-    { id:7, category:"Hardware", type:"mc", question:"What prevents components from overheating?",
-      options:["SSD","Cooling fan","USB port","Ethernet port"], answer:1, points:1 },
-    { id:8, category:"Hardware", type:"open", question:"Name 2 types of computer storage.",
-      answer:"SSD|HDD|USB drive|SD card", points:2 },
-    { id:9, category:"Hardware", type:"mc", question:"What connects all components on the main circuit board?",
-      options:["CPU","RAM","Motherboard","Power supply"], answer:2, points:1 },
-    { id:10, category:"Hardware", type:"translation", question:"What is '\u56FA\u614B\u786C\u789F' in English?",
-      answer:"SSD|solid-state drive", points:2 },
-    { id:11, category:"Hardware", type:"open", question:"Name the two main processor brands.",
-      answer:"Intel|AMD", points:2 },
-    { id:12, category:"Hardware", type:"mc", question:"What does 'HDD' stand for?",
-      options:["High-density Data Drive","Hard Disk Drive","High-speed Data Device","Hardware Disk Drive"],
-      answer:1, points:1 },
-    { id:13, category:"Peripherals", type:"mc", question:"Which port carries both video and audio signals?",
-      options:["USB","HDMI","Ethernet","Power"], answer:1, points:1 },
-    { id:14, category:"Peripherals", type:"translation", question:"What is '\u87F2\u5E55' in English?",
+    { id:3, category:"Emergency", type:"fill", question:"Use one word: the opposite of 'install'.",
+      answer:"uninstall", points:1 },
+    { id:4, category:"Emergency", type:"translation", question:"What is '螢幕' in English?",
       answer:"monitor", points:1 },
-    { id:15, category:"Peripherals", type:"open", question:"Name 2 input devices.",
-      answer:"keyboard|mouse|microphone|webcam", points:2 },
-    { id:16, category:"Peripherals", type:"mc", question:"What type of cable provides wired network connection?",
-      options:["USB cable","HDMI cable","Ethernet cable","Power cable"], answer:2, points:1 },
-    { id:17, category:"Peripherals", type:"mc", question:"What is 'USB' short for?",
-      options:["Universal Serial Bus","Unified System Bus","Universal System Bridge","Unified Serial Bridge"],
-      answer:0, points:1 },
-    { id:18, category:"Peripherals", type:"mc", question:"What is an 'Ethernet port' used for?",
-      options:["Audio output","Video output","Wired network","Wireless connection"], answer:2, points:1 },
-    { id:19, category:"Actions", type:"mc", question:"What does 'troubleshoot' mean?",
-      options:["To install software","To find and fix problems","To upgrade hardware","To shut down a computer"],
-      answer:1, points:1 },
-    { id:20, category:"Actions", type:"mc", question:"What is the opposite of 'install'?",
-      options:["Configure","Uninstall","Upgrade","Connect"], answer:1, points:1 },
-    { id:21, category:"Actions", type:"mc", question:"What does 'boot up' mean?",
-      options:["To shut down","To restart","To start a computer","To delete files"], answer:2, points:1 },
-    { id:22, category:"Actions", type:"open", question:"Use 'configure' in a sentence about computers.",
-      answer:true, points:2 },
-    { id:23, category:"Actions", type:"mc", question:"What does 'upgrade' mean?",
-      options:["To remove","To replace with a better component","To connect","To troubleshoot"],
-      answer:1, points:1 },
-    { id:24, category:"Grammar", type:"fill", question:"_____ a CPU on the motherboard.",
-      answer:"There is", points:1 },
-    { id:25, category:"Grammar", type:"fill", question:"_____ two memory slots in this computer.",
-      answer:"There are", points:1 },
-    { id:26, category:"Grammar", type:"fill", question:"_____ enough USB ports for all devices.",
-      answer:"There aren't|There are not", points:1 },
-    { id:27, category:"Grammar", type:"open", question:"Write a sentence using 'there are' + a hardware term.",
-      answer:true, points:2 },
-    { id:28, category:"AI Safety", type:"mc", question:"What does 'conscious' mean?",
-      options:["Aware of one's own existence","Very smart","Fast-moving","Made of plastic"],
-      answer:0, points:1 },
-    { id:29, category:"AI Safety", type:"translation", question:"What is 'anthropomorphising' in Chinese?",
-      answer:"\u64EC\u4EBA\u5316", points:2 },
-    { id:30, category:"AI Safety", type:"mc", question:"What does 'transparency' mean in AI context?",
-      options:["Being see-through","Being fast","Being open and honest about how something works","Being expensive"],
-      answer:2, points:1 },
-    { id:31, category:"AI Safety", type:"mc", question:"What does 'regulate' mean?",
-      options:["To ignore","To control through rules and laws","To build","To delete"],
-      answer:1, points:1 }
+    { id:5, category:"Emergency", type:"mc", question:"What does 'troubleshoot' mean?",
+      options:["To find and fix problems","To install software","To delete files","To restart"], answer:0, points:1 }
 ];
+
+function defaultQuestionBank() {
+    if (typeof ENIT_DEFAULT_QUESTIONS !== 'undefined' &&
+        Array.isArray(ENIT_DEFAULT_QUESTIONS) && ENIT_DEFAULT_QUESTIONS.length > 0) {
+        return ENIT_DEFAULT_QUESTIONS;
+    }
+    console.warn("enit-questions.js not found — using the tiny embedded emergency question set.");
+    return EMERGENCY_QUESTIONS;
+}
 
 // ── Custom Question Bank (editable via Class Config page) ──
 var DEFAULT_WEEK = 3;
@@ -685,7 +638,7 @@ function loadQuestions() {
             }
         }
     } catch (e) {}
-    return backfill(BUILTIN_QUESTIONS);
+    return backfill(defaultQuestionBank());
 }
 
 function cloneQuestionWithWeek(q, w) {
@@ -2082,6 +2035,15 @@ document.addEventListener('keydown', function(e) {
 // ── Initialize ─────────────────────────────────────────
 loadRollcall();
 loadConfig();
+// Allow deep links like ?week=4 (e.g. from the homepage Week 4 card):
+// persist that week as the only active week so the strip shows it.
+(function applyWeekParam() {
+    var m = (location.search || '').match(/[?&]week=(\d{1,2})/i);
+    if (m) {
+        var w = parseInt(m[1], 10);
+        if (w >= 1 && w <= 18) saveActiveWeeks([w]);
+    }
+})();
 renderWeekStrip();
 </script>
 </body>
