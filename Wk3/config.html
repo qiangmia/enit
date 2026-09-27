@@ -105,9 +105,16 @@
         }
         .seat {
             aspect-ratio: 1.3; border: 2px dashed var(--border); border-radius: 6px;
-            display: flex; align-items: center; justify-content: center; font-size: 0.55rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 0.7rem; line-height: 1.25;
             text-align: center; padding: 2px; cursor: pointer; transition: all 0.2s;
             background: white; min-height: 40px; position: relative;
+            overflow: hidden;
+        }
+        .seat .seat-cn { font-weight: 600; letter-spacing: 0.02em; }
+        .seat .seat-en {
+            font-size: 0.85em; font-weight: 400; opacity: 0.75;
+            max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
         .seat:hover { border-color: var(--accent); background: var(--accent-light); }
         .seat.filled { border-style: solid; font-weight: 600; }
@@ -237,7 +244,7 @@
         /* ── Responsive ────────────────────────────────────── */
         @media (max-width: 768px) {
             .seating-grid { grid-template-columns: 30px repeat(10, 1fr); gap: 2px; }
-            .seat { font-size: 0.45rem; min-height: 32px; }
+            .seat { font-size: 0.6rem; min-height: 32px; }
             .tab-btn { font-size: 0.75rem; padding: 0.6rem 0.8rem; min-width: 80px; }
             .form-row input[type="text"] { min-width: 150px; }
         }
@@ -252,6 +259,22 @@
             z-index: 2;
         }
         .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Roster Loader (student data is never stored in this file) ── */
+        .roster-loader {
+            background: var(--card-bg, #fff); border: 1px solid var(--border, #e2e8f0);
+            border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1rem;
+        }
+        .roster-loader h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+        .roster-loader .hint { font-size: 0.8rem; color: var(--text-light, #718096); margin: 0 0 0.7rem; }
+        .roster-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .roster-actions label.btn { cursor: pointer; margin: 0; }
+        .roster-paste-wrap { margin-top: 0.7rem; }
+        .roster-paste-wrap textarea {
+            width: 100%; font-family: 'Courier New', monospace; font-size: 0.8rem;
+            padding: 0.6rem; border: 1px solid var(--border, #e2e8f0); border-radius: 6px;
+            resize: vertical; margin-bottom: 0.5rem; box-sizing: border-box;
+        }
     </style>
     <script src="../theme.js"></script>
 </head>
@@ -277,6 +300,20 @@
     <!-- SEATING TAB                                        -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div id="tab-seating" class="tab-content active">
+<div class="roster-loader">
+            <h3>&#128101; Class Roster</h3>
+            <p class="hint">No student names are stored in this page. Load <code>roster.txt</code> once &mdash; it is kept in this browser only and is never uploaded.</p>
+            <div class="roster-actions">
+                <label class="btn btn-primary">&#128194; Load roster.txt<input type="file" id="roster-file" accept=".txt,.csv,.tsv" hidden onchange="handleRosterFile(this)"></label>
+                <button class="btn btn-secondary" onclick="toggleRosterPaste()">&#9000; Paste instead</button>
+                <button class="btn btn-danger" onclick="clearRoster()">&#128465;&#65039; Forget roster</button>
+            </div>
+            <div class="roster-paste-wrap" id="roster-paste-wrap" style="display:none;">
+                <textarea id="roster-paste" rows="6" placeholder="0000000&#9;ChineseName&#10;0000001&#9;AnotherName&#9;David"></textarea>
+                <button class="btn btn-success" onclick="loadRosterFromPaste()">&#10003; Load pasted roster</button>
+            </div>
+            <div id="roster-status" class="status-bar info" style="margin-top:0.7rem;">&#9888; No roster loaded yet.</div>
+        </div>
         <div class="btn-group">
             <button class="btn btn-warm" onclick="randomizeSeating()">&#127922; Randomize</button>
             <button class="btn btn-success" onclick="saveSeating()">&#128190; Save Seating</button>
@@ -614,65 +651,58 @@ var selectedStudent = null;
 var allResults = [];
 var allSummary = [];
 
-// ── Embedded Rollcall Data ─────────────────────────────
-var ROLLCALL_RAW = '1141752\t\u7AF6\u6167\u5982\t\n' +
-'1142603\t\u6797\u5B87\u5747\t\n' +
-'1150002\t\u5F90\u8EE8\u58FD\t\n' +
-'1151602\t\u8521\u6DE4\u5B87\t\n' +
-'1151604\t\u738B\u4E88\u8B1D\t\n' +
-'1151605\t\u6C5F\u5B87\u55AC\t\n' +
-'1151606\t\u5085\u54A9\u7DAE\t\n' +
-'1151609\t\u90B1\u54F2\u8B1D\t\n' +
-'1151612\t\u7C16\u5EF7\u65ED\tEvan\n' +
-'1151613\t\u83EF\u82AF\u6148\tSandra\n' +
-'1151615\t\u674E\u52E4\u6167\tJuliana\n' +
-'1151618\t\u91D1\u6C9B\u7487\t\n' +
-'1151619\t\u674E\u80B2\u7DAD\tAdrian\n' +
-'1151622\t\u8521\u5B50\u5BEC\tRyan\n' +
-'1151626\t\u9673\u51A0\u746E\t\n' +
-'1151633\t\u8607\u632F\u5609\tClay\n' +
-'1151634\t\u6797\u4F51\u5C55\tDaniel\n' +
-'1151635\t\u51F8\u5B87\u5B89\tAndy\n' +
-'1151639\t\u5415\u79C9\u5B78\tRyan\n' +
-'1151641\t\u8CF4\u4ED5\u8EE8\tWinnie\n' +
-'1151645\t\u7C16\u7C83\u8535\t\n' +
-'1151647\t\u738B\u5B87\u7530\tAlan\n' +
-'1151650\t\u694A\u529B\u6052\t\n' +
-'1151668\t\u502B\u90C1\u7FD4\t\n' +
-'1151703\t\u80E1\u5B87\u82AF\tCathy\n' +
-'1151705\t\u694A\u558F\u5B89\t\n' +
-'1151706\t\u694A\u5F97\u6FBE\tTravis\n' +
-'1151707\t\u5F35\u54C1\u5A01\t\n' +
-'1151708\t\u9EC3\u67CF\u777F\t\n' +
-'1151709\t\u7FC5\u6977\u80FD\t\n' +
-'1151710\t\u90B1\u54C1\u8A6B\tCalvin\n' +
-'1151716\t\u674E\u7DAD\u5BB9\t\n' +
-'1151717\t\u6797\u4E9E\u7FB2\t\n' +
-'1151718\t\u8D99\u5B50\u5BB9\t\n' +
-'1151719\t\u8A79\u6D51\u8C6A\t\n' +
-'1151720\t\u9EC3\u6977\u7FD4\t\n' +
-'1151721\t\u5EC9\u5B87\u9293\t\n' +
-'1151724\t\u5F90\u6D69\u54F2\tKoluki\n' +
-'1151725\t\u8CF4\u51A0\u5EF7\t\n' +
-'1151726\t\u738B\u6BDD\u9830\tSteven\n' +
-'1151728\t\u77F3\u5C1A\u6069\tNailong\n' +
-'1151730\t\u65B9\u6631\u51EF\t\n' +
-'1151732\t\u90ED\u5B6D\u627F\t\n' +
-'1151733\t\u8521\u54C1\u5B87\t\n' +
-'1151737\t\u5F35\u5609\u6069\tElaine\n' +
-'1151738\t\u5289\u6069\u599D\tBetty\n' +
-'1151739\t\u738B\u4E8E\u65B9\tSophia\n' +
-'1151743\t\u5434\u73D7\u8EE8\tIvy\n' +
-'1151745\t\u9673\u73A5\u5B87\t\n' +
-'1151746\t\u9EC3\u5553\u7DBA\t\n' +
-'1151747\t\u5289\u829D\u5AB6\tBonnie\n' +
-'1151748\t\u9673\u7FBD\u5BA3\t\n' +
-'1151749\t\u8463\u5B9C\u6D5C\t\n' +
-'1151750\t\u59D3\u5170\u82F1\tAngie\n' +
-'1151762\t\u65BD\u4F73\u599D\t\n' +
-'1151764\t\u6797\u6B23\u856C\t\n' +
-'1151767\t\u9673\u6B63\u52DB\t\n' +
-'1151768\t\u5434\u82B8\u5BB6\tMina';
+// ── Embedded Rollcall Data ─────────────────────────────// ── Roster ──────────────────────────────────────────────
+// Student names are NOT stored in this file. Load them from your own
+// device; they are kept in this browser's localStorage and never uploaded.
+var ROSTER_KEY = 'enit_roster_v1';
+var ROLLCALL_RAW = '';   // intentionally empty — no student data is published
+
+function readStoredRoster() {
+    try { return localStorage.getItem(ROSTER_KEY) || ''; } catch (e) { return ''; }
+}
+
+function saveRoster(text) {
+    try { localStorage.setItem(ROSTER_KEY, text); } catch (e) {}
+    loadRollcall();
+}
+
+function clearRoster() {
+    try { localStorage.removeItem(ROSTER_KEY); } catch (e) {}
+    var ta = document.getElementById('roster-paste');
+    if (ta) ta.value = '';
+    loadRollcall();
+}
+
+function handleRosterFile(input) {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () { saveRoster(String(reader.result || '')); input.value = ''; };
+    reader.readAsText(f, 'utf-8');
+}
+
+function toggleRosterPaste() {
+    var w = document.getElementById('roster-paste-wrap');
+    if (w) w.style.display = (w.style.display === 'none') ? 'block' : 'none';
+}
+
+function loadRosterFromPaste() {
+    var ta = document.getElementById('roster-paste');
+    if (ta) saveRoster(ta.value);
+}
+
+function updateRosterStatus() {
+    var el = document.getElementById('roster-status');
+    if (!el) return;
+    if (allStudents.length) {
+        el.className = 'status-bar success';
+        el.textContent = '\u2713 Roster loaded: ' + allStudents.length +
+            ' students (saved in this browser only).';
+    } else {
+        el.className = 'status-bar info';
+        el.textContent = '\u26a0 No roster loaded yet. Use "Load roster.txt" above.';
+    }
+}
 
 // ── Parse Rollcall ─────────────────────────────────────
 function parseRollcall(text) {
@@ -694,7 +724,8 @@ function parseRollcall(text) {
 
 // ── Load Rollcall ──────────────────────────────────────
 function loadRollcall() {
-    allStudents = parseRollcall(ROLLCALL_RAW);
+    allStudents = parseRollcall(readStoredRoster());
+    updateRosterStatus();
     renderStudentPool();
     renderSeatingGrid();
 }
@@ -755,8 +786,17 @@ function renderSeatingGrid() {
                     (col < COLS_PER_TEAM ? ' team-a-seat' : ' team-b-seat');
 
                 if (student) {
-                    var name = student.englishName || student.chineseName;
-                    seat.textContent = name.length > 4 ? name.substring(0, 4) + '.' : name;
+                    var cn = document.createElement('span');
+                    cn.className = 'seat-cn';
+                    cn.textContent = student.chineseName;
+                    seat.appendChild(cn);
+                    if (student.englishName) {
+                        var en = document.createElement('span');
+                        en.className = 'seat-en';
+                        en.textContent = student.englishName;
+                        seat.appendChild(en);
+                    }
+                    seat.title = student.chineseName + (student.englishName ? ' (' + student.englishName + ')' : '');
                     var removeBtn = document.createElement('span');
                     removeBtn.className = 'remove-btn';
                     removeBtn.textContent = '\u00d7';
