@@ -382,7 +382,7 @@
 <!-- SETUP SCREEN -->
 <div id="setup-screen" class="screen active">
     <div class="setup-controls">
-        <a href="config.html" class="btn btn-secondary" target="_blank">&#9881; Assign Groups</a>
+        <a href="../Wk3/config.html" class="btn btn-secondary" target="_blank">&#9881; Assign Groups</a>
         <button class="btn btn-secondary" id="grid-toggle" onclick="toggleGridView()">&#128963; Show seating grid</button>
         <button class="btn btn-success btn-lg" onclick="startGame()" id="start-btn" disabled>&#9654; Start Game</button>
     </div>
@@ -413,7 +413,7 @@
     <div class="seating-section" id="grid-section" style="display:none;">
         <h2>&#129681; Seating grid (reference view)</h2>
         <div class="seating-grid" id="seating-grid"></div>
-        <p class="grid-caption">Schematic: shows which group each student is in, in assignment order — not their real seats. Assign groups on the <a href="config.html" target="_blank">Config Page</a>.</p>
+        <p class="grid-caption">Schematic: shows which group each student is in, in assignment order — not their real seats. Assign groups on the <a href="../Wk3/config.html" target="_blank">Config Page</a>.</p>
     </div>
 
     <div class="group-summary">
@@ -680,8 +680,13 @@ function defaultQuestionBank() {
 // ── Custom Question Bank (editable via Class Config page) ──
 var DEFAULT_WEEK = 3;
 // Which week this copy of the game reviews. Per-week game copies (in Wk4, Wk5...)
-// differ from this file ONLY in this constant.
+// are generated from this file by sync-wk4-game.py, which rewrites this
+// constant and the two static Config hrefs. Nothing else may differ -- edit
+// this file and re-run the script rather than hand-editing a copy.
 var GAME_WEEK = 4;
+// There is ONE Config page and it lives in Wk3; it assigns the groups that
+// every week shares. Wk4's copy of this game therefore points back at it.
+var CONFIG_HREF = GAME_WEEK === 3 ? 'config.html' : '../Wk3/config.html';
 
 function isValidQuestion(q) {
     return q && typeof q === 'object' &&
@@ -855,7 +860,7 @@ function showSeatingSourceStatus(type, message) {
 }
 
 function configLink() {
-    return '<a href="config.html" style="color:inherit;font-weight:700;">Config Page &rarr;</a>';
+    return '<a href="' + CONFIG_HREF + '" style="color:inherit;font-weight:700;">Config Page &rarr;</a>';
 }
 
 function loadGroups() {

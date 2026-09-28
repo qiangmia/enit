@@ -680,8 +680,13 @@ function defaultQuestionBank() {
 // ── Custom Question Bank (editable via Class Config page) ──
 var DEFAULT_WEEK = 3;
 // Which week this copy of the game reviews. Per-week game copies (in Wk4, Wk5...)
-// differ from this file ONLY in this constant.
+// are generated from this file by sync-wk4-game.py, which rewrites this
+// constant and the two static Config hrefs. Nothing else may differ -- edit
+// this file and re-run the script rather than hand-editing a copy.
 var GAME_WEEK = 3;
+// There is ONE Config page and it lives in Wk3; it assigns the groups that
+// every week shares. Wk4's copy of this game therefore points back at it.
+var CONFIG_HREF = GAME_WEEK === 3 ? 'config.html' : '../Wk3/config.html';
 
 function isValidQuestion(q) {
     return q && typeof q === 'object' &&
@@ -855,7 +860,7 @@ function showSeatingSourceStatus(type, message) {
 }
 
 function configLink() {
-    return '<a href="config.html" style="color:inherit;font-weight:700;">Config Page &rarr;</a>';
+    return '<a href="' + CONFIG_HREF + '" style="color:inherit;font-weight:700;">Config Page &rarr;</a>';
 }
 
 function loadGroups() {
