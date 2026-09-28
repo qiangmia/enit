@@ -275,6 +275,97 @@
             padding: 0.6rem; border: 1px solid var(--border, #e2e8f0); border-radius: 6px;
             resize: vertical; margin-bottom: 0.5rem; box-sizing: border-box;
         }
+
+        /* ── Group roll call ────────────────────────────────────────────── */
+        .group-toolbar {
+            display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;
+            justify-content: space-between; margin-bottom: 0.9rem;
+        }
+        .group-counts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .count-chip {
+            display: inline-flex; align-items: baseline; gap: 0.4rem;
+            padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem;
+            font-weight: 600; border: 2px solid var(--border); background: #f8fafc;
+            color: var(--text);
+        }
+        .count-chip b { font-size: 1.1rem; }
+        .count-chip.count-a { border-color: var(--team-a); background: var(--team-a-bg); color: var(--team-a); }
+        .count-chip.count-b { border-color: var(--team-b); background: var(--team-b-bg); color: var(--team-b); }
+        .group-search { flex: 1 1 260px; min-width: 220px; }
+        .group-search input {
+            width: 100%; box-sizing: border-box; padding: 0.7rem 0.9rem;
+            font-size: 1rem; font-family: inherit; font-weight: 600;
+            border: 2px solid var(--accent); border-radius: 8px;
+        }
+        .group-search input:focus { outline: 3px solid var(--accent-light); }
+
+        .group-panels {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem; margin-bottom: 1rem;
+        }
+        .group-panel {
+            border: 2px solid var(--border); border-radius: 8px;
+            padding: 0.7rem; background: #f8fafc; min-width: 0;
+        }
+        .group-panel h3 {
+            font-size: 0.85rem; margin: 0 0 0.6rem; text-transform: uppercase;
+            letter-spacing: 0.04em; color: var(--text-light);
+        }
+        .group-panel .student-list { max-height: 42vh; overflow-y: auto; }
+        .panel-a { border-color: var(--team-a); background: var(--team-a-bg); }
+        .panel-b { border-color: var(--team-b); background: var(--team-b-bg); }
+        .group-panel .student-chip { cursor: pointer; }
+        .group-panel .empty-note { font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+
+        .assign-bar {
+            display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 1rem; margin-bottom: 0.9rem;
+            background: var(--card-bg, #fff); border: 2px solid var(--border);
+            border-radius: 8px; position: sticky; bottom: 0; z-index: 5;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+        }
+        #assign-target { font-size: 0.95rem; font-weight: 600; }
+        #assign-target .who { color: var(--accent); }
+        .assign-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .btn-a { background: var(--team-a); color: white; }
+        .btn-a:hover { filter: brightness(0.92); }
+        .btn-b { background: var(--team-b); color: white; }
+        .btn-b:hover { filter: brightness(0.92); }
+        .btn kbd {
+            display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.35rem;
+            font-family: 'Courier New', monospace; font-size: 0.7rem;
+            background: rgba(255,255,255,0.25); border-radius: 3px; font-weight: 700;
+        }
+        .btn-secondary kbd, .btn:not(.btn-a):not(.btn-b):not(.btn-success):not(.btn-primary):not(.btn-danger):not(.btn-warm) kbd {
+            background: rgba(0,0,0,0.08);
+        }
+
+        /* Grid view is a secondary, opt-in reference. */
+        #grid-section h3 { font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.5rem; }
+        #grid-section .seating-grid { pointer-events: none; }
+        .grid-caption { font-size: 0.78rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic; }
+
+        @media (max-width: 860px) {
+            .group-panels { grid-template-columns: 1fr; }
+            .group-panel .student-list { max-height: 30vh; }
+        }
+        /* The roll-call bar is sticky, so on a phone it has to stay short:
+           one truncated name line plus a 2x2 button grid. */
+        @media (max-width: 560px) {
+            .assign-bar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.5rem 0.6rem;
+                gap: 0.4rem;
+            }
+            #assign-target {
+                font-size: 0.85rem;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            }
+            .assign-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+            .assign-actions .btn { padding: 0.55rem 0.4rem; font-size: 0.9rem; justify-content: center; }
+        }
     </style>
     <script src="../theme.js"></script>
 </head>
@@ -314,24 +405,60 @@
             </div>
             <div id="roster-status" class="status-bar info" style="margin-top:0.7rem;">&#9888; No roster loaded yet.</div>
         </div>
+        <div class="group-toolbar">
+            <div class="group-counts">
+                <span class="count-chip count-a">Group A <b id="count-a">0</b></span>
+                <span class="count-chip count-b">Group B <b id="count-b">0</b></span>
+                <span class="count-chip">Unassigned <b id="count-unassigned">0</b></span>
+            </div>
+            <div class="group-search">
+                <input type="search" id="rollcall-search" autocomplete="off"
+                       placeholder="Type a name to select, then press A or B&hellip;"
+                       oninput="onRollcallSearch()" onkeydown="onRollcallKey(event)">
+            </div>
+        </div>
+
+        <div class="group-panels">
+            <div class="group-panel">
+                <h3>Unassigned (<span id="list-count-unassigned">0</span>)</h3>
+                <div class="student-list" id="list-unassigned"></div>
+            </div>
+            <div class="group-panel panel-a">
+                <h3>Group A (<span id="list-count-a">0</span> / 35)</h3>
+                <div class="student-list" id="list-a"></div>
+            </div>
+            <div class="group-panel panel-b">
+                <h3>Group B (<span id="list-count-b">0</span> / 35)</h3>
+                <div class="student-list" id="list-b"></div>
+            </div>
+        </div>
+
+        <div class="assign-bar">
+            <div id="assign-target">No student selected</div>
+            <div class="assign-actions">
+                <button class="btn btn-a" onclick="assignSelected('A')">&#8594; Group A <kbd>A</kbd></button>
+                <button class="btn btn-b" onclick="assignSelected('B')">&#8594; Group B <kbd>B</kbd></button>
+                <button class="btn btn-secondary" onclick="assignSelected(null)">&#8595; Unassign <kbd>U</kbd></button>
+                <button class="btn btn-secondary" id="undo-btn" onclick="undoAssign()">&#8630; Undo</button>
+            </div>
+        </div>
+
         <div class="btn-group">
-            <button class="btn btn-warm" onclick="randomizeSeating()">&#127922; Randomize</button>
-            <button class="btn btn-success" onclick="saveSeating()">&#128190; Save Seating</button>
-            <button class="btn btn-secondary" onclick="loadSeating()">&#128194; Load</button>
-            <button class="btn btn-danger" onclick="clearSeating()">&#128465;&#65039; Clear</button>
+            <button class="btn btn-warm" onclick="autoBalanceGroups()">&#9878; Auto-balance</button>
+            <button class="btn btn-success" onclick="saveGroups()">&#128190; Save Groups</button>
+            <button class="btn btn-secondary" onclick="loadGroups()">&#128194; Load</button>
+            <button class="btn btn-danger" onclick="clearGroups()">&#128465;&#65039; Clear</button>
+            <button class="btn btn-secondary" id="grid-toggle" onclick="toggleGridView()">&#128963; Show seating grid</button>
         </div>
 
         <div id="seating-status" class="status-bar info">
-            &#9888; No seating configured yet. Click "Randomize" or manually place students.
+            &#9888; No groups assigned yet. Load your roster above, then call the roll call: search for a name, press <strong>A</strong> or <strong>B</strong>.
         </div>
 
-        <div class="seating-section">
+        <div class="seating-section" id="grid-section" style="display:none;">
+            <h3>Seating grid (reference view)</h3>
             <div class="seating-grid" id="seating-grid"></div>
-        </div>
-
-        <div class="student-pool">
-            <h3>&#128101; Unassigned Students (<span id="unassigned-count">0</span>) — Click to place in seat</h3>
-            <div class="student-list" id="student-pool"></div>
+            <p class="grid-caption">Schematic: shows which group each student is in, in assignment order. Positions are not their real seats &mdash; assignment records group membership only.</p>
         </div>
     </div>
 
@@ -563,12 +690,9 @@ CPU&#9;the central processing unit"></textarea>
         <div class="filters" id="results-filters">
             <label style="font-weight:600; font-size:0.8rem;">Filters:</label>
             <select id="filter-team" onchange="applyFilters()">
-                <option value="">All Teams</option>
-                <option value="A">Team A</option>
-                <option value="B">Team B</option>
-            </select>
-            <select id="filter-subgroup" onchange="applyFilters()">
-                <option value="">All Subgroups</option>
+                <option value="">All Groups</option>
+                <option value="A">Group A</option>
+                <option value="B">Group B</option>
             </select>
             <input type="text" id="filter-search" placeholder="Search student name..." oninput="applyFilters()">
             <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
@@ -580,7 +704,7 @@ CPU&#9;the central processing unit"></textarea>
             <table class="data-table" id="summary-table" style="display:none;">
                 <thead>
                     <tr>
-                        <th>ID</th><th>Name</th><th>Team</th><th>Subgroup</th>
+                        <th>ID</th><th>Name</th><th>Team</th>
                         <th>Games</th><th>Correct</th><th>Points</th><th>Accuracy</th>
                     </tr>
                 </thead>
@@ -594,7 +718,7 @@ CPU&#9;the central processing unit"></textarea>
             <table class="data-table" id="detail-table" style="display:none;">
                 <thead>
                     <tr>
-                        <th>Date</th><th>Round</th><th>Team</th><th>Subgroup</th>
+                        <th>Date</th><th>Round</th><th>Team</th>
                         <th>Student</th><th>Question</th><th>Category</th><th>Result</th><th>Pts</th>
                     </tr>
                 </thead>
@@ -638,39 +762,40 @@ CPU&#9;the central processing unit"></textarea>
 </div>
 
 <script src="../enit-questions.js"></script>
+<script src="../seating.js"></script>
 <script>
-// ── Constants ──────────────────────────────────────────
-var ROWS = 7;
-var COLS = 10;
-var COLS_PER_TEAM = 5;
+// ── Constants / State ───────────────────────────────────
+// Roster parsing, group membership and the seating grid all live in
+// ../seating.js, so this page and the two game pages cannot drift apart.
+// This page is the ONLY place that may edit groups; the games read them
+// read-only out of localStorage.
+var ROWS = Seating.ROWS;
+var COLS = Seating.COLS;
+var COLS_PER_TEAM = Seating.COLS_PER_TEAM;
+var SEATS_PER_TEAM = Seating.SEATS_PER_TEAM;
 
-// ── State ──────────────────────────────────────────────
-var allStudents = [];
-var seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
-var selectedStudent = null;
+var allStudents = [];      // mirror of Seating.getStudents()
 var allResults = [];
 var allSummary = [];
+var selectedStudent = null;
+var undoStack = [];
+var gridVisible = false;
 
-// ── Embedded Rollcall Data ─────────────────────────────// ── Roster ──────────────────────────────────────────────
+// ── Roster ──────────────────────────────────────────────
 // Student names are NOT stored in this file. Load them from your own
 // device; they are kept in this browser's localStorage and never uploaded.
-var ROSTER_KEY = 'enit_roster_v1';
-var ROLLCALL_RAW = '';   // intentionally empty — no student data is published
-
-function readStoredRoster() {
-    try { return localStorage.getItem(ROSTER_KEY) || ''; } catch (e) { return ''; }
-}
+function readStoredRoster() { return Seating.readStoredRoster(); }
 
 function saveRoster(text) {
-    try { localStorage.setItem(ROSTER_KEY, text); } catch (e) {}
-    loadRollcall();
+    if (!Seating.saveRoster(text)) { updateRosterStatus(); return; }
+    reloadAll();
 }
 
 function clearRoster() {
-    try { localStorage.removeItem(ROSTER_KEY); } catch (e) {}
+    Seating.clearRoster();
     var ta = document.getElementById('roster-paste');
     if (ta) ta.value = '';
-    loadRollcall();
+    reloadAll();
 }
 
 function handleRosterFile(input) {
@@ -696,78 +821,249 @@ function updateRosterStatus() {
     if (!el) return;
     if (allStudents.length) {
         el.className = 'status-bar success';
-        el.textContent = '\u2713 Roster loaded: ' + allStudents.length +
+        el.textContent = '✓ Roster loaded: ' + allStudents.length +
             ' students (saved in this browser only).';
     } else {
         el.className = 'status-bar info';
-        el.textContent = '\u26a0 No roster loaded yet. Use "Load roster.txt" above.';
+        el.textContent = '⚠ No roster loaded yet. Use "Load roster.txt" above.';
     }
 }
 
-// ── Parse Rollcall ─────────────────────────────────────
-function parseRollcall(text) {
-    var lines = text.trim().split('\n');
-    var students = [];
-    for (var i = 0; i < lines.length; i++) {
-        var parts = lines[i].split('\t');
-        if (parts.length >= 2) {
-            var id = parts[0].trim();
-            var chineseName = parts[1].trim();
-            var englishName = (parts[2] || '').trim();
-            if (id && chineseName) {
-                students.push({ id: id, chineseName: chineseName, englishName: englishName });
-            }
-        }
-    }
-    return students;
+// ── Roll call: search & selection ───────────────────────
+function currentSearchText() {
+    var el = document.getElementById('rollcall-search');
+    return el ? el.value.trim().toLowerCase() : '';
 }
 
-// ── Load Rollcall ──────────────────────────────────────
-function loadRollcall() {
-    allStudents = parseRollcall(readStoredRoster());
-    updateRosterStatus();
-    renderStudentPool();
-    renderSeatingGrid();
+function matchesFilter(s, q) {
+    if (!q) return true;
+    return Seating.searchText(s).indexOf(q) !== -1;
 }
 
-// ── Render Student Pool ────────────────────────────────
-function renderStudentPool() {
-    var pool = document.getElementById('student-pool');
-    pool.innerHTML = '';
-    var assigned = {};
-    for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-            if (seating[r][c]) assigned[seating[r][c].id] = true;
-        }
+function firstMatch(q) {
+    if (!q) return null;
+    for (var i = 0; i < allStudents.length; i++) {
+        if (matchesFilter(allStudents[i], q)) return allStudents[i];
     }
-    var unassigned = allStudents.filter(function(s) { return !assigned[s.id]; });
-    document.getElementById('unassigned-count').textContent = unassigned.length;
-    for (var i = 0; i < unassigned.length; i++) {
-        (function(s) {
+    return null;
+}
+
+/* Selection is live as you type, so a roll call is: type name, press A. */
+function onRollcallSearch() {
+    var q = currentSearchText();
+    if (!selectedStudent || !matchesFilter(selectedStudent, q)) {
+        selectedStudent = firstMatch(q);
+    }
+    renderGroupLists();
+    updateAssignBar();
+}
+
+function onRollcallKey(e) {
+    if (e.key === 'Enter') { e.preventDefault(); return; }
+    if (e.key === 'Escape') { e.preventDefault(); clearSearch(); return; }
+    var k = (e.key || '').toLowerCase();
+    if (k === 'a') { e.preventDefault(); assignSelected('A'); }
+    else if (k === 'b') { e.preventDefault(); assignSelected('B'); }
+    else if (k === 'u') { e.preventDefault(); assignSelected(null); }
+}
+
+function resetSearch() {
+    var el = document.getElementById('rollcall-search');
+    if (el) { el.value = ''; el.focus(); }
+    selectedStudent = null;
+}
+
+function clearSearch() { resetSearch(); renderAll(); }
+
+function selectStudent(s) {
+    selectedStudent = (selectedStudent && selectedStudent.id === s.id) ? null : s;
+    renderGroupLists();
+    updateAssignBar();
+}
+
+// ── Assignment ──────────────────────────────────────────
+function assignSelected(team) {
+    if (!selectedStudent) {
+        updateSeatingStatus('warning', '⚠ Select a student first — click a name, or type into the search box.');
+        return;
+    }
+    var s = selectedStudent;
+    var res = Seating.assign(s.id, team);
+    if (!res.ok) {
+        updateSeatingStatus('error', '✗ ' + res.error);
+        return;
+    }
+    if (res.changed) {
+        undoStack.push({ id: res.id, from: res.from, to: res.to });
+        if (undoStack.length > 100) undoStack.shift();
+        var label = team === null ? 'Unassigned' : 'Group ' + team;
+        var note = (res.from && res.from !== team) ? ' (was Group ' + res.from + ')' : '';
+        updateSeatingStatus('success', '✓ ' + Seating.displayName(s) + ' → ' + label + note +
+            '. Not saved yet — click "Save Groups" when the roll call is done.');
+    }
+    resetSearch();
+    renderAll();
+}
+
+function undoAssign() {
+    var last = undoStack.pop();
+    if (!last) {
+        updateSeatingStatus('info', '⚠ Nothing to undo.');
+        return;
+    }
+    Seating.assign(last.id, last.from === undefined ? null : last.from);
+    var s = Seating.studentById(last.id);
+    var to = last.to ? 'Group ' + last.to : 'Unassigned';
+    updateSeatingStatus('info', '↩ Undone: ' + Seating.displayName(s) + ' → ' + to);
+    renderAll();
+}
+
+function autoBalanceGroups() {
+    var before = Seating.counts();
+    if (before.A === before.B) {
+        updateSeatingStatus('info', '⚠ Groups are already even (' + before.A + ' / ' + before.B + ').');
+        return;
+    }
+    var res = Seating.autoBalance();
+    /* Push in reverse so repeated Undo rewinds the balance one step at a time. */
+    for (var i = res.moved.length - 1; i >= 0; i--) {
+        undoStack.push({ id: res.moved[i].id, from: res.moved[i].from, to: res.moved[i].to });
+    }
+    if (res.count) {
+        var c = Seating.counts();
+        updateSeatingStatus('warning', '⚖ Moved ' + res.count + ' student' + (res.count === 1 ? '' : 's') +
+            ' — now ' + c.A + ' / ' + c.B + '. Not saved yet.');
+    }
+    renderAll();
+}
+
+function saveGroups() {
+    var res = Seating.save();
+    if (!res.ok) {
+        updateSeatingStatus('error', '✗ Could not save: ' + res.error);
+        return;
+    }
+    updateSeatingStatus('success', '✓ Groups saved! (' + res.count + ' students, ' +
+        new Date().toLocaleTimeString() + ')');
+}
+
+function loadGroups() {
+    var res = Seating.load();
+    if (!res.ok) {
+        updateSeatingStatus('warning', '⚠ ' + res.error);
+        return;
+    }
+    undoStack = [];
+    var c = Seating.counts();
+    updateSeatingStatus('success', res.migrated
+        ? '✓ Groups loaded and upgraded from the old seating grid (' + c.A + ' / ' + c.B +
+          '). Re-save to store in the new format.'
+        : '✓ Groups loaded! (' + c.A + ' in A, ' + c.B + ' in B, ' + c.unassigned + ' unassigned)');
+    renderAll();
+}
+
+function clearGroups() {
+    if (!confirm('Clear all group assignments?')) return;
+    Seating.clear();
+    undoStack = [];
+    updateSeatingStatus('info', '⚠ Groups cleared.');
+    renderAll();
+}
+
+function toggleGridView() {
+    gridVisible = !gridVisible;
+    var sec = document.getElementById('grid-section');
+    if (sec) sec.style.display = gridVisible ? 'block' : 'none';
+    var btn = document.getElementById('grid-toggle');
+    if (btn) btn.innerHTML = gridVisible ? '▣ Hide seating grid' : '▣ Show seating grid';
+    if (gridVisible) renderSeatingGrid();
+}
+
+// ── Render ──────────────────────────────────────────────
+function setText(id, v) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = v;
+}
+
+function renderChips(id, list, emptyNote) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.innerHTML = '';
+    if (!list.length) {
+        var note = document.createElement('div');
+        note.className = 'empty-note';
+        note.textContent = emptyNote;
+        box.appendChild(note);
+        return;
+    }
+    for (var i = 0; i < list.length; i++) {
+        (function (s) {
             var chip = document.createElement('span');
-            chip.className = 'student-chip' + (selectedStudent && selectedStudent.id === s.id ? ' selected' : '');
+            chip.className = 'student-chip' +
+                (selectedStudent && selectedStudent.id === s.id ? ' selected' : '');
             chip.textContent = s.chineseName + (s.englishName ? ' (' + s.englishName + ')' : '');
-            chip.onclick = function() { selectStudent(s); };
-            pool.appendChild(chip);
-        })(unassigned[i]);
+            if (s.placeholder) chip.title = 'Not on the loaded roster — ID ' + s.id;
+            chip.onclick = function () { selectStudent(s); };
+            box.appendChild(chip);
+        })(list[i]);
     }
 }
 
-// ── Render Seating Grid ────────────────────────────────
+function renderGroupLists() {
+    var q = currentSearchText();
+    var c = Seating.counts();
+    setText('count-a', c.A);
+    setText('count-b', c.B);
+    setText('count-unassigned', c.unassigned);
+    setText('list-count-a', c.A);
+    setText('list-count-b', c.B);
+    setText('list-count-unassigned', c.unassigned);
+
+    if (!allStudents.length) {
+        renderChips('list-unassigned', [], 'No roster loaded.');
+        renderChips('list-a', [], '—');
+        renderChips('list-b', [], '—');
+        return;
+    }
+    renderChips('list-unassigned',
+        Seating.unassignedStudents().filter(function (s) { return matchesFilter(s, q); }),
+        c.unassigned ? 'No match for that search.' : 'Everyone is assigned.');
+    renderChips('list-a',
+        Seating.studentsInTeam('A').filter(function (s) { return matchesFilter(s, q); }),
+        c.A ? 'No match for that search.' : 'Group A is empty.');
+    renderChips('list-b',
+        Seating.studentsInTeam('B').filter(function (s) { return matchesFilter(s, q); }),
+        c.B ? 'No match for that search.' : 'Group B is empty.');
+}
+
+function updateAssignBar() {
+    var el = document.getElementById('assign-target');
+    if (el) {
+        el.innerHTML = selectedStudent
+            ? 'Selected: <span class="who">' + Seating.displayName(selectedStudent) + '</span> (' + selectedStudent.id + ')'
+            : 'No student selected';
+    }
+    var undo = document.getElementById('undo-btn');
+    if (undo) undo.disabled = undoStack.length === 0;
+}
+
+/* Read-only schematic of the two groups. Column numbers are physical room
+   positions; student placement is assignment order, not real seating. */
 function renderSeatingGrid() {
     var grid = document.getElementById('seating-grid');
+    if (!grid || !gridVisible) return;
+    var data = Seating.buildGrid();
     grid.innerHTML = '';
 
     var emptyHdr = document.createElement('div');
     emptyHdr.className = 'seating-header';
     grid.appendChild(emptyHdr);
 
-    var teamLabels = ['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5'];
     for (var c = 0; c < COLS; c++) {
         var hdr = document.createElement('div');
         hdr.className = 'seating-header';
         hdr.style.background = c < COLS_PER_TEAM ? 'var(--team-a)' : 'var(--team-b)';
-        hdr.textContent = teamLabels[c];
+        hdr.textContent = String(c + 1);
         grid.appendChild(hdr);
     }
 
@@ -778,13 +1074,11 @@ function renderSeatingGrid() {
         grid.appendChild(rowLabel);
 
         for (var cc = 0; cc < COLS; cc++) {
-            (function(row, col) {
+            (function (row, col) {
+                var student = data[row][col];
                 var seat = document.createElement('div');
-                var student = seating[row][col];
-                seat.className = 'seat' +
-                    (student ? ' filled' : '') +
+                seat.className = 'seat' + (student ? ' filled' : '') +
                     (col < COLS_PER_TEAM ? ' team-a-seat' : ' team-b-seat');
-
                 if (student) {
                     var cn = document.createElement('span');
                     cn.className = 'seat-cn';
@@ -796,142 +1090,41 @@ function renderSeatingGrid() {
                         en.textContent = student.englishName;
                         seat.appendChild(en);
                     }
-                    seat.title = student.chineseName + (student.englishName ? ' (' + student.englishName + ')' : '');
-                    var removeBtn = document.createElement('span');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.textContent = '\u00d7';
-                    removeBtn.onclick = function(e) { e.stopPropagation(); removeFromSeat(row, col); };
-                    seat.appendChild(removeBtn);
+                    seat.title = Seating.displayName(student);
                 }
-
-                seat.onclick = function() { clickSeat(row, col); };
                 grid.appendChild(seat);
             })(r, cc);
         }
     }
 }
 
-// ── Select Student ─────────────────────────────────────
-function selectStudent(student) {
-    if (selectedStudent && selectedStudent.id === student.id) {
-        selectedStudent = null;
-    } else {
-        selectedStudent = student;
-    }
-    renderStudentPool();
-}
-
-// ── Click Seat ─────────────────────────────────────────
-function clickSeat(r, c) {
-    if (selectedStudent) {
-        seating[r][c] = selectedStudent;
-        selectedStudent = null;
-        renderStudentPool();
-        renderSeatingGrid();
-    } else if (seating[r][c]) {
-        selectedStudent = seating[r][c];
-        seating[r][c] = null;
-        renderStudentPool();
-        renderSeatingGrid();
-    }
-}
-
-// ── Remove from Seat ───────────────────────────────────
-function removeFromSeat(r, c) {
-    seating[r][c] = null;
-    selectedStudent = null;
-    renderStudentPool();
-    renderSeatingGrid();
-}
-
-// ── Randomize Seating ──────────────────────────────────
-function randomizeSeating() {
-    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
-    var shuffled = allStudents.slice().sort(function() { return Math.random() - 0.5; });
-    var idx = 0;
-    for (var c = 0; c < COLS; c++) {
-        for (var r = 0; r < ROWS; r++) {
-            if (idx < shuffled.length) {
-                seating[r][c] = shuffled[idx];
-                idx++;
-            }
-        }
-    }
-    selectedStudent = null;
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSeatingStatus('warning', '&#9888; Seating randomized but not saved yet. Click "Save Seating" to persist.');
-}
-
-// ── Clear Seating ──────────────────────────────────────
-function clearSeating() {
-    if (!confirm('Clear all seating? This cannot be undone.')) return;
-    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
-    selectedStudent = null;
-    localStorage.removeItem('enit_seating');
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSeatingStatus('info', '&#9888; Seating cleared.');
-}
-
-// ── Save Seating ───────────────────────────────────────
-function saveSeating() {
-    var assigned = 0;
-    for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-            if (seating[r][c]) assigned++;
-        }
-    }
-
-    var data = {
-        savedAt: new Date().toISOString(),
-        students: assigned,
-        grid: seating.map(function(row) {
-            return row.map(function(cell) {
-                if (cell) return { id: cell.id, chineseName: cell.chineseName, englishName: cell.englishName };
-                return null;
-            });
-        })
-    };
-
-    localStorage.setItem('enit_seating', JSON.stringify(data));
-    updateSeatingStatus('success', '&#10003; Seating saved! (' + assigned + ' students, ' + new Date().toLocaleTimeString() + ')');
-}
-
-// ── Load Seating ───────────────────────────────────────
-function loadSeating() {
-    var raw = localStorage.getItem('enit_seating');
-    if (!raw) {
-        updateSeatingStatus('warning', '&#9888; No saved seating found in local storage.');
-        return;
-    }
-
-    try {
-        var data = JSON.parse(raw);
-        seating = data.grid.map(function(row) {
-            return row.map(function(cell) {
-                if (cell) {
-                    var student = allStudents.find(function(s) { return s.id === cell.id; });
-                    return student || cell;
-                }
-                return null;
-            });
-        });
-        renderStudentPool();
-        renderSeatingGrid();
-        updateSeatingStatus('success', '&#10003; Seating loaded! (Saved: ' + new Date(data.savedAt).toLocaleString() + ', ' + data.students + ' students)');
-    } catch (e) {
-        updateSeatingStatus('error', '&#10007; Failed to load seating: ' + e.message);
-    }
-}
-
-// ── Update Seating Status ──────────────────────────────
 function updateSeatingStatus(type, message) {
     var el = document.getElementById('seating-status');
+    if (!el) return;
     el.className = 'status-bar ' + type;
     el.innerHTML = message;
 }
 
+function renderAll() {
+    allStudents = Seating.getStudents();
+    updateRosterStatus();
+    renderGroupLists();
+    updateAssignBar();
+    renderSeatingGrid();
+}
+
+/* Roster + saved groups, re-read together. */
+function reloadAll() {
+    var info = Seating.init();
+    undoStack = [];
+    selectedStudent = null;
+    renderAll();
+    var c = Seating.counts();
+    if (c.A + c.B > 0) {
+        updateSeatingStatus('success', '✓ ' + c.A + ' in Group A, ' + c.B + ' in Group B, ' +
+            c.unassigned + ' unassigned.' + (info.migrated ? ' (Upgraded from the old seating grid — re-save to store the new format.)' : ''));
+    }
+}
 // ── Tab Navigation ─────────────────────────────────────
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
@@ -1077,24 +1270,18 @@ async function testConnection() {
 async function syncSeatingToSheets() {
     var url = getApiUrl();
     if (!url) { alert('Please save your Google Sheets API URL first.'); return; }
-    var assigned = 0;
     var seatingData = [];
-    for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-            if (seating[r][c]) {
-                assigned++;
-                seatingData.push({
-                    student_id: seating[r][c].id,
-                    student_name: seating[r][c].chineseName,
-                    english_name: seating[r][c].englishName,
-                    row: r,
-                    col: c,
-                    team: c < COLS_PER_TEAM ? 'A' : 'B',
-                    subgroup: (c < COLS_PER_TEAM ? 'A' : 'B') + ((c % COLS_PER_TEAM) + 1)
-                });
-            }
-        }
-    }
+    Seating.TEAMS.forEach(function (team) {
+        Seating.studentsInTeam(team).forEach(function (s) {
+            seatingData.push({
+                student_id: s.id,
+                student_name: s.chineseName,
+                english_name: s.englishName,
+                team: team
+            });
+        });
+    });
+    var assigned = seatingData.length;
 
     showSyncStatus('info', '&#9203; Uploading seating to Google Sheets...');
     try {
@@ -1186,7 +1373,7 @@ function parseCSVLine(line) {
     return fields;
 }
 
-var CANON_COLS = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+var CANON_COLS = ['timestamp','date','session_id','round','team','student_id','student_name','english_name','question','category','correct','points'];
 
 function recordFromArray(arr) {
     var out = {};
@@ -1270,7 +1457,7 @@ function buildSummaryFromResults(results) {
         if (!summaryMap[key]) {
             summaryMap[key] = {
                 student_id: idCleaned, student_name: r.student_name || '', english_name: r.english_name,
-                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                team: r.team, games_played: 0, total_correct: 0,
                 total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
             };
         }
@@ -1394,7 +1581,6 @@ async function loadResultsData() {
 
     // Build summary
     allSummary = buildSummaryFromResults(allResults);
-    populateSubgroupFilter();
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
     document.getElementById('summary-loading').style.display = 'none';
@@ -1403,26 +1589,13 @@ async function loadResultsData() {
     document.getElementById('detail-table').style.display = 'table';
 }
 
-function populateSubgroupFilter() {
-    var select = document.getElementById('filter-subgroup');
-    select.innerHTML = '<option value="">All Subgroups</option>';
-    var subgroups = {};
-    allResults.forEach(function(r) { if (r.subgroup) subgroups[r.subgroup] = true; });
-    Object.keys(subgroups).sort().forEach(function(sg) {
-        var option = document.createElement('option');
-        option.value = sg;
-        option.textContent = sg;
-        select.appendChild(option);
-    });
-}
-
 function renderSummaryTable(data) {
     var tbody = document.getElementById('summary-body');
     tbody.innerHTML = '';
     data.forEach(function(s) {
         var accClass = s.accuracy_pct >= 70 ? 'accuracy-high' : (s.accuracy_pct >= 40 ? 'accuracy-mid' : 'accuracy-low');
         var row = document.createElement('tr');
-        row.innerHTML = '<td>' + (s.student_id || '&mdash;') + '</td><td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td><td>' + (s.team || '') + '</td><td>' + (s.subgroup || '') + '</td><td>' + (s.games_played || 0) + '</td><td>' + (s.total_correct || 0) + '</td><td>' + (s.total_points || 0) + '</td><td class="' + accClass + '">' + (s.accuracy_pct || 0) + '%</td>';
+        row.innerHTML = '<td>' + (s.student_id || '&mdash;') + '</td><td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td><td>' + (s.team || '') + '</td><td>' + (s.games_played || 0) + '</td><td>' + (s.total_correct || 0) + '</td><td>' + (s.total_points || 0) + '</td><td class="' + accClass + '">' + (s.accuracy_pct || 0) + '%</td>';
         tbody.appendChild(row);
     });
 }
@@ -1436,18 +1609,16 @@ function renderDetailTable(data) {
         var resultClass = isCorr ? 'result-correct' : (isSkp ? 'result-skip' : 'result-wrong');
         var resultText = isCorr ? '✓' : (isSkp ? '⏭' : '✗');
         var row = document.createElement('tr');
-        row.innerHTML = '<td>' + (r.date || '') + '</td><td>' + (r.round || '') + '</td><td>' + (r.team || '') + '</td><td>' + (r.subgroup || '') + '</td><td>' + (r.student_name || '') + '</td><td>' + ((r.question || '').substring(0, 30) + ((r.question || '').length > 30 ? '...' : '')) + '</td><td>' + (r.category || '') + '</td><td class="' + resultClass + '">' + resultText + '</td><td>' + (r.points || 0) + '</td>';
+        row.innerHTML = '<td>' + (r.date || '') + '</td><td>' + (r.round || '') + '</td><td>' + (r.team || '') + '</td><td>' + (r.student_name || '') + '</td><td>' + ((r.question || '').substring(0, 30) + ((r.question || '').length > 30 ? '...' : '')) + '</td><td>' + (r.category || '') + '</td><td class="' + resultClass + '">' + resultText + '</td><td>' + (r.points || 0) + '</td>';
         tbody.appendChild(row);
     });
 }
 
 function applyFilters() {
     var teamFilter = document.getElementById('filter-team').value;
-    var subgroupFilter = document.getElementById('filter-subgroup').value;
     var searchFilter = document.getElementById('filter-search').value.toLowerCase();
     var filteredResults = allResults.filter(function(r) {
         if (teamFilter && r.team !== teamFilter) return false;
-        if (subgroupFilter && r.subgroup !== subgroupFilter) return false;
         if (searchFilter) {
             var name = (r.student_name || '').toLowerCase();
             var english = (r.english_name || '').toLowerCase();
@@ -1462,7 +1633,6 @@ function applyFilters() {
 
 function clearFilters() {
     document.getElementById('filter-team').value = '';
-    document.getElementById('filter-subgroup').value = '';
     document.getElementById('filter-search').value = '';
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
@@ -1470,7 +1640,7 @@ function clearFilters() {
 
 function exportResultsCSV() {
     if (!allResults || allResults.length === 0) { alert('No data. Click Refresh first.'); return; }
-    var headers = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+    var headers = ['timestamp','date','session_id','round','team','student_id','student_name','english_name','question','category','correct','points'];
     var csv = headers.join(',') + '\n';
     allResults.forEach(function(row) {
         csv += headers.map(function(h) { return '"' + String(row[h] || '').replace(/"/g, '""') + '"'; }).join(',') + '\n';
@@ -1480,7 +1650,7 @@ function exportResultsCSV() {
 
 function exportSummaryCSV() {
     if (!allSummary || allSummary.length === 0) { alert('No data. Click Refresh first.'); return; }
-    var headers = ['student_id','student_name','english_name','team','subgroup','games_played','total_correct','total_points','accuracy_pct'];
+    var headers = ['student_id','student_name','english_name','team','games_played','total_correct','total_points','accuracy_pct'];
     var csv = headers.join(',') + '\n';
     allSummary.forEach(function(row) {
         csv += headers.map(function(h) { return '"' + String(row[h] || '').replace(/"/g, '""') + '"'; }).join(',') + '\n';
@@ -2048,8 +2218,7 @@ async function downloadQuestionsFromSheets() {
 }
 
 // ── Initialize ─────────────────────────────────────────
-loadRollcall();
-loadSeating();
+reloadAll();
 loadApiConfig();
 loadGameSettings();
 loadQuestionsIntoEditor();

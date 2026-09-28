@@ -81,8 +81,25 @@
         }
         .seat.filled:hover .remove-btn { display: block; }
 
-        .student-pool { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
-        .student-pool h2 { font-size: 1.1rem; margin-bottom: 0.8rem; }
+        /* ── Read-only group summary (groups are assigned on the Config page) ── */
+        .group-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .group-panel {
+            background: var(--card-bg); border: 2px solid var(--border);
+            border-radius: 12px; padding: 1rem; min-width: 0;
+        }
+        .group-panel h2 { font-size: 1rem; margin-bottom: 0.7rem; }
+        .group-panel .student-list { max-height: 46vh; }
+        .group-panel .empty-note { font-size: 0.85rem; color: var(--text-light); font-style: italic; }
+        .panel-a { border-color: var(--team-a); }
+        .panel-b { border-color: var(--team-b); }
+        .student-chip.readonly { cursor: default; }
+        .student-chip.readonly:hover { border-color: var(--border); }
+        #grid-section .seating-grid { pointer-events: none; }
+        .grid-caption { font-size: 0.8rem; color: var(--text-light); font-style: italic; margin-top: 0.6rem; }
+        @media (max-width: 700px) {
+            .group-summary { grid-template-columns: 1fr; }
+            .group-panel .student-list { max-height: 30vh; }
+        }
         .student-list {
             display: flex; flex-wrap: wrap; gap: 6px; max-height: 200px; overflow-y: auto;
             padding: 0.5rem; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border);
@@ -158,7 +175,6 @@
         .turn-team { font-weight: 900; font-size: 1.6rem; letter-spacing: 0.02em; }
         .turn-team.team-a-text { color: var(--team-a); }
         .turn-team.team-b-text { color: var(--team-b); }
-        .turn-subgroup { color: var(--text-light); font-size: 0.9rem; }
         .spokesperson-display { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
         .spokesperson-name { font-size: 1.3rem; font-weight: 700; color: var(--primary); background: var(--warm-light); padding: 0.3rem 1rem; border-radius: 8px; }
 
@@ -366,14 +382,13 @@
 <!-- SETUP SCREEN -->
 <div id="setup-screen" class="screen active">
     <div class="setup-controls">
-        <button class="btn btn-warm" onclick="randomizeSeating()">&#127922; Randomize Seating</button>
-        <button class="btn btn-secondary" onclick="clearSeating()">&#128465;&#65039; Clear All</button>
-        <a href="config.html" class="btn btn-secondary" target="_blank">&#9881; Config Page</a>
+        <a href="config.html" class="btn btn-secondary" target="_blank">&#9881; Assign Groups</a>
+        <button class="btn btn-secondary" id="grid-toggle" onclick="toggleGridView()">&#128963; Show seating grid</button>
         <button class="btn btn-success btn-lg" onclick="startGame()" id="start-btn" disabled>&#9654; Start Game</button>
     </div>
     <div class="stats-bar" id="setup-stats">
-        <div class="stat-item">Team A: <span class="stat-value" id="team-a-count">0</span> / ~29</div>
-        <div class="stat-item">Team B: <span class="stat-value" id="team-b-count">0</span> / ~29</div>
+        <div class="stat-item">Group A: <span class="stat-value" id="team-a-count">0</span> <span data-ideal>/ ~29</span></div>
+        <div class="stat-item">Group B: <span class="stat-value" id="team-b-count">0</span> <span data-ideal>/ ~29</span></div>
         <div class="stat-item">Unassigned: <span class="stat-value" id="unassigned-count">0</span></div>
     </div>
     <div id="seating-source-status" class="status-bar info" style="display:none; margin-bottom: 1rem;"></div>
@@ -393,13 +408,23 @@
             <div id="roster-status" class="status-bar info" style="margin-top:0.7rem;">&#9888; No roster loaded yet.</div>
         </div>
 
-        <h2>&#129681; Seating Chart (10 columns &times; 7 rows)</h2>
-        <div class="seating-grid" id="seating-grid"></div>
     </div>
 
-    <div class="student-pool">
-        <h2>&#128101; Unassigned Students (click a student, then click a seat)</h2>
-        <div class="student-list" id="student-pool"></div>
+    <div class="seating-section" id="grid-section" style="display:none;">
+        <h2>&#129681; Seating grid (reference view)</h2>
+        <div class="seating-grid" id="seating-grid"></div>
+        <p class="grid-caption">Schematic: shows which group each student is in, in assignment order — not their real seats. Assign groups on the <a href="config.html" target="_blank">Config Page</a>.</p>
+    </div>
+
+    <div class="group-summary">
+        <div class="group-panel panel-a">
+            <h2>Group A (<span id="group-count-a">0</span>)</h2>
+            <div class="student-list" id="group-list-a"></div>
+        </div>
+        <div class="group-panel panel-b">
+            <h2>Group B (<span id="group-count-b">0</span>)</h2>
+            <div class="student-list" id="group-list-b"></div>
+        </div>
     </div>
 
     <!-- Google Sheets Configuration -->
@@ -427,12 +452,12 @@
     <div class="game-top-bar">
         <div class="score-panel">
             <div class="score-box team-a-box" id="score-box-a">
-                <div class="score-label">Team A (&#10005;)</div>
+                <div class="score-label">Group A (&#10005;)</div>
                 <div class="score-value" id="score-a">0</div>
             </div>
             <div class="round-indicator" id="round-indicator">Round 1 / 3</div>
             <div class="score-box team-b-box" id="score-box-b">
-                <div class="score-label">Team B (&#9675;)</div>
+                <div class="score-label">Group B (&#9675;)</div>
                 <div class="score-value" id="score-b">0</div>
             </div>
         </div>
@@ -441,8 +466,7 @@
 
     <div class="turn-info" id="turn-info">
         <div>
-            <span class="turn-team" id="turn-team-label">Team A's Turn</span>
-            <span class="turn-subgroup" id="turn-subgroup-label">&mdash; Subgroup A1</span>
+            <span class="turn-team" id="turn-team-label">Group A's Turn</span>
         </div>
         <div class="spokesperson-display">
             <span style="color:var(--text-light);">Spokesperson:</span>
@@ -463,11 +487,11 @@
         <div class="results-subtitle" id="results-subtitle"></div>
         <div class="final-scores">
             <div class="final-score-box" id="final-box-a">
-                <div class="winner-label">Team A (&#10005;)</div>
+                <div class="winner-label">Group A (&#10005;)</div>
                 <div class="final-score-value" id="final-score-a">0</div>
             </div>
             <div class="final-score-box" id="final-box-b">
-                <div class="winner-label">Team B (&#9675;)</div>
+                <div class="winner-label">Group B (&#9675;)</div>
                 <div class="final-score-value" id="final-score-b">0</div>
             </div>
         </div>
@@ -501,12 +525,9 @@
     <div class="filters" id="dashboard-filters">
         <label style="font-weight:600;">Filters:</label>
         <select id="filter-team" onchange="applyFilters()">
-            <option value="">All Teams</option>
-            <option value="A">Team A</option>
-            <option value="B">Team B</option>
-        </select>
-        <select id="filter-subgroup" onchange="applyFilters()">
-            <option value="">All Subgroups</option>
+            <option value="">All Groups</option>
+            <option value="A">Group A</option>
+            <option value="B">Group B</option>
         </select>
         <input type="text" id="filter-search" placeholder="Search student name..." oninput="applyFilters()">
         <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
@@ -522,7 +543,6 @@
                     <th>Student ID</th>
                     <th>Name</th>
                     <th>Team</th>
-                    <th>Subgroup</th>
                     <th>Games</th>
                     <th>Correct</th>
                     <th>Points</th>
@@ -543,7 +563,6 @@
                     <th>Date</th>
                     <th>Round</th>
                     <th>Team</th>
-                    <th>Subgroup</th>
                     <th>Student</th>
                     <th>Question</th>
                     <th>Category</th>
@@ -598,19 +617,19 @@
 </div>
 
 <script src="../enit-questions.js"></script>
+<script src="../seating.js"></script>
 <script>
 // ── Constants ──────────────────────────────────────────
-const ROWS = 7;
-const COLS = 10;
-const COLS_PER_TEAM = 5;
+const ROWS = Seating.ROWS;
+const COLS = Seating.COLS;
+const COLS_PER_TEAM = Seating.COLS_PER_TEAM;
 var gameSettings = JSON.parse(localStorage.getItem('enit_game_settings') || '{}');
 const TOTAL_ROUNDS = gameSettings.rounds || 3;
 const TIMER_SECONDS = gameSettings.timer || 30;
 
 // ── Student Data ───────────────────────────────────────
 let allStudents = [];
-let seating = Array.from({length: ROWS}, () => Array(COLS).fill(null));
-let selectedStudent = null;
+let gridVisible = false;
 
 // ── Game State ─────────────────────────────────────────
 let gameState = {
@@ -622,7 +641,6 @@ let gameState = {
     questionOrder: [],
     pool: [],
     currentQuestion: null,
-    currentSubgroup: null,
     currentSpokesperson: null,
     timerInterval: null,
     timerRemaining: TIMER_SECONDS,
@@ -777,26 +795,24 @@ function renderWeekStrip() {
 
 var questionBank = loadQuestions();
 
-// ── Embedded Rollcall Data ─────────────────────────────// ── Roster ──────────────────────────────────────────────
-// Student names are NOT stored in this file. Load them from your own
-// device; they are kept in this browser's localStorage and never uploaded.
-var ROSTER_KEY = 'enit_roster_v1';
-var ROLLCALL_RAW = '';   // intentionally empty — no student data is published
+// ── Roster & groups (read-only) ─────────────────────────
+// Roster parsing and group membership both come from ../seating.js, shared
+// with config.html, and live in this browser's localStorage. The Config page
+// is the ONLY place groups can be edited; this page just reads them.
+var ROSTER_KEY = Seating.ROSTER_KEY;
 
-function readStoredRoster() {
-    try { return localStorage.getItem(ROSTER_KEY) || ''; } catch (e) { return ''; }
-}
+function readStoredRoster() { return Seating.readStoredRoster(); }
 
 function saveRoster(text) {
-    try { localStorage.setItem(ROSTER_KEY, text); } catch (e) {}
-    loadRollcall();
+    if (!Seating.saveRoster(text)) { updateRosterStatus(); return; }
+    loadGroups();
 }
 
 function clearRoster() {
-    try { localStorage.removeItem(ROSTER_KEY); } catch (e) {}
+    Seating.clearRoster();
     var ta = document.getElementById('roster-paste');
     if (ta) ta.value = '';
-    loadRollcall();
+    loadGroups();
 }
 
 function handleRosterFile(input) {
@@ -822,70 +838,14 @@ function updateRosterStatus() {
     if (!el) return;
     if (allStudents.length) {
         el.className = 'status-bar success';
-        el.textContent = '\u2713 Roster loaded: ' + allStudents.length +
+        el.textContent = '✓ Roster loaded: ' + allStudents.length +
             ' students (saved in this browser only).';
     } else {
         el.className = 'status-bar info';
-        el.textContent = '\u26a0 No roster loaded yet. Use "Load roster.txt" above.';
+        el.textContent = '⚠ No roster loaded yet. Use "Load roster.txt" above.';
     }
 }
 
-// ── Parse Rollcall ─────────────────────────────────────
-function parseRollcall(text) {
-    const lines = text.trim().split('\n');
-    const students = [];
-    for (const line of lines) {
-        const parts = line.split('\t');
-        if (parts.length >= 2) {
-            const id = parts[0].trim();
-            const chineseName = parts[1].trim();
-            const englishName = (parts[2] || '').trim();
-            if (id && chineseName) {
-                students.push({ id, chineseName, englishName });
-            }
-        }
-    }
-    return students;
-}
-
-// ── Load Rollcall ──────────────────────────────────────
-function loadRollcall() {
-    allStudents = parseRollcall(readStoredRoster());
-    updateRosterStatus();
-    var loadedFromConfig = loadSeatingFromLocalStorage();
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSetupStats();
-    if (loadedFromConfig) {
-        showSeatingSourceStatus('success', '&#10003; Seating loaded from config. <a href="config.html" target="_blank" style="color:inherit;font-weight:700;">Open Config Page &rarr;</a>');
-    } else {
-        showSeatingSourceStatus('warning', '&#9888; No seating configured yet. Use <a href="config.html" target="_blank" style="color:inherit;font-weight:700;">Config Page</a> or randomize above.');
-    }
-}
-
-// ── Load Seating from localStorage ─────────────────────
-function loadSeatingFromLocalStorage() {
-    var raw = localStorage.getItem('enit_seating');
-    if (!raw) return false;
-    try {
-        var data = JSON.parse(raw);
-        if (!data.grid) return false;
-        seating = data.grid.map(function(row) {
-            return row.map(function(cell) {
-                if (cell) {
-                    var student = allStudents.find(function(s) { return s.id === cell.id; });
-                    return student || cell;
-                }
-                return null;
-            });
-        });
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-// ── Show Seating Source Status ─────────────────────────
 function showSeatingSourceStatus(type, message) {
     var el = document.getElementById('seating-source-status');
     if (!el) return;
@@ -894,41 +854,90 @@ function showSeatingSourceStatus(type, message) {
     el.style.display = 'flex';
 }
 
-// ── Render Student Pool ────────────────────────────────
-function renderStudentPool() {
-    const pool = document.getElementById('student-pool');
-    pool.innerHTML = '';
-    const assigned = new Set();
-    for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-            if (seating[r][c]) assigned.add(seating[r][c].id);
-        }
-    }
-    const unassigned = allStudents.filter(s => !assigned.has(s.id));
-    for (const s of unassigned) {
-        const chip = document.createElement('span');
-        chip.className = 'student-chip' + (selectedStudent && selectedStudent.id === s.id ? ' selected' : '');
-        chip.textContent = s.chineseName + (s.englishName ? ' (' + s.englishName + ')' : '');
-        chip.onclick = function() { selectStudent(s); };
-        pool.appendChild(chip);
+function configLink() {
+    return '<a href="config.html" style="color:inherit;font-weight:700;">Config Page &rarr;</a>';
+}
+
+function loadGroups() {
+    Seating.init();
+    allStudents = Seating.getStudents();
+    updateRosterStatus();
+    renderGroupSummary();
+    renderSeatingGrid();
+    updateSetupStats();
+
+    if (!allStudents.length) {
+        showSeatingSourceStatus('warning', '⚠ No roster loaded in this browser. Load roster.txt above, or use the ' + configLink());
+    } else if (Seating.hasGroups()) {
+        showSeatingSourceStatus('success', '✓ Groups loaded from the ' + configLink());
+    } else {
+        showSeatingSourceStatus('warning', '⚠ No groups assigned yet. Assign them on the ' + configLink() + ' first.');
     }
 }
 
-// ── Render Seating Grid ────────────────────────────────
+// ── Update Setup Stats ─────────────────────────────────
+function updateSetupStats() {
+    var c = Seating.counts();
+    var teamA = c.A, teamB = c.B;
+    var half = Math.ceil(allStudents.length / 2) || 1;
+    setText('team-a-count', teamA);
+    setText('team-b-count', teamB);
+    setText('unassigned-count', c.unassigned);
+    document.querySelectorAll('[data-ideal]').forEach(function (el) {
+        el.textContent = '/ ~' + half;
+    });
+    var startBtn = document.getElementById('start-btn');
+    if (startBtn) startBtn.disabled = (teamA + teamB) < 10;
+}
+
+function setText(id, v) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = v;
+}
+
+// ── Group summary (read-only) ───────────────────────────
+function renderGroupSummary() {
+    Seating.TEAMS.forEach(function (team) {
+        var list = Seating.studentsInTeam(team);
+        setText('group-count-' + team.toLowerCase(), list.length);
+        var box = document.getElementById('group-list-' + team.toLowerCase());
+        if (!box) return;
+        box.innerHTML = '';
+        if (!list.length) {
+            var note = document.createElement('div');
+            note.className = 'empty-note';
+            note.textContent = 'No students assigned.';
+            box.appendChild(note);
+            return;
+        }
+        list.forEach(function (s) {
+            var chip = document.createElement('span');
+            chip.className = 'student-chip readonly';
+            chip.textContent = s.chineseName + (s.englishName ? ' (' + s.englishName + ')' : '');
+            if (s.placeholder) chip.title = 'Not on the loaded roster — ID ' + s.id;
+            box.appendChild(chip);
+        });
+    });
+}
+
+// ── Seating grid (read-only reference) ──────────────────
+// Schematic only: it shows group membership in assignment order. Column
+// numbers are real room positions; student placement is not their seat.
 function renderSeatingGrid() {
-    const grid = document.getElementById('seating-grid');
+    var grid = document.getElementById('seating-grid');
+    if (!grid || !gridVisible) return;
+    var data = Seating.buildGrid();
     grid.innerHTML = '';
 
     var emptyHdr = document.createElement('div');
     emptyHdr.className = 'seating-header';
     grid.appendChild(emptyHdr);
 
-    var teamLabels = ['A1','A2','A3','A4','A5','B1','B2','B3','B4','B5'];
     for (var c = 0; c < COLS; c++) {
         var hdr = document.createElement('div');
         hdr.className = 'seating-header';
         hdr.style.background = c < COLS_PER_TEAM ? 'var(--team-a)' : 'var(--team-b)';
-        hdr.textContent = teamLabels[c];
+        hdr.textContent = String(c + 1);
         grid.appendChild(hdr);
     }
 
@@ -939,13 +948,11 @@ function renderSeatingGrid() {
         grid.appendChild(rowLabel);
 
         for (var cc = 0; cc < COLS; cc++) {
-            (function(row, col) {
+            (function (row, col) {
+                var student = data[row][col];
                 var seat = document.createElement('div');
-                var student = seating[row][col];
-                seat.className = 'seat' +
-                    (student ? ' filled' : '') +
+                seat.className = 'seat' + (student ? ' filled' : '') +
                     (col < COLS_PER_TEAM ? ' team-a-seat' : ' team-b-seat');
-
                 if (student) {
                     var cn = document.createElement('span');
                     cn.className = 'seat-cn';
@@ -957,124 +964,25 @@ function renderSeatingGrid() {
                         en.textContent = student.englishName;
                         seat.appendChild(en);
                     }
-                    seat.title = student.chineseName + (student.englishName ? ' (' + student.englishName + ')' : '');
-                    var removeBtn = document.createElement('span');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.textContent = '\u00d7';
-                    removeBtn.onclick = function(e) { e.stopPropagation(); removeFromSeat(row, col); };
-                    seat.appendChild(removeBtn);
+                    seat.title = Seating.displayName(student);
                 }
-
-                seat.onclick = function() { clickSeat(row, col); };
                 grid.appendChild(seat);
             })(r, cc);
         }
     }
 }
 
-// ── Select Student ─────────────────────────────────────
-function selectStudent(student) {
-    if (selectedStudent && selectedStudent.id === student.id) {
-        selectedStudent = null;
-    } else {
-        selectedStudent = student;
-    }
-    renderStudentPool();
+function toggleGridView() {
+    gridVisible = !gridVisible;
+    var sec = document.getElementById('grid-section');
+    if (sec) sec.style.display = gridVisible ? 'block' : 'none';
+    var btn = document.getElementById('grid-toggle');
+    if (btn) btn.innerHTML = gridVisible ? '▣ Hide seating grid' : '▣ Show seating grid';
+    if (gridVisible) renderSeatingGrid();
 }
 
-// ── Click Seat ─────────────────────────────────────────
-function clickSeat(r, c) {
-    if (selectedStudent) {
-        seating[r][c] = selectedStudent;
-        selectedStudent = null;
-        renderStudentPool();
-        renderSeatingGrid();
-        updateSetupStats();
-    } else if (seating[r][c]) {
-        selectedStudent = seating[r][c];
-        seating[r][c] = null;
-        renderStudentPool();
-        renderSeatingGrid();
-        updateSetupStats();
-    }
-}
-
-// ── Remove from Seat ───────────────────────────────────
-function removeFromSeat(r, c) {
-    seating[r][c] = null;
-    selectedStudent = null;
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSetupStats();
-}
-
-// ── Randomize Seating ──────────────────────────────────
-function randomizeSeating() {
-    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
-    var shuffled = allStudents.slice().sort(function() { return Math.random() - 0.5; });
-    var idx = 0;
-    for (var c = 0; c < COLS; c++) {
-        for (var r = 0; r < ROWS; r++) {
-            if (idx < shuffled.length) {
-                seating[r][c] = shuffled[idx];
-                idx++;
-            }
-        }
-    }
-    selectedStudent = null;
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSetupStats();
-}
-
-// ── Clear Seating ──────────────────────────────────────
-function clearSeating() {
-    seating = Array.from({length: ROWS}, function() { return Array(COLS).fill(null); });
-    selectedStudent = null;
-    renderStudentPool();
-    renderSeatingGrid();
-    updateSetupStats();
-}
-
-// ── Update Setup Stats ─────────────────────────────────
-function updateSetupStats() {
-    var teamA = 0, teamB = 0;
-    for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-            if (seating[r][c]) {
-                if (c < COLS_PER_TEAM) teamA++;
-                else teamB++;
-            }
-        }
-    }
-    document.getElementById('team-a-count').textContent = teamA;
-    document.getElementById('team-b-count').textContent = teamB;
-    document.getElementById('unassigned-count').textContent = allStudents.length - teamA - teamB;
-    document.getElementById('start-btn').disabled = (teamA + teamB) < 10;
-}
-
-// ── Helpers ────────────────────────────────────────────
-function getSubgroupLabel(col) {
-    var team = col < COLS_PER_TEAM ? 'A' : 'B';
-    var num = (col % COLS_PER_TEAM) + 1;
-    return team + num;
-}
-
-function getStudentsInColumn(col) {
-    var students = [];
-    for (var r = 0; r < ROWS; r++) {
-        if (seating[r][col]) students.push(seating[r][col]);
-    }
-    return students;
-}
-
-function getTeamColumns(team) {
-    var start = team === 'A' ? 0 : COLS_PER_TEAM;
-    var end = team === 'A' ? COLS_PER_TEAM : COLS;
-    var cols = [];
-    for (var c = start; c < end; c++) cols.push(c);
-    return cols;
-}
+// ── Team helpers ────────────────────────────────────────
+function getStudentsInTeam(team) { return Seating.studentsInTeam(team); }
 
 function shuffleArray(arr) {
     var a = arr.slice();
@@ -1098,11 +1006,7 @@ function startGame() {
     gameState.spokespersonHistory = {};
     gameState.participationLog = [];
     gameState.currentSpokesperson = null;
-    gameState.currentSubgroup = null;
 
-    for (var c = 0; c < COLS; c++) {
-        gameState.spokespersonHistory[getSubgroupLabel(c)] = [];
-    }
 
     showScreen('game-screen');
     renderBoard();
@@ -1193,11 +1097,10 @@ function openQuestionModal() {
 
     var modalTeam = document.getElementById('modal-team-info');
     var team = gameState.currentTeam;
-    var teamLabel = 'Team ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
-    var subLabel = gameState.currentSubgroup ? ' \u2014 ' + gameState.currentSubgroup : '';
+    var teamLabel = 'Group ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
     var spk = gameState.currentSpokesperson;
     var spkLabel = spk ? (spk.englishName ? spk.chineseName + ' (' + spk.englishName + ')' : spk.chineseName) : '';
-    modalTeam.textContent = teamLabel + subLabel + (spkLabel ? ' \u2014 ' + spkLabel : '');
+    modalTeam.textContent = teamLabel + (spkLabel ? ' \u2014 ' + spkLabel : '');
     modalTeam.className = 'modal-team-info ' + (team === 'A' ? 'team-a-text' : 'team-b-text');
 
     var answerArea = document.getElementById('answer-area');
@@ -1292,7 +1195,6 @@ function judgeAnswer(correct) {
         session_id: currentSessionId,
         round: gameState.currentRound,
         team: team,
-        subgroup: gameState.currentSubgroup,
         student_id: gameState.currentSpokesperson ? gameState.currentSpokesperson.id : '',
         student_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.chineseName : '',
         english_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.englishName : '',
@@ -1340,7 +1242,6 @@ function passTurn() {
         session_id: currentSessionId,
         round: gameState.currentRound,
         team: gameState.currentTeam,
-        subgroup: gameState.currentSubgroup,
         student_id: gameState.currentSpokesperson ? gameState.currentSpokesperson.id : '',
         student_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.chineseName : '',
         english_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.englishName : '',
@@ -1377,38 +1278,27 @@ function repickFromModal() {
         document.getElementById('spokesperson-name').textContent = spkLabel;
         var modalTeam = document.getElementById('modal-team-info');
         var team = gameState.currentTeam;
-        var teamLabel = 'Team ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
-        var subLabel = gameState.currentSubgroup ? ' \u2014 ' + gameState.currentSubgroup : '';
-        modalTeam.textContent = teamLabel + subLabel + ' \u2014 ' + spkLabel;
+        var teamLabel = 'Group ' + team + (team === 'A' ? ' (\u2718)' : ' (\u25CB)');
+        modalTeam.textContent = teamLabel + ' \u2014 ' + spkLabel;
     }
 }
 
 // ── Pick Spokesperson ──────────────────────────────────
 function pickSpokesperson() {
     var team = gameState.currentTeam;
-    var teamCols = getTeamColumns(team);
+    var students = getStudentsInTeam(team);
 
-    var startCol;
-    if (!gameState.currentSubgroup) {
-        startCol = teamCols[0];
-    } else {
-        var currentCol = parseInt(gameState.currentSubgroup.substring(1)) - 1 + (team === 'B' ? COLS_PER_TEAM : 0);
-        var pos = teamCols.indexOf(currentCol);
-        var nextPos = (pos + 1) % teamCols.length;
-        startCol = teamCols[nextPos];
-    }
-
-    var subgroupLabel = getSubgroupLabel(startCol);
-    gameState.currentSubgroup = subgroupLabel;
-
-    var students = getStudentsInColumn(startCol);
+    /* An empty group must not recurse: updateTurnInfo() re-enters this
+       function when there is no spokesperson. */
     if (students.length === 0) {
-        gameState.currentSubgroup = null;
-        pickSpokesperson();
+        gameState.currentSpokesperson = null;
+        updateTurnInfo(false);
         return;
     }
 
-    var history = gameState.spokespersonHistory[subgroupLabel] || [];
+    /* Draw from the whole group, skipping anyone who has already spoken this
+       cycle. Once everyone has, the history resets and the cycle repeats. */
+    var history = gameState.spokespersonHistory[team] || [];
     var available = [];
     for (var i = 0; i < students.length; i++) {
         if (history.indexOf(i) === -1) available.push(i);
@@ -1418,36 +1308,42 @@ function pickSpokesperson() {
     if (available.length > 0) {
         chosenIdx = available[Math.floor(Math.random() * available.length)];
     } else {
-        gameState.spokespersonHistory[subgroupLabel] = [];
+        history = [];
         chosenIdx = Math.floor(Math.random() * students.length);
     }
 
-    gameState.spokespersonHistory[subgroupLabel].push(chosenIdx);
+    history.push(chosenIdx);
+    gameState.spokespersonHistory[team] = history;
     gameState.currentSpokesperson = students[chosenIdx];
-    updateTurnInfo();
+    updateTurnInfo(false);
 }
 
 // ── Update Turn Info ───────────────────────────────────
-function updateTurnInfo() {
+/* autoPick: pass false when the spokesperson is already set (or impossible),
+   so an empty group cannot trigger unbounded recursion. */
+function updateTurnInfo(autoPick) {
     var team = gameState.currentTeam;
     var label = document.getElementById('turn-team-label');
-    var sub = document.getElementById('turn-subgroup-label');
     var name = document.getElementById('spokesperson-name');
     var pickBtn = document.getElementById('pick-btn');
 
-    label.textContent = "Team " + team + "'s Turn";
+    label.textContent = "Group " + team + "'s Turn";
     label.className = 'turn-team ' + (team === 'A' ? 'team-a-text' : 'team-b-text');
-    sub.textContent = gameState.currentSubgroup ? '\u2014 Subgroup ' + gameState.currentSubgroup : '';
 
     if (gameState.currentSpokesperson) {
         var s = gameState.currentSpokesperson;
         name.textContent = s.englishName ? s.chineseName + ' (' + s.englishName + ')' : s.chineseName;
+        pickBtn.disabled = false;
         pickBtn.textContent = '\uD83D\uDD04 Re-pick';
+    } else if (getStudentsInTeam(team).length === 0) {
+        name.textContent = '\u2014';
+        pickBtn.disabled = true;
+        pickBtn.textContent = 'Group ' + team + ' is empty';
     } else {
         name.textContent = '\u2014';
+        pickBtn.disabled = false;
         pickBtn.textContent = "\uD83C\uDFB2 Who's Next?";
-        pickSpokesperson();
-        return;
+        if (autoPick !== false) { pickSpokesperson(); return; }
     }
 
     document.getElementById('score-box-a').classList.toggle('active', team === 'A');
@@ -1466,8 +1362,8 @@ function endRound() {
     if (gameState.currentRound < TOTAL_ROUNDS) {
         var proceed = confirm(
             'Round ' + gameState.currentRound + ' complete!\n\n' +
-            'Team A: ' + gameState.scores.A + ' pts\n' +
-            'Team B: ' + gameState.scores.B + ' pts\n\n' +
+            'Group A: ' + gameState.scores.A + ' pts\n' +
+            'Group B: ' + gameState.scores.B + ' pts\n\n' +
             'Start Round ' + (gameState.currentRound + 1) + '?'
         );
         if (proceed) {
@@ -1503,12 +1399,12 @@ function showResults() {
     finalBoxB.classList.remove('winner');
 
     if (aScore > bScore) {
-        document.getElementById('results-title').textContent = '\uD83C\uDFC6 Team A Wins!';
-        document.getElementById('results-subtitle').textContent = 'Congratulations to Team A!';
+        document.getElementById('results-title').textContent = '\uD83C\uDFC6 Group A Wins!';
+        document.getElementById('results-subtitle').textContent = 'Congratulations to Group A!';
         finalBoxA.classList.add('winner');
     } else if (bScore > aScore) {
-        document.getElementById('results-title').textContent = '\uD83C\uDFC6 Team B Wins!';
-        document.getElementById('results-subtitle').textContent = 'Congratulations to Team B!';
+        document.getElementById('results-title').textContent = '\uD83C\uDFC6 Group B Wins!';
+        document.getElementById('results-subtitle').textContent = 'Congratulations to Group B!';
         finalBoxB.classList.add('winner');
     } else {
         document.getElementById('results-title').textContent = "\uD83E\uDD1D It's a Tie!";
@@ -1542,9 +1438,6 @@ function resetAllRounds() {
     gameState.questionIndex = 0;
     gameState.currentSpokesperson = null;
     gameState.participationLog = [];
-    for (var c = 0; c < COLS; c++) {
-        gameState.spokespersonHistory[getSubgroupLabel(c)] = [];
-    }
     showScreen('game-screen');
     renderBoard();
     updateScoreDisplay();
@@ -1657,7 +1550,6 @@ async function saveResultsToSheet(results) {
             session_id: results[0].session_id,
             round: results[0].round,
             team: results[0].team,
-            subgroup: results[0].subgroup,
             student_id: results[0].student_id,
             student_name: results[0].student_name,
             english_name: results[0].english_name,
@@ -1702,7 +1594,7 @@ function parseCSVLine(line) {
     return fields;
 }
 
-var CANON_COLS = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+var CANON_COLS = ['timestamp','date','session_id','round','team','student_id','student_name','english_name','question','category','correct','points'];
 
 function recordFromArray(arr) {
     var out = {};
@@ -1786,7 +1678,7 @@ function buildSummaryFromResults(results) {
         if (!summaryMap[key]) {
             summaryMap[key] = {
                 student_id: idCleaned, student_name: r.student_name || '', english_name: r.english_name,
-                team: r.team, subgroup: r.subgroup, games_played: 0, total_correct: 0,
+                team: r.team, games_played: 0, total_correct: 0,
                 total_points: 0, total_attempted: 0, accuracy_pct: 0, sessions: {}
             };
         }
@@ -1929,29 +1821,12 @@ async function loadDashboardData() {
 
     // Build summary
     allSummary = buildSummaryFromResults(allResults);
-    populateSubgroupFilter();
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
     document.getElementById('summary-loading').style.display = 'none';
     document.getElementById('detail-loading').style.display = 'none';
     document.getElementById('summary-table').style.display = 'table';
     document.getElementById('detail-table').style.display = 'table';
-}
-
-// Populate subgroup filter dropdown
-function populateSubgroupFilter() {
-    var select = document.getElementById('filter-subgroup');
-    select.innerHTML = '<option value="">All Subgroups</option>';
-    var subgroups = {};
-    allResults.forEach(function(r) {
-        if (r.subgroup) subgroups[r.subgroup] = true;
-    });
-    Object.keys(subgroups).sort().forEach(function(sg) {
-        var option = document.createElement('option');
-        option.value = sg;
-        option.textContent = sg;
-        select.appendChild(option);
-    });
 }
 
 // Render summary table
@@ -1965,7 +1840,6 @@ function renderSummaryTable(data) {
             '<td>' + (s.student_id || '&mdash;') + '</td>' +
             '<td>' + (s.student_name || '') + (s.english_name ? ' (' + s.english_name + ')' : '') + '</td>' +
             '<td>' + (s.team || '') + '</td>' +
-            '<td>' + (s.subgroup || '') + '</td>' +
             '<td>' + (s.games_played || 0) + '</td>' +
             '<td>' + (s.total_correct || 0) + '</td>' +
             '<td>' + (s.total_points || 0) + '</td>' +
@@ -1988,7 +1862,6 @@ function renderDetailTable(data) {
             '<td>' + (r.date || '') + '</td>' +
             '<td>' + (r.round || '') + '</td>' +
             '<td>' + (r.team || '') + '</td>' +
-            '<td>' + (r.subgroup || '') + '</td>' +
             '<td>' + (r.student_name || '') + '</td>' +
             '<td>' + (r.question || '').substring(0, 40) + ((r.question || '').length > 40 ? '...' : '') + '</td>' +
             '<td>' + (r.category || '') + '</td>' +
@@ -2001,12 +1874,10 @@ function renderDetailTable(data) {
 // Apply filters
 function applyFilters() {
     var teamFilter = document.getElementById('filter-team').value;
-    var subgroupFilter = document.getElementById('filter-subgroup').value;
     var searchFilter = document.getElementById('filter-search').value.toLowerCase();
 
     var filteredResults = allResults.filter(function(r) {
         if (teamFilter && r.team !== teamFilter) return false;
-        if (subgroupFilter && r.subgroup !== subgroupFilter) return false;
         if (searchFilter) {
             var name = (r.student_name || '').toLowerCase();
             var english = (r.english_name || '').toLowerCase();
@@ -2023,7 +1894,6 @@ function applyFilters() {
 // Clear filters
 function clearFilters() {
     document.getElementById('filter-team').value = '';
-    document.getElementById('filter-subgroup').value = '';
     document.getElementById('filter-search').value = '';
     renderSummaryTable(allSummary);
     renderDetailTable(allResults);
@@ -2041,7 +1911,7 @@ function exportCSV() {
         alert('No data to export. Load results first from the dashboard.');
         return;
     }
-    var headers = ['timestamp','date','session_id','round','team','subgroup','student_id','student_name','english_name','question','category','correct','points'];
+    var headers = ['timestamp','date','session_id','round','team','student_id','student_name','english_name','question','category','correct','points'];
     var csv = headers.join(',') + '\n';
     allResults.forEach(function(row) {
         csv += headers.map(function(h) {
@@ -2058,7 +1928,7 @@ function exportSummaryCSV() {
         alert('No summary data to export. Load results first from the dashboard.');
         return;
     }
-    var headers = ['student_id','student_name','english_name','team','subgroup','games_played','total_correct','total_points','accuracy_pct'];
+    var headers = ['student_id','student_name','english_name','team','games_played','total_correct','total_points','accuracy_pct'];
     var csv = headers.join(',') + '\n';
     allSummary.forEach(function(row) {
         csv += headers.map(function(h) {
@@ -2096,7 +1966,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── Initialize ─────────────────────────────────────────
-loadRollcall();
+loadGroups();
 loadConfig();
 // Deep links like ?week=4 (or a per-week game copy) select the active weeks.
 // Deep links like ?week=4 win and are persisted; otherwise each game copies
