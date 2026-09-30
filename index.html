@@ -72,6 +72,7 @@
         .hero {
             position: relative;
             overflow: hidden;
+            text-align: center;
             color: #fff;
             background: linear-gradient(var(--overlay-a), var(--overlay-b)),
                         url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&h=520&fit=crop');
@@ -107,8 +108,8 @@
             line-height: 1.12;
             letter-spacing: -.025em;
             font-weight: 700;
-            max-width: 20ch;
-            margin-bottom: .8rem;
+            max-width: 22ch;
+            margin: 0 auto .8rem;
         }
         .hero .lede {
             font-size: clamp(1rem, 2.4vw, 1.15rem);
@@ -117,12 +118,14 @@
         }
         .hero .byline {
             margin-top: 1.1rem;
+            text-align: center;
             font-size: .88rem;
             opacity: .82;
         }
         .hero .byline strong { color: #fff; font-weight: 600; }
 
-        .hero-actions { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+        .hero-actions { margin-top: 1.6rem; display: flex; flex-wrap: wrap;
+                      gap: .6rem; justify-content: center; }
         .btn {
             display: inline-flex;
             align-items: center;
@@ -161,7 +164,8 @@
             box-shadow: var(--shadow-md);
             overflow: hidden;
         }
-        .facts > div { padding: 1.05rem 1.1rem; border-right: 1px solid var(--border); }
+        .facts > div { padding: 1.05rem 1.1rem; border-right: 1px solid var(--border);
+                      text-align: center; }
         .facts > div:last-child { border-right: 0; }
         .facts dt {
             font-size: .66rem;
@@ -169,7 +173,6 @@
             letter-spacing: .1em;
             text-transform: uppercase;
             color: var(--text);
-            opacity: .7;
             margin-bottom: .3rem;
         }
         .facts dd { font-size: 1.12rem; font-weight: 700; color: var(--primary); line-height: 1.25; }
@@ -183,7 +186,7 @@
             color: var(--primary);
             letter-spacing: -.01em;
         }
-        .section-head .hint { font-size: .8rem; color: var(--text); opacity: .7; }
+        .section-head .hint { font-size: .8rem; color: var(--text); }
 
         /* ── Progress ────────────────────────────────────── */
         .progress {
@@ -200,12 +203,34 @@
             gap: 1rem;
             font-size: .8rem;
             color: var(--text);
-            opacity: .8;
             margin-bottom: .6rem;
         }
         .progress-label strong { color: var(--text); }
-        .progress-track { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
-        .progress-fill { height: 100%; width: 39%; background: var(--accent); border-radius: 100px; }
+        /* One segment per week, so the bar shows the whole semester rather than a
+           percentage of the site that has been written. */
+        .progress-track {
+            display: flex;
+            gap: 3px;
+            align-items: stretch;
+        }
+        .week-seg {
+            flex: 1 1 0;
+            min-width: 4px;
+            height: 12px;
+            border-radius: 3px;
+            background: var(--border);
+        }
+        .week-seg.is-done { background: var(--accent); }
+        .progress-ticks {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: .66rem;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-top: .45rem;
+        }
 
         /* ── Week cards ──────────────────────────────────── */
         .weeks { display: flex; flex-direction: column; gap: 1rem; }
@@ -240,7 +265,7 @@
             align-items: center;
             justify-content: center;
             background: var(--bg);
-            color: var(--primary);
+            color: var(--text);
             border: 1px solid var(--border);
             border-radius: 16px;
             font-size: 1.4rem;
@@ -277,7 +302,6 @@
             text-transform: uppercase;
             color: var(--text);
             min-width: 8.5rem;
-            opacity: .75;
         }
 
         .pill {
@@ -329,7 +353,7 @@
             text-align: center;
         }
         .roadmap h3 { font-size: 1.05rem; color: var(--primary); margin-bottom: .4rem; }
-        .roadmap p { color: var(--text); opacity: .85; font-size: .92rem; max-width: 46ch; margin: 0 auto .9rem; }
+        .roadmap p { color: var(--text); font-size: .92rem; max-width: 46ch; margin: 0 auto .9rem; }
         .roadmap .topics {
             display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center;
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -341,7 +365,6 @@
             background: var(--bg);
             border: 1px solid var(--border);
             color: var(--text);
-            opacity: .8;
         }
 
         /* ── Footer ──────────────────────────────────────── */
@@ -353,7 +376,6 @@
             text-align: center;
             font-size: .8rem;
             color: var(--text);
-            opacity: .8;
         }
         footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
         footer a:hover { text-decoration: underline; }
@@ -437,10 +459,34 @@
 
     <div class="progress">
         <div class="progress-label">
-            <span><strong>7</strong> of 18 weeks published</span>
-            <span>Weeks 8–18 in preparation</span>
+            <span><strong>Week 7</strong> of 18</span>
+            <span>Weeks 8–18 still to come</span>
         </div>
-        <div class="progress-track"><div class="progress-fill"></div></div>
+        <div class="progress-track" role="img"
+             aria-label="7 of 18 weeks published. Weeks 1 to 7 are available; weeks 8 to 18 are not yet.">
+            <span class="week-seg is-done" title="Week 1 — published"></span>
+            <span class="week-seg is-done" title="Week 2 — published"></span>
+            <span class="week-seg is-done" title="Week 3 — published"></span>
+            <span class="week-seg is-done" title="Week 4 — published"></span>
+            <span class="week-seg is-done" title="Week 5 — published"></span>
+            <span class="week-seg is-done" title="Week 6 — published"></span>
+            <span class="week-seg is-done" title="Week 7 — published"></span>
+            <span class="week-seg" title="Week 8 — not yet published"></span>
+            <span class="week-seg" title="Week 9 — not yet published"></span>
+            <span class="week-seg" title="Week 10 — not yet published"></span>
+            <span class="week-seg" title="Week 11 — not yet published"></span>
+            <span class="week-seg" title="Week 12 — not yet published"></span>
+            <span class="week-seg" title="Week 13 — not yet published"></span>
+            <span class="week-seg" title="Week 14 — not yet published"></span>
+            <span class="week-seg" title="Week 15 — not yet published"></span>
+            <span class="week-seg" title="Week 16 — not yet published"></span>
+            <span class="week-seg" title="Week 17 — not yet published"></span>
+            <span class="week-seg" title="Week 18 — not yet published"></span>
+        </div>
+        <div class="progress-ticks">
+            <span>Week 1</span>
+            <span>Week 18</span>
+        </div>
     </div>
 
     <div class="weeks" id="weeks">
@@ -562,6 +608,10 @@
                 <div class="meta-row">
                     <span class="row-label">Lesson</span>
                     <a class="pill pill-primary" href="Wk5/Week5_Programming_Intro.html">Open lesson</a>
+                </div>
+                <div class="meta-row">
+                    <span class="row-label">Activity</span>
+                    <a class="pill pill-game" href="Wk5/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
                 </div>
             </div>
         </article>
