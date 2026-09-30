@@ -161,7 +161,7 @@
             padding: 0;
         }
         .section-content.open {
-            max-height: 5000px;
+            max-height: 40000px;
             padding: 1rem 0;
         }
 
@@ -443,6 +443,179 @@
             font-weight: 600;
         }
 
+        /* ── Click-to-Reveal Glossary ───────────────────── */
+        /* Terms are marked up with data-def (never a unique id) because the
+           Extract modal deep-copies this markup, which would duplicate ids. */
+        .vocab-term {
+            background: var(--accent-light);
+            color: var(--primary);
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px dotted var(--accent);
+        }
+        .vocab-term:hover { background: #90cdf4; }
+        .vocab-term:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .vocab-term.is-open { background: var(--accent); color: white; border-bottom-color: var(--accent); }
+        .vocab-def {
+            display: none;
+            background: var(--vocab-bg);
+            border-left: 4px solid var(--warm);
+            padding: 0.65rem 0.9rem;
+            margin: 0.4rem 0 0.8rem;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            border-radius: 0 4px 4px 0;
+        }
+        .vocab-def.show { display: block; }
+        .vocab-def .cn { color: var(--warm); font-weight: 600; }
+
+        /* ── Network Topology ───────────────────────────── */
+        .topology {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.3rem 1rem;
+            margin: 1.2rem 0;
+            overflow-x: auto;
+        }
+        .topo-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .topo-trunk, .topo-branch {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .topo-branch { margin-top: 0.6rem; }
+        .topo-stage { display: flex; align-items: flex-start; }
+        .topo-arrow {
+            width: 30px; height: 2px; margin: 37px 0.15rem 0;
+            background: var(--border); position: relative; flex-shrink: 0;
+        }
+        .topo-arrow::after {
+            content: ''; position: absolute; right: 1px; top: 50%;
+            width: 7px; height: 7px; margin-top: -3.5px;
+            border-top: 2px solid var(--text-light);
+            border-right: 2px solid var(--text-light);
+            transform: rotate(45deg);
+        }
+        .topo-node { display: flex; flex-direction: column; align-items: center; width: 118px; }
+        .topo-btn {
+            width: 100%;
+            min-height: 76px;
+            display: flex; flex-direction: column; justify-content: center;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 0.3rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            line-height: 1.3;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .topo-btn:hover { transform: translateY(-2px); box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        .topo-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .topo-ico { display: block; font-size: 1.5rem; margin-bottom: 0.2rem; }
+        .topo-node.is-ok   .topo-btn { border-color: #48bb78; background: var(--success-bg); }
+        .topo-node.is-warn .topo-btn { border-color: #ecc94b; background: #fffff0; }
+        .topo-node.is-fail .topo-btn { border-color: #fc8181; background: var(--homework-bg); }
+        .topo-detail {
+            display: none;
+            margin-top: 0.45rem;
+            font-size: 0.76rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .topo-node.is-open .topo-detail { display: block; }
+        .topo-detail b { color: var(--primary); display: block; }
+        .topo-detail .cn { color: var(--warm); }
+        .topo-detail .st { font-weight: 700; }
+        .st-ok { color: var(--success); }
+        .st-warn { color: #b7791f; }
+        .st-fail { color: #c53030; }
+        .topo-hint {
+            text-align: center; font-size: 0.75rem; color: var(--text-light);
+            font-style: italic; margin: 0.9rem 0 0;
+        }
+
+        /* ── Packet Journey (pure CSS) ──────────────────── */
+        .journey {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem 1rem;
+            margin: 1.2rem 0;
+        }
+        .journey-track { position: relative; height: 44px; margin: 0.6rem 0 0.5rem; }
+        .journey-line {
+            position: absolute; top: 19px; left: 0; right: 0; height: 3px;
+            background: var(--border); border-radius: 2px;
+        }
+        /* the segment the packet can no longer get through */
+        .journey-line::after {
+            content: ''; position: absolute; left: 58%; right: 0; top: 0; height: 100%;
+            background: repeating-linear-gradient(90deg, #fc8181 0 6px, transparent 6px 12px);
+        }
+        .journey-packet {
+            position: absolute; top: 11px; left: 0;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #2b6cb0; border: 2px solid white;
+            box-shadow: 0 0 0 2px #2b6cb0;
+            animation: packetRun 7s linear infinite;
+        }
+        @keyframes packetRun {
+            0%   { left: 0%;   opacity: 0; }
+            4%   { opacity: 1; }
+            14%  { left: 15%; }
+            26%  { left: 32%; }
+            38%  { left: 47%; }
+            46%  { left: 55%; }
+            52%  { left: 58%; opacity: 1; background: #e53e3e; box-shadow: 0 0 0 2px #e53e3e; }
+            74%  { left: 58%; }
+            78%  { left: 55.5%; }
+            84%  { left: 58%; }
+            92%  { left: 58%; opacity: 1; }
+            97%  { left: 58%; opacity: 0; }
+            100% { left: 0%;   opacity: 0; }
+        }
+        .journey-stages {
+            display: flex; justify-content: space-between;
+            font-size: 0.68rem; color: var(--text-light);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .journey-legend {
+            text-align: center; font-size: 0.75rem; color: var(--text-light);
+            margin: 0.8rem 0 0; line-height: 1.6;
+        }
+        .journey-legend .dot {
+            display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+            margin: 0 0.25rem 0 0.8rem; vertical-align: middle;
+        }
+        .journey-legend .dot-blue { background: #2b6cb0; }
+        .journey-legend .dot-red { background: #e53e3e; }
+
+        /* Honour reduced-motion: park the packet at the failure point and
+           let the diagram speak for itself. */
+        @media (prefers-reduced-motion: reduce) {
+            .journey-packet {
+                animation: none; left: 58%;
+                background: #e53e3e; box-shadow: 0 0 0 2px #e53e3e;
+            }
+        }
+
         /* ── Print ─────────────────────────────────────── */
         @media print {
             body { background: white; font-size: 11pt; }
@@ -454,6 +627,10 @@
             #extract-overlay { position: static !important; background: none !important; }
             #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
             #extract-overlay button { display: none !important; }
+            /* Freeze the packet where it stalls, so the printout shows the
+               failure point rather than an arbitrary frame. */
+            .journey-packet { animation: none !important; left: 58%; }
+            .topo-btn { min-height: 0; }
         }
 
         /* ── Responsive: Tablet ≤ 768px ──────────────────── */
@@ -548,6 +725,29 @@
             .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
             .audio-player-text { text-align: center; }
             .audio-player audio { width: 100%; height: 32px; }
+
+            .topology { padding: 1rem 0.7rem; }
+            .journey { padding: 1rem 0.7rem; }
+            .journey-stages { font-size: 0.6rem; }
+        }
+
+        /* Topology needs ~590px as a horizontal chain, so below that the
+           nodes stack and the connectors turn downward. */
+        @media (max-width: 560px) {
+            .topo-trunk, .topo-branch { flex-direction: column; align-items: center; }
+            .topo-branch { margin-top: 0; }
+            .topo-stage { flex-direction: column; align-items: center; width: 100%; }
+            .topo-node { width: 100%; max-width: 270px; }
+            .topo-arrow {
+                width: 2px; height: 22px; margin: 0.2rem 0;
+                align-self: center;
+            }
+            .topo-arrow::after {
+                right: auto; top: auto; bottom: 1px; left: 50%;
+                margin: 0 0 0 -3.5px; transform: rotate(135deg);
+            }
+            .topo-detail { text-align: center; }
+            .vocab-def { font-size: 0.84rem; padding: 0.6rem 0.7rem; }
         }
     .header-home-link {
             color: inherit;
@@ -656,28 +856,50 @@
             
 
         <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
-        <p>Match these words to their meanings. Do this together as a class before reading the article.</p>
+        <p>Cover the <strong>Meaning</strong> column with your hand. Read each term aloud, say what you think it means, write your guess in the last column, then check with <em>Show Answers</em>. Do this together as a class before reading the article.</p>
 
         <div class="card card-vocab">
-            <div class="card-header">Match the Terms</div>
+            <div class="card-header">Recall the Terms</div>
             <table>
                 <thead>
-                    <tr><th style="width:15%;">#</th><th style="width:30%;">Word</th><th style="width:10%;">→</th><th>Meaning</th></tr>
+                    <tr><th style="width:5%;">#</th><th style="width:26%;">Term</th><th style="width:15%;">中文</th><th>Your guess (write here)</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>1</td><td><strong>network</strong></td><td>→</td><td>a group of connected computers</td></tr>
-                    <tr><td>2</td><td><strong>router</strong></td><td>→</td><td>device that directs data between networks</td></tr>
-                    <tr><td>3</td><td><strong>switch</strong></td><td>→</td><td>device that connects devices within a network</td></tr>
-                    <tr><td>4</td><td><strong>access point</strong></td><td>→</td><td>device that allows wireless devices to connect</td></tr>
-                    <tr><td>5</td><td><strong>bandwidth</strong></td><td>→</td><td>maximum data transfer rate</td></tr>
-                    <tr><td>6</td><td><strong>latency</strong></td><td>→</td><td>delay in data transmission</td></tr>
-                    <tr><td>7</td><td><strong>protocol</strong></td><td>→</td><td>rules for data transmission (TCP/IP, HTTP)</td></tr>
-                    <tr><td>8</td><td><strong>firewall</strong></td><td>→</td><td>security system monitoring network traffic</td></tr>
+                    <tr><td>1</td><td><strong>network</strong></td><td>網路</td><td></td></tr>
+                    <tr><td>2</td><td><strong>router</strong></td><td>路由器</td><td></td></tr>
+                    <tr><td>3</td><td><strong>switch</strong></td><td>交換器</td><td></td></tr>
+                    <tr><td>4</td><td><strong>access point</strong></td><td>存取點</td><td></td></tr>
+                    <tr><td>5</td><td><strong>bandwidth</strong></td><td>頻寬</td><td></td></tr>
+                    <tr><td>6</td><td><strong>latency</strong></td><td>延遲</td><td></td></tr>
+                    <tr><td>7</td><td><strong>protocol</strong></td><td>通訊協定</td><td></td></tr>
+                    <tr><td>8</td><td><strong>firewall</strong></td><td>防火牆</td><td></td></tr>
+                    <tr><td>9</td><td><strong>outage</strong></td><td>服務中斷</td><td></td></tr>
+                    <tr><td>10</td><td><strong>packet</strong></td><td>封包</td><td></td></tr>
+                    <tr><td>11</td><td><strong>troubleshoot</strong></td><td>排除疑難</td><td></td></tr>
+                    <tr><td>12</td><td><strong>server</strong></td><td>伺服器</td><td></td></tr>
                 </tbody>
             </table>
             <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
             <div id="pre-read-answers" class="answers">
-                <p><strong>1-a, 2-b, 3-c, 4-d, 5-e, 6-f, 7-g, 8-h</strong></p>
+                <table>
+                    <thead>
+                        <tr><th style="width:5%;">#</th><th style="width:26%;">Term</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><strong>network</strong></td><td>a group of connected computers that can talk to each other</td></tr>
+                        <tr><td>2</td><td><strong>router</strong></td><td>a device that directs data between different networks</td></tr>
+                        <tr><td>3</td><td><strong>switch</strong></td><td>a device that connects devices inside one network</td></tr>
+                        <tr><td>4</td><td><strong>access point</strong></td><td>a device that lets wireless devices connect to a network</td></tr>
+                        <tr><td>5</td><td><strong>bandwidth</strong></td><td>the maximum amount of data a link can carry at once</td></tr>
+                        <tr><td>6</td><td><strong>latency</strong></td><td>the delay before data arrives; low latency = fast response</td></tr>
+                        <tr><td>7</td><td><strong>protocol</strong></td><td>the rules two devices follow when they communicate (TCP/IP, HTTP)</td></tr>
+                        <tr><td>8</td><td><strong>firewall</strong></td><td>a security system that watches traffic and blocks what looks dangerous</td></tr>
+                        <tr><td>9</td><td><strong>outage</strong></td><td>a period when a service is completely unavailable</td></tr>
+                        <tr><td>10</td><td><strong>packet</strong></td><td>a small piece of data that is sent across a network</td></tr>
+                        <tr><td>11</td><td><strong>troubleshoot</strong></td><td>to find and fix a problem by testing one thing at a time</td></tr>
+                        <tr><td>12</td><td><strong>server</strong></td><td>a computer that stores data and provides it to other computers</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -692,6 +914,10 @@
             </audio>
         </div>
 
+        <p style="font-size:0.85rem;color:var(--text-light);font-style:italic;">
+            Tap any <span class="vocab-term" style="cursor:default;">underlined term</span> in the article to reveal its meaning. All definitions are collected in the glossary below the text.
+        </p>
+
         <article class="article">
             <div class="article-title">When the Network Goes Down</div>
             <div class="article-subtitle">A real-world troubleshooting scenario in a Taiwanese office</div>
@@ -705,21 +931,191 @@
                 <span><strong>Education:</strong> M.S. in Computer Science</span>
             </div>
 
-            <h4><span class="article-time">8:30 AM</span> — The Problem</h4>
-            <p>Zhaohui arrives at work to find chaos. The internet is down. Nobody can access the company's internal systems. The trading floor is especially affected — traders are losing money every minute. Zhaohui's manager says, 'The network is completely down. We're losing customers.'</p>
-            <h4><span class="article-time">8:45 AM</span> — Initial Diagnosis</h4>
-            <p>Zhaohui starts troubleshooting. He pings the main router — there is no response. He checks the switch in the server room — all lights are blinking red. He looks at the firewall logs — there are thousands of suspicious connection attempts. The network is under attack.</p>
-            <h4><span class="article-time">9:15 AM</span> — Taking Action</h4>
-            <p>Zhaohui is isolating the affected systems. He is disconnecting the trading floor from the main network. He is setting up a temporary backup network for critical operations. He calls the security team — they are analyzing the attack patterns. Zhaohui is updating the firewall rules to block the suspicious traffic.</p>
+            <h4><span class="article-time">7:52 AM</span> — The Warning</h4>
+            <p>An automated alert is waiting in Zhaohui's inbox: <em>core switch — degraded performance</em>. The dashboard is showing latency climbing past 120 milliseconds and <span class="vocab-term" data-def="g-packetloss" tabindex="0" role="button">packet loss</span> above two percent. The same alert appeared yesterday morning, and Zhaohui <strong>dismissed</strong> it after a quick glance, because the dashboard recovered on its own. This morning he is regretting that decision. He is opening the monitoring console, and he is wondering whether he should have <span class="vocab-term" data-def="g-escalate" tabindex="0" role="button">escalated</span> it last night.</p>
+
+            <h4><span class="article-time">8:30 AM</span> — The Outage</h4>
+            <p>By the time Zhaohui reaches his desk, nothing is improving. The core network is down. Nobody is reaching the internal systems, and the trading floor is the worst affected: forty traders are watching prices they cannot act on. Every minute of <span class="vocab-term" data-def="g-outage" tabindex="0" role="button">outage</span> is costing the firm money.</p>
+            <div class="example-box">
+                <div class="label">Trading floor</div>
+                <p><strong>Trader:</strong> "My screen shows the price, but I can't place a single order. Am I trading or just watching?"</p>
+                <p><strong>Zhaohui:</strong> "You're watching. I'm switching to the incident channel now, and then I'm walking down to the server room."</p>
+            </div>
+            <p>His manager is standing behind him. <strong>"We're completely down,"</strong> the manager says. <strong>"What is taking so long?"</strong> Zhaohui is not answering straight away. He is taking a breath, because guessing out loud is how outages become longer.</p>
+
+            <h4><span class="article-time">8:45 AM</span> — Diagnosis</h4>
+            <p>Zhaohui is starting with the simplest test. He is pinging the core router from the server room, and there is no response at all. He is checking the switch, and four ports are showing red. He is reading the firewall logs, and thousands of connection attempts are arriving every minute — far more than a normal Monday morning.</p>
+            <p>He is <span class="vocab-term" data-def="g-triage" tabindex="0" role="button">triaging</span> now, which means he is sorting what he <em>knows</em> from what he is only guessing at. The physical link is up, because the port lights are on. But the traffic is <span class="vocab-term" data-def="g-saturate" tabindex="0" role="button">saturating</span> the link, so real traffic is losing the argument with the junk. Something is flooding the connection, and he cannot yet prove what.</p>
+
+            <h4><span class="article-time">9:15 AM</span> — Containment</h4>
+            <p>Zhaohui is <span class="vocab-term" data-def="g-containment" tabindex="0" role="button">containing</span> the damage before he understands the cause. He is taking the trading floor off the main network entirely. He is moving critical operations across to the backup link, and the company is finally using the <span class="vocab-term" data-def="g-redundancy" tabindex="0" role="button">redundancy</span> it has been paying for — this is the <span class="vocab-term" data-def="g-failover" tabindex="0" role="button">failover</span> everyone hoped would never be needed.</p>
+            <p>He is escalating the incident to the security team, who are now analysing the traffic patterns. He is rewriting the firewall rules to block the suspicious addresses. He is resetting the <span class="vocab-term" data-def="g-credential" tabindex="0" role="button">credentials</span> that may have been exposed, and he is scheduling a <span class="vocab-term" data-def="g-patch" tabindex="0" role="button">patch</span> for the old service account that should have been deleted months ago.</p>
+            <p>Meanwhile, the traders are working from mobile hotspots, sending orders one at a time. It is slower, and it is miserable, but it is working — which is the whole point of redundancy.</p>
+
             <h4><span class="article-time">11:00 AM</span> — Resolution</h4>
-            <p>After two hours, the network is stabilizing. The security team identifies a ransomware attempt. Zhaohui is restoring services one by one. The traders are returning to their workstations. The manager is relieved. Zhaohui writes a detailed incident report and recommends security improvements.</p>
+            <p>By eleven — two and a half hours after the trading floor went dark — the network is stabilising. The security team has identified a <span class="vocab-term" data-def="g-bruteforce" tabindex="0" role="button">brute-force attack</span> against the old service account, and a sudden <span class="vocab-term" data-def="g-spike" tabindex="0" role="button">spike</span> in traffic that overwhelmed the link. A switch port has also been <span class="vocab-term" data-def="g-misconfig" tabindex="0" role="button">misconfigured</span> since a firmware update the previous evening, so the traffic was never being distributed the way it should have been.</p>
+            <p>Zhaohui is restoring the services one at a time, and the trading floor is coming back online. He is writing the <span class="vocab-term" data-def="g-postmortem" tabindex="0" role="button">post-mortem</span> while the room is still hot, because everyone is busy and nobody remembers details well enough to write them down properly later.</p>
+
+            <h4><span class="article-time">That Afternoon</span> — What Changes</h4>
+            <p>Nobody was hurt, and no data was lost, so the post-mortem is unusually calm. The team is documenting the <span class="vocab-term" data-def="g-spof" tabindex="0" role="button">single point of failure</span> that let one bad port stop the whole floor, and they are recommending that the backup link be tested monthly instead of assumed. The backup link had worked for three years without anyone checking. It was not broken — but it had never actually been used, and today it was carrying more traffic than it was ever tested for.</p>
+            <p>The manager is asking who approved the firmware update. Zhaohui is explaining that the answer is everyone and no one, which is why the recommendation is not about blame. It is about building systems that fail softly, and about noticing the <span class="vocab-term" data-def="g-degraded" tabindex="0" role="button">degraded</span> signals a week before they become an emergency.</p>
 
             <blockquote>
-                "Network downtime is not just a technical problem — it's a business problem. Every minute of downtime costs money and customer trust."
+                "Network downtime is not just a technical problem — it's a business problem. Every minute of downtime costs money and customer trust. But the minute before it, someone was looking at a warning and deciding it wasn't important."
                 <cite>— — Lin Zhaohui, Network Administrator</cite>
             </blockquote>
         </article>
 
+        <div class="card card-grammar">
+            <div class="card-header">Grammar in the Text: Present Continuous</div>
+            <p>Zhaohui is doing all of this <strong>right now</strong>, so the story is written almost entirely in the present continuous. As you read, notice how often you see:</p>
+            <ul>
+                <li><strong>is / am / are + -ing</strong> — "He <em>is checking</em> the switch."</li>
+                <li><strong>for actions in progress at the moment of speaking</strong> — "The traders <em>are working</em> from mobile hotspots."</li>
+                <li><strong>for temporary states that started in the past</strong> — "The network <em>is stabilising</em>."</li>
+                <li><strong>for changes over time</strong> — "Latency <em>is climbing</em>."</li>
+            </ul>
+            <p style="margin-bottom:0;">Try describing your own morning to a partner using only the present continuous.</p>
+        </div>
+
+        <div class="card card-vocab">
+            <div class="card-header">Glossary (16 terms)</div>
+            <p style="margin-top:0;">Every underlined term in the article is defined here. You can also tap the term in the article to jump to its meaning.</p>
+            <div class="vocab-def" data-def-for="g-outage"><strong>outage</strong> <span class="cn">服務中斷</span> — a period of time when a service is completely unavailable. "The <em>outage</em> lasted two hours."</div>
+            <div class="vocab-def" data-def-for="g-degraded"><strong>degraded</strong> <span class="cn">效能劣化的</span> — working, but slower or worse than normal. Unlike an outage, users can often still work. See also <em>degrade</em> (verb).</div>
+            <div class="vocab-def" data-def-for="g-redundancy"><strong>redundancy / redundant</strong> <span class="cn">冗餘；冗餘的</span> — having more than one way to do something, so a failure does not stop everything. "The backup line is a <em>redundancy</em>."</div>
+            <div class="vocab-def" data-def-for="g-failover"><strong>failover</strong> <span class="cn">故障轉移</span> — the automatic or manual switch to a backup system when the main one fails.</div>
+            <div class="vocab-def" data-def-for="g-spof"><strong>single point of failure</strong> <span class="cn">單點故障</span> — one component that, if it breaks, brings down a whole system.</div>
+            <div class="vocab-def" data-def-for="g-misconfig"><strong>misconfiguration / misconfigured</strong> <span class="cn">設定錯誤</span> — when something is set up wrongly, so it does not behave as intended.</div>
+            <div class="vocab-def" data-def-for="g-packetloss"><strong>packet loss</strong> <span class="cn">封包遺失</span> — data that never arrives. A small amount is normal; a lot means a bad connection.</div>
+            <div class="vocab-def" data-def-for="g-saturate"><strong>saturate / saturated</strong> <span class="cn">飽和；使飽和</span> — to fill a link completely, so nothing more can get through. "The uplink is <em>saturated</em>."</div>
+            <div class="vocab-def" data-def-for="g-spike"><strong>spike</strong> <span class="cn">流量暴衝</span> — a sudden, very large increase. "There was a <em>spike</em> in traffic at 9 a.m."</div>
+            <div class="vocab-def" data-def-for="g-triage"><strong>triage / triaging</strong> <span class="cn">分流；初步判讀</span> — to sort problems by how serious and urgent they are, so you handle the worst first.</div>
+            <div class="vocab-def" data-def-for="g-containment"><strong>containment / contain</strong> <span class="cn">圍堵；控制</span> — stopping a problem from spreading before you fix the cause. "We are focusing on <em>containment</em> first."</div>
+            <div class="vocab-def" data-def-for="g-escalate"><strong>escalate</strong> <span class="cn">升級處理；向上呈報</span> — to pass a problem to someone with more authority or expertise. (The noun is <em>escalation</em>.)</div>
+            <div class="vocab-def" data-def-for="g-bruteforce"><strong>brute-force attack</strong> <span class="cn">暴力破解攻擊</span> — trying every possible password until one works.</div>
+            <div class="vocab-def" data-def-for="g-credential"><strong>credentials</strong> <span class="cn">帳號憑證</span> — the username and password (or key) used to prove who you are.</div>
+            <div class="vocab-def" data-def-for="g-patch"><strong>patch</strong> <span class="cn">修補</span> — a fix for a known problem in software. (A <em>security patch</em> closes a vulnerability.)</div>
+            <div class="vocab-def" data-def-for="g-postmortem"><strong>post-mortem</strong> <span class="cn">事後檢討</span> — a written review after an incident, looking at what happened and what to change. It is about learning, not blame.</div>
+        </div>
+
+
+        <h3>Explore the Network (5 min)</h3>
+        <p>This is the company's network on the morning of the incident. <strong>Tap any box</strong> to find out what that device does and what happened to it. Green = normal, amber = degraded, red = failed or isolated.</p>
+
+        <div class="topology">
+            <div class="topo-title">Taipei office — main path</div>
+
+            <div class="topo-trunk">
+                <div class="topo-stage">
+                    <div class="topo-node is-ok">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">🌐</span>Internet
+                        </button>
+                        <div class="topo-detail">
+                            <b>Internet <span class="cn">網際網路</span></b>
+                            The public network. <span class="st st-ok">● Normal</span> — the provider is fine all morning.
+                        </div>
+                    </div>
+                </div>
+                <div class="topo-arrow" aria-hidden="true"></div>
+                <div class="topo-stage">
+                    <div class="topo-node is-warn">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">🔀</span>Router
+                        </button>
+                        <div class="topo-detail">
+                            <b>Router <span class="cn">路由器</span></b>
+                            Directs traffic between networks. <span class="st st-warn">● Degraded</span> — it answers, but its uplink is full.
+                        </div>
+                    </div>
+                </div>
+                <div class="topo-arrow" aria-hidden="true"></div>
+                <div class="topo-stage">
+                    <div class="topo-node is-fail">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">🧱</span>Firewall
+                        </button>
+                        <div class="topo-detail">
+                            <b>Firewall <span class="cn">防火牆</span></b>
+                            Screens incoming traffic. <span class="st st-fail">● Failed</span> — thousands of login attempts flood it. <b>This is where traffic stops.</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="topo-arrow" aria-hidden="true"></div>
+                <div class="topo-stage">
+                    <div class="topo-node is-warn">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">🔀</span>Core Switch
+                        </button>
+                        <div class="topo-detail">
+                            <b>Switch <span class="cn">交換器</span></b>
+                            Connects devices inside the network. <span class="st st-warn">● Degraded</span> — one port is misconfigured, so traffic is unevenly spread.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topo-branch" style="display:block;text-align:center;margin-top:1.4rem;">
+                <div style="font-size:0.7rem;color:var(--text-light);letter-spacing:0.04em;text-transform:uppercase;">↓ connected to the core switch</div>
+            </div>
+
+            <div class="topo-trunk">
+                <div class="topo-stage">
+                    <div class="topo-node is-fail">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">📉</span>Trading Floor
+                        </button>
+                        <div class="topo-detail">
+                            <b>Trading floor <span class="cn">交易室</span></b>
+                            40 trader PCs. <span class="st st-fail">● Isolated</span> — taken off the main network at 9:15 to stop the spread.
+                        </div>
+                    </div>
+                </div>
+                <div class="topo-arrow" aria-hidden="true"></div>
+                <div class="topo-stage">
+                    <div class="topo-node is-warn">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">🗄️</span>Server Room
+                        </button>
+                        <div class="topo-detail">
+                            <b>Server room <span class="cn">機房</span></b>
+                            File and database servers. <span class="st st-warn">● Degraded</span> — reachable, but very slow, because the link is saturated.
+                        </div>
+                    </div>
+                </div>
+                <div class="topo-arrow" aria-hidden="true"></div>
+                <div class="topo-stage">
+                    <div class="topo-node is-ok">
+                        <button class="topo-btn" type="button" aria-expanded="false">
+                            <span class="topo-ico">📡</span>Wi-Fi AP
+                        </button>
+                        <div class="topo-detail">
+                            <b>Access point <span class="cn">存取點</span></b>
+                            Wireless coverage. <span class="st st-ok">● Normal</span> — the hardware is fine; it just has no upstream connection.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="topo-hint">Green: working normally · Amber: degraded but usable · Red: failed or deliberately isolated</p>
+        </div>
+
+        <div class="journey">
+            <div class="topo-title">Follow one packet</div>
+            <p style="font-size:0.85rem;margin:0 0 0.2rem;">Watch what happens to a single piece of data leaving a trader's PC. It travels normally until it reaches the firewall — and then it cannot get through.</p>
+            <div class="journey-track">
+                <div class="journey-line"></div>
+                <div class="journey-packet"></div>
+            </div>
+            <div class="journey-stages">
+                <span>PC</span><span>Switch</span><span>Router</span><span>Firewall</span><span>Internet</span>
+            </div>
+            <p class="journey-legend">
+                <span class="dot dot-blue"></span>moving normally
+                <span class="dot dot-red"></span>stalled at the firewall — 9:15 AM
+            </p>
+        </div>
 
         <h3>Reading Comprehension</h3>
         <p>Choose the best answer for each question.</p>
@@ -746,9 +1142,16 @@
             <div class="quiz-options">
                         <label><input type="radio" name="q3" value="a"> a) 30 minutes</label>
                         <label><input type="radio" name="q3" value="b"> b) One hour</label>
-                        <label><input type="radio" name="q3" value="c"> c) Two hours</label>
+                        <label><input type="radio" name="q3" value="c"> c) Two and a half hours</label>
                         <label><input type="radio" name="q3" value="d"> d) Four hours</label>
             </div>
+        </div>
+
+        <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
+        <div id="comp-answers" class="answers">
+            <p><strong>1. b</strong> — A network attack. The visible symptom is an outage, but the cause is a brute-force attack on an old service account, made worse by a misconfigured switch port. <em>(a), (c) and (d) are all ruled out by the article.</em></p>
+            <p><strong>2. c</strong> — He pinged the main router. The text says he "is starting with the simplest test" before touching the switch or the firewall logs.</p>
+            <p><strong>3. c</strong> — Two and a half hours. The trading floor went dark at about 8:30 and the network was stabilising by 11:00.</p>
         </div>
 
 
@@ -756,6 +1159,8 @@
         <p>Discuss these questions with a partner or small group.</p>
         <div class="card card-task">
             <ol>
+                <li>The traders experienced an <em>outage</em>, but the cause was a brute-force attack plus a misconfigured port. Why is it important to name the real cause rather than the visible symptom?</li>
+                <li>Zhaohui ignored a warning yesterday and it turned into a two-and-a-half-hour outage. Should he be blamed? What would a fair process look like?</li>
                 <li>What would you do if the internet went down during an important online exam?</li>
                 <li>How can companies protect themselves from network attacks?</li>
                 <li>What is the difference between Wi-Fi and Ethernet? When would you use each?</li>
@@ -1047,10 +1452,58 @@ function toggleSection(btn) {
     btn.setAttribute('aria-expanded', !isOpen);
 }
 
+// ── Click-to-Reveal Glossary ──────────────────────────
+// The Extract modal deep-copies this markup, so every id in the page is
+// duplicated while the modal is open and getElementById would return the
+// page's copy rather than the modal's. These are therefore keyed on
+// data- attributes and scoped to the nearest container instance.
+function vocabScope(node) {
+    return node.closest('#extract-overlay, .section-content') || document;
+}
+
+function toggleDef(term) {
+    var key = term.getAttribute('data-def');
+    var el = vocabScope(term).querySelector('.vocab-def[data-def-for="' + key + '"]');
+    if (!el) return;
+    var open = el.classList.toggle('show');
+    term.classList.toggle('is-open', open);
+    term.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+document.addEventListener('click', function (e) {
+    var term = e.target.closest ? e.target.closest('.vocab-term[data-def]') : null;
+    if (term) { toggleDef(term); return; }
+
+    // Each topology node owns its own detail panel, so this is purely
+    // relative to the button -- no lookup, and safe in the modal copy.
+    var btn = e.target.closest ? e.target.closest('.topo-btn') : null;
+    if (btn) {
+        var node = btn.closest('.topo-node');
+        var open = node.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+});
+
+// Keyboard support for the inline terms (they are spans, not buttons).
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    var term = e.target.closest ? e.target.closest('.vocab-term[data-def]') : null;
+    if (!term) return;
+    e.preventDefault();
+    toggleDef(term);
+});
+
 // ── Answer Toggle ─────────────────────────────────────
+// The Extract modal deep-copies a section, so while it is open there are two
+// elements with this id and getElementById would only ever return the page's.
+// Toggle every copy from one shared state, so the button works from either.
 function toggleAnswers(id) {
-    var el = document.getElementById(id);
-    el.classList.toggle('show');
+    var els = document.querySelectorAll('#' + id);
+    if (!els.length) return;
+    var show = !els[0].classList.contains('show');
+    for (var i = 0; i < els.length; i++) {
+        els[i].classList.toggle('show', show);
+    }
 }
 
 // ── Extract Section (Modal) ──────────────────────────

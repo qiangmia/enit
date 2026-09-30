@@ -18,3 +18,8 @@
 !Wk2/**
 !Wk3/**
 !Wk4/**
+
+# NEVER publish student submissions. This folder holds homework uploads whose
+# filenames are student IDs and names, plus a grade sheet. It must be listed
+# after the !Wk3/** whitelist above, because the last matching pattern wins.
+Wk3/1151_IM229_C_ID_2/
