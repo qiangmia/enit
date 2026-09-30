@@ -422,7 +422,9 @@
     </style>
     <script src="theme.js"></script>
 </head>
-<body>
+<body data-term-start="2026-09-07"
+      data-current-week=""
+      data-term-label="Semester 1">
 
 <!-- ══════════ HERO ══════════ -->
 <header class="hero">
@@ -459,29 +461,29 @@
 
     <div class="progress">
         <div class="progress-label">
-            <span><strong>Week 7</strong> of 18</span>
-            <span>Weeks 8–18 still to come</span>
+            <span><strong>Week 4</strong> of 18</span>
+            <span>14 weeks still to go</span>
         </div>
         <div class="progress-track" role="img"
-             aria-label="7 of 18 weeks published. Weeks 1 to 7 are available; weeks 8 to 18 are not yet.">
-            <span class="week-seg is-done" title="Week 1 — published"></span>
-            <span class="week-seg is-done" title="Week 2 — published"></span>
-            <span class="week-seg is-done" title="Week 3 — published"></span>
-            <span class="week-seg is-done" title="Week 4 — published"></span>
-            <span class="week-seg is-done" title="Week 5 — published"></span>
-            <span class="week-seg is-done" title="Week 6 — published"></span>
-            <span class="week-seg is-done" title="Week 7 — published"></span>
-            <span class="week-seg" title="Week 8 — not yet published"></span>
-            <span class="week-seg" title="Week 9 — not yet published"></span>
-            <span class="week-seg" title="Week 10 — not yet published"></span>
-            <span class="week-seg" title="Week 11 — not yet published"></span>
-            <span class="week-seg" title="Week 12 — not yet published"></span>
-            <span class="week-seg" title="Week 13 — not yet published"></span>
-            <span class="week-seg" title="Week 14 — not yet published"></span>
-            <span class="week-seg" title="Week 15 — not yet published"></span>
-            <span class="week-seg" title="Week 16 — not yet published"></span>
-            <span class="week-seg" title="Week 17 — not yet published"></span>
-            <span class="week-seg" title="Week 18 — not yet published"></span>
+             aria-label="Week 4 of 18. Weeks 1 to 4 are complete; the remaining 14 weeks have not been taught yet.">
+            <span class="week-seg is-done" title="Week 1 — published and taught"></span>
+            <span class="week-seg is-done" title="Week 2 — published and taught"></span>
+            <span class="week-seg is-done" title="Week 3 — published and taught"></span>
+            <span class="week-seg is-done" title="Week 4 — published and taught"></span>
+            <span class="week-seg" title="Week 5 — still to come"></span>
+            <span class="week-seg" title="Week 6 — still to come"></span>
+            <span class="week-seg" title="Week 7 — still to come"></span>
+            <span class="week-seg" title="Week 8 — still to come"></span>
+            <span class="week-seg" title="Week 9 — still to come"></span>
+            <span class="week-seg" title="Week 10 — still to come"></span>
+            <span class="week-seg" title="Week 11 — still to come"></span>
+            <span class="week-seg" title="Week 12 — still to come"></span>
+            <span class="week-seg" title="Week 13 — still to come"></span>
+            <span class="week-seg" title="Week 14 — still to come"></span>
+            <span class="week-seg" title="Week 15 — still to come"></span>
+            <span class="week-seg" title="Week 16 — still to come"></span>
+            <span class="week-seg" title="Week 17 — still to come"></span>
+            <span class="week-seg" title="Week 18 — still to come"></span>
         </div>
         <div class="progress-ticks">
             <span>Week 1</span>
@@ -492,7 +494,7 @@
     <div class="weeks" id="weeks">
 
         <!-- WEEK 1 -->
-        <article class="week-card">
+        <article data-week="1" class="week-card">
             <div class="numeral">01</div>
             <div class="week-head">
                 <h3>Careers &amp; Roles</h3>
@@ -515,7 +517,7 @@
         </article>
 
         <!-- WEEK 2 -->
-        <article class="week-card">
+        <article data-week="2" class="week-card">
             <div class="numeral">02</div>
             <div class="week-head">
                 <h3>Hardware &amp; Components</h3>
@@ -540,7 +542,7 @@
         </article>
 
         <!-- WEEK 3 -->
-        <article class="week-card">
+        <article data-week="3" class="week-card">
             <div class="numeral">03</div>
             <div class="week-head">
                 <h3>Operating Systems</h3>
@@ -565,7 +567,7 @@
         </article>
 
         <!-- WEEK 4 — move the is-current class to the week being taught -->
-        <article class="week-card is-current">
+        <article data-week="4" class="week-card is-current">
             <div class="numeral">04</div>
             <div class="week-head">
                 <h3>Networking Basics</h3>
@@ -597,7 +599,7 @@
 
 
         <!-- WEEK 5 -->
-        <article class="week-card">
+        <article data-week="5" class="week-card">
             <div class="numeral">05</div>
             <div class="week-head">
                 <h3>Programming Intro</h3>
@@ -617,7 +619,7 @@
         </article>
 
         <!-- WEEK 6 -->
-        <article class="week-card">
+        <article data-week="6" class="week-card">
             <div class="numeral">06</div>
             <div class="week-head">
                 <h3>Web Development</h3>
@@ -633,7 +635,7 @@
         </article>
 
         <!-- WEEK 7 -->
-        <article class="week-card">
+        <article data-week="7" class="week-card">
             <div class="numeral">07</div>
             <div class="week-head">
                 <h3>Database Fundamentals</h3>
@@ -674,6 +676,137 @@
         Student work and rosters are never published on this site.
     </p>
 </footer>
+
+
+
+<!--
+  Current-week logic.
+
+  Everything above ("This week", the highlighted card, the filled segments,
+  both labels and the aria-label) used to be six separate hand-edited values
+  that had already drifted apart. It is now derived once, from the single
+  date on <body data-term-start>.
+
+  data-current-week overrides the date when you need to pin it -- for a late
+  start, a catch-up week, or previewing a later week before students reach it.
+
+  With scripting disabled the static markup still shows week 4, so the page
+  degrades to a correct (if frozen) state rather than breaking.
+-->
+<script>
+(function () {
+    'use strict';
+
+    var body = document.body;
+    var startAttr = body.getAttribute('data-term-start');
+    var override = body.getAttribute('data-current-week');
+
+    // The term length is read from the rendered bar, so changing 18 segments
+    // to 20 needs no second edit here.
+    var segs = document.querySelectorAll('.progress-track .week-seg');
+    var total = segs.length;
+    if (!total) return;
+
+    var DAY = 86400000;
+
+    // Local dates only. Using UTC here would shift the week boundary for
+    // anyone east or west of Greenwich.
+    function localMidnight(d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+
+    // Which teaching week a given date falls in. Pure, so it is testable.
+    function weekOn(date) {
+        var start = new Date(startAttr + 'T00:00:00');
+        if (isNaN(start.getTime())) return null;
+        var days = Math.floor((localMidnight(date) - start) / DAY);
+        if (days < 0) return 0;           // term has not begun
+        var w = Math.floor(days / 7) + 1;
+        if (w > total) return total + 1;   // term has finished
+        return w;
+    }
+
+    var now = new Date();
+    var week = weekOn(now);
+
+    // An explicit override wins, which is what makes the page usable on a
+    // delayed start without editing anything else.
+    if (override !== null && override !== '') {
+        var o = parseInt(override, 10);
+        if (!isNaN(o)) week = o;
+    }
+
+    if (week === null) return;            // bad date: leave the static markup
+
+    var finished = week > total;
+    var notStarted = week === 0;
+    var shown = finished ? total : week;
+
+    // 1. the segments
+    for (var i = 0; i < segs.length; i++) {
+        segs[i].classList.toggle('is-done', i < shown);
+        segs[i].setAttribute('title', 'Week ' + (i + 1) + ' \u2014 ' +
+            (i < shown ? (finished ? 'complete' : 'current or complete') : 'still to come'));
+    }
+
+    // 2. the two labels
+    var label = document.querySelector('.progress-label');
+    if (label) {
+        var strong = label.querySelector('strong');
+        var spans = label.querySelectorAll('span');
+        if (finished) {
+            if (strong) strong.textContent = 'Week ' + total;
+            if (spans[1]) spans[1].textContent = 'Term complete';
+        } else if (notStarted) {
+            if (strong) strong.textContent = 'Week 1';
+            if (spans[1]) spans[1].textContent = 'Term starts ' + startAttr;
+        } else {
+            if (strong) strong.textContent = 'Week ' + shown;
+            if (spans[1]) spans[1].textContent = (total - shown) + ' week' +
+                (total - shown === 1 ? '' : 's') + ' still to go';
+        }
+    }
+
+    // 3. the accessible description
+    var track = document.querySelector('.progress-track');
+    if (track) {
+        track.setAttribute('aria-label', finished
+            ? 'All ' + total + ' weeks complete.'
+            : notStarted
+                ? 'The term has not started yet. Week 1 begins on ' + startAttr + '.'
+                : 'Week ' + shown + ' of ' + total + '. Weeks 1 to ' + shown +
+                  ' are complete; ' + (total - shown) + ' remain.');
+    }
+
+    // 4. the highlighted card and the chip. A week with no card yet simply
+    //    gets no highlight, which is correct rather than an error.
+    var cards = document.querySelectorAll('.week-card[data-week]');
+    var placed = false;
+    for (var c = 0; c < cards.length; c++) {
+        var old = cards[c].querySelector('.chip-current');
+        if (old) old.parentNode.removeChild(old);
+        var isNow = !finished && !notStarted &&
+                    parseInt(cards[c].getAttribute('data-week'), 10) === shown;
+        cards[c].classList.toggle('is-current', isNow);
+        if (isNow && !placed) {
+            placed = true;
+            var chip = document.createElement('span');
+            chip.className = 'chip chip-current';
+            chip.textContent = 'This week';
+            var head = cards[c].querySelector('.week-head');
+            if (head) head.appendChild(chip);
+        }
+    }
+
+    // Exposed so the week arithmetic can be tested in the browser against
+    // synthetic dates, rather than only through the live page.
+    window.ENIT_Term = {
+        totalWeeks: total,
+        weekOn: weekOn,
+        currentWeek: function () { return week; }
+    };
+})();
+</script>
 
 </body>
 </html>
