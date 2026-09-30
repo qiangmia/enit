@@ -6,6 +6,9 @@
 !Wk2/
 !Wk3/
 !Wk4/
+!Wk5/
+!Wk6/
+!Wk7/
 !README.md
 !index.html
 !theme.js
@@ -18,6 +21,14 @@
 !Wk2/**
 !Wk3/**
 !Wk4/**
+!Wk5/**
+!Wk6/**
+!Wk7/**
+
+# NOTE: the week list above is explicit on purpose and must be extended
+# each time a new week is published. A blanket !Wk*/ would also un-ignore
+# any student submission folder dropped into a week directory later in
+# the term, which is exactly the data that must never be published.
 
 # NEVER publish student submissions. This folder holds homework uploads whose
 # filenames are student IDs and names, plus a grade sheet. It must be listed

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7: Databases — How Organisations Store, Find and Protect Their Data</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+            position: relative;
+            z-index: 2;
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 40000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 1.2rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0.9rem; margin: 1rem 0; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Week 7: Database Fundamentals</h1>
+    <div class="subtitle">How Organisations Store, Find and Protect Their Data</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 7: 3-hour Lesson</span>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#warmup">Warm-up</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#vocab">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LESSON OVERVIEW ──────────────────────────── -->
+    <section id="objectives">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">🎯</span> Learning Objectives
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header">By the end of this lesson, students will be able to:</div>
+                                <ol>
+                    <li>Identify at least <strong>8 core database terms</strong> including keys, tables and queries.</li>
+                    <li>Use the <strong>past simple</strong> to describe completed actions and incidents.</li>
+                    <li>Form the negative and question with <strong>did not / Did</strong> correctly.</li>
+                    <li>Read and comprehend an incident report written in the past tense.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- LESSON                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ── WARM-UP ──────────────────────────────────── -->
+    <section id="warmup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">💬</span> Warm-up &amp; Ice-Breaker
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+            <h3>“What Did You Do Yesterday?” — Past Simple Chain</h3>
+
+            <div class="card card-task">
+                <div class="card-header">Setup</div>
+                <p>Nothing to prepare. This is a speaking warm-up in pairs.</p>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header">Activity</div>
+                <p>Take turns describing what you did yesterday morning, one action at a time. Your partner must <em>ask a follow-up question</em> about each action. Keep it to the past.</p>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>A: “I went to the library at nine.” B: “Did you study there?” A: “I did. I read for two hours, then I came home.”</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ──────────────────────────────────── -->
+    <section id="reading">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📖</span> Reading
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
+        <p>Cover the <strong>Meaning</strong> column with your hand. Read each term aloud, say what you think it means, then check with <em>Show Answers</em>. Do this together as a class before reading the article.</p>
+
+        <div class="card card-vocab">
+            <div class="card-header">Recall the Terms</div>
+            <table>
+                <thead>
+                    <tr><th style="width:5%;">#</th><th style="width:30%;">Term</th><th>Meaning (reveal after recalling)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>table</strong></td><td></td></tr>
+                    <tr><td>2</td><td><strong>row</strong></td><td></td></tr>
+                    <tr><td>3</td><td><strong>column</strong></td><td></td></tr>
+                    <tr><td>4</td><td><strong>primary key</strong></td><td></td></tr>
+                    <tr><td>5</td><td><strong>record</strong></td><td></td></tr>
+                    <tr><td>6</td><td><strong>query</strong></td><td></td></tr>
+                    <tr><td>7</td><td><strong>index</strong></td><td></td></tr>
+                    <tr><td>8</td><td><strong>backup</strong></td><td></td></tr>
+                </tbody>
+            </table>
+            <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
+            <div id="pre-read-answers" class="answers">
+                <table>
+                    <thead>
+                        <tr><th style="width:5%;">#</th><th style="width:30%;">Term</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><strong>table</strong></td><td>a structured set of rows and columns</td></tr>
+                        <tr><td>2</td><td><strong>row</strong></td><td>one complete record, read left to right</td></tr>
+                        <tr><td>3</td><td><strong>column</strong></td><td>one field of information, read top to bottom</td></tr>
+                        <tr><td>4</td><td><strong>primary key</strong></td><td>a value that identifies each row uniquely</td></tr>
+                        <tr><td>5</td><td><strong>record</strong></td><td>one stored item of data</td></tr>
+                        <tr><td>6</td><td><strong>query</strong></td><td>a question you ask the database, in its own language</td></tr>
+                        <tr><td>7</td><td><strong>index</strong></td><td>an extra structure that makes searching faster</td></tr>
+                        <tr><td>8</td><td><strong>backup</strong></td><td>a separate copy kept in case the original is lost</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <h3>Full Text: "What Happened to the Records"</h3>
+
+        <div class="audio-player">
+            <span class="audio-player-icon">🔊</span>
+            <span class="audio-player-text">Listen to this article</span>
+            <audio controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <article class="article">
+            <div class="article-title">What Happened to the Records</div>
+            <div class="article-subtitle">A backup failed at a hospital, and nobody noticed for six hours</div>
+            <div class="article-meta">
+                <span><strong>Name:</strong> Huang Chia-Yu (黃范尚)</span>
+                <span><strong>Age:</strong> 31</span>
+                <span><strong>Job:</strong> Database Administrator</span>
+            </div>
+            <div class="article-meta">
+                <span><strong>Company:</strong> A regional hospital, Tainan</span>
+                <span><strong>Education:</strong> M.S. in Information Science</span>
+            </div>
+
+            <h4><span class="article-time">Yesterday 14:20</span> — The Alert</h4>
+            <p>Chia-Yu is a database administrator at a hospital. Yesterday at 14:20 her phone rang. A backup job had failed. Nobody noticed for six hours. At first she did not understand the message, because the system reported “0 files copied” instead of “job failed”, and she had seen that message before without worrying about it.</p>
+            <h4><span class="article-time">Yesterday 14:35</span> — The Cause</h4>
+            <p>She logged in and looked at the disk. The server had run out of space at 13:04. Nobody had deleted a file. A log file had simply grown until it filled the disk. She found the folder, checked the file sizes, and found one file of 41 gigabytes. The system had been writing the same message since 2019.</p>
+            <h4><span class="article-time">Yesterday 15:10</span> — The Fix</h4>
+            <p>Chia-Yu moved the file, freed the space, and restarted the job. It finished at 16:30. Then she checked the records, because a failed backup is only a problem if the live data is also damaged. Nothing was lost. She wrote down the time, the cause, and the fix.</p>
+            <h4><span class="article-time">Yesterday 17:45</span> — The Report</h4>
+            <p>At 17:45 she wrote the incident report. It was only one page. “The backup failed at 13:04 because the disk was full. The reason was a log file of 41 gigabytes. I moved the file at 15:10 and the job finished at 16:30. In future, the server will send an email when the disk is above 80%.”</p>
+            <h4><span class="article-time">This Morning 09:00</span> — The Change</h4>
+            <p>This morning she added the alert and changed one setting: log files are now deleted after thirty days. Her manager read the report and asked only one question. “Why did nobody notice for six hours?” Chia-Yu did not have a good answer, and she wrote that sentence into the second page of the report.</p>
+
+            <blockquote>
+                "A report is mostly past tense, but the last sentence is future. “It failed” tells us what happened. “It will send an email” tells us what changes."
+                <cite>— — Huang Chia-Yu, Database Administrator</cite>
+            </blockquote>
+        </article>
+
+
+        <h3>Reading Comprehension</h3>
+        <p>Choose the best answer for each question.</p>
+        <div class="quiz-question">
+            <p>1. Why did nobody notice the failed backup for six hours?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q1" value="a"> a) The phone was broken</label>
+                        <label><input type="radio" name="q1" value="b"> b) The message did not say the job had failed</label>
+                        <label><input type="radio" name="q1" value="c"> c) The hospital was closed</label>
+                        <label><input type="radio" name="q1" value="d"> d) Chia-Yu was on holiday</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>2. What caused the disk to fill up?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q2" value="a"> a) Somebody deleted the wrong file</label>
+                        <label><input type="radio" name="q2" value="b"> b) A database was corrupted</label>
+                        <label><input type="radio" name="q2" value="c"> c) One log file grew to 41 gigabytes</label>
+                        <label><input type="radio" name="q2" value="d"> d) The server was too old</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>3. How did Chia-Yu know the live records were safe?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q3" value="a"> a) Her manager told her</label>
+                        <label><input type="radio" name="q3" value="b"> b) The hospital had two buildings</label>
+                        <label><input type="radio" name="q3" value="c"> c) She checked the records after restarting the job</label>
+                        <label><input type="radio" name="q3" value="d"> d) She was told by the vendor</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>4. What did she change after the incident?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q4" value="a"> a) She bought a bigger disk</label>
+                        <label><input type="radio" name="q4" value="b"> b) She hired another administrator</label>
+                        <label><input type="radio" name="q4" value="c"> c) She added an alert and set logs to be deleted</label>
+                        <label><input type="radio" name="q4" value="d"> d) She moved to another hospital</label>
+            </div>
+        </div>
+        <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
+        <div id="comp-answers" class="answers">
+<p><strong>1. b</strong></p><p><strong>2. c</strong></p><p><strong>3. c</strong></p><p><strong>4. c</strong></p>
+        </div>
+
+
+        <h3>Discussion Questions</h3>
+        <p>Discuss these questions with a partner or small group.</p>
+        <div class="card card-task">
+            <ol>
+                <li>A failed backup is only dangerous if the live data is also damaged. Why do you think a hospital needs both?</li>
+                <li>Why do you think the message said “0 files copied” instead of “job failed”? What is the danger of a confusing error message?</li>
+                <li>Write a short incident report (4-5 sentences) about a problem you or your family had last week. Use the past simple.</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY ───────────────────────────────── -->
+    <section id="vocab">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📝</span> Vocabulary Builder
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <h3>Category: Core Concepts</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">database</div>
+                <div class="job-card-chinese">e78dda^ab</div>
+                <div class="job-card-def">An organised collection of stored data</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">table</div>
+                <div class="job-card-chinese">68h3c</div>
+                <div class="job-card-def">A structured set of rows and columns</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">row (record)</div>
+                <div class="job-card-chinese">N00{46180_55</div>
+                <div class="job-card-def">One complete item of data, read left to right</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">column (field)</div>
+                <div class="job-card-chinese">k04O4d</div>
+                <div class="job-card-def">One kind of information, read top to bottom</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">primary key</div>
+                <div class="job-card-chinese">N3b75</div>
+                <div class="job-card-def">A value that identifies each row uniquely</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🗄️</div>
+                <div class="job-card-title">value</div>
+                <div class="job-card-chinese">Pf9P3c</div>
+                <div class="job-card-def">The actual content stored in a cell</div>
+            </div>
+        </div>
+        <h3>Category: Keys & Relationships</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">foreign key</div>
+                <div class="job-card-chinese">Y1675</div>
+                <div class="job-card-def">A column that points to a row in another table</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">relationship</div>
+                <div class="job-card-chinese">dc6f</div>
+                <div class="job-card-def">A link between two tables</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">join</div>
+                <div class="job-card-chinese">6f擴</div>
+                <div class="job-card-def">Combining rows from two tables using a shared key</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">unique</div>
+                <div class="job-card-chinese">Uae一</div>
+                <div class="job-card-def">Not repeated; each value appears only once</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">constraint</div>
+                <div class="job-card-chinese">}04束</div>
+                <div class="job-card-def">A rule the database refuses to break</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔑</div>
+                <div class="job-card-title">normalisation</div>
+                <div class="job-card-chinese">k638fS16</div>
+                <div class="job-card-def">Organising tables so data is stored once, not repeatedly</div>
+            </div>
+        </div>
+        <h3>Category: Working with Data</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">query</div>
+                <div class="job-card-chinese">ge562</div>
+                <div class="job-card-def">A question asked of the database in its own language</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">index</div>
+                <div class="job-card-chinese">}22_15</div>
+                <div class="job-card-def">An extra structure that makes searching faster</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">filter</div>
+                <div class="job-card-chinese">{e978</div>
+                <div class="job-card-def">To narrow a result set with a condition</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">insert</div>
+                <div class="job-card-chinese">eb0X9e</div>
+                <div class="job-card-def">To add a new record</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">update</div>
+                <div class="job-card-chinese">ff4eb0</div>
+                <div class="job-card-def">To change an existing record</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔍</div>
+                <div class="job-card-title">report</div>
+                <div class="job-card-chinese">X3168</div>
+                <div class="job-card-def">The result of a query, arranged for reading</div>
+            </div>
+        </div>
+        <h3>Category: Safety & Quality</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">backup</div>
+                <div class="job-card-chinese">P99份</div>
+                <div class="job-card-def">A separate copy kept in case the original is lost</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">restore</div>
+                <div class="job-card-chinese">84S9f</div>
+                <div class="job-card-def">To bring a backup back into use</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">data integrity</div>
+                <div class="job-card-chinese">c7e99[8ce74`27</div>
+                <div class="job-card-def">The data being correct and consistent</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">duplicate</div>
+                <div class="job-card-chinese">cd07</div>
+                <div class="job-card-def">An unwanted second copy of the same record</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">corrupt</div>
+                <div class="job-card-chinese">d0dXde</div>
+                <div class="job-card-def">Damaged, and no longer usable</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🛡️</div>
+                <div class="job-card-title">migration</div>
+                <div class="job-card-chinese">49yfb</div>
+                <div class="job-card-def">Moving data from one system to another</div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── GRAMMAR ──────────────────────────────────── -->
+    <section id="grammar">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✏️</span> Grammar Focus — Past Simple (Completed Actions)
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <div class="card card-grammar">
+            <div class="card-header">Quick Review: Past Simple Forms</div>
+            <p>The past simple describes actions that are <strong>finished</strong>. The form of the verb changes, but the time of speaking does not change.</p>
+            <table>
+                <thead>
+                    <tr><th>Pattern</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>regular verb + -ed</td><td>The backup <strong>failed</strong> at 13:04.</td></tr>
+                    <tr><td>irregular verb</td><td>The disk <strong>ran</strong> out of space.</td></tr>
+                    <tr><td>was / were</td><td>The server <strong>was</strong> full.</td></tr>
+                    <tr><td>did not + base verb</td><td>She <strong>didn't delete</strong> anything.</td></tr>
+                    <tr><td>Did + subject + base verb?</td><td><strong>Did</strong> anyone <strong>notice</strong> the failure?</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Key Rules</div>
+            <ul>
+            <li>Use the past simple with a <strong>finished time</strong>: <em>yesterday, last week, in 2019, at 14:20, three days ago</em>.</li>
+            <li>Regular verbs take <strong>-ed</strong>. After <em>-e</em> add only <em>-d</em> (move → moved). Consonant + <em>y</em> becomes <em>-ied</em> (apply → applied). Double the consonant after a short vowel (stop → stopped).</li>
+            <li>Irregular verbs must be memorised: <em>was/were, ran, took, found, wrote, lost, gave, kept, broke, sent</em>.</li>
+            <li>Negative: <strong>did not + base verb</strong> — never 'did not deleted'.</li>
+            <li>Question: <strong>Did + subject + base verb?</strong> — never 'Did she deleted'.</li>
+            <li>If the time is <em>not</em> finished, use the present perfect: <em>The job failed yesterday</em> (finished) vs <em>The job has failed twice this month</em> (unfinished).</li>
+            </ul>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Common Mistakes (Chinese L1 Speakers)</div>
+            <p>Chinese speakers often add <em>-ed</em> after <em>did</em>.<br><em>✗ She did not deleted the file.</em> → <em>✓ She did not delete the file.</em><br><em>✗ Did she wrote the report?</em> → <em>✓ Did she write the report?</em><br><br>Also avoid the past simple with an unfinished time:<br><em>✗ I have finished my homework last night.</em> → <em>✓ I finished my homework last night.</em></p>
+        </div>
+
+
+        <div class="card card-task">
+            <div class="card-header">Activity A: Past Simple or Present Perfect?</div>
+            <p>Decide which tense each sentence needs, and say why.</p>
+            <ol>
+                <li>1. The disk ___ (fill) up at 13:04 yesterday. <span class='keyword'>filled — finished time</span></li>
+                <li>2. The server has ___ (run) out of space three times this month. <span class='keyword'>run — unfinished time</span></li>
+                <li>3. Nobody ___ (notice) the failure for six hours. <span class='keyword'>noticed — past simple (no did)</span></li>
+                <li>4. ___ she move the file? <span class='keyword'>Did ... move — no -ed after did</span></li>
+                <li>5. We ___ (not delete) anything, so nothing was lost. <span class='keyword'>didn't delete — base verb after didn't</span></li>
+            </ol>
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>“Sentence 2 is the trap: <em>three times this month</em> is not finished, so it needs the present perfect. Yesterday needs the past simple.”</em></p>
+            </div>
+        </div>
+        <div class="card card-task">
+            <div class="card-header">Activity B: Write an Incident Report</div>
+            <p>Invent a small technical problem from last week and write a report in five sentences. Then read it to a partner, who must ask three follow-up questions in the past simple.</p>
+            <p><em>Try: <em>“The classroom projector failed at 10:00. The technician came at 10:40. He replaced the cable, but the screen stayed white. He found a loose connection, fixed it, and the projector worked by 11:15. Nobody noticed the problem for twenty minutes.”</em></em></p>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ──────────────────────────────────── -->
+    <section id="wrapup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✅</span> Wrap-up &amp; Reflection
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <div class="card card-info">
+            <div class="card-header">Exit Ticket — Write on a sticky note:</div>
+            <ol>
+                <li>One database term I learned today: __________</li>
+                <li>One irregular past verb I must remember: __________</li>
+                <li>Why past simple suits an incident report: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">Homework — Due Next Week</div>
+            <ol>
+                <li>Write a 6-sentence incident report about a real problem that happened to you or someone you know. Use the past simple throughout, and underline three irregular verbs.</li>
+                <li>Find out what a <em>primary key</em> is, and write 3 sentences about your school's student records using database vocabulary.</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Dept. of Information Management · Yuan Ze University</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Section Toggle (Accordion) ───────────────────────
+function toggleSection(btn) {
+    const content = btn.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+
+    // Close all other sections
+    document.querySelectorAll('.section-content.open').forEach(function(el) {
+        if (el !== content) {
+            el.classList.remove('open');
+            el.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Toggle current section
+    content.classList.toggle('open');
+    btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ── Extract Section (Modal) ──────────────────────────
+function extractSection(btn) {
+    var section = btn.closest('section');
+    var content = section.querySelector('.section-content');
+    var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+    // Create modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'extract-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    // Create modal container
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+    // Create header
+    var header = document.createElement('div');
+    header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+    // Create close button
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+    closeBtn.onclick = function() { document.body.removeChild(overlay); };
+    header.appendChild(closeBtn);
+
+    // Create content area
+    var contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+    contentDiv.innerHTML = content.innerHTML;
+
+    // Create footer with print button
+    var footer = document.createElement('div');
+    footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+    var printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    printBtn.onclick = function() { window.print(); };
+
+    var closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    closeFooterBtn.onclick = function() { document.body.removeChild(overlay); };
+
+    footer.appendChild(printBtn);
+    footer.appendChild(closeFooterBtn);
+
+    // Assemble modal
+    modal.appendChild(header);
+    modal.appendChild(contentDiv);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+
+    // Close on overlay click
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+// ── Open first section by default ─────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var firstSection = document.querySelector('.section-content');
+    if (firstSection) {
+        firstSection.classList.add('open');
+        firstSection.previousElementSibling.setAttribute('aria-expanded', 'true');
+    }
+});
+</script>
+
+</body>
+</html>

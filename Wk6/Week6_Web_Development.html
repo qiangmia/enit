@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: Web Dev — How the Web Gets Built, Tested and Delivered</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1547658719-da2b51169166?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+            position: relative;
+            z-index: 2;
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 40000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 1.2rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0.9rem; margin: 1rem 0; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Week 6: Web Development</h1>
+    <div class="subtitle">How the Web Gets Built, Tested and Delivered</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 6: 3-hour Lesson</span>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#warmup">Warm-up</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#vocab">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LESSON OVERVIEW ──────────────────────────── -->
+    <section id="objectives">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">🎯</span> Learning Objectives
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header">By the end of this lesson, students will be able to:</div>
+                                <ol>
+                    <li>Identify at least <strong>8 common web development terms</strong> and their roles.</li>
+                    <li>Use <strong>must</strong>, <strong>have to</strong>, <strong>should</strong> and <strong>be supposed to</strong> correctly.</li>
+                    <li>Distinguish <strong>mustn't</strong> (forbidden) from <strong>don't have to</strong> (not necessary).</li>
+                    <li>Read and comprehend a story about inheriting a website project.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- LESSON                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ── WARM-UP ──────────────────────────────────── -->
+    <section id="warmup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">💬</span> Warm-up &amp; Ice-Breaker
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+            <h3>“When Are You Due?” — Obligation Survey</h3>
+
+            <div class="card card-task">
+                <div class="card-header">Setup</div>
+                <p>Think of three things you have to do this week, and one thing you must not do.</p>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header">Activity</div>
+                <p>Tell your partner. Listen for <em>have to</em>, <em>must</em> and <em>mustn't</em>. Which of your three is a rule, and which is just a situation?</p>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>“I have to submit the assignment on Friday. I mustn't work during the exam. I don't have to buy a new laptop.”</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ──────────────────────────────────── -->
+    <section id="reading">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📖</span> Reading
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <h3>Pre-reading: Vocabulary Preview (5 min)</h3>
+        <p>Cover the <strong>Meaning</strong> column with your hand. Read each term aloud, say what you think it means, then check with <em>Show Answers</em>. Do this together as a class before reading the article.</p>
+
+        <div class="card card-vocab">
+            <div class="card-header">Recall the Terms</div>
+            <table>
+                <thead>
+                    <tr><th style="width:5%;">#</th><th style="width:30%;">Term</th><th>Meaning (reveal after recalling)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>front-end</strong></td><td></td></tr>
+                    <tr><td>2</td><td><strong>back-end</strong></td><td></td></tr>
+                    <tr><td>3</td><td><strong>framework</strong></td><td></td></tr>
+                    <tr><td>4</td><td><strong>responsive</strong></td><td></td></tr>
+                    <tr><td>5</td><td><strong>deploy</strong></td><td></td></tr>
+                    <tr><td>6</td><td><strong>domain name</strong></td><td></td></tr>
+                    <tr><td>7</td><td><strong>wireframe</strong></td><td></td></tr>
+                    <tr><td>8</td><td><strong>accessibility</strong></td><td></td></tr>
+                </tbody>
+            </table>
+            <button class="answers-toggle" onclick="toggleAnswers('pre-read-answers')">Show Answers</button>
+            <div id="pre-read-answers" class="answers">
+                <table>
+                    <thead>
+                        <tr><th style="width:5%;">#</th><th style="width:30%;">Term</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><strong>front-end</strong></td><td>the part of a site the user sees and clicks</td></tr>
+                        <tr><td>2</td><td><strong>back-end</strong></td><td>the server-side code behind a site</td></tr>
+                        <tr><td>3</td><td><strong>framework</strong></td><td>ready-made code that provides common structure</td></tr>
+                        <tr><td>4</td><td><strong>responsive</strong></td><td>a design that adapts to any screen size</td></tr>
+                        <tr><td>5</td><td><strong>deploy</strong></td><td>to put a finished site online</td></tr>
+                        <tr><td>6</td><td><strong>domain name</strong></td><td>the readable web address of a site</td></tr>
+                        <tr><td>7</td><td><strong>wireframe</strong></td><td>a simple sketch of a page layout</td></tr>
+                        <tr><td>8</td><td><strong>accessibility</strong></td><td>making a site usable by everyone, including people with disabilities</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <h3>Full Text: "The Handover Note"</h3>
+
+        <div class="audio-player">
+            <span class="audio-player-icon">🔊</span>
+            <span class="audio-player-text">Listen to this article</span>
+            <audio controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <article class="article">
+            <div class="article-title">The Handover Note</div>
+            <div class="article-subtitle">What a departing developer leaves behind</div>
+            <div class="article-meta">
+                <span><strong>Name:</strong> Lin Min-Ju (林民建)</span>
+                <span><strong>Age:</strong> 24</span>
+                <span><strong>Job:</strong> Junior Web Developer</span>
+            </div>
+            <div class="article-meta">
+                <span><strong>Company:</strong> An online clothing retailer, Taipei</span>
+                <span><strong>Education:</strong> B.S. in Information Management</span>
+            </div>
+
+            <h4><span class="article-time">Monday 10:00 AM</span> — The Handover</h4>
+            <p>Min-Ju starts her first week as a web developer at an online shop. On Monday morning her manager gives her a folder of documents left behind by a colleague who is leaving the company. At the top of the notes is a single line: “<strong>You must</strong> read all of this before you change anything.”</p>
+            <h4><span class="article-time">Tuesday 9:30 AM</span> — The Checklist</h4>
+            <p>Tuesday morning Min-Ju opens the checklist. It is longer than she expected. “The design team <strong>must</strong> approve every new page. You <strong>have to</strong> run the tests before each release, and you <strong>should</strong> ask your manager before anything goes live. And you <strong>mustn't</strong> edit the live site directly — you <strong>are supposed to</strong> work on the test version first. One more thing: you <strong>don't have to</strong> update the content every day. That only matters during the sale weeks.” Min-Ju writes both of the last two sentences on a sticky note, because they look almost identical and they are not.</p>
+            <h4><span class="article-time">Wednesday 3:00 PM</span> — The Question</h4>
+            <p>On Wednesday a designer asks Min-Ju to add a sale banner today. She wants to say yes, but the checklist says approvals must come first. So she asks her manager. “<strong>Must</strong> I get approval for a banner, or <strong>should</strong> I just add it?” Her manager smiles. “Good question. You must get approval — but you don't have to get it twice.”</p>
+            <h4><span class="article-time">Thursday 11:00 PM</span> — Launch</h4>
+            <p>On Thursday evening the new site goes live and the whole team watches the visitor numbers. Nothing breaks. Min-Ju reads the checklist one more time, and notices something that is not in it at all: what she has to learn is how to say no politely to people who outrank her.</p>
+
+            <blockquote>
+                "The most useful line in the whole folder was the shortest one: you must read all of this before you change anything."
+                <cite>— — Lin Min-Ju, Junior Web Developer</cite>
+            </blockquote>
+        </article>
+
+
+        <h3>Reading Comprehension</h3>
+        <p>Choose the best answer for each question.</p>
+        <div class="quiz-question">
+            <p>1. What does the first line of the handover note say?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q1" value="a"> a) Call the client first</label>
+                        <label><input type="radio" name="q1" value="b"> b) Read everything before changing anything</label>
+                        <label><input type="radio" name="q1" value="c"> c) Start on the live site</label>
+                        <label><input type="radio" name="q1" value="d"> d) Ask a senior developer</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>2. According to the checklist, what must developers do before each release?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q2" value="a"> a) Update the content</label>
+                        <label><input type="radio" name="q2" value="b"> b) Edit the live site</label>
+                        <label><input type="radio" name="q2" value="c"> c) Get design approval</label>
+                        <label><input type="radio" name="q2" value="d"> d) Run the tests</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>3. What is the difference between “you mustn't edit the live site” and “you don't have to update the content daily”?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q3" value="a"> a) There is no difference</label>
+                        <label><input type="radio" name="q3" value="b"> b) The first is forbidden; the second is not necessary</label>
+                        <label><input type="radio" name="q3" value="c"> c) The first is advice; the second is a rule</label>
+                        <label><input type="radio" name="q3" value="d"> d) The first is optional; the second is a promise</label>
+            </div>
+        </div>
+        <div class="quiz-question">
+            <p>4. Why does Min-Ju ask her manager on Wednesday?</p>
+            <div class="quiz-options">
+                        <label><input type="radio" name="q4" value="a"> a) She does not understand the checklist</label>
+                        <label><input type="radio" name="q4" value="b"> b) A request conflicts with the rule about approvals</label>
+                        <label><input type="radio" name="q4" value="c"> c) She wants permission to leave early</label>
+                        <label><input type="radio" name="q4" value="d"> d) The site is broken</label>
+            </div>
+        </div>
+        <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
+        <div id="comp-answers" class="answers">
+<p><strong>1. b</strong></p><p><strong>2. d</strong></p><p><strong>3. b</strong></p><p><strong>4. b</strong></p>
+        </div>
+
+
+        <h3>Discussion Questions</h3>
+        <p>Discuss these questions with a partner or small group.</p>
+        <div class="card card-task">
+            <ol>
+                <li>Why do you think <em>mustn't</em> and <em>don't have to</em> are so often confused? What happens if a new colleague gets them the wrong way?</li>
+                <li>Imagine you are writing a checklist for a new intern on your team. Write three rules. Which modal does each one need, and why?</li>
+                <li>Min-Ju has to learn to say no to senior people. How would you phrase that politely in English?</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY ───────────────────────────────── -->
+    <section id="vocab">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">📝</span> Vocabulary Builder
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <h3>Category: Page Elements</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">header</div>
+                <div class="job-card-chinese">頁張檔</div>
+                <div class="job-card-def">The bar at the top of a page</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">navigation (nav)</div>
+                <div class="job-card-chinese">導航</div>
+                <div class="job-card-def">The menu that moves you between pages</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">footer</div>
+                <div class="job-card-chinese">頁面底部</div>
+                <div class="job-card-def">The section at the bottom of a page</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">hero</div>
+                <div class="job-card-chinese">大圖主圖</div>
+                <div class="job-card-def">The large first section that states the main message</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">sidebar</div>
+                <div class="job-card-chinese">側邊穩</div>
+                <div class="job-card-def">A narrow column beside the main content</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🖥️</div>
+                <div class="job-card-title">modal</div>
+                <div class="job-card-chinese">彌出視窗</div>
+                <div class="job-card-def">A box that opens over the page to ask for a decision</div>
+            </div>
+        </div>
+        <h3>Category: Front-End Concepts</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">HTML</div>
+                <div class="job-card-chinese">起柖檔案語法</div>
+                <div class="job-card-def">The structure of a page</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">CSS</div>
+                <div class="job-card-chinese">風格檔</div>
+                <div class="job-card-def">The presentation of a page</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">JavaScript</div>
+                <div class="job-card-chinese">語法式寫本</div>
+                <div class="job-card-def">The behaviour of a page</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">responsive design</div>
+                <div class="job-card-chinese">Vdeac9式設計</div>
+                <div class="job-card-def">A layout that adapts to any screen size</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">framework</div>
+                <div class="job-card-chinese">h46架</div>
+                <div class="job-card-def">Ready-made code that supplies common structure</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🎨</div>
+                <div class="job-card-title">DOM</div>
+                <div class="job-card-chinese">文檔对象模型</div>
+                <div class="job-card-def">The live structure of a page as a tree of objects</div>
+            </div>
+        </div>
+        <h3>Category: Back-End & Delivery</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">server</div>
+                <div class="job-card-chinese">似務器</div>
+                <div class="job-card-def">A computer that stores and delivers data</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">API</div>
+                <div class="job-card-chinese">程式接口</div>
+                <div class="job-card-def">A defined way for two programs to ask each other for data</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">deploy</div>
+                <div class="job-card-chinese">e8署</div>
+                <div class="job-card-def">To put a finished site online</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">domain name</div>
+                <div class="job-card-chinese">網域名稱</div>
+                <div class="job-card-def">The readable web address of a site</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">hosting</div>
+                <div class="job-card-chinese">主機</div>
+                <div class="job-card-def">The service that keeps a site online</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">⚙️</div>
+                <div class="job-card-title">back-end</div>
+                <div class="job-card-chinese">_8czef</div>
+                <div class="job-card-def">The server-side part of a site</div>
+            </div>
+        </div>
+        <h3>Category: Web Workflow</h3>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">wireframe</div>
+                <div class="job-card-chinese">}20據</div>
+                <div class="job-card-def">A simple sketch of a page layout</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">prototype</div>
+                <div class="job-card-chinese">S9fW8b</div>
+                <div class="job-card-def">An early working version to test an idea</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">user experience (UX)</div>
+                <div class="job-card-chinese">u28b378cSd7</div>
+                <div class="job-card-def">How a person actually feels while using a product</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">accessibility</div>
+                <div class="job-card-chinese">q219cx8d</div>
+                <div class="job-card-def">Making a site usable by everyone</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">cross-browser</div>
+                <div class="job-card-chinese">e8m4fc8V68</div>
+                <div class="job-card-def">Working the same way in different browsers</div>
+            </div>
+            <div class="job-card">
+                <div class="job-card-icon">🔁</div>
+                <div class="job-card-title">load time</div>
+                <div class="job-card-chinese">09Q65f4293</div>
+                <div class="job-card-def">How long a page takes to appear</div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── GRAMMAR ──────────────────────────────────── -->
+    <section id="grammar">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✏️</span> Grammar Focus — Modals of Obligation (must / have to / should)
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+
+        <div class="card card-grammar">
+            <div class="card-header">Quick Review: Four Ways to Say “You Ought To”</div>
+            <p>These modals all talk about obligation, but they differ in <strong>how strong</strong> the obligation is and <strong>where it comes from</strong>.</p>
+            <table>
+                <thead>
+                    <tr><th>Pattern</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>must + base verb</td><td>You <strong>must</strong> read the documentation first.</td></tr>
+                    <tr><td>have to + base verb</td><td>You <strong>have to</strong> run the tests before the release.</td></tr>
+                    <tr><td>should + base verb</td><td>You <strong>should</strong> ask your manager first.</td></tr>
+                    <tr><td>be supposed to + base verb</td><td>You <strong>are supposed to</strong> work on the test version.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Key Rules</div>
+            <ul>
+            <li><strong>must</strong> and <strong>have to</strong> are nearly the same. <em>must</em> often comes from a written rule; <em>have to</em> often comes from the situation.</li>
+            <li><strong>mustn't</strong> = it is <em>forbidden</em>. <em>You mustn't edit the live site.</em></li>
+            <li><strong>don't have to</strong> = it is <em>not necessary</em>. <em>You don't have to update the content daily.</em></li>
+            <li><strong>should</strong> = advice, not a rule. <em>You should check with your manager.</em></li>
+            <li><strong>be supposed to</strong> = an expectation, softer than must. <em>You're supposed to file a ticket first.</em></li>
+            <li>Questions: <em>Must I…? Do I have to…? Should I…? Am I supposed to…?</em></li>
+            </ul>
+        </div>
+
+
+        <div class="card card-grammar">
+            <div class="card-header">Common Mistakes (Chinese L1 Speakers)</div>
+            <p>The classic error: <strong>mustn't</strong> does NOT mean ‘don't have to’.<br><em>✗ You mustn't update the content every day.</em> (= it is forbidden)<br>→ <em>✓ You don't have to update the content every day.</em> (= it is not necessary)<br><br>Also, there is no <em>to</em> after a modal: <em>✗ I must to go.</em> → <em>✓ I must go.</em></p>
+        </div>
+
+
+        <div class="card card-task">
+            <div class="card-header">Activity A: Which Modal?</div>
+            <p>Choose the modal that matches the meaning. Then explain your choice to a partner.</p>
+            <ol>
+                <li>1. You ___ touch the server. It will stop. <span class='keyword'>mustn't — forbidden</span></li>
+                <li>2. You ___ wear a helmet. The company requires it. <span class='keyword'>must / have to — external rule</span></li>
+                <li>3. You ___ buy a licence for this software, but you ___ buy one if you use it commercially. <span class='keyword'>don't have to ... must — not necessary vs necessary</span></li>
+                <li>4. You ___ book the meeting room earlier next time. <span class='keyword'>should — advice</span></li>
+                <li>5. Students ___ use their own laptops during the exam. <span class='keyword'>are supposed to — expectation</span></li>
+            </ol>
+            <div class="example-box">
+                <div class="label">Example</div>
+                <p><em>“Sentence 3 is the important one: <em>don't have to</em> and <em>must</em> are opposites, and mixing them up reverses the meaning.”</em></p>
+            </div>
+        </div>
+        <div class="card card-task">
+            <div class="card-header">Activity B: Write Your Own Checklist</div>
+            <p>Write a six-rule checklist for a new intern on a project you know. Use a different modal in each rule, and underline it.</p>
+            <p><em>Try: <em>“You must wear a helmet. You don't have to bring your own laptop. You should ask before changing the schedule. You mustn't share the password. You're supposed to write a handover note. You have to submit timesheets by Friday.”</em></em></p>
+        </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ──────────────────────────────────── -->
+    <section id="wrapup">
+        <button class="section-toggle" onclick="toggleSection(this)">
+            <span class="section-icon">✅</span> Wrap-up &amp; Reflection
+            <span class="extract-btn" onclick="event.stopPropagation(); extractSection(this)">Extract</span>
+        </button>
+        <div class="section-content">
+            
+        <div class="card card-info">
+            <div class="card-header">Exit Ticket — Write on a sticky note:</div>
+            <ol>
+                <li>One web development term I learned today: __________</li>
+                <li>In my own words, the difference between <em>mustn't</em> and <em>don't have to</em>: __________</li>
+                <li>One rule I should follow in a team project: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">Homework — Due Next Week</div>
+            <ol>
+                <li>Visit any website you use. Write 6 sentences about how it is built, using at least three different modals.</li>
+                <li>Find a news article about a website or app being launched, taken down, or redesigned. Summarise it in 4 sentences.</li>
+            </ol>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Dept. of Information Management · Yuan Ze University</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Section Toggle (Accordion) ───────────────────────
+function toggleSection(btn) {
+    const content = btn.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+
+    // Close all other sections
+    document.querySelectorAll('.section-content.open').forEach(function(el) {
+        if (el !== content) {
+            el.classList.remove('open');
+            el.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Toggle current section
+    content.classList.toggle('open');
+    btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ── Extract Section (Modal) ──────────────────────────
+function extractSection(btn) {
+    var section = btn.closest('section');
+    var content = section.querySelector('.section-content');
+    var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+    // Create modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'extract-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+    // Create modal container
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+    // Create header
+    var header = document.createElement('div');
+    header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+    // Create close button
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+    closeBtn.onclick = function() { document.body.removeChild(overlay); };
+    header.appendChild(closeBtn);
+
+    // Create content area
+    var contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+    contentDiv.innerHTML = content.innerHTML;
+
+    // Create footer with print button
+    var footer = document.createElement('div');
+    footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+    var printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print';
+    printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    printBtn.onclick = function() { window.print(); };
+
+    var closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+    closeFooterBtn.onclick = function() { document.body.removeChild(overlay); };
+
+    footer.appendChild(printBtn);
+    footer.appendChild(closeFooterBtn);
+
+    // Assemble modal
+    modal.appendChild(header);
+    modal.appendChild(contentDiv);
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+
+    // Close on overlay click
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+    // Add to page
+    document.body.appendChild(overlay);
+}
+
+// ── Open first section by default ─────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    var firstSection = document.querySelector('.section-content');
+    if (firstSection) {
+        firstSection.classList.add('open');
+        firstSection.previousElementSibling.setAttribute('aria-expanded', 'true');
+    }
+});
+</script>
+
+</body>
+</html>
