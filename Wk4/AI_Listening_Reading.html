@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplementary Unit: AI and Listening</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span { margin: 0 0.8rem; }
+        .course-header .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Figures (BBC illustrations) ────────────────── */
+        .figure { margin: 1.5rem 0; }
+        .figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            background: var(--border);
+        }
+        .figure figcaption {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+        .figure figcaption a { color: var(--accent); }
+        .credit {
+            display: block;
+            font-style: normal;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.15rem;
+        }
+        /* Shown only if a hotlinked illustration fails to load. */
+        .img-fallback {
+            display: none;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background: var(--info-bg);
+            border: 1px dashed var(--accent-light);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .img-fallback.show { display: block; }
+
+        /* ── Vocabulary Click-to-Reveal ─────────────────── */
+        .vocab-term {
+            background: var(--accent-light);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vocab-term:hover { background: #90cdf4; }
+        .vocab-term:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .vocab-def {
+            display: none;
+            background: var(--info-bg);
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        .vocab-def.show { display: block; }
+
+        /* ── Listening Traps explorer ───────────────────── */
+        .traps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .trap {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .trap-btn {
+            width: 100%;
+            background: var(--bg);
+            border: none;
+            border-bottom: 2px solid var(--border);
+            padding: 0.8rem 0.9rem;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .trap-btn:hover { background: var(--accent-light); }
+        .trap-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+        .trap-btn .trap-ico { font-size: 1.3rem; flex-shrink: 0; }
+        .trap-btn .trap-chevron {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: transform 0.2s ease;
+        }
+        .trap.open .trap-chevron { transform: rotate(180deg); }
+        .trap-body {
+            display: none;
+            padding: 0.9rem;
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+        .trap.open .trap-body { display: block; }
+        .trap-body p { margin-bottom: 0.6rem; }
+        .trap-body p:last-child { margin-bottom: 0; }
+        .trap-body .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+        .trap-body .try {
+            background: var(--success-bg);
+            border-left: 3px solid var(--success);
+            padding: 0.5rem 0.6rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* ── Listener self-check ────────────────────────── */
+        .scenario {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+        }
+        .scenario-say {
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 0.7rem;
+            line-height: 1.6;
+        }
+        .scenario-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .opt-btn {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            color: var(--text);
+            flex: 1 1 160px;
+            text-align: left;
+        }
+        .opt-btn:hover { border-color: var(--accent); background: var(--info-bg); }
+        .opt-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .opt-btn.is-right { border-color: #48bb78; background: var(--success-bg); color: var(--success); font-weight: 700; }
+        .opt-btn.is-wrong { border-color: #fc8181; background: var(--homework-bg); color: #c53030; }
+        .scenario-feedback {
+            display: none;
+            margin-top: 0.7rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .scenario-feedback.show { display: block; }
+        .scenario-feedback.good { background: var(--success-bg); border-left: 4px solid var(--success); }
+        .scenario-feedback.poor { background: var(--homework-bg); border-left: 4px solid #e53e3e; }
+        .selfscore {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .selfscore.hidden { display: none; }
+
+        /* ── Do / Don't columns ────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .col-panel {
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .col-do { background: var(--success-bg); border-left: 4px solid var(--success); }
+        .col-dont { background: var(--homework-bg); border-left: 4px solid #e53e3e; }
+        .col-panel .col-label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem;
+        }
+        .col-do .col-label { color: var(--success); }
+        .col-dont .col-label { color: #c53030; }
+        .col-panel p { margin-bottom: 0.6rem; font-size: 0.92rem; text-indent: 0; }
+        .col-panel p:last-child { margin-bottom: 0; }
+
+        /* ── Study cards ────────────────────────────────── */
+        .study-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .study-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--warm);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .study-term {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .study-cn { color: var(--warm); font-size: 0.85rem; font-weight: 600; }
+        .study-def { font-size: 0.85rem; color: var(--text-light); margin-top: 0.3rem; line-height: 1.55; }
+        .study-ex { font-size: 0.8rem; font-style: italic; color: var(--text); margin-top: 0.4rem; }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; text-indent: 0; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Role Cards ─────────────────────────────────── */
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .role-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .role-card-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .role-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .role-card-desc { font-size: 0.85rem; color: var(--text-light); margin-top: 0.3rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Source note ────────────────────────────────── */
+        .source-note {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            padding: 0.7rem 0.9rem;
+            border-radius: 0 6px 6px 0;
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+        .source-note a { color: var(--accent); }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .container { padding: 1.2rem 1rem 3rem; }
+            .card { padding: 1.2rem; }
+            .article { padding: 1.2rem; }
+            .article p { text-indent: 1rem; }
+            .two-col { gap: 0.8rem; }
+            .traps { grid-template-columns: 1fr; }
+            .role-cards { grid-template-columns: 1fr; }
+
+            /* Touch-screen tap targets: 44px is the usual minimum guidance,
+               and students work through this unit on phones. */
+            .answers-toggle { min-height: 44px; padding: 0.6rem 1.1rem; }
+            .opt-btn { min-height: 46px; padding: 0.7rem 0.9rem; display: flex; align-items: center; }
+            .trap-btn { min-height: 52px; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .container { padding: 0.8rem 0.7rem 2rem; }
+            .card { padding: 0.8rem; }
+            .article { padding: 0.9rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+            .quiz-options { margin-left: 0.5rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .role-cards { grid-template-columns: 1fr; }
+            .study-grid { grid-template-columns: 1fr; }
+            .scenario-opts { flex-direction: column; }
+            .opt-btn { flex: 1 1 auto; }
+        }
+
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc { display: none; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .answers { display: block !important; }
+            .trap-body { display: block !important; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<header class="course-header">
+    <h1>Supplementary Unit: AI and Listening</h1>
+    <div class="subtitle">They hear, but do they care? What AI can teach us about listening better</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Supplementary Unit</span>
+        <span>·</span>
+        <span>~45 minutes</span>
+    </div>
+    <div class="tag">📰 Based on BBC Future Article · Part of the "AI v the Mind" series</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#vocab-preview">Vocab Preview</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#traps">The Seven Traps</a></li>
+        <li><a href="#thecatch">The Catch</a></li>
+        <li><a href="#selfcheck">Self-Check</a></li>
+        <li><a href="#contrast">Good vs Bad</a></li>
+        <li><a href="#comprehension">Comprehension</a></li>
+        <li><a href="#discussion">Discussion</a></li>
+        <li><a href="#vocab-builder">Vocabulary</a></li>
+        <li><a href="#activity">Activity</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<main class="container">
+
+    <!-- ── LEARNING OBJECTIVES ────────────────────────── -->
+    <section id="objectives">
+        <div class="card card-info">
+            <div class="card-header">🎯 Learning Objectives</div>
+            <p>By the end of this unit, students will be able to:</p>
+            <ol>
+                <li>Read and comprehend a simplified article about AI and human behaviour.</li>
+                <li>Understand and use vocabulary for emotions, empathy and conversation.</li>
+                <li>Identify the listening habits that stop people from truly being heard.</li>
+                <li>Discuss when an AI chatbot is helpful — and when it is not.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ── PRE-READING: VOCABULARY PREVIEW ────────────── -->
+    <section id="vocab-preview">
+        <div class="card card-vocab">
+            <div class="card-header">📝 Pre-reading: Vocabulary Preview</div>
+            <p>Click on each term to see its definition. These words appear in the article below.</p>
+
+            <h4 style="margin-top: 1rem; color: var(--primary);">Key Vocabulary from the Article</h4>
+            <p>
+                <span class="vocab-term" data-def="chatbot" tabindex="0" role="button" aria-expanded="false">chatbot</span> ·
+                <span class="vocab-term" data-def="generative-ai" tabindex="0" role="button" aria-expanded="false">generative AI</span> ·
+                <span class="vocab-term" data-def="non-judgemental" tabindex="0" role="button" aria-expanded="false">non-judgemental</span> ·
+                <span class="vocab-term" data-def="self-reflection" tabindex="0" role="button" aria-expanded="false">self-reflection</span> ·
+                <span class="vocab-term" data-def="empathetic" tabindex="0" role="button" aria-expanded="false">empathetic</span> ·
+                <span class="vocab-term" data-def="crisis-hotline" tabindex="0" role="button" aria-expanded="false">crisis hotline</span> ·
+                <span class="vocab-term" data-def="simulate" tabindex="0" role="button" aria-expanded="false">simulate</span> ·
+                <span class="vocab-term" data-def="interrupt" tabindex="0" role="button" aria-expanded="false">interrupt</span> ·
+                <span class="vocab-term" data-def="anonymity" tabindex="0" role="button" aria-expanded="false">anonymity</span> ·
+                <span class="vocab-term" data-def="psychological-safety" tabindex="0" role="button" aria-expanded="false">psychological safety</span>
+            </p>
+            <div class="vocab-def" data-def-for="chatbot"><strong>chatbot</strong> (聊天機器人) — a computer program that holds conversations with people in ordinary language.</div>
+            <div class="vocab-def" data-def-for="generative-ai"><strong>generative AI</strong> (生成式人工智慧) — AI that produces new text, images or code, rather than just sorting information you give it.</div>
+            <div class="vocab-def" data-def-for="non-judgemental"><strong>non-judgemental</strong> (不評判的) — accepting someone's feelings without deciding they are right or wrong. Compare <em>judgemental</em> (評判的).</div>
+            <div class="vocab-def" data-def-for="self-reflection"><strong>self-reflection</strong> (自我反思) — the habit of thinking carefully about your own feelings and behaviour.</div>
+            <div class="vocab-def" data-def-for="empathetic"><strong>empathetic / empathy</strong> (有同理心的 / 同理心) — understanding and sharing another person's feelings. To be <em>empathetic</em> is to show that you understand.</div>
+            <div class="vocab-def" data-def-for="crisis-hotline"><strong>crisis hotline</strong> (危機專線) — a phone line staffed by trained volunteers to help people in danger or extreme distress.</div>
+            <div class="vocab-def" data-def-for="simulate"><strong>simulate / simulating</strong> (模擬) — to copy the appearance of something without having the real thing. A chatbot simulates empathy; it does not feel it.</div>
+            <div class="vocab-def" data-def-for="interrupt"><strong>interrupt / interrupting</strong> (插話 / 打斷) — to speak before someone has finished. The noun is <em>interruption</em>.</div>
+            <div class="vocab-def" data-def-for="anonymity"><strong>anonymity</strong> (匿名) — the state of not showing your real name or identity.</div>
+            <div class="vocab-def" data-def-for="psychological-safety"><strong>psychological safety</strong> (心理安全感) — feeling safe enough to say an honest or difficult thing without fear of being criticised.</div>
+
+            <h4 style="margin-top: 1rem; color: var(--primary);">Useful Phrases</h4>
+            <p>
+                <span class="vocab-term" data-def="rated-as" tabindex="0" role="button" aria-expanded="false">rated as</span> ·
+                <span class="vocab-term" data-def="urge-to-fix" tabindex="0" role="button" aria-expanded="false">the urge to fix</span> ·
+                <span class="vocab-term" data-def="me-too-trap" tabindex="0" role="button" aria-expanded="false">the "me too" trap</span> ·
+                <span class="vocab-term" data-def="pattern-recognition" tabindex="0" role="button" aria-expanded="false">pattern recognition</span> ·
+                <span class="vocab-term" data-def="over-reliance" tabindex="0" role="button" aria-expanded="false">over-reliance</span> ·
+                <span class="vocab-term" data-def="fine-tuned" tabindex="0" role="button" aria-expanded="false">fine-tuned</span>
+            </p>
+            <div class="vocab-def" data-def-for="rated-as"><strong>rated as</strong> (被評為) — judged or scored to be a particular thing. "The replies were <em>rated as</em> more caring."</div>
+            <div class="vocab-def" data-def-for="urge-to-fix"><strong>the urge to fix</strong> (想要解決的衝動) — the strong feeling that you must solve someone's problem instead of simply hearing it.</div>
+            <div class="vocab-def" data-def-for="me-too-trap"><strong>the "me too" trap</strong> (「我也一樣」的陷阱) — answering someone's problem with your own similar story, which takes attention off them.</div>
+            <div class="vocab-def" data-def-for="pattern-recognition"><strong>pattern recognition</strong> (模式辨識) — noticing the shape or repeated idea inside a lot of information.</div>
+            <div class="vocab-def" data-def-for="over-reliance"><strong>over-reliance</strong> (過度依賴) — depending on something so much that you stop managing without it.</div>
+            <div class="vocab-def" data-def-for="fine-tuned"><strong>fine-tuned / fine-tune</strong> (微調) — adjusting an existing AI system for a particular job, instead of building it from nothing.</div>
+
+            <div class="source-note">
+                <strong>Before you read:</strong> this article is about psychology and AI, not about networking. It connects to the <em>AI Safety Debate</em> in Week 2 — that unit asks whether we should trust AI; this one asks something more personal: whether we are good at listening to <em>each other</em>.
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING ────────────────────────────────────── -->
+    <section id="reading">
+        <div class="article">
+            <div class="article-title">They hear, but do they care?</div>
+            <div class="article-subtitle">What AI can teach us about listening better — a simplified version of a BBC Future article</div>
+            <div class="article-meta">
+                <span><strong>Source:</strong> BBC Future</span>
+                <span><strong>Author:</strong> Emily Kasriel</span>
+                <span><strong>Level:</strong> B1 (Intermediate)</span>
+                <span><strong>Time:</strong> ~10 minutes</span>
+            </div>
+
+            <figure class="figure">
+                <img src="https://ichef.bbci.co.uk/images/ic/976xn/p0mvwvtc.jpg.webp"
+                     alt="Brightly coloured illustration of a man sitting and gesturing while he talks, with chatbot windows floating over the scene."
+                     width="976" height="549" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';document.getElementById('fig1-fallback').classList.add('show');">
+                <div class="img-fallback" id="fig1-fallback">
+                    📷 This illustration is hosted by the BBC and could not be loaded.<br>
+                    You can see it in the
+                    <a href="https://www.bbc.com/future/article/20251218-how-ai-can-teach-us-to-really-listen" target="_blank" rel="noopener">original article</a>.
+                </div>
+                <figcaption>
+                    A person talking, with chatbot windows on top of the scene.
+                    <span class="credit">Illustration: Estudio Santa Rita / BBC Future</span>
+                </figcaption>
+            </figure>
+
+            <p>Anna lives in London and speaks Ukrainian. She talks to a <span class="vocab-term" data-def="chatbot" tabindex="0" role="button" aria-expanded="false">chatbot</span> almost every day. "I am aware it's a machine," she says, "but it's super convenient and knows how to listen well whenever I need it."</p>
+            <div class="vocab-def" data-def-for="chatbot"><strong>chatbot</strong> (聊天機器人) — a computer program that holds conversations with people in ordinary language.</div>
+
+            <p>What Anna values is not the chatbot's advice. It is the space it gives her for <span class="vocab-term" data-def="self-reflection" tabindex="0" role="button" aria-expanded="false">self-reflection</span>. When she split up with her boyfriend, her friends and family reacted immediately. Her ex was "an idiot". The chatbot did not say that. Because there was no judgement, Anna was finally able to look at her own complicated feelings.</p>
+            <div class="vocab-def" data-def-for="self-reflection"><strong>self-reflection</strong> (自我反思) — the habit of thinking carefully about your own feelings and behaviour.</div>
+
+            <p>Anna is not unusual. Research published by Harvard Business Review found that in 2025 the most common use of <span class="vocab-term" data-def="generative-ai" tabindex="0" role="button" aria-expanded="false">generative AI</span> was therapy and companionship. More strikingly, several studies found that AI replies were <span class="vocab-term" data-def="rated-as" tabindex="0" role="button" aria-expanded="false">rated as</span> more compassionate than human replies — even when the humans were trained volunteers answering a <span class="vocab-term" data-def="crisis-hotline" tabindex="0" role="button" aria-expanded="false">crisis hotline</span>.</p>
+            <div class="vocab-def" data-def-for="generative-ai"><strong>generative AI</strong> (生成式人工智慧) — AI that produces new text, images or code, rather than just sorting information you give it.</div>
+            <div class="vocab-def" data-def-for="rated-as"><strong>rated as</strong> (被評為) — judged or scored to be a particular thing. "The replies were <em>rated as</em> more caring."</div>
+            <div class="vocab-def" data-def-for="crisis-hotline"><strong>crisis hotline</strong> (危機專線) — a phone line staffed by trained volunteers to help people in danger or extreme distress.</div>
+
+            <h4 style="color: var(--primary); margin: 1.2rem 0 0.4rem;">The finding is really about us</h4>
+
+            <p>The AI is not more caring. The interesting part is what the result says about human beings. When the chatbots were judged more compassionate, that was not evidence of machine kindness — it was a serious <span class="vocab-term" data-def="indictment" tabindex="0" role="button" aria-expanded="false">indictment</span> of how rarely we listen without judging.</p>
+            <div class="vocab-def" data-def-for="indictment"><strong>indictment</strong> (控訴 / 清算) — a statement that something is wrong and deserves criticism.</div>
+
+            <p>Even after researchers explained who had written each reply, people still described the AI's answers as more understanding, more validating and more caring. In another study, people reported more hope and less distress after talking to an AI than after talking to a person.</p>
+
+            <p>It is worth being clear about what is happening. These chatbots are not feeling empathy. They are <span class="vocab-term" data-def="simulating" tabindex="0" role="button" aria-expanded="false">simulating</span> it — learning the shape of a caring reply from enormous amounts of human conversation. The strange part is that a system built from code can sound like the better listener, and that this tells us a great deal about our own weaknesses.</p>
+            <div class="vocab-def" data-def-for="simulating"><strong>simulate / simulating</strong> (模擬) — to copy the appearance of something without having the real thing. A chatbot simulates empathy; it does not feel it.</div>
+
+            <h4 style="color: var(--primary); margin: 1.2rem 0 0.4rem;">So what does a chatbot actually do differently?</h4>
+
+            <p>The article identifies a number of habits that get in the way of good listening. Tap through them in the next section — each one is a trap that human listeners fall into and that AI quietly avoids.</p>
+
+            <blockquote>
+                "This isn't because AI is genuinely more compassionate, but rather a sobering indictment of how rarely we listen in a non-judgmental way."
+                <cite>— BBC Future, summarising the research</cite>
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- ── THE SEVEN TRAPS ────────────────────────────── -->
+    <section id="traps">
+        <div class="card card-task">
+            <div class="card-header">🪞 The Seven Traps</div>
+            <p>Each trap below is a habit that gets in the way of really listening. <strong>Tap a card</strong> to see why it happens and what you can do about it.</p>
+
+            <div class="traps">
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">🤫</span> 1. Interrupting
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">Why we do it</span>People interrupt for many reasons: fear of an awkward silence, an attempt to "help" find the right words, a wish to save time, or an unconscious wish to seem more important. All well-meant, all damaging.</p>
+                        <p><span class="label">Why it hurts</span>An interruption robs the speaker of the chance to develop their own thought. Research shows that being interrupted reduces how much empathy the speaker feels you have.</p>
+                        <p class="try"><strong>Try this:</strong> count to five in your head before you reply. It feels unbearably long.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">💬</span> 2. Noticing emotions
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">The idea</span>The psychologist Carl Rogers argued long ago that acknowledging someone's emotions is the heart of effective listening.</p>
+                        <p><span class="label">Where AI is strong</span>AI is built to classify emotions and reflect them back. One experiment found that Bing Chat detected happiness, sadness, fear and disgust more accurately than trained human responders.</p>
+                        <p class="try"><strong>Try this:</strong> name what you hear — "you sound disappointed" — before you offer any opinion.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">🕯️</span> 3. Avoiding hard feelings
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">The classic mistake</span>When a cousin tells you his cat has died, you rush in with comfort: "She had a long happy life and was well loved." That skips straight past his actual distress.</p>
+                        <p><span class="label">The second problem</span>People are also afraid of being a burden, so they say nothing at all. AI is <span class="vocab-term" data-def="burden-free" tabindex="0" role="button" aria-expanded="false">burden-free</span> — you can say the difficult thing without managing anyone's feelings.</p>
+                        <p class="try"><strong>Try this:</strong> resist the comfort sentence. "That sounds really hard" is enough to begin.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">⚖️</span> 4. Judging quietly
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">The evolutionary reason</span>Judging friend from foe kept our ancestors alive. Quick judgement is a survival tool, so we use it everywhere — including where it does not belong.</p>
+                        <p><span class="label">What it costs</span>A small frown can shut someone down, and this has been found to be especially true with young children. AI offers <span class="vocab-term" data-def="anonymity" tabindex="0" role="button" aria-expanded="false">anonymity</span> and freedom from social judgement, which creates real <span class="vocab-term" data-def="psychological-safety" tabindex="0" role="button" aria-expanded="false">psychological safety</span>.</p>
+                        <p class="try"><strong>Try this:</strong> notice when you are forming a verdict mid-sentence, and put it on hold.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">🧵</span> 5. Missing the pattern
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">The problem</span>A human listener is juggling everything they have been told all week. Nobody is holding all of it at once.</p>
+                        <p><span class="label">The AI advantage</span>Algorithms are good at <span class="vocab-term" data-def="pattern-recognition" tabindex="0" role="button" aria-expanded="false">pattern recognition</span>. They find the smallest thread in messy thinking and weave it into something meaningful.</p>
+                        <p class="try"><strong>Try this:</strong> step back and reflect the overall shape of what someone feels, not every detail.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">🔧</span> 6. Rushing to fix
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">Why we do it</span>Especially in leadership or parental roles, many of us believe our value lies in offering the pearls of our wisdom. Research suggests men are more likely to jump in with unsolicited solutions.</p>
+                        <p><span class="label">What the research found</span>AI's restraint — choosing emotional support over practical advice — made people feel heard <em>more</em> effectively. This is something humans can choose to do.</p>
+                        <p class="try"><strong>Try this:</strong> ask "do you want advice, or do you want me to listen?" before you speak.</p>
+                    </div>
+                </div>
+
+                <div class="trap">
+                    <button class="trap-btn" type="button" aria-expanded="false">
+                        <span class="trap-ico">🪞</span> 7. The "me too" trap
+                        <span class="trap-chevron">▼</span>
+                    </button>
+                    <div class="trap-body">
+                        <p><span class="label">What happens</span>When someone tells us about a miscarriage, an impossible boss, a leak in their roof, we often answer with our own similar story. We mean it as a way of connecting.</p>
+                        <p><span class="label">The result</span>We turn the spotlight onto ourselves. When we start telling our story, we stop listening to theirs. An AI cannot fall into this trap, because it has no experiences to share.</p>
+                        <p class="try"><strong>Try this:</strong> keep the story theirs. Say "that must have been awful" and stop there.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vocab-def" data-def-for="burden-free"><strong>burden-free</strong> (不造成負擔的) — free from the fear of being a burden to someone else.</div>
+            <div class="vocab-def" data-def-for="anonymity"><strong>anonymity</strong> (匿名) — the state of not showing your real name or identity.</div>
+            <div class="vocab-def" data-def-for="psychological-safety"><strong>psychological safety</strong> (心理安全感) — feeling safe enough to say an honest or difficult thing without fear of being criticised.</div>
+            <div class="vocab-def" data-def-for="pattern-recognition"><strong>pattern recognition</strong> (模式辨識) — noticing the shape or repeated idea inside a lot of information.</div>
+        </div>
+    </section>
+
+    <!-- ── THE CATCH ──────────────────────────────────── -->
+    <section id="thecatch">
+        <div class="article">
+            <div class="article-title" style="font-size: 1.3rem;">And the catch?</div>
+            <div class="article-subtitle">What the article warns about</div>
+
+            <figure class="figure">
+                <img src="https://ichef.bbci.co.uk/images/ic/976xn/p0mvww5l.jpg.webp"
+                     alt="Illustration suggesting that AI chatbots can avoid the traps human listeners fall into, but cannot replace real human support."
+                     width="976" height="549" loading="lazy" decoding="async"
+                     onerror="this.style.display='none';document.getElementById('fig2-fallback').classList.add('show');">
+                <div class="img-fallback" id="fig2-fallback">
+                    📷 This illustration is hosted by the BBC and could not be loaded.<br>
+                    You can see it in the
+                    <a href="https://www.bbc.com/future/article/20251218-how-ai-can-teach-us-to-really-listen" target="_blank" rel="noopener">original article</a>.
+                </div>
+                <figcaption>
+                    AI chatbots may avoid many of the traps that human listeners fall into, but they still cannot
+                    replicate the meaningful support of human connection.
+                    <span class="credit">Illustration: Estudio Santa Rita / BBC Future</span>
+                </figcaption>
+            </figure>
+
+            <p>The article is careful not to say that people should replace human relationships with chatbots. But it does warn about <span class="vocab-term" data-def="over-reliance" tabindex="0" role="button" aria-expanded="false">over-reliance</span>. Chatbot companies can manipulate vulnerable people, and AI has already given advice that led to serious harm. A person may also start preferring a chatbot to a real friend, getting used to unlimited patience and constant interest, and finding it harder to tolerate the messiness of real relationships.</p>
+            <div class="vocab-def" data-def-for="over-reliance"><strong>over-reliance</strong> (過度依賴) — depending on something so much that you stop managing without it.</div>
+
+            <p>There is a subtler worry too: people who talk mostly to AI may become <span class="vocab-term" data-def="deskilled" tabindex="0" role="button" aria-expanded="false">deskilled</span> at human conversation, and less motivated to try. One researcher suggests that AI could be <span class="vocab-term" data-def="fine-tuned" tabindex="0" role="button" aria-expanded="false">fine-tuned</span> to introduce a little healthy <span class="vocab-term" data-def="friction" tabindex="0" role="button" aria-expanded="false">friction</span> — to make users notice what other people actually need.</p>
+            <div class="vocab-def" data-def-for="deskilled"><strong>deskilled / deskill</strong> (技能退化) — to lose the ability to do something because you have stopped practising it.</div>
+            <div class="vocab-def" data-def-for="fine-tuned"><strong>fine-tuned / fine-tune</strong> (微調) — adjusting an existing AI system for a particular job, instead of building it from nothing.</div>
+            <div class="vocab-def" data-def-for="friction"><strong>friction</strong> (阻力 / 摩擦) — something that slows a process down. Here: a small obstacle that makes you think harder.</div>
+
+            <p>Even so, the article ends by returning to people. There is something a machine cannot do: choose to give up an evening, put down a phone, and simply let another person unfold their story. That choice — made freely, with real care — is a different kind of connection from interacting with code that has been designed to please you.</p>
+
+            <blockquote>
+                "The conscious choice to be present for another person enacts a form of connection that lines of code
+                programmed to please simply cannot match."
+                <cite>— BBC Future</cite>
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- ── LISTENER SELF-CHECK ────────────────────────── -->
+    <section id="selfcheck">
+        <div class="card card-task">
+            <div class="card-header">🎧 Activity: Are You Actually Listening?</div>
+            <p>Six everyday situations. For each one, choose the reply that a <em>good</em> listener would give. You get feedback immediately, and a score at the end.</p>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">Your friend tells you they failed an exam. What do you say?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "That's awful. I failed my maths test twice — I know exactly how you feel."</button>
+                    <button class="opt-btn" type="button" data-ok="1">b) "That must be frustrating. Do you want to tell me what happened?"</button>
+                    <button class="opt-btn" type="button" data-ok="0">c) "You should study more next time."</button>
+                </div>
+                <div class="scenario-feedback" data-good="Correct — this is the listening move: you stay with their story instead of turning it towards yourself (trap 7) or jumping to a solution (trap 6)." data-poor="Look again — a) is the &quot;me too&quot; trap: your story steals their spotlight. c) jumps straight to a solution, which is the urge to fix."></div>
+            </div>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">A colleague says a project went badly. What do you say?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "It doesn't matter — everyone makes mistakes."</button>
+                    <button class="opt-btn" type="button" data-ok="0">b) "Here's what I would have done differently."</button>
+                    <button class="opt-btn" type="button" data-ok="1">c) "That sounds hard. Which part was the worst?"</button>
+                </div>
+                <div class="scenario-feedback" data-good="Correct — you acknowledge the feeling and invite more, without fixing or minimising." data-poor="a) minimises their experience, which closes the conversation. b) is the urge to fix (trap 6) — advice given before anyone has actually been heard."></div>
+            </div>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">Your cousin tells you his dog died yesterday. What do you say?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "He had a really good, long life. That's what matters."</button>
+                    <button class="opt-btn" type="button" data-ok="0">b) "Don't cry — animals die all the time."</button>
+                    <button class="opt-btn" type="button" data-ok="1">c) "That's really sad. I'm here if you want to talk about it."</button>
+                </div>
+                <div class="scenario-feedback" data-good="Correct — you acknowledge the sadness directly and offer presence, not comfort sentences that skip over the feeling (trap 3)." data-poor="a) is the classic Luna sentence: it sounds kind but steps straight over the distress. b) makes the feeling unacceptable to express."></div>
+            </div>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">A classmate admits they were jealous of your result. What do you say?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "Everyone's a bit jealous sometimes."</button>
+                    <button class="opt-btn" type="button" data-ok="0">b) "You shouldn't be jealous — you did well too."</button>
+                    <button class="opt-btn" type="button" data-ok="1">c) "Thank you for saying that honestly. How are you feeling now?"</button>
+                </div>
+                <div class="scenario-feedback" data-good="Correct — you thank them for being honest, which rewards honesty, and you stay curious rather than judging (trap 4)." data-poor="a) dismisses what they just admitted. b) tells them how they are allowed to feel — which is a judgement, however kind it sounds."></div>
+            </div>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">Your roommate says they cannot sleep before exams. What do you say?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "Try chamomile tea — it worked for me."</button>
+                    <button class="opt-btn" type="button" data-ok="0">b) "Everyone can't sleep before exams."</button>
+                    <button class="opt-btn" type="button" data-ok="1">c) "Do you want to vent for a bit, or would you like some ideas?"</button>
+                </div>
+                <div class="scenario-feedback" data-good="Correct — asking the question is the whole skill. You find out what they actually need instead of guessing." data-poor="a) offers a solution before you know what the problem is (trap 6). b) minimises it again."></div>
+            </div>
+
+            <div class="scenario" data-answered="0">
+                <p class="scenario-say">A friend is telling you a long story about a problem. You already have an idea for the solution. What do you do?</p>
+                <div class="scenario-opts">
+                    <button class="opt-btn" type="button" data-ok="0">a) "Wait until they finish, then say nothing — just let them talk."</button>
+                    <button class="opt-btn" type="button" data-ok="0">b) "Say the solution out loud, in case they need it."</button>
+                    <button class="opt-btn" type="button" data-ok="1">c) "Check your phone while they talk, since you've heard this before."</button>
+                </div>
+                <div class="scenario-feedback" data-good="Careful — a) is the strong answer here. Holding back from interrupting is trap 1, and it is the hardest habit on this list." data-poor="b) interrupts, which is the most common way people lose a listener's trust. c) is not listening at all."></div>
+            </div>
+
+            <div class="selfscore hidden" id="selfscore"></div>
+        </div>
+    </section>
+
+    <!-- ── GOOD VS BAD LISTENER ───────────────────────── -->
+    <section id="contrast">
+        <div class="two-col">
+            <div class="col-panel col-do">
+                <div class="col-label">✔ What deep listening sounds like</div>
+                <p>"Tell me more about that."</p>
+                <p>"That sounds really hard."</p>
+                <p>"Do you want advice, or do you want me to listen?"</p>
+                <p>"You've mentioned worry about money three times. Is that the main thing?"</p>
+                <p><em>(Letting a silence last without rushing to fill it.)</em></p>
+            </div>
+            <div class="col-panel col-dont">
+                <div class="col-label">✘ What it usually sounds like instead</div>
+                <p>"You should definitely do…"</p>
+                <p>"Had a long happy life, that cat."</p>
+                <p>"Oh me too — my manager was awful last year."</p>
+                <p>"Well, you know what I would do in your position…"</p>
+                <p><em>(Checking a phone while they talk.)</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── READING COMPREHENSION ──────────────────────── -->
+    <section id="comprehension">
+        <div class="card card-task">
+            <div class="card-header">📖 Reading Comprehension</div>
+            <p>Choose the best answer for each question.</p>
+
+            <div class="quiz-question">
+                <p>1. What does Anna value most about talking to the chatbot?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a"> a) The advice it gives her</label>
+                    <label><input type="radio" name="q1" value="b"> b) The space it gives her to think</label>
+                    <label><input type="radio" name="q1" value="c"> c) The speed of its replies</label>
+                    <label><input type="radio" name="q1" value="d"> d) That it is cheaper than a therapist</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>2. According to the article, why are AI replies often rated more compassionate than human ones?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a"> a) Because AI has real feelings</label>
+                    <label><input type="radio" name="q2" value="b"> b) Because humans rarely listen without judging</label>
+                    <label><input type="radio" name="q2" value="c"> c) Because chatbots have more free time</label>
+                    <label><input type="radio" name="q2" value="d"> d) Because human volunteers are paid</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>3. What does the article say chatbots are actually doing?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="a"> a) Feeling empathy genuinely</label>
+                    <label><input type="radio" name="q3" value="b"> b) Simulating empathy from human conversation</label>
+                    <label><input type="radio" name="q3" value="c"> c) Copying the replies of therapists</label>
+                    <label><input type="radio" name="q3" value="d"> d) Searching a database of advice</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>4. Which of these is described as something AI does better than human listeners?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="a"> a) Deciding who is right</label>
+                    <label><input type="radio" name="q4" value="b"> b) Not interrupting</label>
+                    <label><input type="radio" name="q4" value="c"> c) Solving complicated problems</label>
+                    <label><input type="radio" name="q4" value="d"> d) Remembering birthdays</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>5. Why can telling your own similar story be a problem?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="a"> a) It is usually too long</label>
+                    <label><input type="radio" name="q5" value="b"> b) It turns attention away from them</label>
+                    <label><input type="radio" name="q5" value="c"> c) It makes you look insensitive</label>
+                    <label><input type="radio" name="q5" value="d"> d) People stop telling you things</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>6. What danger does the article warn about?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6" value="a"> a) Chatbots will be switched off</label>
+                    <label><input type="radio" name="q6" value="b"> b) Over-reliance and losing human skills</label>
+                    <label><input type="radio" name="q6" value="c"> c) AI will become too polite</label>
+                    <label><input type="radio" name="q6" value="d"> d) Companies will stop paying for them</label>
+                </div>
+            </div>
+
+            <button class="answers-toggle" onclick="toggleAnswers('comp-answers')">Show Answers</button>
+            <div id="comp-answers" class="answers">
+                <p><strong>1-b, 2-b, 3-b, 4-b, 5-b, 6-b</strong></p>
+                <p><strong>2.</strong> The article says the result is "a sobering indictment of how rarely we listen in a non-judgmental way" — it is about human behaviour, not machine kindness.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── DISCUSSION QUESTIONS ───────────────────────── -->
+    <section id="discussion">
+        <div class="card card-task">
+            <div class="card-header">💬 Discussion Questions</div>
+            <p>Discuss these questions with a partner or small group. Be ready to share your ideas with the class.</p>
+            <ol>
+                <li><strong>Would you talk to a chatbot about something that really upset you?</strong> What is the difference between a chatbot that listens and a friend who listens?</li>
+                <li><strong>Anna said her family called her ex "an idiot".</strong> Was that unhelpful because it was judgemental, or because it was just wrong? Can those be different things?</li>
+                <li><strong>The article says chatbots are rated more compassionate than trained crisis volunteers.</strong> What does that say about the volunteers — and about all of us?</li>
+                <li><strong>Which of the seven traps do you commit most often?</strong> What could you do differently this week?</li>
+                <li><strong>Do you agree with the last paragraph?</strong> Is choosing to spend time listening to someone genuinely different from being told the right words by software?</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ── VOCABULARY BUILDER ─────────────────────────── -->
+    <section id="vocab-builder">
+        <div class="card card-vocab">
+            <div class="card-header">📝 Vocabulary Builder</div>
+            <p>These are the words from the article. Say each one aloud, then cover the definition and try to recall it.</p>
+
+            <div class="study-grid">
+                <div class="study-card">
+                    <div class="study-term">chatbot</div>
+                    <div class="study-cn">聊天機器人</div>
+                    <div class="study-def">A computer program that holds conversations in ordinary language.</div>
+                    <div class="study-ex">"I talk to a chatbot most evenings."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">non-judgemental</div>
+                    <div class="study-cn">不評判的</div>
+                    <div class="study-def">Accepting someone's feelings without deciding they are right or wrong.</div>
+                    <div class="study-ex">"She needed a non-judgemental listener."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">empathetic</div>
+                    <div class="study-cn">有同理心的</div>
+                    <div class="study-def">Understanding and sharing another person's feelings.</div>
+                    <div class="study-ex">"The reply felt empathetic and calm."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">simulate</div>
+                    <div class="study-cn">模擬</div>
+                    <div class="study-def">To copy the appearance of something without having the real thing.</div>
+                    <div class="study-ex">"It simulates empathy; it does not feel it."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">interrupt</div>
+                    <div class="study-cn">插話、打斷</div>
+                    <div class="study-def">To speak before someone has finished. Noun: interruption.</div>
+                    <div class="study-ex">"Interrupting robs the speaker of time to think."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">indictment</div>
+                    <div class="study-cn">控訴、批評</div>
+                    <div class="study-def">A statement that something is wrong and deserves criticism.</div>
+                    <div class="study-ex">"A sobering indictment of how rarely we listen."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">anonymity</div>
+                    <div class="study-cn">匿名</div>
+                    <div class="study-def">The state of not showing your real name or identity.</div>
+                    <div class="study-ex">"AI offers anonymity and freedom from judgement."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">psychological safety</div>
+                    <div class="study-cn">心理安全感</div>
+                    <div class="study-def">Feeling safe enough to say an honest or difficult thing.</div>
+                    <div class="study-ex">"That creates real psychological safety."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">pattern recognition</div>
+                    <div class="study-cn">模式辨識</div>
+                    <div class="study-def">Noticing the shape or repeated idea inside a lot of information.</div>
+                    <div class="study-ex">"Algorithms are good at pattern recognition."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">over-reliance</div>
+                    <div class="study-cn">過度依賴</div>
+                    <div class="study-def">Depending on something so much that you stop managing without it.</div>
+                    <div class="study-ex">"The article warns about over-reliance."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">deskilled</div>
+                    <div class="study-cn">技能退化</div>
+                    <div class="study-def">Having lost the ability to do something through lack of practice.</div>
+                    <div class="study-ex">"People may become deskilled at conversation."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">fine-tune</div>
+                    <div class="study-cn">微調</div>
+                    <div class="study-def">To adjust an existing AI system for a particular job.</div>
+                    <div class="study-ex">"AI could be fine-tuned to add friction."</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── ACTIVITY: THE LISTENER DEBATE ──────────────── -->
+    <section id="activity">
+        <div class="card card-task">
+            <div class="card-header">🎭 Activity: Should We Take Listening Lessons From AI?</div>
+            <p>Work in groups of 4. Each group defends a different point of view. Prepare arguments and share them with the class.</p>
+
+            <div class="role-cards">
+                <div class="role-card">
+                    <div class="role-card-icon">🧑‍🤝‍🧑</div>
+                    <div class="role-card-title">Group A: Team Human</div>
+                    <div class="role-card-desc">Real human connection is irreplaceable. A machine cannot choose to care about you.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">🤖</div>
+                    <div class="role-card-title">Group B: Team AI</div>
+                    <div class="role-card-desc">For someone with nobody to talk to at 3am, a patient chatbot is a real support.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">⚠️</div>
+                    <div class="role-card-title">Group C: Team Risk</div>
+                    <div class="role-card-desc">Companies profit from people who feel heard. That is a business model, not kindness.</div>
+                </div>
+                <div class="role-card">
+                    <div class="role-card-icon">🏫</div>
+                    <div class="role-card-title">Group D: Team Classroom</div>
+                    <div class="role-card-desc">What would change in our classroom if everyone practised the seven traps?</div>
+                </div>
+            </div>
+
+            <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Instructions</h4>
+            <ol>
+                <li><strong>Prepare (5 minutes):</strong> Discuss with your group. Write 2-3 arguments for your point of view.</li>
+                <li><strong>Present (2 minutes per group):</strong> Share your arguments with the class.</li>
+                <li><strong>Debate (5 minutes):</strong> Ask questions and respond to other groups.</li>
+                <li><strong>Vote (3 minutes):</strong> The class votes on the most convincing point of view.</li>
+            </ol>
+
+            <div class="example-box">
+                <div class="label">Example Arguments</div>
+                <p><strong>Group A (Team Human):</strong> "A chatbot never gets tired, never has a bad day, and never chooses to stay. My friend's patience is worth more than perfect patience, because it costs her something."</p>
+                <p><strong>Group C (Team Risk):</strong> "If a company earns money by making people feel understood, and nobody in the conversation is being paid to be honest, who is the product here — the company, or the person?"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── WRAP-UP ────────────────────────────────────── -->
+    <section id="wrapup">
+        <div class="card card-info">
+            <div class="card-header">✅ Exit Ticket</div>
+            <p>Write your answers on a sticky note or in your notebook:</p>
+            <ol>
+                <li>One new thing I learned today: __________</li>
+                <li>The trap I fall into most often is: __________</li>
+                <li>One sentence I will use differently from now on: __________</li>
+            </ol>
+        </div>
+
+        <div class="card card-homework">
+            <div class="card-header">📎 Reflection (Optional)</div>
+            <p>After class, think about these questions:</p>
+            <ol>
+                <li>Think of one conversation this week where you interrupted — or were interrupted. How did it feel?</li>
+                <li>Would you use a chatbot for something that really upset you? Why, or why not?</li>
+                <li>Read the original BBC Future article and find one point that surprised you. Bring it to class next week.</li>
+            </ol>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER                                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<footer style="text-align:center; padding:2rem; font-size:0.8rem; color:var(--text-light); border-top:1px solid var(--border); margin-top:2rem;">
+    <p>English for Information Technology · Supplementary Unit · Based on BBC Future</p>
+    <p style="margin-top:0.5rem;"><a href="https://www.bbc.com/future/article/20251218-how-ai-can-teach-us-to-really-listen" target="_blank" rel="noopener" style="color:var(--accent);">Read the original BBC Future article →</a></p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+// ── Vocabulary Click-to-Reveal ────────────────────────
+// Terms are keyed on data-def and resolved against data-def-for, so a term
+// never depends on a unique page-wide id.
+function toggleDef(term) {
+    var key = term.getAttribute('data-def');
+    if (!key) return;
+    var scope = term.closest('section') || document;
+    var el = scope.querySelector('.vocab-def[data-def-for="' + key + '"]');
+    if (!el) return;
+    var open = el.classList.toggle('show');
+    term.classList.toggle('is-open', open);
+    term.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+document.addEventListener('click', function (e) {
+    var term = e.target.closest ? e.target.closest('.vocab-term[data-def]') : null;
+    if (term) { toggleDef(term); return; }
+
+    // Traps: each card owns its own panel, so this is purely relative.
+    var trapBtn = e.target.closest ? e.target.closest('.trap-btn') : null;
+    if (trapBtn) {
+        var trap = trapBtn.closest('.trap');
+        var open = trap.classList.toggle('open');
+        trapBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        return;
+    }
+
+    // Listener self-check: one answer per scenario, scored on first choice.
+    var opt = e.target.closest ? e.target.closest('.opt-btn') : null;
+    if (opt) { answerScenario(opt); }
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    var term = e.target.closest ? e.target.closest('.vocab-term[data-def]') : null;
+    if (term) { e.preventDefault(); toggleDef(term); }
+});
+
+var answered = 0;
+var score = 0;
+var TOTAL = 6;
+
+function answerScenario(opt) {
+    var scenario = opt.closest('.scenario');
+    if (scenario.getAttribute('data-answered') === '1') return;
+    scenario.setAttribute('data-answered', '1');
+
+    var correct = opt.getAttribute('data-ok') === '1';
+    var fb = scenario.querySelector('.scenario-feedback');
+
+    [].forEach.call(scenario.querySelectorAll('.opt-btn'), function (b) {
+        b.classList.add(b.getAttribute('data-ok') === '1' ? 'is-right' : 'is-wrong');
+        if (b !== opt && b.getAttribute('data-ok') !== '1') b.classList.remove('is-wrong');
+        b.disabled = true;
+    });
+    if (!correct) opt.classList.remove('is-wrong');
+
+    fb.className = 'scenario-feedback show ' + (correct ? 'good' : 'poor');
+    fb.textContent = correct ? fb.getAttribute('data-good') : fb.getAttribute('data-poor');
+
+    answered++;
+    if (correct) score++;
+    if (answered === TOTAL) showScore();
+}
+
+function showScore() {
+    var el = document.getElementById('selfscore');
+    var msg;
+    if (score === 6)      msg = 'A natural listener. Most people score lower — which is exactly the article\'s point.';
+    else if (score >= 4)  msg = 'Solid instincts. Look back at the traps you missed and practise those.';
+    else if (score >= 2)  msg = 'Plenty of room to improve. Most of us interrupt, fix and judge without noticing.';
+    else                  msg = 'Look again at the Seven Traps — the article says almost everyone does.';
+    el.innerHTML = 'You scored <strong>' + score + ' / ' + TOTAL + '</strong> &nbsp;·&nbsp; ' + msg;
+    el.classList.remove('hidden');
+}
+
+// ── Answer Toggle ─────────────────────────────────────
+function toggleAnswers(id) {
+    var els = document.querySelectorAll('#' + id);
+    if (!els.length) return;
+    var show = !els[0].classList.contains('show');
+    for (var i = 0; i < els.length; i++) els[i].classList.toggle('show', show);
+}
+</script>
+
+</body>
+</html>
