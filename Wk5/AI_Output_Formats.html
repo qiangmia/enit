@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplementary Unit: Asking AI for the Right Format</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span { margin: 0 0.8rem; }
+        .course-header .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Figures (BBC illustrations) ────────────────── */
+        .figure { margin: 1.5rem 0; }
+        .figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            background: var(--border);
+        }
+        .figure figcaption {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+        .figure figcaption a { color: var(--accent); }
+        .credit {
+            display: block;
+            font-style: normal;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.15rem;
+        }
+        /* Shown only if a hotlinked illustration fails to load. */
+        .img-fallback {
+            display: none;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background: var(--info-bg);
+            border: 1px dashed var(--accent-light);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .img-fallback.show { display: block; }
+
+        /* ── Vocabulary Click-to-Reveal ─────────────────── */
+        .vocab-term {
+            background: var(--accent-light);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vocab-term:hover { background: #90cdf4; }
+        .vocab-term:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .vocab-def {
+            display: none;
+            background: var(--info-bg);
+            border: 1px solid var(--accent-light);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        .vocab-def.show { display: block; }
+
+        /* ── Listening Traps explorer ───────────────────── */
+        .traps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .trap {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .trap-btn {
+            width: 100%;
+            background: var(--bg);
+            border: none;
+            border-bottom: 2px solid var(--border);
+            padding: 0.8rem 0.9rem;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .trap-btn:hover { background: var(--accent-light); }
+        .trap-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+        .trap-btn .trap-ico { font-size: 1.3rem; flex-shrink: 0; }
+        .trap-btn .trap-chevron {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: transform 0.2s ease;
+        }
+        .trap.open .trap-chevron { transform: rotate(180deg); }
+        .trap-body {
+            display: none;
+            padding: 0.9rem;
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+        .trap.open .trap-body { display: block; }
+        .trap-body p { margin-bottom: 0.6rem; }
+        .trap-body p:last-child { margin-bottom: 0; }
+        .trap-body .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+        .trap-body .try {
+            background: var(--success-bg);
+            border-left: 3px solid var(--success);
+            padding: 0.5rem 0.6rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* ── Listener self-check ────────────────────────── */
+        .scenario {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+        }
+        .scenario-say {
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 0.7rem;
+            line-height: 1.6;
+        }
+        .scenario-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .opt-btn {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            color: var(--text);
+            flex: 1 1 160px;
+            text-align: left;
+        }
+        .opt-btn:hover { border-color: var(--accent); background: var(--info-bg); }
+        .opt-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .opt-btn.is-right { border-color: #48bb78; background: var(--success-bg); color: var(--success); font-weight: 700; }
+        .opt-btn.is-wrong { border-color: #fc8181; background: var(--homework-bg); color: #c53030; }
+        .scenario-feedback {
+            display: none;
+            margin-top: 0.7rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .scenario-feedback.show { display: block; }
+        .scenario-feedback.good { background: var(--success-bg); border-left: 4px solid var(--success); }
+        .scenario-feedback.poor { background: var(--homework-bg); border-left: 4px solid #e53e3e; }
+        .selfscore {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .selfscore.hidden { display: none; }
+
+        /* ── Do / Don't columns ────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .col-panel {
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .col-do { background: var(--success-bg); border-left: 4px solid var(--success); }
+        .col-dont { background: var(--homework-bg); border-left: 4px solid #e53e3e; }
+        .col-panel .col-label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem;
+        }
+        .col-do .col-label { color: var(--success); }
+        .col-dont .col-label { color: #c53030; }
+        .col-panel p { margin-bottom: 0.6rem; font-size: 0.92rem; text-indent: 0; }
+        .col-panel p:last-child { margin-bottom: 0; }
+
+        /* ── Study cards ────────────────────────────────── */
+        .study-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .study-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--warm);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .study-term {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .study-cn { color: var(--warm); font-size: 0.85rem; font-weight: 600; }
+        .study-def { font-size: 0.85rem; color: var(--text-light); margin-top: 0.3rem; line-height: 1.55; }
+        .study-ex { font-size: 0.8rem; font-style: italic; color: var(--text); margin-top: 0.4rem; }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; text-indent: 0; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Role Cards ─────────────────────────────────── */
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .role-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .role-card-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .role-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .role-card-desc { font-size: 0.85rem; color: var(--text-light); margin-top: 0.3rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Source note ────────────────────────────────── */
+        .source-note {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            padding: 0.7rem 0.9rem;
+            border-radius: 0 6px 6px 0;
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+        .source-note a { color: var(--accent); }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .container { padding: 1.2rem 1rem 3rem; }
+            .card { padding: 1.2rem; }
+            .article { padding: 1.2rem; }
+            .article p { text-indent: 1rem; }
+            .two-col { gap: 0.8rem; }
+            .traps { grid-template-columns: 1fr; }
+            .role-cards { grid-template-columns: 1fr; }
+
+            /* Touch-screen tap targets: 44px is the usual minimum guidance,
+               and students work through this unit on phones. */
+            .answers-toggle { min-height: 44px; padding: 0.6rem 1.1rem; }
+            .opt-btn { min-height: 46px; padding: 0.7rem 0.9rem; display: flex; align-items: center; }
+            .trap-btn { min-height: 52px; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .container { padding: 0.8rem 0.7rem 2rem; }
+            .card { padding: 0.8rem; }
+            .article { padding: 0.9rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+            .quiz-options { margin-left: 0.5rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .role-cards { grid-template-columns: 1fr; }
+            .study-grid { grid-template-columns: 1fr; }
+            .scenario-opts { flex-direction: column; }
+            .opt-btn { flex: 1 1 auto; }
+        }
+
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc { display: none; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .answers { display: block !important; }
+            .trap-body { display: block !important; }
+        }
+
+        /* ── Contrast corrections (inherited from the Week 4 sheet) ── */
+        .opt-btn { background: var(--card-bg); }
+        .study-def, .trap-body .label { color: var(--text); }
+
+        /* ── Link buttons (this unit only) ────────────────── */
+        .btn {
+            display: inline-block; padding: 0.65rem 1.15rem; border-radius: 8px;
+            text-decoration: none; font-weight: 700; min-height: 44px;
+            border: 2px solid transparent; margin: 0.2rem 0;
+        }
+        .btn-primary { background: var(--primary); color: var(--card-bg); }
+        .btn-secondary { background: transparent; color: var(--primary); border-color: var(--primary); }
+        .btn:hover, .btn:focus-visible { opacity: 0.88; }
+        .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        @media print { .btn { display: none; } }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Supplementary Unit: Asking AI for the Right Format</h1>
+    <div class="subtitle">How to get a useful answer out of a chatbot &mdash; and why the shape of the answer matters more than you think</div>
+    <div class="meta">
+        <span><a href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>&middot;</span>
+        <span>Week 5 Supplementary</span>
+        <span>&middot;</span>
+        <span>~40 minutes</span>
+    </div>
+    <div class="tag">&#128220; Adapted from a public post by Andrej Karpathy, 2 Oct 2026 &middot; Part of the "Programming Intro" week</div>
+</header>
+
+<nav class="toc">
+    <ul>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#vocab-preview">Vocab Preview</a></li>
+        <li><a href="#reading">Reading</a></li>
+        <li><a href="#grammar">Grammar Link</a></li>
+        <li><a href="#traps">Tricky Phrases</a></li>
+        <li><a href="#selfcheck">Self-Check</a></li>
+        <li><a href="#comprehension">Comprehension</a></li>
+        <li><a href="#vocab-builder">Vocabulary</a></li>
+        <li><a href="#discussion">Discussion</a></li>
+        <li><a href="#activity">Activity</a></li>
+        <li><a href="#wrapup">Wrap-up</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <section id="objectives">
+        <div class="card card-info">
+            <div class="card-header">&#127919; Learning Objectives</div>
+            <p>By the end of this unit, students will be able to:</p>
+            <ol>
+                <li>Describe four different output formats you can ask an AI for, and say when each one is best.</li>
+                <li>Use vocabulary for AI output, formats and human oversight.</li>
+                <li>Recognise future forms in real writing and use them to talk about what AI will do.</li>
+                <li>Explain in their own words why the human job changes when AI does the work.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="vocab-preview">
+        <div class="card card-vocab">
+            <div class="card-header">&#128221; Pre-reading: Vocabulary Preview</div>
+            <p>Click on each term to see its definition. These words appear in the text below.</p>
+            <h4 style="margin-top: 1rem; color: var(--primary);">Key Vocabulary</h4>
+            <p>
+                <span class="vocab-term" data-def="the result an AI gives you back" tabindex="0" role="button" aria-expanded="false">output</span> &middot;
+                <span class="vocab-term" data-def="the way information is arranged or presented" tabindex="0" role="button" aria-expanded="false">format</span> &middot;
+                <span class="vocab-term" data-def="simple everyday words instead of difficult or formal words" tabindex="0" role="button" aria-expanded="false">plain language</span> &middot;
+                <span class="vocab-term" data-def="a strict standard for technical writing where every word must be easy to understand" tabindex="0" role="button" aria-expanded="false">controlled language</span> &middot;
+                <span class="vocab-term" data-def="having exact rules that must be followed, with no exceptions" tabindex="0" role="button" aria-expanded="false">strict</span> &middot;
+                <span class="vocab-term" data-def="writing the doer before the action, as in 'I clicked the button'" tabindex="0" role="button" aria-expanded="false">active voice</span>
+            </p>
+            <p>
+                <span class="vocab-term" data-def="a picture that shows how parts relate to each other" tabindex="0" role="button" aria-expanded="false">diagram</span> &middot;
+                <span class="vocab-term" data-def="the code a browser reads in order to draw a web page" tabindex="0" role="button" aria-expanded="false">HTML</span> &middot;
+                <span class="vocab-term" data-def="a document you open and read in a browser" tabindex="0" role="button" aria-expanded="false">web page</span> &middot;
+                <span class="vocab-term" data-def="moving pictures used to show a change or a sequence of steps" tabindex="0" role="button" aria-expanded="false">animation</span> &middot;
+                <span class="vocab-term" data-def="a short video made to explain one single idea simply" tabindex="0" role="button" aria-expanded="false">explainer</span> &middot;
+                <span class="vocab-term" data-def="made for one particular person or purpose, not for everyone" tabindex="0" role="button" aria-expanded="false">bespoke</span>
+            </p>
+            <p>
+                <span class="vocab-term" data-def="the boring, tiring part of a job that has to be done anyway" tabindex="0" role="button" aria-expanded="false">legwork</span> &middot;
+                <span class="vocab-term" data-def="checking someone's work carefully to make sure it is correct" tabindex="0" role="button" aria-expanded="false">oversight</span> &middot;
+                <span class="vocab-term" data-def="not worth keeping once you have finished using it" tabindex="0" role="button" aria-expanded="false">discardable</span> &middot;
+                <span class="vocab-term" data-def="an idea that does not depend on the small details" tabindex="0" role="button" aria-expanded="false">abstraction</span> &middot;
+                <span class="vocab-term" data-def="the part of a job that machines can do instead of people" tabindex="0" role="button" aria-expanded="false">routine task</span> &middot;
+                <span class="vocab-term" data-def="to try something to find out what happens, not to get a perfect result" tabindex="0" role="button" aria-expanded="false">experiment</span>
+            </p>
+            <div class="vocab-def" id="vocab-def-box">Click any highlighted word above to see its meaning.</div>
+        </div>
+    </section>
+
+    <section id="reading">
+        <div class="card">
+            <div class="card-header">&#128196; Reading: Four Ways to Ask the Same Question</div>
+
+            <div class="card card-info" style="margin-bottom: 1rem;">
+                <p style="margin-bottom: 0.5rem;"><strong>Where this comes from.</strong> Andrej Karpathy is a computer scientist who works on artificial intelligence. On 2 October 2026 he posted a short message on X (formerly Twitter) about how we should work with AI. This text is a <strong>simplified and shortened adaptation</strong> written for this course, with only a few short phrases quoted directly.</p>
+                <p style="margin-bottom: 0;"><a href="https://x.com/karpathy/status/2105819303471976479" target="_blank" rel="noopener">Read the original post &#8594;</a></p>
+            </div>
+
+            <p>Karpathy begins with a prediction. He thinks that people will spend much more time in the future trying to <em>understand</em> what AI produces. Because of that, he gives some practical tips &mdash; and all of them are about the <span class="vocab-term" data-def="the shape of the answer, not the content itself" tabindex="0" role="button" aria-expanded="false">format</span>, not the facts.</p>
+
+            <h4>1. Ask for plain, controlled English</h4>
+            <p>His first suggestion is to ask the AI to explain something in <strong>ASD-STE100</strong>. This is a real kind of <span class="vocab-term" data-def="a strict standard for technical writing" tabindex="0" role="button" aria-expanded="false">controlled language</span>. It was created for writing aircraft maintenance manuals, where a badly written sentence can stop a plane. Its rules are very <span class="vocab-term" data-def="exact rules with no exceptions" tabindex="0" role="button" aria-expanded="false">strict</span>: short sentences, no special words, and the <span class="vocab-term" data-def="the doer comes before the action" tabindex="0" role="button" aria-expanded="false">active voice</span> only.</p>
+            <p>The result is not beautiful writing, but it is much easier to read. If the rules feel too strict for your purpose, Karpathy suggests asking for "80% of the way" to that style &mdash; which is itself a useful trick, because it shows you can set the rules rather than simply accept them.</p>
+
+            <h4>2. Ask for a diagram instead of text</h4>
+            <p>Instead of asking for paragraphs, ask for a <span class="vocab-term" data-def="a picture showing how parts relate to each other" tabindex="0" role="button" aria-expanded="false">diagram</span>. A good diagram explains a structure faster than a page of words, because your eyes find the shape of something before they read the small details of it.</p>
+            <p><strong>Example.</strong> To understand how a packet travels through a network, one diagram showing the router, the switch and the server may be clearer than five paragraphs describing the same path.</p>
+
+            <h4>3. Ask for HTML, and get a real web page</h4>
+            <p>This is his most useful tip for students. If you ask for your answer "in HTML", the AI can return an actual <span class="vocab-term" data-def="a document you open in a browser" tabindex="0" role="button" aria-expanded="false">web page</span> &mdash; with buttons, colour and <span class="vocab-term" data-def="moving pictures that show a sequence" tabindex="0" role="button" aria-expanded="false">animation</span> &mdash; instead of plain text that you have to imagine.</p>
+            <p><strong>Example.</strong> Instead of a list of twenty glossary words, ask for a page where each word flips over to show its meaning when you click it. You can open the result in a browser and use it like a small app.</p>
+
+            <h4>4. Ask for an explainer video</h4>
+            <p>Karpathy thinks this will be the most important format of all. He suggests asking for a "3b1b-style" <span class="vocab-term" data-def="a short video that explains one idea simply" tabindex="0" role="button" aria-expanded="false">explainer</span>: a short animated video that teaches one idea well. He expects AI to produce these quickly for any topic a person asks about.</p>
+
+            <h4>What this means for us</h4>
+            <p>In the last part of the post, Karpathy makes two points, and this is the part that matters most for your own career.</p>
+            <p><strong>First, your job will change shape.</strong> As AI gets better, it will do more and more of the <span class="vocab-term" data-def="the boring, tiring part of a job" tabindex="0" role="button" aria-expanded="false">legwork</span>. So the human job will move. We will spend less time producing things and more time checking them and understanding them. Karpathy says our work will "rise up the abstractions" &mdash; we move to a higher, more abstract level, where the job is guiding and checking instead of typing.</p>
+            <p><strong>Second, this is good news.</strong> AI can also help with the checking. Karpathy points out that we can now ask for large, <span class="vocab-term" data-def="made for one purpose only" tabindex="0" role="button" aria-expanded="false">bespoke</span>, <span class="vocab-term" data-def="not worth keeping after use" tabindex="0" role="button" aria-expanded="false">discardable</span> software &mdash; a tool built for one small problem and thrown away afterwards. Before AI, building a special program for a single question was never worth the time. Now it can be. His advice is to <em>push the boundaries</em>: try things you would never have tried before, and you will be surprised.</p>
+
+            <div class="card card-homework" style="margin-top: 1rem;">
+                <p style="margin-bottom: 0;"><strong>A small warning.</strong> These are one expert's tips on one day. The post does not claim that HTML or video is always better &mdash; sometimes plain text is exactly what you want, and a diagram is useless for an opinion. Karpathy's real advice is to <em>experiment</em> with formats and compare them. That is a study skill as much as a technical one.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="grammar">
+        <div class="card card-grammar">
+            <div class="card-header">&#128218; Grammar Link: Future Forms (Week 5 Focus)</div>
+            <p>The post is full of future forms. Here they are, with what each one actually does.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 0.8rem 0;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 2px solid var(--border);">Form</th>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 2px solid var(--border);">Example from the post</th>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 2px solid var(--border);">Use it for</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>will + base</strong></td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">"LLMs <strong>will do</strong> more of their legwork."</td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">a prediction about the future</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>will be + -ing</strong></td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">"We <strong>will be spending</strong> a lot more time understanding."</td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">an arrangement you have already decided</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>present simple</strong></td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">"As LLMs <strong>get</strong> better&hellip;"</td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">a general truth, like a zero conditional</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><strong>if + present &rarr; will</strong></td>
+                        <td style="padding: 0.5rem;">"<strong>If</strong> you ask for HTML<strong>, you will get</strong> a web page."</td>
+                        <td style="padding: 0.5rem;">a result that always happens</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="card card-task" style="margin-top: 0.5rem;">
+                <p style="margin-bottom: 0;"><strong>Try it.</strong> Finish these two sentences about your own studies:<br>
+                &bull; "In five years, I think I <strong>will be working</strong> &hellip;"<br>
+                &bull; "<strong>If</strong> I ask my AI for a diagram <strong>, it will show</strong> &hellip;"</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="traps">
+        <div class="card card-vocab">
+            <div class="card-header">&#9888;&#65039; Six phrases that will block you</div>
+            <p>These are the hardest parts of the original post. Tap each one to open it.</p>
+            <div class="traps">
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128172;</span><span>rise up the abstractions</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Literal meaning</span>Abstractions are general ideas, and "rising up" means moving to a higher level.</p>
+                        <p><span class="label">In context</span>As AI takes over the detailed work, people move to a higher level: guiding and checking.</p>
+                        <p class="try"><strong>Try it:</strong> "As software does more work, our job <em>rises up the abstraction level</em>."</p>
+                    </div>
+                </div>
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128188;</span><span>legwork</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Literal meaning</span>The heavy lifting at a construction site.</p>
+                        <p><span class="label">In context</span>The boring, repetitive part of a job &mdash; copying, sorting, retyping.</p>
+                        <p class="try"><strong>Try it:</strong> "Nobody enjoys the <em>legwork</em> of renaming fifty files."</p>
+                    </div>
+                </div>
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128200;</span><span>be bullish on something</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Meaning</span>To believe something will succeed or be valuable. A business word, from "bull" = rising strongly.</p>
+                        <p><span class="label">In context</span>Karpathy is "bullish on" explainer videos &mdash; he thinks they will matter most.</p>
+                        <p class="try"><strong>Try it:</strong> "I'm <em>bullish on</em> this course." (Plain English: "I'm <em>confident in</em> this course.")</p>
+                    </div>
+                </div>
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128279;</span><span>push the boundaries</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Meaning</span>To try to go beyond what is usual or normally allowed.</p>
+                        <p><span class="label">In context</span>Do not stay inside what is normal. Make the unusual request.</p>
+                        <p class="try"><strong>Try it:</strong> "We <em>pushed the boundaries</em> by asking for a video instead of an essay."</p>
+                    </div>
+                </div>
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128465;&#65039;</span><span>discardable</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Meaning</span>Something you can throw away after using. The opposite of <em>durable</em> (long-lasting).</p>
+                        <p><span class="label">In context</span>Software built for one question and then deleted. Cheap to make now, so not worth saving.</p>
+                        <p class="try"><strong>Try it:</strong> "A <em>discardable</em> script for a one-time calculation."</p>
+                    </div>
+                </div>
+                <div class="trap">
+                    <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#127919;</span><span>80% of the way to X</span><span class="trap-chevron">&#9662;</span></button>
+                    <div class="trap-body">
+                        <p><span class="label">Meaning</span>An idiom. Most, but not all, of a quality you are describing.</p>
+                        <p><span class="label">In context</span>The full ASD-STE100 style is too strict, so ask for a slightly softer version.</p>
+                        <p class="try"><strong>Try it:</strong> "Write in formal English &mdash; about <em>80% of the way</em> to a legal document."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="selfcheck">
+        <div class="card card-info">
+            <div class="card-header">&#9989; Self-Check</div>
+            <p>Choose the best answer. Feedback appears immediately.</p>
+            <div id="sc-1" style="margin-bottom: 1rem;">
+                <p><strong>1. A bespoke tool is one that is</strong></p>
+                <button class="opt-btn" onclick="checkOpt(this, true)">made for one particular purpose</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">cheap to buy in any shop</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">the same in every country</button>
+            </div>
+            <div id="sc-2" style="margin-bottom: 1rem;">
+                <p><strong>2. If a job becomes mostly checking and judging, it has become</strong></p>
+                <button class="opt-btn" onclick="checkOpt(this, true)">oversight</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">legwork</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">discardable</button>
+            </div>
+            <div id="sc-3" style="margin-bottom: 1rem;">
+                <p><strong>3. Karpathy tells students to "push the boundaries" because they should</strong></p>
+                <button class="opt-btn" onclick="checkOpt(this, false)">only use tools they already understand</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">avoid animated video</button>
+                <button class="opt-btn" onclick="checkOpt(this, true)">try requests they would not normally try</button>
+            </div>
+            <div id="sc-4">
+                <p><strong>4. Which sentence uses a future form correctly?</strong></p>
+                <button class="opt-btn" onclick="checkOpt(this, false)">If you would ask for HTML, you will get a web page.</button>
+                <button class="opt-btn" onclick="checkOpt(this, false)">If you asked for HTML, you would get a web page.</button>
+                <button class="opt-btn" onclick="checkOpt(this, true)">If you ask for HTML, you will get a web page.</button>
+            </div>
+            <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
+            <div class="answers">
+                <ol>
+                    <li>Made for one particular purpose. <em>Bespoke</em> is the opposite of <em>general-purpose</em>.</li>
+                    <li><em>Oversight</em> = checking work. <em>Legwork</em> = the boring part. Here they are opposites.</li>
+                    <li>The point of the post: AI makes unusual requests cheap, so try more of them.</li>
+                    <li>The third. This is a zero conditional: <em>if</em> + present simple &rarr; <em>will</em> + base. The other two put a past form after <em>if</em>.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="comprehension">
+        <div class="card">
+            <div class="card-header">&#128269; Comprehension</div>
+            <ol>
+                <li>In the order of the post, what are the four formats Karpathy suggests?</li>
+                <li>What is ASD-STE100, and who was it made for?</li>
+                <li>What does "80% of the way to ASD-STE100" mean, and why would you ask for it?</li>
+                <li>What does Karpathy predict will happen to the amount of legwork people do?</li>
+                <li>In your own words: why does Karpathy say this change is good news?</li>
+                <li>The post mentions a video channel called 3b1b. What do you already know about explainer videos &mdash; and would one help you revise?</li>
+            </ol>
+            <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show sample answers</div>
+            <div class="answers">
+                <ol>
+                    <li>Controlled plain English &rarr; diagrams &rarr; HTML web pages &rarr; animated explainer videos.</li>
+                    <li>A strict kind of controlled language for technical writing, created for aircraft maintenance manuals.</li>
+                    <li>Ask for a slightly softer version, because the full standard is too strict for ordinary writing.</li>
+                    <li>AI will take over more and more of it, so people will do less of it.</li>
+                    <li>Because we can also use AI for the checking, and because building a small custom tool is now cheap even when we only need it once.</li>
+                    <li>Open answer. Accept any reasoned response.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="vocab-builder">
+        <div class="card card-vocab">
+            <div class="card-header">&#128218; Vocabulary: Six Terms to Keep</div>
+            <p>Study these, then cover the definitions and test yourself.</p>
+            <div class="study-grid">
+                <div class="study-card">
+                    <div class="study-term">output</div>
+                    <div class="study-cn">&#36755;&#20986;&#31967;&#26524;</div>
+                    <div class="study-def">The result an AI gives you back.</div>
+                    <div class="study-ex">"The output was a web page, not a paragraph."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">format</div>
+                    <div class="study-cn">&#26696;&#24335;</div>
+                    <div class="study-def">The way information is arranged or presented.</div>
+                    <div class="study-ex">"Same facts, different format."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">controlled language</div>
+                    <div class="study-cn">&#21463;&#25511;&#35486;&#35426;</div>
+                    <div class="study-def">A strict standard for technical writing where every word must be easy to understand.</div>
+                    <div class="study-ex">"Aircraft manuals use controlled language."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">diagram</div>
+                    <div class="study-cn">&#22270;&#34920;&#12289;&#31034;&#24847;&#22270;</div>
+                    <div class="study-def">A picture showing how parts relate to each other.</div>
+                    <div class="study-ex">"A diagram explained the network faster than a page of text."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">legwork</div>
+                    <div class="study-cn">&#28692;&#25785;&#36039;&#21151;&#30340;&#24037;&#20316;</div>
+                    <div class="study-def">The boring, tiring part of a job that has to be done anyway.</div>
+                    <div class="study-ex">"AI will take over the legwork."</div>
+                </div>
+                <div class="study-card">
+                    <div class="study-term">oversight</div>
+                    <div class="study-cn">&#30417;&#30518;&#33258;&#21220;&#27211;&#27298;&#26680;</div>
+                    <div class="study-def">Checking someone's work carefully to make sure it is correct.</div>
+                    <div class="study-ex">"Our job shifts to oversight."</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="discussion">
+        <div class="card card-task">
+            <div class="card-header">&#128172; Discussion</div>
+            <ol>
+                <li>Which of the four formats would you use for <em>learning an exam topic</em>? Which for <em>showing your project to a company</em>? Why?</li>
+                <li>Karpathy says the human job will move to oversight. Do you agree? What would that be like for an IT graduate?</li>
+                <li>Is it a problem that anyone can now build a small custom tool? Think about accuracy, exams and work.</li>
+                <li>"Ask for HTML" is an instruction about <em>programming</em>. Find one more phrase in this unit that connects AI and programming.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="activity">
+        <div class="card card-task">
+            <div class="card-header">&#128295; Activity: The Four-Format Test (15 minutes)</div>
+            <p>This is the useful part. Actually try the advice on a topic from this week.</p>
+            <ol>
+                <li>Pick one idea from the Week 5 lesson &mdash; for example <em>variables</em>, <em>loops</em>, or <em>debugging</em>.</li>
+                <li>Ask an AI to explain it <strong>four times</strong>: as plain text, as a diagram, as an HTML page, and as a storyboard for a 60-second video.</li>
+                <li>Score each version 1&ndash;5 for <em>clarity</em>, <em>accuracy</em> and <em>usefulness for revising</em>.</li>
+                <li>Be a sceptic: check one fact from each version against the lesson or a reliable source, and note any that are wrong.</li>
+                <li>Bring your table to class, ready to say which format you would use and why &mdash; and which one you would not trust.</li>
+            </ol>
+            <div class="card card-homework" style="margin-top: 0.8rem;">
+                <p style="margin-bottom: 0;"><strong>Step 4 is the point of the exercise.</strong> Karpathy is describing a way to get more out of AI, not a way to avoid checking it. A beautiful web page can still be completely wrong. Format improves how well you absorb an answer; it never tells you whether the answer is true.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="wrapup">
+        <div class="card card-info">
+            <div class="card-header">&#127968; Wrap-up</div>
+            <ul>
+                <li>Format matters: plain text &rarr; diagram &rarr; HTML &rarr; video.</li>
+                <li>You can set the rules, not just accept them ("80% of the way").</li>
+                <li>AI takes the legwork; people take the oversight.</li>
+                <li>More formats mean more choices &mdash; and more reason to check.</li>
+            </ul>
+            <p style="margin-top: 0.8rem;"><a href="Week5_Programming_Intro.html" class="btn btn-primary">&#8592; Back to the Week 5 lesson</a> &nbsp; <a href="../index.html" class="btn btn-secondary">&#127968; Course home</a></p>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function toggleTrap(btn) {
+    var t = btn.parentElement;
+    var open = t.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function toggleAnswers(t) {
+    var a = t.nextElementSibling;
+    var show = a.classList.toggle('show');
+    t.innerHTML = show ? '&#128273; Hide answers' : '&#128273; Show answers';
+}
+
+// One shared definition box, filled by whichever term was clicked last.
+document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.vocab-term') : null;
+    if (!t) return;
+    var box = document.getElementById('vocab-def-box');
+    var term = t.textContent.trim();
+    document.querySelectorAll('.vocab-term[aria-expanded="true"]').forEach(function (o) {
+        o.setAttribute('aria-expanded', 'false');
+    });
+    t.setAttribute('aria-expanded', 'true');
+    box.innerHTML = '<strong>' + term + '</strong> &mdash; ' + t.getAttribute('data-def');
+    box.classList.add('show');
+    box.scrollIntoView({ block: 'nearest' });
+});
+
+// Keyboard parity: the terms are focusable, so Enter and Space must work.
+document.querySelectorAll('.vocab-term').forEach(function (t) {
+    t.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            t.click();
+        }
+    });
+});
+
+function checkOpt(btn, right) {
+    var box = btn.parentElement;
+    if (box.dataset.answered === '1') return;
+    btn.classList.add(right ? 'is-right' : 'is-wrong');
+    if (!right) {
+        box.querySelectorAll('.opt-btn').forEach(function (b) {
+            if ((b.getAttribute('onclick') || '').indexOf('true') > -1) {
+                b.classList.add('is-right');
+            }
+        });
+    }
+    box.dataset.answered = '1';
+}
+</script>
+
+</body>
+</html>
