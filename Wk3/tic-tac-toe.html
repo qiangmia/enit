@@ -152,7 +152,15 @@
         .board-container { display: flex; justify-content: center; margin-bottom: 1.5rem; }
         .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 500px; }
         .cell {
-            aspect-ratio: 1; background: var(--card-bg); border: 3px solid var(--border); border-radius: 12px;
+            /* Border measured at 1.23-1.51:1 against the cell and 1.18-1.72:1
+               against the page, across all five palettes -- far under the 3:1
+               that WCAG 1.4.11 asks of a meaningful non-text graphic. On a
+               projector the nine squares simply did not read. var(--text) is
+               used rather than var(--accent) so that a neutral border still
+               means "empty": the coloured --team-a / --team-b borders are what
+               tell the class a square has been claimed. var(--text) also flips
+               with the palette, so one declaration serves light and dark. */
+            aspect-ratio: 1; background: var(--card-bg); border: 4px solid var(--text); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.2s; position: relative; font-size: 0.7rem; text-align: center; padding: 0.5rem;
         }
@@ -164,7 +172,12 @@
         .cell-mark { font-size: 3rem; font-weight: 900; line-height: 1; }
         .cell-team-a .cell-mark { color: var(--team-a); }
         .cell-team-b .cell-mark { color: var(--team-b); }
-        .cell-label { font-size: 0.65rem; color: var(--text-light); margin-top: 0.3rem; }
+        /* The 1,1 / 2,3 coordinate labels were 10.4px at weight 400 in
+           var(--text-light) -- roughly 4:1 and unreadable past the front row.
+           Now 1.1rem bold in var(--text): the square is about 160px wide on a
+           projector, so the label fills it without crowding the mark that
+           replaces it. */
+        .cell-label { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-top: 0.3rem; }
 
         .turn-info {
             background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px;
