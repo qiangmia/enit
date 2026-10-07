@@ -568,6 +568,48 @@
         .opt-btn { background: var(--card-bg); }
         .study-def, .trap-body .label { color: var(--text); }
 
+        /* ── Reading typography ──────────────────────────────────────────
+           The reset at the top of this sheet zeroes every margin, and no rule
+           anywhere restored heading spacing. Measured before this change, all
+           five reading subheadings computed to 16px Georgia, weight 700, in
+           rgb(45,55,72) at line-height 28px with margin 0 -- identical to the
+           body paragraphs in every respect except boldness. Five subheads and
+           nine paragraphs therefore ran together as a single block.
+
+           This restores the hierarchy the reset removed:
+             - a sans face against the serif body, the same pairing the card
+               headers already use, so the contrast is one the page has
+               established rather than a new one
+             - a clear size step up, 16px -> 20.8px
+             - a tighter line-height than the prose: 1.75 suits a paragraph,
+               not a heading
+             - space above and below, which the reset had flattened to zero
+             - a left rule, so each subhead is scannable without depending on
+               colour alone
+
+           Scoped to #reading on purpose. The one other h4 on the page, "Key
+           Vocabulary", already carries its own inline margin and colour and is
+           a minor label rather than a section head, so it is left alone.
+
+           Colour is var(--primary), measured against the reading card at
+           12.14 / 6.29 / 6.06 / 4.60 / 6.11 across the five palettes. That
+           minimum of 4.60 clears even the 4.5 normal-text threshold, whereas
+           var(--accent) falls to 2.90 in the gaming palette and var(--warm) to
+           3.56 in educational. */
+        #reading h4 {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--primary);
+            margin: 2rem 0 0.7rem;
+            padding-left: 0.9rem;
+            border-left: 5px solid var(--primary);
+        }
+        /* The first subhead follows the source-attribution box, so it does not
+           need a full section's worth of space above it. */
+        #reading h4:first-of-type { margin-top: 1.3rem; }
+
         /* ── Link buttons (this unit only) ────────────────── */
         .btn {
             display: inline-block; padding: 0.65rem 1.15rem; border-radius: 8px;
