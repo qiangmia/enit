@@ -30,7 +30,21 @@
 # any student submission folder dropped into a week directory later in
 # the term, which is exactly the data that must never be published.
 
-# NEVER publish student submissions. This folder holds homework uploads whose
-# filenames are student IDs and names, plus a grade sheet. It must be listed
-# after the !Wk3/** whitelist above, because the last matching pattern wins.
-Wk3/1151_IM229_C_ID_2/
+# NEVER publish student submissions. Each collection folder holds homework
+# uploads whose FILENAMES are student IDs and Chinese names, plus a
+# teacher/Score.xls grade sheet. Publishing any of it would put 60 students'
+# names, IDs and grades on a public site.
+#
+# This must stay AFTER every !WkN/** whitelist line above, because the last
+# matching pattern wins and !Wk5/** would otherwise un-ignore the folder.
+#
+# The pattern is deliberately general rather than one line per folder. A second
+# collection appeared in Wk5 on 7 Oct 2026 with only Wk3 blocked, so
+# `git add -A` staged 61 files -- names, IDs and the grade sheet. Wk3 had been
+# blocked explicitly and nothing alerted to the new folder. Matching any week
+# and any suffix means the next collection folder is covered without an edit.
+Wk*/1151_IM229_C_ID_*/
+
+# Belt and braces: block any per-student upload folder wherever it appears in a
+# week directory, whatever it is named.
+Wk*/**/No_File_Upload.txt
