@@ -596,7 +596,7 @@
            minimum of 4.60 clears even the 4.5 normal-text threshold, whereas
            var(--accent) falls to 2.90 in the gaming palette and var(--warm) to
            3.56 in educational. */
-        #reading h4 {
+        #reading h3 {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             font-size: 1.3rem;
             font-weight: 700;
@@ -608,7 +608,91 @@
         }
         /* The first subhead follows the source-attribution box, so it does not
            need a full section's worth of space above it. */
-        #reading h4:first-of-type { margin-top: 1.3rem; }
+        #reading h3:first-of-type { margin-top: 1.3rem; }
+
+        /* ── The article as a diagram ──────────────────────────────────
+           Tip 2 of the article is "instead of writing, ask for a diagram", so
+           the reading is also drawn. The ladder encodes the escalation the
+           post actually makes -- each format is introduced with "But even
+           better", and video is the one Karpathy is "most bullish on" -- so the
+           connectors are his words rather than invented ones.
+
+           Structure is a numbered spine rather than a plain list, because the
+           point being taught is that this is a shape, not a wall of text. The
+           spine stops before the turn-out so the two "what changes for you"
+           boxes read as a conclusion rather than a fifth rung.
+
+           Every colour is a variable, and each pairing was measured rather than
+           assumed: --primary on --card-bg is the same 4.60-12.14 range already
+           verified for the reading subheads. */
+        .ladder { list-style: none; margin: 0; padding: 0 0 0 0.35rem; position: relative; }
+        .ladder::before {
+            content: ''; position: absolute; left: 1.68rem; top: 1.3rem; bottom: 3.2rem;
+            width: 3px; background: var(--border); border-radius: 2px;
+        }
+        .rung { display: flex; gap: 1rem; align-items: flex-start; position: relative; }
+        .rung-num {
+            flex: 0 0 2.85rem; height: 2.85rem; border-radius: 50%;
+            background: var(--primary); color: var(--card-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.25rem; font-weight: 800; position: relative; z-index: 1;
+        }
+        .rung-body { flex: 1 1 auto; padding-bottom: 0.2rem; min-width: 0; }
+        .rung-kind {
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.7rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--text); margin-bottom: 0.15rem;
+        }
+        .rung-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.2rem;
+            font-weight: 700; line-height: 1.3; color: var(--primary); margin-bottom: 0.4rem;
+        }
+        .rung-ask { margin: 0 0 0.35rem; line-height: 1.6; }
+        .ask-tag {
+            display: inline-block; font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; padding: 0.1rem 0.5rem; border-radius: 4px;
+            background: var(--info-bg); color: var(--text); margin-right: 0.4rem;
+        }
+        .rung-gets { margin: 0; color: var(--text); line-height: 1.65; }
+        .rung-link {
+            display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0;
+            padding-left: 0.55rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.82rem;
+            font-style: italic; color: var(--text);
+        }
+        .rung-arrow { font-style: normal; font-size: 1rem; }
+        .rung-final .rung-title { color: var(--warm); }
+
+        .turn {
+            margin-top: 1.6rem; padding: 1.1rem 1.2rem; border-radius: 12px;
+            background: var(--info-bg); border: 2px solid var(--accent);
+        }
+        .turn-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.95rem;
+            font-weight: 700; margin-bottom: 0.8rem; color: var(--text);
+        }
+        .turn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+        .turn-card { background: var(--card-bg); border-radius: 10px; padding: 0.9rem 1rem; }
+        .turn-row { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+        .turn-label {
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.68rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--text);
+        }
+        .turn-to {
+            font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.02rem;
+            font-weight: 700; color: var(--primary);
+        }
+        .turn-card p { margin: 0.5rem 0 0; font-size: 0.92rem; line-height: 1.6; color: var(--text); }
+
+        /* Two turn cards side by side leaves each about 130px on a phone, which
+           is too narrow for "bespoke & discardable" to sit on one line. Measured
+           at 366px before adding this. */
+        @media (max-width: 600px) {
+            .turn-grid { grid-template-columns: 1fr; }
+        }
 
         /* ── Link buttons (this unit only) ────────────────── */
         .btn {
@@ -644,6 +728,7 @@
         <li><a href="#objectives">Objectives</a></li>
         <li><a href="#vocab-preview">Vocab Preview</a></li>
         <li><a href="#reading">Reading</a></li>
+        <li><a href="#diagram">Article as a Diagram</a></li>
         <li><a href="#grammar">Grammar Link</a></li>
         <li><a href="#traps">Tricky Phrases</a></li>
         <li><a href="#selfcheck">Self-Check</a></li>
@@ -659,7 +744,7 @@
 
     <section id="objectives">
         <div class="card card-info">
-            <div class="card-header">&#127919; Learning Objectives</div>
+            <h2 class="card-header">&#127919; Learning Objectives</h2>
             <p>By the end of this unit, students will be able to:</p>
             <ol>
                 <li>Describe four different output formats you can ask an AI for, and say when each one is best.</li>
@@ -672,9 +757,9 @@
 
     <section id="vocab-preview">
         <div class="card card-vocab">
-            <div class="card-header">&#128221; Pre-reading: Vocabulary Preview</div>
+            <h2 class="card-header">&#128221; Pre-reading: Vocabulary Preview</h2>
             <p>Click on each term to see its definition. These words appear in the text below.</p>
-            <h4 style="margin-top: 1rem; color: var(--primary);">Key Vocabulary</h4>
+            <h3 style="margin-top: 1rem; color: var(--primary);">Key Vocabulary</h4>
             <p>
                 <span class="vocab-term" data-def="the result an AI gives you back" tabindex="0" role="button" aria-expanded="false">output</span> &middot;
                 <span class="vocab-term" data-def="the way information is arranged or presented" tabindex="0" role="button" aria-expanded="false">format</span> &middot;
@@ -705,7 +790,7 @@
 
     <section id="reading">
         <div class="card">
-            <div class="card-header">&#128196; Reading: Four Ways to Ask the Same Question</div>
+            <h2 class="card-header">&#128196; Reading: Four Ways to Ask the Same Question</h2>
 
             <div class="card card-info" style="margin-bottom: 1rem;">
                 <p style="margin-bottom: 0.5rem;"><strong>Where this comes from.</strong> Andrej Karpathy is a computer scientist who works on artificial intelligence. On 2 October 2026 he posted a short message on X (formerly Twitter) about how we should work with AI. This text is a <strong>simplified and shortened adaptation</strong> written for this course, with only a few short phrases quoted directly.</p>
@@ -714,22 +799,22 @@
 
             <p>Karpathy begins with a prediction. He thinks that people will spend much more time in the future trying to <em>understand</em> what AI produces. Because of that, he gives some practical tips &mdash; and all of them are about the <span class="vocab-term" data-def="the shape of the answer, not the content itself" tabindex="0" role="button" aria-expanded="false">format</span>, not the facts.</p>
 
-            <h4>1. Ask for plain, controlled English</h4>
+            <h3>1. Ask for plain, controlled English</h4>
             <p>His first suggestion is to ask the AI to explain something in <strong>ASD-STE100</strong>. This is a real kind of <span class="vocab-term" data-def="a strict standard for technical writing" tabindex="0" role="button" aria-expanded="false">controlled language</span>. It was created for writing aircraft maintenance manuals, where a badly written sentence can stop a plane. Its rules are very <span class="vocab-term" data-def="exact rules with no exceptions" tabindex="0" role="button" aria-expanded="false">strict</span>: short sentences, no special words, and the <span class="vocab-term" data-def="the doer comes before the action" tabindex="0" role="button" aria-expanded="false">active voice</span> only.</p>
             <p>The result is not beautiful writing, but it is much easier to read. If the rules feel too strict for your purpose, Karpathy suggests asking for "80% of the way" to that style &mdash; which is itself a useful trick, because it shows you can set the rules rather than simply accept them.</p>
 
-            <h4>2. Ask for a diagram instead of text</h4>
+            <h3>2. Ask for a diagram instead of text</h4>
             <p>Instead of asking for paragraphs, ask for a <span class="vocab-term" data-def="a picture showing how parts relate to each other" tabindex="0" role="button" aria-expanded="false">diagram</span>. A good diagram explains a structure faster than a page of words, because your eyes find the shape of something before they read the small details of it.</p>
             <p><strong>Example.</strong> To understand how a packet travels through a network, one diagram showing the router, the switch and the server may be clearer than five paragraphs describing the same path.</p>
 
-            <h4>3. Ask for HTML, and get a real web page</h4>
+            <h3>3. Ask for HTML, and get a real web page</h4>
             <p>This is his most useful tip for students. If you ask for your answer "in HTML", the AI can return an actual <span class="vocab-term" data-def="a document you open in a browser" tabindex="0" role="button" aria-expanded="false">web page</span> &mdash; with buttons, colour and <span class="vocab-term" data-def="moving pictures that show a sequence" tabindex="0" role="button" aria-expanded="false">animation</span> &mdash; instead of plain text that you have to imagine.</p>
             <p><strong>Example.</strong> Instead of a list of twenty glossary words, ask for a page where each word flips over to show its meaning when you click it. You can open the result in a browser and use it like a small app.</p>
 
-            <h4>4. Ask for an explainer video</h4>
+            <h3>4. Ask for an explainer video</h4>
             <p>Karpathy thinks this will be the most important format of all. He suggests asking for a "3b1b-style" <span class="vocab-term" data-def="a short video that explains one idea simply" tabindex="0" role="button" aria-expanded="false">explainer</span>: a short animated video that teaches one idea well. He expects AI to produce these quickly for any topic a person asks about.</p>
 
-            <h4>What this means for us</h4>
+            <h3>What this means for us</h4>
             <p>In the last part of the post, Karpathy makes two points, and this is the part that matters most for your own career.</p>
             <p><strong>First, your job will change shape.</strong> As AI gets better, it will do more and more of the <span class="vocab-term" data-def="the boring, tiring part of a job" tabindex="0" role="button" aria-expanded="false">legwork</span>. So the human job will move. We will spend less time producing things and more time checking them and understanding them. Karpathy says our work will "rise up the abstractions" &mdash; we move to a higher, more abstract level, where the job is guiding and checking instead of typing.</p>
             <p><strong>Second, this is good news.</strong> AI can also help with the checking. Karpathy points out that we can now ask for large, <span class="vocab-term" data-def="made for one purpose only" tabindex="0" role="button" aria-expanded="false">bespoke</span>, <span class="vocab-term" data-def="not worth keeping after use" tabindex="0" role="button" aria-expanded="false">discardable</span> software &mdash; a tool built for one small problem and thrown away afterwards. Before AI, building a special program for a single question was never worth the time. Now it can be. His advice is to <em>push the boundaries</em>: try things you would never have tried before, and you will be surprised.</p>
@@ -740,9 +825,74 @@
         </div>
     </section>
 
+    <section id="diagram">
+        <div class="card">
+            <h2 class="card-header">&#128506; The Article as a Diagram</h2>
+            <p style="margin-bottom: 1.2rem;">Tip&nbsp;2 of the article says: instead of writing, ask for a diagram. So here is the article, drawn. Every arrow below is Karpathy's own connector &mdash; he introduces each format with "But even better", and calls video the one he is "most bullish on".</p>
+
+            <ol class="ladder">
+                <li class="rung">
+                    <span class="rung-num" aria-hidden="true">1</span>
+                    <div class="rung-body">
+                        <div class="rung-kind">Writing</div>
+                        <div class="rung-title">Plain, controlled English</div>
+                        <p class="rung-ask"><span class="ask-tag">Ask</span>Explain <em>variables</em> in ASD-STE100.</p>
+                        <p class="rung-gets">Short sentences, active voice, no special words. Not beautiful &mdash; much easier to read.</p>
+                    </div>
+                </li>
+                <li class="rung-link"><span class="rung-arrow" aria-hidden="true">&#8615;</span> But even better</li>
+                <li class="rung">
+                    <span class="rung-num" aria-hidden="true">2</span>
+                    <div class="rung-body">
+                        <div class="rung-kind">Picture</div>
+                        <div class="rung-title">A diagram</div>
+                        <p class="rung-ask"><span class="ask-tag">Ask</span>Draw a diagram of <em>how a packet travels through a network</em>.</p>
+                        <p class="rung-gets">The shape of it is visible before you read a single detail.</p>
+                    </div>
+                </li>
+                <li class="rung-link"><span class="rung-arrow" aria-hidden="true">&#8615;</span> But even better</li>
+                <li class="rung">
+                    <span class="rung-num" aria-hidden="true">3</span>
+                    <div class="rung-body">
+                        <div class="rung-kind">Code</div>
+                        <div class="rung-title">An HTML web page</div>
+                        <p class="rung-ask"><span class="ask-tag">Ask</span>Put your glossary on a <em>web page in HTML</em>, with cards you click to flip.</p>
+                        <p class="rung-gets">Buttons, colour, animation &mdash; something you <em>use</em> rather than imagine.</p>
+                    </div>
+                </li>
+                <li class="rung-link"><span class="rung-arrow" aria-hidden="true">&#8615;</span> But even better</li>
+                <li class="rung rung-final">
+                    <span class="rung-num" aria-hidden="true">4</span>
+                    <div class="rung-body">
+                        <div class="rung-kind">Motion</div>
+                        <div class="rung-title">An explainer video</div>
+                        <p class="rung-ask"><span class="ask-tag">Ask</span>Make a <em>60-second 3b1b-style explainer</em> of how a loop works.</p>
+                        <p class="rung-gets">The one he is "most bullish on": an animation that teaches the idea in under a minute.</p>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="turn">
+                <div class="turn-title">And what that changes for you</div>
+                <div class="turn-grid">
+                    <div class="turn-card">
+                        <div class="turn-row"><span class="turn-label">AI takes</span><span class="turn-to">the legwork</span></div>
+                        <div class="turn-row"><span class="turn-label">You take</span><span class="turn-to">the oversight</span></div>
+                        <p>Less producing, more checking and understanding. The job rises to a higher level.</p>
+                    </div>
+                    <div class="turn-card">
+                        <div class="turn-row"><span class="turn-label">Tools are</span><span class="turn-to">bespoke &amp; discardable</span></div>
+                        <div class="turn-row"><span class="turn-label">So you can</span><span class="turn-to">push the boundaries</span></div>
+                        <p>Built for one question, then thrown away. Cheap enough now that it is worth trying.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="grammar">
         <div class="card card-grammar">
-            <div class="card-header">&#128218; Grammar Link: Future Forms (Week 5 Focus)</div>
+            <h2 class="card-header">&#128218; Grammar Link: Future Forms (Week 5 Focus)</h2>
             <p>The post is full of future forms. Here they are, with what each one actually does.</p>
             <table style="width: 100%; border-collapse: collapse; margin: 0.8rem 0;">
                 <thead>
@@ -785,7 +935,7 @@
 
     <section id="traps">
         <div class="card card-vocab">
-            <div class="card-header">&#9888;&#65039; Six phrases that will block you</div>
+            <h2 class="card-header">&#9888;&#65039; Six phrases that will block you</h2>
             <p>These are the hardest parts of the original post. Tap each one to open it.</p>
             <div class="traps">
                 <div class="trap">
@@ -842,7 +992,7 @@
 
     <section id="selfcheck">
         <div class="card card-info">
-            <div class="card-header">&#9989; Self-Check</div>
+            <h2 class="card-header">&#9989; Self-Check</h2>
             <p>Choose the best answer. Feedback appears immediately.</p>
             <div id="sc-1" style="margin-bottom: 1rem;">
                 <p><strong>1. A bespoke tool is one that is</strong></p>
@@ -882,7 +1032,7 @@
 
     <section id="comprehension">
         <div class="card">
-            <div class="card-header">&#128269; Comprehension</div>
+            <h2 class="card-header">&#128269; Comprehension</h2>
             <ol>
                 <li>In the order of the post, what are the four formats Karpathy suggests?</li>
                 <li>What is ASD-STE100, and who was it made for?</li>
@@ -907,7 +1057,7 @@
 
     <section id="vocab-builder">
         <div class="card card-vocab">
-            <div class="card-header">&#128218; Vocabulary: Six Terms to Keep</div>
+            <h2 class="card-header">&#128218; Vocabulary: Six Terms to Keep</h2>
             <p>Study these, then cover the definitions and test yourself.</p>
             <div class="study-grid">
                 <div class="study-card">
@@ -952,7 +1102,7 @@
 
     <section id="discussion">
         <div class="card card-task">
-            <div class="card-header">&#128172; Discussion</div>
+            <h2 class="card-header">&#128172; Discussion</h2>
             <ol>
                 <li>Which of the four formats would you use for <em>learning an exam topic</em>? Which for <em>showing your project to a company</em>? Why?</li>
                 <li>Karpathy says the human job will move to oversight. Do you agree? What would that be like for an IT graduate?</li>
@@ -964,7 +1114,7 @@
 
     <section id="activity">
         <div class="card card-task">
-            <div class="card-header">&#128295; Activity: The Four-Format Test (15 minutes)</div>
+            <h2 class="card-header">&#128295; Activity: The Four-Format Test (15 minutes)</h2>
             <p>This is the useful part. Actually try the advice on a topic from this week.</p>
             <ol>
                 <li>Pick one idea from the Week 5 lesson &mdash; for example <em>variables</em>, <em>loops</em>, or <em>debugging</em>.</li>
@@ -981,7 +1131,7 @@
 
     <section id="wrapup">
         <div class="card card-info">
-            <div class="card-header">&#127968; Wrap-up</div>
+            <h2 class="card-header">&#127968; Wrap-up</h2>
             <ul>
                 <li>Format matters: plain text &rarr; diagram &rarr; HTML &rarr; video.</li>
                 <li>You can set the rules, not just accept them ("80% of the way").</li>
