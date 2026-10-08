@@ -64,7 +64,7 @@
         /* Only the prose stays serif; interface text is sans for legibility
            at small sizes, which is the convention the lesson pages follow. */
         .ui, .pill, .btn, .numeral, .chip, .eyebrow, .meta-row,
-        .row-label, .facts dt, .facts dd, .progress-label, footer {
+        .row-label, .progress-label, footer {
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
@@ -153,30 +153,6 @@
             outline-offset: 2px;
         }
 
-        /* Course facts strip, sitting half over the hero edge */
-        .facts-wrap { max-width: 1080px; margin: -2.1rem auto 0; padding: 0 clamp(1.1rem, 4vw, 2rem); position: relative; }
-        .facts {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-        }
-        .facts > div { padding: 1.05rem 1.1rem; border-right: 1px solid var(--border);
-                      text-align: center; }
-        .facts > div:last-child { border-right: 0; }
-        .facts dt {
-            font-size: .66rem;
-            font-weight: 700;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--text);
-            margin-bottom: .3rem;
-        }
-        .facts dd { font-size: 1.12rem; font-weight: 700; color: var(--primary); line-height: 1.25; }
-
         /* ── Layout ──────────────────────────────────────── */
         .container { max-width: 1080px; margin: 0 auto; padding: clamp(2rem, 5vw, 3.2rem) clamp(1.1rem, 4vw, 2rem) 0; }
 
@@ -253,21 +229,22 @@
         }
         /* The two assessment labels sit at their own weeks rather than being
            spread evenly between the end ticks. Left to space-between they land
-           at a third and two thirds of the row, while the bar puts them at
-           42% and 86% -- in a row whose ends say Week 1 and Week 18, that
-           difference reads as a wrong timeline.
+           at a third and two thirds of the row while the bar puts them at 42%
+           and 86% -- and since these labels now read Mid-term and Final exam
+           with no week number at all, position is the only thing tying them to
+           a week, so it has to be right rather than approximately right.
 
            Week 1 and Week 18 stay in the flow and anchor the ends; the other
            two come out of it. 7.5/18 and 15.5/18 are the segment centres once
            the 3px gaps are accounted for. Week 16's label ends at its dot
-           rather than centring on it, because centred it runs under Week 18's
-           label on anything narrower than a laptop.
+           instead of centring on it: centred, an 80px label sitting at 86% of
+           the row runs under Week 18's label until the row is 756px wide.
 
-           Below 600px there is not room for four labels anywhere, so the
-           placement is dropped and the row spreads or wraps instead. The
-           threshold is 600 rather than the 534 that would technically fit,
-           because at 534 the two assessment labels end up 4px apart: past
-           600 they never get closer than 28px. */
+           Below 600px the placement is dropped. The four labels still fit on
+           one line from 360px up, but they spread evenly instead of landing on
+           their weeks; below that the row wraps. Phones are the case that
+           cannot be placed at any font size -- a 430px screen gives a 339px
+           row, and Week 16's label beside Week 18's needs 353px to fit. */
         @media (min-width: 600px) {
             .progress-ticks { position: relative; }
             .progress-ticks .legend-item { position: absolute; top: 0; }
@@ -434,19 +411,9 @@
         footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
         footer a:hover { text-decoration: underline; }
 
-        /* ── Responsive: Tablet ──────────────────────────── */
-        @media (max-width: 820px) {
-            .facts { grid-template-columns: repeat(2, 1fr); }
-            .facts > div:nth-child(2n) { border-right: 0; }
-        }
-
         /* ── Responsive: Phone ───────────────────────────── */
         @media (max-width: 560px) {
             .hero { padding-top: 2.2rem; }
-            .facts { grid-template-columns: 1fr; }
-            .facts > div { border-right: 0; border-bottom: 1px solid var(--border); }
-            .facts > div:last-child { border-bottom: 0; }
-            .facts dd { font-size: 1rem; }
 
             .week-card { grid-template-columns: 1fr; padding: 1.15rem 1.15rem 1.15rem 1.35rem; }
             .numeral { grid-row: auto; width: 46px; height: 46px; font-size: 1.1rem; border-radius: 13px; margin-bottom: .7rem; }
@@ -469,7 +436,6 @@
             .hero::before, .hero-actions, .progress, .roadmap .topics { display: none; }
             .eyebrow { border-color: #999; color: #000; background: none; }
             .hero .byline { color: #333; }
-            .facts-wrap { margin: 0; }
             .week-card { break-inside: avoid; box-shadow: none; }
         }
     </style>
@@ -494,14 +460,6 @@
     </div>
 </header>
 
-<!-- ══════════ COURSE FACTS ══════════ -->
-<div class="facts-wrap">
-    <dl class="facts">
-        <div><dt>Contact</dt><dd>3 hrs / week</dd></div>
-        <div><dt>Level</dt><dd>B1 → B2</dd></div>
-    </dl>
-</div>
-
 <main class="container">
 
     <!-- ══════════ WEEKS ══════════ -->
@@ -513,7 +471,7 @@
     <div class="progress">
         <div class="progress-label">
             <span><strong>Week 5</strong> of 18</span>
-            <span>13 weeks still to go</span>
+            <span>13 weeks to go</span>
         </div>
         <div class="progress-track" role="img"
              aria-label="Week 5 of 18. Weeks 1 to 5 are complete; the remaining 13 have not been taught yet.">
@@ -538,8 +496,8 @@
         </div>
         <div class="progress-ticks">
             <span>Week 1</span>
-            <span class="legend-item"><span class="legend-dot"></span> Week 8 · Mid-term</span>
-            <span class="legend-item"><span class="legend-dot"></span> Week 16 · Final exam</span>
+            <span class="legend-item"><span class="legend-dot"></span> Mid-term</span>
+            <span class="legend-item"><span class="legend-dot"></span> Final exam</span>
             <span>Week 18</span>
         </div>
     </div>
@@ -832,7 +790,7 @@
         } else {
             if (strong) strong.textContent = 'Week ' + shown;
             if (spans[1]) spans[1].textContent = (total - shown) + ' week' +
-                (total - shown === 1 ? '' : 's') + ' still to go';
+                (total - shown === 1 ? '' : 's') + ' to go';
         }
     }
 
