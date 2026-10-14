@@ -26,6 +26,7 @@
             --team-a-bg: #ebf8ff;
             --team-b: #805ad5;
             --team-b-bg: #faf5ff;
+            --q-scale: 1;
         }
         html { font-size: 16px; }
         body {
@@ -199,6 +200,10 @@
         .modal-team-info { font-size: 0.9rem; font-weight: 700; margin-top: 0.15rem; }
         .modal-team-info.team-a-text { color: var(--team-a); }
         .modal-team-info.team-b-text { color: var(--team-b); }
+        .modal-tools { display: flex; align-items: center; gap: 0.35rem; }
+        .qsize-btn { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; font-weight: 700; line-height: 1; padding: 0.4rem 0.55rem; cursor: pointer; }
+        .qsize-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .qsize-btn:disabled { opacity: 0.4; cursor: default; }
         .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); padding: 0.2rem 0.5rem; }
         .modal-body { padding: 1.5rem; }
         .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.8rem; justify-content: flex-end; flex-wrap: wrap; }
@@ -214,15 +219,23 @@
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .question-category { display: inline-block; padding: 0.2rem 0.6rem; background: var(--accent-light); color: var(--accent); border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.8rem; }
-        .question-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.5; }
+        .question-text { font-size: calc(1.15rem * var(--q-scale, 1)); font-weight: 600; margin-bottom: 1.2rem; line-height: 1.5; }
         .question-options { display: flex; flex-direction: column; gap: 0.5rem; }
-        .option-btn { display: block; width: 100%; padding: 0.8rem 1rem; background: #f8fafc; border: 2px solid var(--border); border-radius: 8px; text-align: left; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+        .option-btn { display: block; width: 100%; padding: 0.8rem 1rem; background: #f8fafc; border: 2px solid var(--border); border-radius: 8px; text-align: left; font-size: calc(0.95rem * var(--q-scale, 1)); cursor: pointer; transition: all 0.2s; }
         .option-btn:hover { border-color: var(--accent); background: var(--accent-light); }
         .option-btn.selected { border-color: var(--accent); background: var(--accent-light); }
         .option-label { display: inline-block; width: 24px; height: 24px; background: var(--border); border-radius: 50%; text-align: center; line-height: 24px; font-weight: 700; font-size: 0.8rem; margin-right: 0.8rem; flex-shrink: 0; }
-        .answer-input { width: 100%; padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: inherit; }
+        .answer-input { width: 100%; padding: 0.8rem; border: 2px solid var(--border); border-radius: 8px; font-size: calc(1rem * var(--q-scale, 1)); font-family: inherit; }
         .answer-input:focus { outline: none; border-color: var(--accent); }
         .answer-hint { font-size: 0.8rem; color: var(--text-light); margin-top: 0.4rem; font-style: italic; }
+
+        .task-card { border: 2px solid var(--accent); border-radius: 12px; padding: 1rem 1.1rem; background: var(--accent-light); }
+        .task-badge { display: inline-block; font-size: 0.8rem; font-weight: 700; background: var(--accent); color: #fff; padding: 0.2rem 0.6rem; border-radius: 999px; margin-bottom: 0.7rem; }
+        .task-source { font-size: calc(1.25rem * var(--q-scale, 1)); font-weight: 600; line-height: 1.5; color: var(--primary); background: #fff; border-radius: 8px; padding: 0.9rem 1rem; }
+        .task-instruction { font-size: calc(0.95rem * var(--q-scale, 1)); color: var(--text); font-style: italic; margin-top: 0.7rem; }
+        .task-reveal { margin-top: 0.7rem; font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+        .task-model { margin-top: 0.7rem; padding: 0.7rem 0.9rem; background: var(--success-bg); border-left: 4px solid var(--success); border-radius: 6px; font-size: calc(0.95rem * var(--q-scale, 1)); }
+        .task-model .task-model-label { display: block; font-weight: 700; color: var(--success); font-size: 0.8rem; margin-bottom: 0.2rem; }
 
         .results-container { max-width: 800px; margin: 0 auto; text-align: center; }
         .results-title { font-size: 2rem; margin-bottom: 0.5rem; }
@@ -600,7 +613,11 @@
                 <div class="modal-team-info" id="modal-team-info"></div>
                 <button class="btn btn-warm btn-sm" onclick="repickFromModal()" style="margin-top:0.4rem;">&#127922; Re-pick Spokesperson</button>
             </div>
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-tools">
+                <button class="qsize-btn" id="qsize-minus" onclick="stepQuestionScale(-1)" title="Smaller question text" aria-label="Smaller question text">A&minus;</button>
+                <button class="qsize-btn" id="qsize-plus" onclick="stepQuestionScale(1)" title="Larger question text" aria-label="Larger question text">A+</button>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
         </div>
         <div class="modal-body">
             <div class="question-category" id="modal-category">Hardware</div>
@@ -657,6 +674,7 @@ let gameState = {
     currentSpokesperson: null,
     timerInterval: null,
     timerRemaining: TIMER_SECONDS,
+    timerTotal: TIMER_SECONDS,
     spokespersonHistory: {},
     participationLog: [],
     isModalOpen: false,
@@ -1092,6 +1110,103 @@ function selectCell(idx) {
     openQuestionModal();
 }
 
+// ── Production Question Types ──────────────────────────
+// Five "act on this" formats that share one card layout: a source to perform,
+// an instruction, and an optional model answer the teacher can reveal.
+var PRODUCTION_TYPES = {
+    speak:    { icon: '\uD83D\uDDE3', label: 'Read aloud', seconds: 45 },
+    rephrase: { icon: '\u270D', label: 'Say it another way', seconds: 60 },
+    fix:      { icon: '\uD83D\uDD27', label: 'Correct the mistake', seconds: 45 },
+    explain:  { icon: '\uD83D\uDCA1', label: 'Explain it', seconds: 60 },
+    sentence: { icon: '\u270F', label: 'Use it in a sentence', seconds: 60 }
+};
+
+// The logged text records WHAT was acted on, not just the instruction.
+function questionLogText(q) {
+    if (!q) return '';
+    return q.prompt ? (q.question + ' \u2014 ' + q.prompt) : q.question;
+}
+
+// Build the task card for a production question.
+function renderProductionTask(container, q) {
+    var meta = PRODUCTION_TYPES[q.type];
+    var card = document.createElement('div');
+    card.className = 'task-card';
+
+    var badge = document.createElement('div');
+    badge.className = 'task-badge';
+    badge.textContent = meta.icon + ' ' + meta.label;
+    card.appendChild(badge);
+
+    var src = document.createElement('div');
+    src.className = 'task-source';
+    src.textContent = q.prompt || q.question;
+    card.appendChild(src);
+
+    if (q.instruction) {
+        var ins = document.createElement('div');
+        ins.className = 'task-instruction';
+        ins.textContent = q.instruction;
+        card.appendChild(ins);
+    }
+
+    if (q.model) {
+        var reveal = document.createElement('button');
+        reveal.className = 'btn btn-secondary task-reveal';
+        reveal.textContent = '\uD83D\uDD11 Show model answer';
+        reveal.onclick = function() { toggleModel(reveal); };
+        card.appendChild(reveal);
+
+        var box = document.createElement('div');
+        box.className = 'task-model';
+        box.id = 'task-model';
+        box.hidden = true;
+        var lbl = document.createElement('span');
+        lbl.className = 'task-model-label';
+        lbl.textContent = 'Model answer';
+        box.appendChild(lbl);
+        box.appendChild(document.createTextNode(q.model));
+        card.appendChild(box);
+    }
+
+    container.appendChild(card);
+}
+
+function toggleModel(btn) {
+    var box = document.getElementById('task-model');
+    if (!box) return;
+    var showing = !box.hidden;
+    box.hidden = showing;
+    btn.textContent = showing ? '\uD83D\uDD11 Show model answer' : '\uD83D\uDD11 Hide model answer';
+}
+
+// ── Question Text Size ─────────────────────────────────
+// Projector legibility is the point of the modal, so the teacher can size the
+// text up or down from the window itself. The choice is remembered per
+// browser, not per question.
+var QUESTION_SCALES = [0.85, 1, 1.15, 1.3, 1.5, 1.75, 2];
+var questionScaleIndex = (function() {
+    var saved = parseFloat(localStorage.getItem('enit_question_scale'));
+    var i = QUESTION_SCALES.indexOf(saved);
+    return i >= 0 ? i : 1;
+})();
+
+function applyQuestionScale() {
+    document.documentElement.style.setProperty('--q-scale', QUESTION_SCALES[questionScaleIndex]);
+    var minus = document.getElementById('qsize-minus');
+    var plus = document.getElementById('qsize-plus');
+    if (minus) minus.disabled = questionScaleIndex <= 0;
+    if (plus) plus.disabled = questionScaleIndex >= QUESTION_SCALES.length - 1;
+}
+
+function stepQuestionScale(dir) {
+    var next = questionScaleIndex + dir;
+    if (next < 0 || next >= QUESTION_SCALES.length) return;
+    questionScaleIndex = next;
+    localStorage.setItem('enit_question_scale', String(QUESTION_SCALES[questionScaleIndex]));
+    applyQuestionScale();
+}
+
 // ── Open Question Modal ────────────────────────────────
 function openQuestionModal() {
     if (gameState.questionIndex >= gameState.questionOrder.length) {
@@ -1150,6 +1265,8 @@ function openQuestionModal() {
         hint.className = 'answer-hint';
         hint.textContent = 'Acceptable: ' + String(q.answer || '').split('|').join(', ');
         answerArea.appendChild(hint);
+    } else if (PRODUCTION_TYPES[q.type]) {
+        renderProductionTask(answerArea, q);
     } else {
         var hint2 = document.createElement('div');
         hint2.className = 'answer-hint';
@@ -1163,9 +1280,29 @@ function openQuestionModal() {
 }
 
 // ── Timer ──────────────────────────────────────────────
+// A question may carry its own time; production tasks fall back to the
+// per-type default (a read-aloud or a rephrase needs longer than a recall
+// question), and anything else to the round's timer setting.
+function questionSeconds(q) {
+    if (q && typeof q.seconds === 'number') return q.seconds;
+    var meta = q && PRODUCTION_TYPES[q.type];
+    if (meta && typeof meta.seconds === 'number') return meta.seconds;
+    return TIMER_SECONDS;
+}
+
 function startTimer() {
     clearInterval(gameState.timerInterval);
-    gameState.timerRemaining = TIMER_SECONDS;
+    var q = gameState.currentQuestion;
+    var secs = questionSeconds(q);
+    var timerBox = document.getElementById('timer-container');
+    if (secs <= 0) {
+        gameState.timerTotal = 0;
+        if (timerBox) timerBox.style.display = 'none';
+        return;
+    }
+    if (timerBox) timerBox.style.display = '';
+    gameState.timerTotal = secs;
+    gameState.timerRemaining = secs;
     updateTimerDisplay();
 
     gameState.timerInterval = setInterval(function() {
@@ -1179,7 +1316,8 @@ function startTimer() {
 }
 
 function updateTimerDisplay() {
-    var pct = (gameState.timerRemaining / TIMER_SECONDS) * 100;
+    var total = gameState.timerTotal || TIMER_SECONDS;
+    var pct = (gameState.timerRemaining / total) * 100;
     var fill = document.getElementById('timer-fill');
     var text = document.getElementById('timer-text');
     fill.style.width = pct + '%';
@@ -1216,7 +1354,7 @@ function judgeAnswer(correct) {
         student_id: gameState.currentSpokesperson ? gameState.currentSpokesperson.id : '',
         student_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.chineseName : '',
         english_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.englishName : '',
-        question: q.question,
+        question: questionLogText(q),
         category: q.category,
         correct: correct,
         points: correct ? q.points : 0
@@ -1263,7 +1401,7 @@ function passTurn() {
         student_id: gameState.currentSpokesperson ? gameState.currentSpokesperson.id : '',
         student_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.chineseName : '',
         english_name: gameState.currentSpokesperson ? gameState.currentSpokesperson.englishName : '',
-        question: gameState.currentQuestion.question,
+        question: questionLogText(gameState.currentQuestion),
         category: gameState.currentQuestion.category,
         correct: 'skip',
         points: 0
@@ -1999,6 +2137,7 @@ loadConfig();
     if (getActiveWeeks().length === 0) saveActiveWeeks([GAME_WEEK]);
 })();
 renderWeekStrip();
+applyQuestionScale();
 </script>
 </body>
 </html>

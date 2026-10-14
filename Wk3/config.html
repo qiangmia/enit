@@ -586,6 +586,13 @@ CPU&#9;the central processing unit"></textarea>
                         <option value="translation">Translation</option>
                         <option value="fill">Fill in the blank</option>
                         <option value="open">Open (teacher judges)</option>
+                        <optgroup label="Speaking / production">
+                            <option value="speak">Read aloud</option>
+                            <option value="rephrase">Say it another way</option>
+                            <option value="fix">Correct the mistake</option>
+                            <option value="explain">Explain it</option>
+                            <option value="sentence">Use it in a sentence</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div style="flex:1; max-width:130px;">
@@ -604,7 +611,21 @@ CPU&#9;the central processing unit"></textarea>
                 <div class="q-opt-row"><span class="option-label">C</span><input type="text" id="q-opt-2" placeholder="Option C"></div>
                 <div class="q-opt-row"><span class="option-label">D</span><input type="text" id="q-opt-3" placeholder="Option D"></div>
             </div>
-            <div class="form-row">
+            <div id="q-production-area" style="display:none;">
+                <div class="form-row">
+                    <label>Source / prompt:</label>
+                    <textarea id="q-prompt" placeholder="The sentence or word the student acts on..."></textarea>
+                </div>
+                <div class="form-row">
+                    <label>Model answer (optional):</label>
+                    <input type="text" id="q-model" placeholder="Shown only when the teacher reveals it">
+                </div>
+                <div class="form-row">
+                    <label>Timer seconds (0 = none):</label>
+                    <input type="number" id="q-seconds" min="0" max="600" style="width:100px;" placeholder="blank = type default">
+                </div>
+            </div>
+            <div class="form-row" id="q-answer-row">
                 <label>Answer:</label>
                 <div id="q-answer-mc" style="display:none;">
                     <select id="q-answer-index">
@@ -1831,11 +1852,19 @@ function saveQuestionsToDevice() {
     persistQuestions();
 }
 
+// Production question types share the game's task-card layout.
+var PRODUCTION_TYPE_SET = { speak:1, rephrase:1, fix:1, explain:1, sentence:1 };
+
 function typeLabel(type) {
     if (type === 'mc') return 'Multiple Choice';
     if (type === 'translation') return 'Translation';
     if (type === 'fill') return 'Fill-in';
     if (type === 'open') return 'Open';
+    if (type === 'speak') return 'Read aloud';
+    if (type === 'rephrase') return 'Say it another way';
+    if (type === 'fix') return 'Correct the mistake';
+    if (type === 'explain') return 'Explain it';
+    if (type === 'sentence') return 'Use it in a sentence';
     return type;
 }
 
@@ -1844,6 +1873,7 @@ function answerPreview(q) {
         var idx = parseInt(q.answer) || 0;
         return Array.isArray(q.options) && q.options[idx] ? q.options[idx] : '(mc index ' + (q.answer || 0) + ')';
     }
+    if (PRODUCTION_TYPE_SET[q.type]) return q.model ? ('model: ' + q.model) : 'teacher judges';
     if (q.answer === true) return 'teacher judges';
     return String(q.answer || '');
 }
@@ -1911,9 +1941,12 @@ function renderQuestionList() {
 function updateEditorOptions() {
     var type = document.getElementById('q-type').value;
     var isMc = type === 'mc';
+    var isProd = !!PRODUCTION_TYPE_SET[type];
     document.getElementById('q-options-area').style.display = isMc ? 'block' : 'none';
     document.getElementById('q-answer-mc').style.display = isMc ? 'block' : 'none';
-    document.getElementById('q-answer-text').style.display = isMc ? 'none' : 'block';
+    document.getElementById('q-answer-text').style.display = (isMc || isProd) ? 'none' : 'block';
+    document.getElementById('q-answer-row').style.display = isProd ? 'none' : 'flex';
+    document.getElementById('q-production-area').style.display = isProd ? 'block' : 'none';
 }
 
 function openEditorFor(index) {
@@ -1932,6 +1965,9 @@ function openEditorFor(index) {
     } else {
         document.getElementById('q-answer-text').value = q.answer === true ? 'true' : String(q.answer || '');
     }
+    document.getElementById('q-prompt').value = q.prompt || '';
+    document.getElementById('q-model').value = q.model || '';
+    document.getElementById('q-seconds').value = (typeof q.seconds === 'number') ? q.seconds : '';
     document.getElementById('q-points').value = q.points || 1;
     updateEditorOptions();
     document.getElementById('question-editor').style.display = 'block';
@@ -1949,6 +1985,9 @@ function newQuestion() {
     for (var o = 0; o < 4; o++) document.getElementById('q-opt-' + o).value = '';
     document.getElementById('q-answer-index').value = '0';
     document.getElementById('q-answer-text').value = '';
+    document.getElementById('q-prompt').value = '';
+    document.getElementById('q-model').value = '';
+    document.getElementById('q-seconds').value = '';
     document.getElementById('q-points').value = 1;
     updateEditorOptions();
     document.getElementById('question-editor').style.display = 'block';
@@ -1972,7 +2011,25 @@ function saveQuestion() {
     if (!question) { alert('Please enter the Question text.'); return; }
 
     var q;
-    if (type === 'mc') {
+    if (PRODUCTION_TYPE_SET[type]) {
+        q = {
+            week: week,
+            category: category,
+            type: type,
+            question: question,
+            answer: true,
+            points: points
+        };
+        var promptVal = document.getElementById('q-prompt').value.trim();
+        if (promptVal) q.prompt = promptVal;
+        var modelVal = document.getElementById('q-model').value.trim();
+        if (modelVal) q.model = modelVal;
+        var secRaw = document.getElementById('q-seconds').value.trim();
+        if (secRaw !== '') {
+            var secNum = parseInt(secRaw, 10);
+            q.seconds = isNaN(secNum) ? 0 : secNum;
+        }
+    } else if (type === 'mc') {
         var opts = [];
         for (var o = 0; o < 4; o++) {
             var v = document.getElementById('q-opt-' + o).value.trim();
