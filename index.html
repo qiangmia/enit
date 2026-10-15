@@ -284,14 +284,12 @@
             border-radius: 0 4px 4px 0;
         }
 
-        /* Per-week photo, faded in from the right so the text stays crisp.
-           Each week reuses the photo its lesson already uses as a page banner. */
+        /* Every other week gets a photo, faded in from the right so the text
+           stays crisp and the list does not look busy. Each photo is the one
+           that week's lesson already uses as a page banner. */
         .week-card[data-week="1"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=900&h=420&fit=crop'); }
-        .week-card[data-week="2"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&h=420&fit=crop'); }
         .week-card[data-week="3"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=900&h=420&fit=crop'); }
-        .week-card[data-week="4"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&h=420&fit=crop'); }
         .week-card[data-week="5"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=420&fit=crop'); }
-        .week-card[data-week="6"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1547658719-da2b51169166?w=900&h=420&fit=crop'); }
         .week-card[data-week="7"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&h=420&fit=crop'); }
 
         .numeral {
