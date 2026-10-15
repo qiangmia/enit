@@ -848,6 +848,16 @@
             chip.textContent = 'This week';
             var head = cards[c].querySelector('.week-head');
             if (head) head.appendChild(chip);
+
+            // Lift the week being taught to the top of the list. The list only
+            // grows as the term runs, so on a phone this avoids scrolling past
+            // every earlier week to reach the one in use. Done in the DOM
+            // (rather than with CSS order) so tab order still matches what is
+            // on screen.
+            var list = cards[c].parentNode;
+            if (list && list.firstChild !== cards[c]) {
+                list.insertBefore(cards[c], list.firstChild);
+            }
         }
     }
 
