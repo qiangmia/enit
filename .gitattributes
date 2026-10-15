@@ -1,0 +1,4 @@
+# This repo is edited on Windows with core.autocrlf=true, but the hook below is
+# executed by Git's own shell, which cannot read a script whose shebang line ends
+# in CR. Pin it to LF so every checkout produces a runnable hook.
+.githooks/* text eol=lf

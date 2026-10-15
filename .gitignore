@@ -15,6 +15,14 @@
 !enit-questions.js
 !seating.js
 !.gitignore
+!.gitattributes
+
+# Committed git hooks (opt-in: git config core.hooksPath .githooks). Un-ignored
+# so the weekly current-week sync ships with the repo instead of living only on
+# one machine. The script the hook calls (sync-week-marker.py) stays untracked
+# like the other tooling, so the hook stands down when it is absent.
+!.githooks/
+!.githooks/**
 
 # Include all files in Wk folders
 !Wk1/**

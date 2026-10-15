@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# Keep the homepage's static "current week" fallback in step with the term date.
+#
+# The live page derives the current week in the browser from
+# <body data-term-start>, so it is always right on its own. What drifts is the
+# frozen copy in the markup that no-JS visitors -- and check-auto-week.py -- see.
+# sync-week-marker.py rewrites that copy; this runs it on every commit so the
+# page is never committed a week behind.
+#
+# Enable once per clone:
+#     git config core.hooksPath .githooks
+#
+# Turn off again with:
+#     git config --unset core.hooksPath
+#
+# sync-week-marker.py is idempotent and runs in well under a second, so calling
+# it on every commit is safe. Nothing here blocks a commit: if anything looks
+# off it warns on stderr and steps aside.
+
+idx=index.html
+[ -f "$idx" ] || exit 0
+
+# The generator lives with the rest of the (untracked) tooling, so a fresh
+# clone has the hook but not the script. Stand down quietly in that case.
+[ -f sync-week-marker.py ] || exit 0
+[ -f sync-week-marker.py ] || exit 0
+
+# Never rewrite the file mid-merge or mid-rebase: the edit would collide with
+# the operation already in progress.
+gdir=$(git rev-parse --git-dir 2>/dev/null) || exit 0
+for marker in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD rebase-merge rebase-apply; do
+    [ -e "$gdir/$marker" ] && exit 0
+done
+
+# If index.html has edits that are not staged yet, someone is part-way through
+# changing it. Syncing would sweep that half-finished work into this commit, so
+# step aside; the next commit picks it up.
+if ! git diff --quiet -- "$idx"; then
+    echo "pre-commit: index.html has unstaged edits - skipping the week sync" >&2
+    exit 0
+fi
+
+# Find a real Python 3. Checking that the command exists is not enough: on
+# Windows "python3" is usually the Microsoft Store alias, which sits on PATH
+# but opens the Store instead of running anything. So each candidate is
+# executed before it is trusted. "python" is tried first for that reason.
+py=""
+for cand in python python3 py; do
+    if command -v "$cand" >/dev/null 2>&1 &&
+       "$cand" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' >/dev/null 2>&1; then
+        py="$cand"
+        break
+    fi
+done
+if [ -z "$py" ]; then
+    echo "pre-commit: no working python 3 on PATH - skipping the week sync" >&2
+    exit 0
+fi
+
+before=$(git hash-object "$idx")
+if ! out=$("$py" sync-week-marker.py 2>&1); then
+    echo "pre-commit: sync-week-marker.py failed - committing without the weekly sync" >&2
+    [ -n "$out" ] && printf '%s\n' "$out" | sed 's/^/    /' >&2
+    exit 0
+fi
+
+if [ "$before" != "$(git hash-object "$idx")" ]; then
+    git add "$idx" || exit 0
+    echo "pre-commit: synced $idx to the current week"
+fi
+
+exit 0
