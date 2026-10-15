@@ -719,15 +719,14 @@
                 <span><strong>Education:</strong> M.S. in Information Science</span>
             </div>
 
-            <h4><span class="article-time">Yesterday 14:20</span> — The Alert</h4>
-            <p>Chia-Yu is a database administrator at a hospital. Yesterday at 14:20 her phone rang. A backup job had failed. Nobody noticed for six hours. At first she did not understand the message, because the system reported “0 files copied” instead of “job failed”, and she had seen that message before without worrying about it.</p>
-            <h4><span class="article-time">Yesterday 14:35</span> — The Cause</h4>
-            <p>She logged in and looked at the disk. The server had run out of space at 13:04. Nobody had deleted a file. A log file had simply grown until it filled the disk. She found the folder, checked the file sizes, and found one file of 41 gigabytes. The system had been writing the same message since 2019.</p>
-            <h4><span class="article-time">Yesterday 15:10</span> — The Fix</h4>
-            <p>Chia-Yu moved the file, freed the space, and restarted the job. It finished at 16:30. Then she checked the records, because a failed backup is only a problem if the live data is also damaged. Nothing was lost. She wrote down the time, the cause, and the fix.</p>
-            <h4><span class="article-time">Yesterday 17:45</span> — The Report</h4>
-            <p>At 17:45 she wrote the incident report. It was only one page. “The backup failed at 13:04 because the disk was full. The reason was a log file of 41 gigabytes. I moved the file at 15:10 and the job finished at 16:30. In future, the server will send an email when the disk is above 80%.”</p>
-            <h4><span class="article-time">This Morning 09:00</span> — The Change</h4>
+            <p>Chia-Yu is a database administrator at a large hospital in Tainan. Yesterday afternoon her phone rang while she was reviewing the morning's logs: a backup job had failed, and nobody noticed for six hours. At first she did not understand the message, because the system reported “0 files copied” instead of “job failed” — and she had seen that message before without worrying about it.</p>
+
+            <p>She logged in and looked at the disk. The server had run out of space at 13:04 the same afternoon. Nobody had deleted a file: a log file had simply grown until it filled the disk. She found the folder, checked the file sizes, and found one file of 41 gigabytes. The system had been writing the same message since 2019.</p>
+
+            <p>Chia-Yu moved the file, freed the space, and restarted the job. It finished at 16:30. Then she checked the records, because a failed backup is only a problem if the live data is also damaged. Nothing was lost, and she wrote down the time, the cause, and the fix.</p>
+
+            <p>Later that afternoon she wrote the incident report. It was only one page long. “The backup failed at 13:04 because the disk was full. The reason was a log file of 41 gigabytes. I moved the file at 15:10 and the job finished at 16:30. In future, the server will send an email when the disk is above 80%.”</p>
+
             <p>This morning she added the alert and changed one setting: log files are now deleted after thirty days. Her manager read the report and asked only one question. “Why did nobody notice for six hours?” Chia-Yu did not have a good answer, and she wrote that sentence into the second page of the report.</p>
 
             <blockquote>
