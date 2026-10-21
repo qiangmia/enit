@@ -218,6 +218,12 @@
             padding: 0.15rem 0.7rem;
             background: rgba(255,255,255,0.35);
         }
+        .article-meta a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted currentColor;
+        }
+        .article-meta a:hover { border-bottom-style: solid; }
         .article-divider {
             display: flex;
             align-items: center;
@@ -590,19 +596,6 @@
         .answers { display: none; margin-top: 0.5rem; }
         .answers.show { display: block; }
 
-        /* ── Source note ────────────────────────────────── */
-        .source-note {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            background: var(--info-bg);
-            border-left: 4px solid var(--accent);
-            padding: 0.7rem 0.9rem;
-            border-radius: 0 6px 6px 0;
-            margin: 1rem 0;
-            line-height: 1.6;
-        }
-        .source-note a { color: var(--accent); }
 
         /* ── Responsive: Tablet ≤ 768px ──────────────────── */
         @media (max-width: 768px) {
@@ -826,27 +819,8 @@
         blockquote { border-left: 4px solid var(--accent, #3182ce); background: var(--info-bg, #ebf8ff); padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 0 6px 6px 0; font-style: italic; }
         blockquote cite { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; color: var(--text-muted, #4a5568); }
 
-        /* ?? Verbatim article: numbered paragraphs, no drop cap ?? */
+        /* Verbatim article: the BBC report, reproduced unchanged. */
         section[id] { scroll-margin-top: calc(var(--toc-height, 76px) + 14px); }
-
-        .article--verbatim > p {
-            text-indent: 0;
-            padding-left: 2.1rem;
-            position: relative;
-        }
-        .article--verbatim > p::before {
-            content: attr(data-para);
-            position: absolute;
-            left: 0;
-            top: 0.35rem;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-light);
-        }
-        @media (max-width: 480px) {
-            .article--verbatim > p { padding-left: 1.7rem; }
-        }
     </style>
     <script src="../theme.js"></script>
 </head>
@@ -860,7 +834,7 @@
         <span>&middot;</span>
         <span>Week 7 Supplementary</span>
         <span>&middot;</span>
-        <span>~60 minutes</span>
+        <span>~50 minutes</span>
     </div>
     <div class="tag">&#128220; Full BBC News report by Tom Gerken, 21 October 2026 &middot; Week 7 supplementary reading</div>
 </header>
@@ -868,12 +842,10 @@
 <nav class="toc">
     <ul>
         <li><a href="#objectives">Objectives</a></li>
-        <li><a href="#route">Lesson Route</a></li>
         <li><a href="#vocab-preview">Vocab Preview</a></li>
         <li><a href="#reading">Reading</a></li>
         <li><a href="#first-read">First Read</a></li>
         <li><a href="#close-read">Close Read</a></li>
-        <li><a href="#language">Language Focus</a></li>
         <li><a href="#traps">Tricky Phrases</a></li>
         <li><a href="#selfcheck">Self-Check</a></li>
         <li><a href="#vocab-builder">Vocabulary</a></li>
@@ -896,30 +868,6 @@
                 <li>Distinguish fact from attribution, and notice how reporting verbs, modals and quotations show how certain a claim is.</li>
                 <li>Deliver a 60-second incident briefing with a clear recommendation.</li>
             </ol>
-        </div>
-    </section>
-
-    <section id="route">
-        <div class="card">
-            <h2 class="card-header">&#128340; Lesson Route</h2>
-            <p>This unit is built around one short, unadapted news report. The article stays whole; the questions send students back to specific paragraphs.</p>
-            <p><strong>Why this text?</strong> It is current, short, and structurally clear: a warning, a response, and a set of uncertainties. It gives students authentic news language &mdash; reporting verbs, passives and hedging &mdash; while the topic of servers, software and data connects to the Week 7 theme of storing and protecting information.</p>
-            <p class="table-hint">On a phone, swipe the table sideways to see the full schedule.</p>
-            <div class="table-scroll"><table>
-                <thead><tr><th style="width:14%;">Time</th><th style="width:22%;">Stage</th><th>What happens</th></tr></thead>
-                <tbody>
-                    <tr><td>0&ndash;5</td><td><strong>Lead-in</strong></td><td>Read the headline; predict the story; identify the two choices in it.</td></tr>
-                    <tr><td>5&ndash;12</td><td><strong>Vocabulary</strong></td><td>Check the 14 terms; drill pronunciation; predict where they will appear.</td></tr>
-                    <tr><td>12&ndash;20</td><td><strong>First read</strong></td><td>Read the full report; answer the three gist questions.</td></tr>
-                    <tr><td>20&ndash;35</td><td><strong>Close read</strong></td><td>MCQ, True/False/Not Given, reference, find-the-word, short answer, and &ldquo;Who says it?&rdquo;</td></tr>
-                    <tr><td>35&ndash;43</td><td><strong>Language</strong></td><td>Past simple vs present perfect; passive reporting; transformation drill.</td></tr>
-                    <tr><td>43&ndash;58</td><td><strong>Speaking</strong></td><td>Groups prepare and deliver a 60-second incident briefing.</td></tr>
-                    <tr><td>58&ndash;60</td><td><strong>Wrap-up</strong></td><td>Exit ticket; homework.</td></tr>
-                </tbody>
-            </table></div>
-            <div class="card card-homework" style="margin-top: 0.8rem;">
-                <p style="margin-bottom: 0;"><strong>Teacher&rsquo;s note.</strong> The text is authentic and unadapted. Pre-teach the vocabulary, but do not paraphrase the article. If time is short, set sections F&ndash;G and some of the Close Read questions as homework; the core route then takes about 45 minutes.</p>
-            </div>
         </div>
     </section>
 
@@ -952,52 +900,43 @@
     </section>
 
     <section id="reading">
-        <article class="article article--verbatim">
+        <article class="article">
             <div class="article-hero">
                 <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=420&q=80&auto=format&fit=crop" alt="A person in a dark room working at a computer with lines of code on screens">
             </div>
             <div class="article-title">Cyber chiefs tell websites to make critical safety update or go offline</div>
             <div class="article-subtitle">The complete BBC News report by Tom Gerken, Technology reporter (21 October 2026)</div>
             <div class="article-meta">
-                <span><strong>Source:</strong> BBC News</span>
+                <span><strong>Source:</strong> <a href="https://www.bbc.com/news/articles/cmly0lg3w5x2o" target="_blank" rel="noopener">BBC News</a></span>
                 <span><strong>Text:</strong> Full, unabridged</span>
                 <span><strong>Level:</strong> B2 (Upper-intermediate)</span>
                 <span><strong>Time:</strong> ~10 minutes</span>
             </div>
 
-            <div class="card card-info" style="margin-bottom: 1rem;">
-                <p style="margin-bottom: 0.5rem;"><strong>Where this comes from.</strong> This is the <strong>complete and unabridged</strong> BBC News report by the technology reporter Tom Gerken, published on 21 October 2026. Unlike the earlier weeks, nothing has been rewritten, shortened or simplified for this course: the wording is exactly as the BBC published it. Paragraph numbers and one missing closing quotation mark have been added for classroom use, and quotations are reproduced exactly as published.</p>
-                <p style="margin-bottom: 0;"><a href="https://www.bbc.com/news/articles/cmly0lg3w5x2o" target="_blank" rel="noopener">Read the original BBC article &#8594;</a></p>
-            </div>
-
-            <p data-para="1">Organisations which rely on the PHP programming language are being told they should install a significant software update today - or consider taking their websites offline.</p>
-            <p data-para="2">Two <span class="vocab-term" data-def="extremely serious; needing immediate action" tabindex="0" role="button" aria-expanded="false">critical</span> <span class="vocab-term" data-def="a weakness in software that an attacker can use" tabindex="0" role="button" aria-expanded="false">vulnerabilities</span> with PHP, which is widely used across the internet, have been identified.</p>
-            <p data-para="3">The PHP Foundation, which supports it, is issuing <span class="vocab-term" data-def="a new version of software that fixes problems or adds features" tabindex="0" role="button" aria-expanded="false">updates</span> which address them on Wednesday afternoon.</p>
-            <p data-para="4">The UK&rsquo;s National Cyber Security Centre (NCSC), as well as its counterparts in the EU and Australia have urged those who use PHP to apply the fixes as soon as they become available.</p>
-            <p data-para="5">The Netherlands&rsquo; cyber-security agency says it is taking its own website offline due to the vulnerabilities identified.</p>
-            <p data-para="6">The country&rsquo;s National Institute for Public Health and the Environment, an agency of the Dutch government, has taken down its website.</p>
-            <p data-para="7">Similarly the website of the Tweede Kamer, the lower house of the nation&rsquo;s parliament, has become inaccessible.</p>
-            <p data-para="8">&ldquo;Where immediate <span class="vocab-term" data-def="the act of fixing a problem" tabindex="0" role="button" aria-expanded="false">remediation</span> is not feasible, organisations should consider taking the system offline until it can be fully <span class="vocab-term" data-def="to make a problem less serious or harmful" tabindex="0" role="button" aria-expanded="false">mitigated</span>,&rdquo; the NCSC said in a note.</p>
-            <p data-para="9">Japan&rsquo;s national cyber-security office and EU cyber-security officials have issued a similar warning.</p>
-            <p data-para="10">&ldquo;PHP is everywhere. It quietly powers WordPress, Drupal, Joomla, and Magento sites, shared hosting platforms, control panels, and an awful lot of software that doesn&rsquo;t even advertise that it runs PHP under the hood,&rdquo; cyber-security company Huntress said.</p>
-            <p data-para="11">Cyber-security expert Don Smith, from the Sophos Counter Threat Unit, told the BBC this would &ldquo;likely be a priority target&rdquo; for hackers.</p>
-            <p data-para="12">The immediate challenge was not simply installing a <span class="vocab-term" data-def="a small software update that repairs a problem" tabindex="0" role="button" aria-expanded="false">patch</span> to fix the issue, but finding and managing every instance where PHP was running, he said.</p>
-            <p data-para="13">&ldquo;The use of PHP is <span class="vocab-term" data-def="existing in every part of something; widespread" tabindex="0" role="button" aria-expanded="false">pervasive</span>, it can sit beneath public websites, content management systems, hosting platforms and third-party products, sometimes without even being obvious to the organisation using it.&rdquo;</p>
-            <p data-para="14">He said it was crucial that organisations looked out for signs that an attacker &ldquo;might have already have gained a <span class="vocab-term" data-def="a small position inside a system from which an attacker can move further" tabindex="0" role="button" aria-expanded="false">foothold</span>&rdquo;.</p>
+            <p>Organisations which rely on the PHP programming language are being told they should install a significant software update today - or consider taking their websites offline.</p>
+            <p>Two critical vulnerabilities with PHP, which is widely used across the internet, have been identified.</p>
+            <p>The PHP Foundation, which supports it, is issuing updates which address them on Wednesday afternoon.</p>
+            <p>The UK&rsquo;s National Cyber Security Centre (NCSC), as well as its counterparts in the EU and Australia have urged those who use PHP to apply the fixes as soon as they become available.</p>
+            <p>The Netherlands&rsquo; cyber-security agency says it is taking its own website offline due to the vulnerabilities identified.</p>
+            <p>The country&rsquo;s National Institute for Public Health and the Environment, an agency of the Dutch government, has taken down its website.</p>
+            <p>Similarly the website of the Tweede Kamer, the lower house of the nation&rsquo;s parliament, has become inaccessible.</p>
+            <p>&ldquo;Where immediate remediation is not feasible, organisations should consider taking the system offline until it can be fully mitigated,&rdquo; the NCSC said in a note.</p>
+            <p>Japan&rsquo;s national cyber-security office and EU cyber-security officials have issued a similar warning.</p>
+            <p>&ldquo;PHP is everywhere. It quietly powers WordPress, Drupal, Joomla, and Magento sites, shared hosting platforms, control panels, and an awful lot of software that doesn&rsquo;t even advertise that it runs PHP under the hood,&rdquo; cyber-security company Huntress said.</p>
+            <p>Cyber-security expert Don Smith, from the Sophos Counter Threat Unit, told the BBC this would &ldquo;likely be a priority target&rdquo; for hackers.</p>
+            <p>The immediate challenge was not simply installing a patch to fix the issue, but finding and managing every instance where PHP was running, he said.</p>
+            <p>&ldquo;The use of PHP is pervasive, it can sit beneath public websites, content management systems, hosting platforms and third-party products, sometimes without even being obvious to the organisation using it.&rdquo;</p>
+            <p>He said it was crucial that organisations looked out for signs that an attacker &ldquo;might have already have gained a foothold&rdquo;.</p>
 
             <h3>&lsquo;Early attacks emerging&rsquo;</h3>
 
-            <p data-para="15">The European Union Computer Emergency Response Team (CERT-EU) said the risk scores given to the vulnerabilities &ldquo;indicate the potential for <span class="vocab-term" data-def="without proving who you are; no login required" tabindex="0" role="button" aria-expanded="false">unauthenticated</span> <span class="vocab-term" data-def="happening from another place, not physically present" tabindex="0" role="button" aria-expanded="false">remote</span> code execution&rdquo;.</p>
-            <p data-para="16">Such a cyber-attack could potentially allow hackers to install <span class="vocab-term" data-def="software designed to damage, steal, or take control of a system" tabindex="0" role="button" aria-expanded="false">malware</span> and take down websites.</p>
-            <p data-para="17">Dane Knecht, chief technology officer at internet <span class="vocab-term" data-def="the basic systems and services that a country or company depends on" tabindex="0" role="button" aria-expanded="false">infrastructure</span> firm Cloudflare, said he was &ldquo;seeing early attacks emerging and are updating mitigations as new vectors show up&rdquo;.</p>
-            <p data-para="18">The NCSC said once organisations have installed the update, they should &ldquo;continuously <span class="vocab-term" data-def="to watch and check something over time" tabindex="0" role="button" aria-expanded="false">monitor</span> for security updates from <span class="vocab-term" data-def="a company outside your organisation that supplies software or services" tabindex="0" role="button" aria-expanded="false">third-party software vendors</span>, including for appliances and services that may bundle PHP&rdquo;.</p>
-            <p data-para="19">It is not yet clear which versions of the programming language are affected, but CERT-EU said it could affect all versions of it dating back to PHP 5 onwards - which launched in 2004.</p>
-            <p data-para="20">PHP was created for web development. It is used on servers to implement what you see when you visit websites.</p>
-            <p data-para="21">Not all websites use it, but it nonetheless powers a large portion of the internet.</p>
-
-            <div class="card card-homework" style="margin-top: 1rem;">
-                <p style="margin-bottom: 0;"><strong>A note on the wording.</strong> The report is published exactly as the BBC wrote it, including small irregularities such as &ldquo;might have already have gained a foothold&rdquo; and the mismatched &ldquo;was seeing &hellip; are updating&rdquo; in the Cloudflare quotation. Read them as real news English, not as mistakes to correct.</p>
-            </div>
+            <p>The European Union Computer Emergency Response Team (CERT-EU) said the risk scores given to the vulnerabilities &ldquo;indicate the potential for unauthenticated remote code execution&rdquo;.</p>
+            <p>Such a cyber-attack could potentially allow hackers to install malware and take down websites.</p>
+            <p>Dane Knecht, chief technology officer at internet infrastructure firm Cloudflare, said he was &ldquo;seeing early attacks emerging and are updating mitigations as new vectors show up&rdquo;.</p>
+            <p>The NCSC said once organisations have installed the update, they should &ldquo;continuously monitor for security updates from third-party software vendors, including for appliances and services that may bundle PHP&rdquo;.</p>
+            <p>It is not yet clear which versions of the programming language are affected, but CERT-EU said it could affect all versions of it dating back to PHP 5 onwards - which launched in 2004.</p>
+            <p>PHP was created for web development. It is used on servers to implement what you see when you visit websites.</p>
+            <p>Not all websites use it, but it nonetheless powers a large portion of the internet.</p>
         </article>
     </section>
 
@@ -1040,7 +979,7 @@
     <section id="close-read">
         <div class="card">
             <h2 class="card-header">&#127919; Close Read: Detail and Evidence</h2>
-            <p>Read the questions first, then go back to the paragraph numbers in the report. Answer keys are under each part.</p>
+            <p>Read the questions first, then find the part of the report that answers each one. Answer keys are under each part.</p>
 
             <h3>A. Multiple choice (6 questions)</h3>
             <p>Choose the best answer.</p>
@@ -1149,39 +1088,11 @@
 
             <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
             <div class="answers">
-                <p><strong>1 True (P4) &middot; 2 False (P5) &middot; 3 Not Given &middot; 4 True (P19)</strong></p>
+                <p><strong>1 True &middot; 2 False &middot; 3 Not Given &middot; 4 True</strong></p>
                 <p>For question 3, the report says the update was being issued and agencies urged action, but it does not say that every organisation installed it immediately.</p>
             </div>
 
-            <h3>C. Reference: What do these words point to?</h3>
-            <div class="card card-task">
-                <ol>
-                    <li>In paragraph 3, what does &ldquo;them&rdquo; refer to?</li>
-                    <li>In paragraph 12, who does &ldquo;he&rdquo; refer to?</li>
-                    <li>In paragraph 16, what does &ldquo;Such a cyber-attack&rdquo; refer to?</li>
-                </ol>
-                <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-                <div class="answers">
-                    <p><strong>1.</strong> The two critical vulnerabilities.</p>
-                    <p><strong>2.</strong> Don Smith, from the Sophos Counter Threat Unit.</p>
-                    <p><strong>3.</strong> An attack that uses unauthenticated remote code execution.</p>
-                </div>
-            </div>
-
-            <h3>D. Find the word (5 questions)</h3>
-            <div class="card card-vocab">
-                <ol>
-                    <li>&ldquo;a weakness in software that an attacker can use&rdquo; &rarr; ________</li>
-                    <li>&ldquo;to make a problem less serious or harmful&rdquo; &rarr; ________</li>
-                    <li>&ldquo;existing everywhere&rdquo; &rarr; ________</li>
-                    <li>&ldquo;a small position inside a system from which an attacker can move further&rdquo; &rarr; ________</li>
-                    <li>&ldquo;to watch and check something over time&rdquo; &rarr; ________</li>
-                </ol>
-                <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-                <div class="answers"><p><strong>1.</strong> vulnerability / vulnerabilities (P2) &nbsp; <strong>2.</strong> mitigate / mitigated (P8) &nbsp; <strong>3.</strong> pervasive (P13) &nbsp; <strong>4.</strong> foothold (P14) &nbsp; <strong>5.</strong> monitor (P18)</p></div>
-            </div>
-
-            <h3>E. Short answer (3 questions)</h3>
+            <h3>C. Short answer (3 questions)</h3>
             <div class="card card-task">
                 <ol>
                     <li>Why did some Dutch organisations take their websites offline?</li>
@@ -1196,7 +1107,7 @@
                 </div>
             </div>
 
-            <h3>F. Who says it? Attribution and hedging</h3>
+            <h3>D. Who says it? Attribution and hedging</h3>
             <p>News writers do not present every sentence as equally certain. Complete the table, then check your answers.</p>
             <p class="table-hint">On a phone, swipe the table sideways to see all three columns.</p>
             <div class="table-scroll"><table>
@@ -1219,103 +1130,13 @@
                 <p style="margin-top: 0.5rem;"><strong>Why it matters:</strong> reporting verbs (<em>said, told, urged</em>) and modals (<em>could, may, would</em>) show how certain a claim is. This is called <strong>hedging</strong>.</p>
             </div>
 
-            <h3>G. Rephrase (exam-style, optional)</h3>
+            <h3>E. Rephrase (exam-style, optional)</h3>
             <div class="card card-task">
-                <p><strong>Task.</strong> Rephrase paragraphs 15&ndash;17 in your own words. Write <strong>60&ndash;80 words</strong>. Keep the main ideas and do not copy the original sentences.</p>
+                <p><strong>Task.</strong> Rephrase the passage that begins &ldquo;The European Union Computer Emergency Response Team (CERT-EU)&rdquo; and ends &ldquo;&hellip;as new vectors show up&rdquo; in your own words. Write <strong>60&ndash;80 words</strong>. Keep the main ideas and do not copy the original sentences.</p>
                 <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show a model answer (yours will differ)</div>
                 <div class="answers">
                     <p>CERT-EU warned that the vulnerabilities could let an attacker run code remotely without logging in. That could allow hackers to install malware or take websites down. Cloudflare&rsquo;s chief technology officer said early attacks had already appeared, and the company was updating its defenses as new methods emerged.</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="language">
-        <div class="card card-grammar">
-            <h2 class="card-header">&#128218; Language Focus: Past Simple, Present Perfect, and the Passive</h2>
-            <p>The report is about events that have just happened, so it mixes three forms. The Week 7 grammar focus is the <strong>past simple</strong>; the other two forms are worth noticing because they are everywhere in news writing.</p>
-            <p class="table-hint">On a phone, swipe the table sideways to see the examples.</p>
-            <div class="table-scroll"><table>
-                <thead><tr><th style="width:18%;">Form</th><th style="width:38%;">Why the writer uses it</th><th>Example from the report</th></tr></thead>
-                <tbody>
-                    <tr><td><strong>Past simple</strong></td><td>a finished event, often with a time or a reporting verb</td><td>&ldquo;PHP 5 <strong>launched</strong> in 2004.&rdquo; / &ldquo;The NCSC <strong>said</strong> in a note...&rdquo;</td></tr>
-                    <tr><td><strong>Present perfect</strong></td><td>news with a result that matters now; no specific time</td><td>&ldquo;Two critical vulnerabilities ... <strong>have been identified</strong>.&rdquo;</td></tr>
-                    <tr><td><strong>Passive</strong></td><td>the event matters more than the person who did it</td><td>&ldquo;Organisations ... <strong>are being told</strong>...&rdquo; / &ldquo;PHP <strong>was created</strong>...&rdquo;</td></tr>
-                </tbody>
-            </table></div>
-            <div class="card card-homework" style="margin-top: 0.6rem;">
-                <p style="margin-bottom: 0;"><strong>Watch out.</strong> The present perfect is <em>have/has + past participle</em> (<em>have identified, has become</em>). The past simple is the finished form (<em>identified, became, launched, said</em>). If the time is finished and specific &mdash; <em>on Wednesday</em>, <em>in 2004</em> &mdash; use the past simple.</p>
-            </div>
-
-            <h3>A. Choose the correct form</h3>
-            <div class="quiz-question">
-                <p>1. The PHP Foundation ___ the updates on Wednesday afternoon.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg1"> a) issued</label>
-                    <label><input type="radio" name="lg1"> b) has issued</label>
-                </div>
-            </div>
-            <div class="quiz-question">
-                <p>2. Two critical vulnerabilities ___ identified. The story is still developing.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg2"> a) were</label>
-                    <label><input type="radio" name="lg2"> b) have been</label>
-                </div>
-            </div>
-            <div class="quiz-question">
-                <p>3. PHP 5 ___ in 2004.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg3"> a) launched</label>
-                    <label><input type="radio" name="lg3"> b) has launched</label>
-                </div>
-            </div>
-            <div class="quiz-question">
-                <p>4. The Tweede Kamer website ___ inaccessible. It is still down.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg4"> a) became</label>
-                    <label><input type="radio" name="lg4"> b) has become</label>
-                </div>
-            </div>
-            <div class="quiz-question">
-                <p>5. The NCSC ___ in a note that organisations should consider going offline.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg5"> a) said</label>
-                    <label><input type="radio" name="lg5"> b) has said</label>
-                </div>
-            </div>
-            <div class="quiz-question">
-                <p>6. Dane Knecht ___ he was seeing early attacks.</p>
-                <div class="quiz-options">
-                    <label><input type="radio" name="lg6"> a) said</label>
-                    <label><input type="radio" name="lg6"> b) has said</label>
-                </div>
-            </div>
-            <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-            <div class="answers">
-                <p><strong>1 a &middot; 2 b &middot; 3 a &middot; 4 b &middot; 5 a &middot; 6 a</strong></p>
-                <p>In questions 2 and 4, the present perfect is the better fit because the result matters now. The past simple would also be possible in a different context, especially if the time were stated.</p>
-            </div>
-
-            <h3>B. Rewrite in the passive</h3>
-            <div class="card card-task">
-                <ol>
-                    <li>The PHP Foundation issued the updates. &rarr; ________</li>
-                    <li>Someone identified two critical vulnerabilities. &rarr; ________</li>
-                    <li>Hackers could install malware. &rarr; ________</li>
-                </ol>
-                <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-                <div class="answers">
-                    <p><strong>1.</strong> The updates were issued by the PHP Foundation.</p>
-                    <p><strong>2.</strong> Two critical vulnerabilities were identified.</p>
-                    <p><strong>3.</strong> Malware could be installed by hackers. (Or: Malware could be installed.)</p>
-                </div>
-            </div>
-
-            <h3>C. Explain the choice</h3>
-            <div class="card card-task">
-                <p>Why does the writer say &ldquo;Two critical vulnerabilities have been identified&rdquo; instead of &ldquo;Researchers have identified two critical vulnerabilities&rdquo;?</p>
-                <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show a model answer</div>
-                <div class="answers"><p>The focus is on the vulnerabilities and the risk they create, not on who found them. The agent may be unknown or unimportant to the reader. The passive keeps the event in the foreground.</p></div>
             </div>
         </div>
     </section>
@@ -1504,15 +1325,6 @@
                 <li>Past simple reports finished events; present perfect links news to the present; passive keeps the focus on the event.</li>
             </ul>
             <p style="margin-top: 0.8rem;"><a href="Week7_Database_Fundamentals.html" class="btn btn-primary">&#8592; Back to the Week 7 lesson</a> &nbsp; <a href="tic-tac-toe.html" class="btn btn-secondary">&#127918; Play tic-tac-toe</a> &nbsp; <a href="../index.html" class="btn btn-secondary">&#127968; Course home</a></p>
-        </div>
-
-        <div class="card card-homework">
-            <h2 class="card-header">&#127968; Homework</h2>
-            <ol>
-                <li>Write a 120-word incident report for the club president. Use the four-part structure from the activity, at least four past simple verbs, one present perfect sentence, one passive sentence, and six target words.</li>
-                <li>Find one recent cybersecurity story. Bring three facts and one quotation to next class. Be ready to say who is affected and what the recommended action is.</li>
-                <li>Optional: underline every passive verb in the report and label its tense.</li>
-            </ol>
         </div>
     </section>
 
