@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplementary Unit: Stolen Passwords, Stolen Data | English for Information Technology</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+            position: relative;
+            z-index: 2;
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 40000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            position: relative;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--primary);
+            border-radius: 10px;
+            padding: 0 2rem 2rem;
+            margin: 1.25rem 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .article::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, var(--accent-light) 0%, transparent 42%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .article > * { position: relative; z-index: 1; }
+        .article-hero {
+            margin: 0 -2rem 1.6rem;
+            position: relative;
+        }
+        .article-hero img {
+            display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            margin: 0;
+        }
+        .article-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+        }
+        .article-title::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            margin-top: 0.55rem;
+            border-radius: 2px;
+            background: var(--warm);
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.6rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-meta span {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.15rem 0.7rem;
+            background: rgba(255,255,255,0.35);
+        }
+        .article-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.6rem 0;
+            color: var(--warm);
+            font-size: 0.9rem;
+        }
+        .article-divider::before,
+        .article-divider::after {
+            content: '';
+            height: 1px;
+            flex: 0 1 130px;
+            background: var(--border);
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article p:first-of-type { text-indent: 0; }
+        .article p:first-of-type::first-letter {
+            float: left;
+            font-size: 3.1rem;
+            line-height: 0.82;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 0.15rem 0.5rem 0 0;
+        }
+        .article blockquote {
+            position: relative;
+            margin: 1.5rem 0;
+            padding: 1.2rem 1.5rem 1rem 3rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote::before {
+            content: '\201C';
+            position: absolute;
+            top: 0.1rem;
+            left: 0.8rem;
+            font-size: 3rem;
+            line-height: 1;
+            color: var(--warm);
+            opacity: 0.45;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 0 1.2rem 1.2rem; }
+            .article-hero { margin: 0 -1.2rem 1.6rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0 0.9rem 0.9rem; margin: 1rem 0; }
+            .article-hero { margin: 0 -0.9rem 1.6rem; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Supplementary Unit: Stolen Passwords, Stolen Data</h1>
+    <div class="subtitle">Reading skills · Cybersecurity · Vocabulary in context</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Week 9</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <nav class="toc">
+        <strong>Contents</strong>
+        <ul>
+            <li><a href="#before">Before You Read</a></li>
+            <li><a href="#reading">Reading</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+            <li><a href="#questions">Reading Questions</a></li>
+            <li><a href="#answers">Answer Key</a></li>
+            <li><a href="#activity">10-Minute Activity</a></li>
+        </ul>
+    </nav>
+
+    <section id="before">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">💭</span>
+            <span>Before You Read</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">🤔</span>Quick Discussion</div>
+                <p style="margin-top:0.8rem;">Talk in pairs:</p>
+                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li>How many passwords do you think you have? Do you use the same one more than once?</li>
+                    <li>If a shop you bought clothes from lost your email address, what could a criminal do with it?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="reading">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">📰</span>
+            <span>Reading</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <article class="article">
+                <header class="article-header">
+                    <div class="article-hero"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1600&q=80&auto=format&fit=crop" alt="Digital code on a screen" loading="lazy"></div>
+                    <h2 class="article-title">Stolen Passwords, Stolen Data</h2>
+                    <div class="article-subtitle">Adapted from BBC News, "North Face and Cartier customer data stolen in cyber attacks" (3 June 2025)</div>
+                    <div class="article-meta">
+                        <span>🗞️ BBC Technology</span>
+                        <span>⏱️ Reading time: 6-8 minutes</span>
+                    </div>
+                </header>
+
+                <p>Fashion brand The North Face and luxury jeweller Cartier have become the latest retailers to report that customer data has been stolen in cyber attacks.</p>
+
+                <p>North Face emailed some customers to say it had discovered a "small-scale" attack in April. Cartier said that "an unauthorised party gained temporary access to our system". Both brands said that data such as customers' names and email addresses was taken, but that financial information was not.</p>
+
+                <p>This is part of a wave of attacks on well-known retailers. Adidas, Victoria's Secret and Harrods have all reported incidents in recent weeks. Marks and Spencer and the Co-op had their operations severely disrupted when they were targeted in April.</p>
+
+                <p>The most important detail is <em>how</em> the North Face attack happened. The company told customers that the hackers used a technique called <strong>credential stuffing</strong>. In this type of attack, criminals take usernames and passwords that were stolen in an <em>earlier</em> breach and try them on a different website. They are betting that customers have reused the same password on more than one account.</p>
+
+                <p>If the bet works, the criminals get in. North Face said the attackers may have been able to see some users' shipping addresses and purchase histories. Affected customers were told they would need to change their passwords. Cartier, by contrast, said that passwords and card details had not been accessed, and that it had "contained the issue".</p>
+
+                <p>Why are shops such a popular target? "Retailers are overflowing with customer information," said James Hadley, founder of the cyber-security company Immersive. That makes them "easy targets for attackers". He also warned that stolen data can be used much later, to impersonate a real company and trick people into giving away even more. Criminals are, he said, "often content to play the long game".</p>
+            </article>
+        </div>
+    </section>
+
+    <section id="glossary">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">📚</span>
+            <span>Glossary</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="job-cards">
+                <div class="job-card"><div class="job-card-icon">🔐</div><div class="job-card-title">credentials</div><div class="job-card-chinese">登入憑證</div><div class="job-card-def">A username and password used to sign in</div></div>
+                <div class="job-card"><div class="job-card-icon">🧪</div><div class="job-card-title">credential stuffing</div><div class="job-card-chinese">憑證填充攻擊</div><div class="job-card-def">Trying stolen logins on other websites</div></div>
+                <div class="job-card"><div class="job-card-icon">💥</div><div class="job-card-title">breach</div><div class="job-card-chinese">資料外洩事件</div><div class="job-card-def">An incident where data is accessed without permission</div></div>
+                <div class="job-card"><div class="job-card-icon">💳</div><div class="job-card-title">financial information</div><div class="job-card-chinese">財務資訊</div><div class="job-card-def">Card numbers, bank details and payment data</div></div>
+                <div class="job-card"><div class="job-card-icon">🎭</div><div class="job-card-title">impersonate</div><div class="job-card-chinese">冒充</div><div class="job-card-def">To pretend to be someone or a company</div></div>
+                <div class="job-card"><div class="job-card-icon">🛑</div><div class="job-card-title">contain</div><div class="job-card-chinese">控制住</div><div class="job-card-def">To stop a problem from spreading further</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="questions">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">❓</span>
+            <span>Reading Questions</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">A</span>Part 1: Multiple Choice (4 questions)</div>
+                <div class="quiz-question" style="margin-top:0.8rem;">
+                    <p><strong>1.</strong> What is credential stuffing?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q1"> A) Guessing one password many times</label>
+                        <label><input type="radio" name="q1"> B) Trying stolen logins on other websites</label>
+                        <label><input type="radio" name="q1"> C) Sending fake emails to customers</label>
+                        <label><input type="radio" name="q1"> D) Deleting a company's database</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>2.</strong> Credential stuffing works because many people ______.</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q2"> A) write their passwords down</label>
+                        <label><input type="radio" name="q2"> B) reuse the same password on several accounts</label>
+                        <label><input type="radio" name="q2"> C) never shop online</label>
+                        <label><input type="radio" name="q2"> D) change their password every week</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>3.</strong> According to the article, what was taken from North Face customers?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q3"> A) Credit card numbers</label>
+                        <label><input type="radio" name="q3"> B) Names and email addresses</label>
+                        <label><input type="radio" name="q3"> C) Passwords and card details</label>
+                        <label><input type="radio" name="q3"> D) Nothing at all</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>4.</strong> Why did James Hadley say retailers are "easy targets"?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q4"> A) They have no IT staff</label>
+                        <label><input type="radio" name="q4"> B) They store a lot of customer information</label>
+                        <label><input type="radio" name="q4"> C) They never report attacks</label>
+                        <label><input type="radio" name="q4"> D) They use old computers</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header"><span class="card-icon">B</span>Part 2: True / False / Not Given (2 questions)</div>
+                <p style="margin-top:0.6rem; font-size:0.9rem; color:var(--text-light);">Write <strong>TRUE</strong>, <strong>FALSE</strong>, or <strong>NOT GIVEN</strong>.</p>
+                <ol start="5" style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
+                    <li>Cartier said that customers' card details were not accessed. __________</li>
+                    <li>North Face has said exactly how many customers were affected. __________</li>
+                </ol>
+            </div>
+
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">C</span>Part 3: Short Answer (2 questions)</div>
+                <p style="margin-top:0.6rem;">Answer in complete sentences, using your own words where possible.</p>
+                <ol start="7" style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
+                    <li>Why is stolen customer data still dangerous months after the attack?</li>
+                    <li>What were North Face customers told to do after the attack?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="answers">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">✅</span>
+            <span>Answer Key</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header"><span class="card-icon">🔑</span>Answers</div>
+                <p style="margin-top:0.8rem;"><strong>Part 1: Multiple Choice</strong></p>
+                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li><strong>B</strong> – trying stolen logins on other websites.</li>
+                    <li><strong>B</strong> – they reuse the same password on several accounts.</li>
+                    <li><strong>B</strong> – names and email addresses.</li>
+                    <li><strong>B</strong> – they store a lot of customer information.</li>
+                </ol>
+                <p style="margin-top:0.9rem;"><strong>Part 2: True / False / Not Given</strong></p>
+                <ol start="5" style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li><strong>TRUE</strong> – "Passwords and card details were not accessed, it said."</li>
+                    <li><strong>NOT GIVEN</strong> – the article says the attack was "small-scale" but gives no number.</li>
+                </ol>
+                <p style="margin-top:0.9rem;"><strong>Part 3: Short Answer</strong></p>
+                <ol start="7" style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li>It can be used later to impersonate a real company and trick people into giving away more information — criminals "play the long game".</li>
+                    <li>They were told to change their passwords.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="activity">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">⏱️</span>
+            <span>10-Minute Activity</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">🛡️</span>Spot the Phish</div>
+                <p style="margin-top:0.8rem;"><strong>Task (10 minutes):</strong> In pairs, read the two messages below. Decide which one is suspicious and give at least two reasons. Then write one sentence of advice.</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:0.8rem; margin-top:0.9rem;">
+                    <div class="example-box">
+                        <strong>Message A</strong><br>
+                        <em>From:</em> The North Face &lt;account@northface-support.info&gt;<br>
+                        <em>Subject:</em> "URGENT: your account data was stolen"<br>
+                        <em>Body:</em> "To protect your account, confirm your password and card number in the next 2 hours or your account will be closed."
+                    </div>
+                    <div class="example-box">
+                        <strong>Message B</strong><br>
+                        <em>From:</em> The North Face &lt;no-reply@thenorthface.com&gt;<br>
+                        <em>Subject:</em> "Security notice — please reset your password"<br>
+                        <em>Body:</em> "We have contained a security incident. As a precaution, please change your password by signing in to our website directly. We will never ask for your password by email."
+                    </div>
+                </div>
+                <p style="margin-top:0.8rem;"><strong>Hints:</strong> check the sender address, the urgency, and whether the message asks you to send a password or card number.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer style="text-align:center; padding:2rem 1rem; color:var(--text-light); font-size:0.9rem;">
+    <p>English for Information Technology | Week 9 Supplementary</p>
+    <p style="margin-top:0.3rem;">Yuan Ze University &mdash; Department of Information Management</p>
+</footer>
+
+<script src="../theme.js"></script>
+<script>
+(function(){
+    document.querySelectorAll('.section-toggle').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var content = btn.nextElementSibling;
+            var open = content.classList.contains('open');
+            if(open){ content.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+            else { content.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+        });
+    });
+    // Extract — modal overlay, same as Weeks 1-7 (print styles target #extract-overlay)
+    window.extractSection = function(btn){
+        var section = btn.closest('section');
+        if(!section) return;
+        var content = section.querySelector('.section-content');
+        var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'extract-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+        header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.textContent = '\u2715';
+        closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+        closeBtn.onclick = function(){ document.body.removeChild(overlay); };
+        header.appendChild(closeBtn);
+
+        var contentDiv = document.createElement('div');
+        contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+        contentDiv.innerHTML = content.innerHTML;
+
+        var footer = document.createElement('div');
+        footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+        var printBtn = document.createElement('button');
+        printBtn.textContent = '\uD83D\uDDA8\uFE0F Print';
+        printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        printBtn.onclick = function(){ window.print(); };
+
+        var closeFooterBtn = document.createElement('button');
+        closeFooterBtn.textContent = 'Close';
+        closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        closeFooterBtn.onclick = function(){ document.body.removeChild(overlay); };
+
+        footer.appendChild(printBtn);
+        footer.appendChild(closeFooterBtn);
+        modal.appendChild(header);
+        modal.appendChild(contentDiv);
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
+        overlay.onclick = function(e){ if(e.target === overlay) document.body.removeChild(overlay); };
+        document.body.appendChild(overlay);
+    };
+})();
+</script>
+</body>
+</html>

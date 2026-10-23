@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9: Cybersecurity &amp; Data Breaches</title>
+<style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(var(--overlay-a, rgba(30, 58, 95, 0.85)), var(--overlay-b, rgba(30, 58, 95, 0.9))), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            font-style: italic;
+            position: relative;
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            position: relative;
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+            position: relative;
+            z-index: 2;
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 40000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            position: relative;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--primary);
+            border-radius: 10px;
+            padding: 0 2rem 2rem;
+            margin: 1.25rem 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .article::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, var(--accent-light) 0%, transparent 42%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .article > * { position: relative; z-index: 1; }
+        .article-hero {
+            margin: 0 -2rem 1.6rem;
+            position: relative;
+        }
+        .article-hero img {
+            display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            margin: 0;
+        }
+        .article-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+        }
+        .article-title::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            margin-top: 0.55rem;
+            border-radius: 2px;
+            background: var(--warm);
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.6rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-meta span {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.15rem 0.7rem;
+            background: rgba(255,255,255,0.35);
+        }
+        .article-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.6rem 0;
+            color: var(--warm);
+            font-size: 0.9rem;
+        }
+        .article-divider::before,
+        .article-divider::after {
+            content: '';
+            height: 1px;
+            flex: 0 1 130px;
+            background: var(--border);
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article p:first-of-type { text-indent: 0; }
+        .article p:first-of-type::first-letter {
+            float: left;
+            font-size: 3.1rem;
+            line-height: 0.82;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 0.15rem 0.5rem 0 0;
+        }
+        .article blockquote {
+            position: relative;
+            margin: 1.5rem 0;
+            padding: 1.2rem 1.5rem 1rem 3rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote::before {
+            content: '\201C';
+            position: absolute;
+            top: 0.1rem;
+            left: 0.8rem;
+            font-size: 3rem;
+            line-height: 1;
+            color: var(--warm);
+            opacity: 0.45;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 0 1.2rem 1.2rem; }
+            .article-hero { margin: 0 -1.2rem 1.6rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0 0.9rem 0.9rem; margin: 1rem 0; }
+            .article-hero { margin: 0 -0.9rem 1.6rem; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    
+        /* Read-along */
+        .readalong { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; background:var(--info-bg); border:1px solid #90cdf4; border-radius:10px; padding:.7rem 1rem; margin:1rem 0; }
+        .readalong-controls { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+        .readalong button { border:1px solid var(--border); background:var(--card-bg); color:var(--text); padding:.4rem .7rem; border-radius:8px; font-weight:700; cursor:pointer; }
+        .readalong button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .readalong-status { font-size:.85rem; color:var(--text-light); }
+        .readalong-para { padding:.35rem .5rem; border-radius:8px; transition:background .2s ease, box-shadow .2s ease; }
+        .readalong-para.active { background:var(--accent-light); box-shadow:inset 3px 0 0 var(--accent); }
+        .readalong-para[data-speaker]::before { display:block; font-size:.8rem; font-weight:700; color:var(--accent); margin-bottom:.25rem; }
+        .readalong-para[data-speaker="narrator"]::before { content:"Narrator"; }
+        .readalong-para[data-speaker="mason"]::before { content:"Mason (IT Analyst)"; }
+        .readalong-para[data-speaker="lin"]::before { content:"Lin (Security Lead)"; }
+        .readalong-para[data-speaker="chen"]::before { content:"Chen (Support)"; }
+        @media (prefers-reduced-motion: reduce) { .readalong-para { transition:none; } }
+
+        /* Step figure */
+        .figure-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:1rem; margin:1rem 0; }
+        .figure-steps { display:flex; flex-direction:column; gap:.6rem; }
+        .figure-step { display:grid; grid-template-columns:2rem 1fr; gap:.8rem; align-items:start; padding:.6rem .8rem; border-radius:10px; border:1px solid var(--border); background:var(--bg); }
+        .figure-step.active { background:var(--info-bg); border-color:#90cdf4; box-shadow:inset 3px 0 0 var(--accent); }
+        .figure-num { width:2rem; height:2rem; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; }
+        .figure-step h4 { margin:0 0 .25rem; }
+
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Week 9: Cybersecurity &amp; Data Breaches</h1>
+    <div class="subtitle">Detecting, reporting and learning from a security incident</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 9</span>
+    </div>
+</header>
+
+<div class="container">
+
+        <nav class="toc">
+            <strong>Contents</strong>
+            <ul>
+                <li><a href="#objectives">Learning Objectives</a></li>
+                <li><a href="#warmup">Warm-up</a></li>
+                <li><a href="#pre-reading">Pre-reading</a></li>
+                <li><a href="#reading">Reading: The Breach Report</a></li>
+                <li><a href="#comprehension">Reading Comprehension</a></li>
+                <li><a href="#vocabulary">Key Vocabulary</a></li>
+                <li><a href="#grammar">Grammar Focus: The Present Perfect</a></li>
+                <li><a href="#practice">Guided Practice</a></li>
+                <li><a href="#discussion">Discussion</a></li>
+                <li><a href="#wrapup">Wrap-up &amp; Homework</a></li>
+            </ul>
+        </nav>
+
+    <section id="objectives">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">🎯</span>
+            <span>Learning Objectives</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <div class="card card-info">
+                <div class="card-header"><span class="card-icon">📋</span>By the end of this week, you will be able to:</div>
+                <ul style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
+                    <li>Explain how a data breach is detected and reported in a workplace.</li>
+                    <li>Use the <strong>present perfect</strong> to describe recent actions and their results.</li>
+                    <li>Skim and scan a workplace incident report for key facts.</li>
+                    <li>Identify risks, gaps and follow-up actions from an IT security story.</li>
+                    <li>Discuss prevention steps using precise IT vocabulary.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="warmup">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">💭</span>
+            <span>Warm-up</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">🤔</span>Think and Discuss</div>
+                <p style="margin-top:0.8rem;">In pairs, discuss these questions:</p>
+                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li>Have you <em>ever</em> received an email asking you to change a password after a "security alert"?</li>
+                    <li>Why would a company be worried about a stolen password?</li>
+                    <li>What should an IT team do <em>as soon as</em> they think there's been a breach?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="pre-reading">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">👀</span>
+            <span>Pre-reading</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-info">
+                <div class="card-header"><span class="card-icon">🔍</span>Skim the Topic</div>
+                <p style="margin-top:0.8rem;">Look at the words below. Which ones would you expect to see in a breach report?</p>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.8rem;">
+                    <span class="keyword">access log</span>
+                    <span class="keyword">credentials</span>
+                    <span class="keyword">firewall</span>
+                    <span class="keyword">incident report</span>
+                    <span class="keyword">intrusion</span>
+                    <span class="keyword">multi-factor authentication</span>
+                    <span class="keyword">patch</span>
+                    <span class="keyword">phishing</span>
+                    <span class="keyword">privilege</span>
+                    <span class="keyword">suspicious login</span>
+                </div>
+            </div>
+
+            <div class="figure-wrap">
+                <div class="card-header" style="border:none; padding:0; margin-bottom:0.6rem;"><span class="card-icon">🧭</span>A typical breach response</div>
+                <svg viewBox="0 0 900 200" role="img" aria-label="Steps: detect, contain, investigate, report, fix, review" style="width:100%; height:auto;">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2b6cb0"/>
+                        </marker>
+                    </defs>
+                    <line x1="70" y1="100" x2="150" y2="100" stroke="#2b6cb0" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="250" y1="100" x2="330" y2="100" stroke="#2b6cb0" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="430" y1="100" x2="510" y2="100" stroke="#2b6cb0" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="610" y1="100" x2="690" y2="100" stroke="#2b6cb0" stroke-width="3" marker-end="url(#arrow)"/>
+                    <circle cx="40" cy="100" r="28" fill="#bee3f8" stroke="#2b6cb0" stroke-width="3"/>
+                    <text x="40" y="96" text-anchor="middle" font-size="11" font-weight="800">1</text>
+                    <text x="40" y="116" text-anchor="middle" font-size="9">Detect</text>
+                    <circle cx="200" cy="100" r="28" fill="#bee3f8" stroke="#2b6cb0" stroke-width="3"/>
+                    <text x="200" y="96" text-anchor="middle" font-size="11" font-weight="800">2</text>
+                    <text x="200" y="116" text-anchor="middle" font-size="9">Contain</text>
+                    <circle cx="380" cy="100" r="28" fill="#bee3f8" stroke="#2b6cb0" stroke-width="3"/>
+                    <text x="380" y="96" text-anchor="middle" font-size="11" font-weight="800">3</text>
+                    <text x="380" y="116" text-anchor="middle" font-size="9">Investigate</text>
+                    <circle cx="560" cy="100" r="28" fill="#bee3f8" stroke="#2b6cb0" stroke-width="3"/>
+                    <text x="560" y="96" text-anchor="middle" font-size="11" font-weight="800">4</text>
+                    <text x="560" y="116" text-anchor="middle" font-size="9">Report</text>
+                    <circle cx="740" cy="100" r="28" fill="#bee3f8" stroke="#2b6cb0" stroke-width="3"/>
+                    <text x="740" y="96" text-anchor="middle" font-size="11" font-weight="800">5</text>
+                    <text x="740" y="116" text-anchor="middle" font-size="9">Fix &amp; Review</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <section id="reading">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">📖</span>
+            <span>Reading: The Breach Report</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <div class="card card-vocab">
+                <div class="card-header"><span class="card-icon">🎧</span>Read-along Player (paragraph by paragraph)</div>
+                <div class="readalong" id="readalong">
+                    <div class="readalong-controls">
+                        <button id="ra-play">▶ Play</button>
+                        <button id="ra-pause">⏸ Pause</button>
+                        <button id="ra-stop">⏹ Stop</button>
+                        <button data-rate="0.85">0.85×</button>
+                        <button data-rate="1.0" class="active">1.0×</button>
+                    </div>
+                    <div class="readalong-status" id="ra-status">Click Play to start. Uses built-in speech if no audio files are loaded.</div>
+                </div>
+            </div>
+
+            <article class="article">
+                <header class="article-header">
+                    <div class="article-hero"><img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1600&q=80&auto=format&fit=crop" alt="Server room with network cables" loading="lazy"></div>
+                    <h2 class="article-title">The Breach Report</h2>
+                    <div class="article-subtitle">An incident report from NovaNet Solutions, written by Lin Mei-hui, Security Lead</div>
+                    <div class="article-meta">
+                        <span>📍 Workplace incident</span>
+                        <span>🕒 Monday 09:17</span>
+                        <span>🔐 Confidential</span>
+                    </div>
+                </header>
+
+                <p class="readalong-para" data-speaker="narrator">It was Monday morning at NovaNet Solutions when Lin Mei-hui first noticed something was wrong. At 02:43, the access log had shown an unusual number of login attempts from an IP address in another country. By the time she had checked the log in more detail, someone had already tried to sign in to several admin accounts.</p>
+
+                <p class="readalong-para" data-speaker="mason">"I've just seen it," said Mason, the IT Analyst, as he sat down next to Lin. "Three different admin accounts have had failed logins in the last twenty minutes. Two of them have used very similar passwords."</p>
+
+                <p class="readalong-para" data-speaker="lin">"We've had a problem like this once before," Lin replied. "But this time, it looks more organised. I think someone has been trying to guess our credentials."</p>
+
+                <p class="readalong-para" data-speaker="narrator">Lin had not seen a targeted attack of this kind since she had joined NovaNet. Within five minutes, her team had blocked the suspicious IP address at the firewall. They had also forced a password reset for every admin account, and they had turned on multi-factor authentication for accounts that had not used it before.</p>
+
+                <p class="readalong-para" data-speaker="chen">"Good call," said Chen from the support desk. "I have already had two users ask me why they were logged out. I've told them it's a precaution."</p>
+
+                <p class="readalong-para" data-speaker="lin">"Keep a record of every call," Lin said. "So far, we haven't found any proof that anyone has actually broken in. But we need to check everything."</p>
+
+                <p class="readalong-para" data-speaker="narrator">For the next three hours, the team checked access logs, email logs and file permissions. They found one short window of time at 02:46 when an old, unused admin account had been accessed. The account had too many privileges, and the team had never disabled it. Luckily, the attacker had only been able to look at a system health page — they had not downloaded any customer data.</p>
+
+                <p class="readalong-para" data-speaker="narrator">The logs also showed how patient the attacker had been. For almost two days, one IP address had tried a small number of common passwords on many different accounts — never enough on any single account to trigger a lockout. That pattern is exactly what credential stuffing looks like, and it was the reason nobody had noticed anything until Monday morning.</p>
+
+                <p class="readalong-para" data-speaker="chen">"Should we tell the customers?" Chen asked. "Not yet," Lin said. "So far, we have only seen failed logins and one short session. If we announce a breach before we understand it, we will worry thousands of people for no reason. But if we find that data has left the building, we will tell them the same day."</p>
+
+                <p class="readalong-para" data-speaker="lin">"This could have been much worse," Lin told the meeting. "We have since disabled that account, applied a critical patch to the login server, and reviewed all of our admin privileges. We have also made it a rule that unused admin accounts must be removed within 24 hours."</p>
+
+                <p class="readalong-para" data-speaker="narrator">Before lunch, Lin added a short section to the report called "What we have learned". It listed three things: the old account should have been removed a year ago, the patch had been available for two weeks, and the login server had no alert for repeated failures. None of these were new problems. They had simply been invisible.</p>
+
+                <p class="readalong-para" data-speaker="narrator">By late morning, Lin was writing the incident report. She knew the team had acted quickly, but she also knew they had not checked for that old account in their last security review. It was a small gap — and it had nearly become a serious breach. Now, she just hoped they would not leave that gap open again.</p>
+
+                <div class="article-divider">❖</div>
+
+                <blockquote>
+                    "We haven't seen evidence of data theft, but we have found the door that was left open. Our job now is to lock it for good."
+                    <cite>— Lin Mei-hui, Security Lead, NovaNet Solutions</cite>
+                </blockquote>
+            </article>
+        </div>
+    </section>
+
+    <section id="comprehension">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">❓</span>
+            <span>Reading Comprehension</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">✍️</span>Skim and Scan</div>
+                <p style="margin-top:0.8rem;"><strong>A. Skim</strong> (2-3 minutes): What was the problem, and how serious was it?</p>
+                <p style="margin-top:0.6rem;"><strong>B. Scan</strong> (3-4 minutes): Find the answers to these questions.</p>
+                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
+                    <li>When did the suspicious activity start?</li>
+                    <li>How did the team stop the attacker at first?</li>
+                    <li>Which old account was used, and why was it dangerous?</li>
+                    <li>What exactly had the attacker been able to do?</li>
+                    <li>What three or four actions did the team take after finding the gap?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="vocabulary">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">📚</span>
+            <span>Key Vocabulary</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="job-cards">
+                <div class="job-card"><div class="job-card-icon">🔐</div><div class="job-card-title">credentials</div><div class="job-card-chinese">登入憑證</div><div class="job-card-def">A username and password used to sign in</div></div>
+                <div class="job-card"><div class="job-card-icon">🚨</div><div class="job-card-title">intrusion</div><div class="job-card-chinese">入侵</div><div class="job-card-def">An unauthorised attempt to access a system</div></div>
+                <div class="job-card"><div class="job-card-icon">🧾</div><div class="job-card-title">incident report</div><div class="job-card-chinese">事件報告</div><div class="job-card-def">A written record of what happened and what was done</div></div>
+                <div class="job-card"><div class="job-card-icon">🛡️</div><div class="job-card-title">firewall</div><div class="job-card-chinese">防火牆</div><div class="job-card-def">A barrier that blocks or allows network traffic</div></div>
+                <div class="job-card"><div class="job-card-icon">🔑</div><div class="job-card-title">multi-factor authentication (MFA)</div><div class="job-card-chinese">多重身分驗證</div><div class="job-card-def">An extra way to prove identity (e.g., a code or app)</div></div>
+                <div class="job-card"><div class="job-card-icon">🩹</div><div class="job-card-title">patch</div><div class="job-card-chinese">修補程式</div><div class="job-card-def">A fix that closes a security weakness</div></div>
+                <div class="job-card"><div class="job-card-icon">⚖️</div><div class="job-card-title">privilege</div><div class="job-card-chinese">權限</div><div class="job-card-def">The level of access a user or account is allowed</div></div>
+                <div class="job-card"><div class="job-card-icon">🧹</div><div class="job-card-title">disable / remove</div><div class="job-card-chinese">停用／移除</div><div class="job-card-def">To turn off or delete an account that is no longer needed</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="grammar">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">✏️</span>
+            <span>Grammar Focus: The Present Perfect</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-grammar">
+                <div class="card-header"><span class="card-icon">🧠</span>Form and Use</div>
+                <p style="margin-top:0.8rem;">We use the <strong>present perfect</strong> (<em>have / has + past participle</em>) to talk about actions that are connected to now.</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0.8rem; margin-top:0.9rem;">
+                    <div class="example-box"><strong>1) Recent actions with a result now</strong><br><em>The team <u>has blocked</u> the suspicious IP address.</em> (It's blocked now.)</div>
+                    <div class="example-box"><strong>2) Experience up to now</strong><br><em>Lin <u>hasn't seen</u> an attack like this since she joined.</em></div>
+                    <div class="example-box"><strong>3) Actions finished recently (just/already/yet)</strong><br><em>They <u>have just turned on</u> multi-factor authentication.</em></div>
+                    <div class="example-box"><strong>4) How long / up to now (so far)</strong><br><em>So far, they <u>haven't found</u> any proof of data theft.</em></div>
+                </div>
+                <div class="example-box" style="margin-top:0.9rem;"><strong>Time words:</strong> <em>just, already, yet, so far, ever, never, since, recently</em></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="practice">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🧩</span>
+            <span>Guided Practice</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">1️⃣</span>Exercise 1: Present Perfect in Context</div>
+                <p style="margin-top:0.8rem;">Complete with the present perfect form of the verbs in brackets.</p>
+                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:2;">
+                    <li>The team __________ (block) the IP address.</li>
+                    <li>Lin __________ (write) part of the incident report so far.</li>
+                    <li>They __________ (not / find) any proof of data theft yet.</li>
+                    <li>Mason __________ (never / see) an attack like this before.</li>
+                    <li>The IT team __________ (already / disable) the old admin account.</li>
+                </ol>
+            </div>
+
+            <div class="card card-info">
+                <div class="card-header"><span class="card-icon">2️⃣</span>Exercise 2: Find the Evidence</div>
+                <p style="margin-top:0.8rem;">Find sentences from <em>The Breach Report</em> that use the present perfect. Write two of them and explain their results.</p>
+                <div style="margin-top:0.8rem; padding:0.8rem; background:var(--bg); border-radius:8px;">
+                    Sentence 1: ___________________________<br>
+                    Result now: ___________________________<br><br>
+                    Sentence 2: ___________________________<br>
+                    Result now: ___________________________
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="discussion">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🗣️</span>
+            <span>Discussion</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">💬</span>Talk About It</div>
+                <ol style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
+                    <li>Why was the unused admin account so dangerous?</li>
+                    <li>Lin says, "We have found the door that was left open." What does she mean?</li>
+                    <li>The team acted quickly. What else could they do to stop this from happening again?</li>
+                    <li>Is it better to force a password reset for everyone, or only for the accounts that were attacked? Why?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="wrapup">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🎁</span>
+            <span>Wrap-up &amp; Homework</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">✅</span>Wrap-up</div>
+                <p style="margin-top:0.8rem;">In your own words, answer: <strong>How did NovaNet find and contain the breach?</strong> Use at least two sentences with the present perfect.</p>
+            </div>
+            <div class="card card-homework">
+                <div class="card-header"><span class="card-icon">📝</span>Homework</div>
+                <ol style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
+                    <li><strong>Read again:</strong> Re-read "The Breach Report" and underline five verbs in the present perfect.</li>
+                    <li><strong>Write:</strong> Imagine you are Lin. Write 4-5 sentences for an incident report update using the present perfect. Include at least three of these words: <em>block, disable, patch, credentials, privilege</em>.</li>
+                    <li><strong>Prepare:</strong> Be ready for Week 9's Gomoku game (review Weeks 1-7 vocabulary and grammar).</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer style="text-align:center; padding:2rem 1rem; color:var(--text-light); font-size:0.9rem;">
+    <p>English for Information Technology | Week 9: Cybersecurity &amp; Data Breaches</p>
+    <p style="margin-top:0.3rem;">Yuan Ze University &mdash; Department of Information Management</p>
+</footer>
+
+<script src="../theme.js"></script>
+<script>
+(function(){
+    // Accordion
+    document.querySelectorAll('.section-toggle').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var content = btn.nextElementSibling;
+            var open = content.classList.contains('open');
+            if(open){ content.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+            else { content.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+        });
+    });
+
+    // Extract — modal overlay, same as Weeks 1-7 (print styles target #extract-overlay)
+    window.extractSection = function(btn){
+        var section = btn.closest('section');
+        if(!section) return;
+        var content = section.querySelector('.section-content');
+        var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'extract-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+        header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.textContent = '\u2715';
+        closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+        closeBtn.onclick = function(){ document.body.removeChild(overlay); };
+        header.appendChild(closeBtn);
+
+        var contentDiv = document.createElement('div');
+        contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+        contentDiv.innerHTML = content.innerHTML;
+
+        var footer = document.createElement('div');
+        footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+        var printBtn = document.createElement('button');
+        printBtn.textContent = '\uD83D\uDDA8\uFE0F Print';
+        printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        printBtn.onclick = function(){ window.print(); };
+
+        var closeFooterBtn = document.createElement('button');
+        closeFooterBtn.textContent = 'Close';
+        closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        closeFooterBtn.onclick = function(){ document.body.removeChild(overlay); };
+
+        footer.appendChild(printBtn);
+        footer.appendChild(closeFooterBtn);
+        modal.appendChild(header);
+        modal.appendChild(contentDiv);
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
+        overlay.onclick = function(e){ if(e.target === overlay) document.body.removeChild(overlay); };
+        document.body.appendChild(overlay);
+    };
+
+    // Read-along (paragraph driven, speechSynthesis fallback; swap for MP3s via audio/manifest.json later)
+    var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+    var play = document.getElementById('ra-play');
+    var pause = document.getElementById('ra-pause');
+    var stop = document.getElementById('ra-stop');
+    var status = document.getElementById('ra-status');
+    var rateBtns = document.querySelectorAll('.readalong button[data-rate]');
+    var rate = 1.0;
+    var idx = 0;
+    var speaking = false;
+    var utter = null;
+
+    rateBtns.forEach(function(b){
+        b.addEventListener('click', function(){
+            rateBtns.forEach(function(x){ x.classList.remove('active'); });
+            b.classList.add('active');
+            rate = parseFloat(b.getAttribute('data-rate')) || 1.0;
+        });
+    });
+
+    function clear(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
+    function speak(i){
+        if(i >= paras.length){ stopAll(); status.textContent = 'Finished.'; return; }
+        idx = i;
+        clear();
+        paras[i].classList.add('active');
+        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+            // just highlight, no auto-advance speech
+            status.textContent = 'Paragraph ' + (i+1) + ' of ' + paras.length + ' (reduced motion).';
+            return;
+        }
+        var text = paras[i].textContent.replace(/\s+/g,' ').trim();
+        if('speechSynthesis' in window){
+            window.speechSynthesis.cancel();
+            utter = new SpeechSynthesisUtterance(text);
+            utter.rate = rate;
+            utter.onend = function(){ speak(i+1); };
+            utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
+            window.speechSynthesis.speak(utter);
+            speaking = true;
+            status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
+        } else {
+            status.textContent = 'Speech not supported in this browser.';
+        }
+    }
+    function stopAll(){
+        if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+        speaking = false;
+        clear();
+    }
+
+    if(play){ play.addEventListener('click', function(){ speak(idx); }); }
+    if(pause){ pause.addEventListener('click', function(){ if('speechSynthesis' in window){ window.speechSynthesis.pause(); } }); }
+    if(stop){ stop.addEventListener('click', function(){ stopAll(); status.textContent = 'Stopped.'; }); }
+})();
+</script>
+</body>
+</html>

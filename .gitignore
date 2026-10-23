@@ -9,6 +9,7 @@
 !Wk5/
 !Wk6/
 !Wk7/
+!Wk9/
 !README.md
 !index.html
 !theme.js
@@ -32,6 +33,7 @@
 !Wk5/**
 !Wk6/**
 !Wk7/**
+!Wk9/**
 
 # NOTE: the week list above is explicit on purpose and must be extended
 # each time a new week is published. A blanket !Wk*/ would also un-ignore
@@ -56,3 +58,10 @@ Wk*/1151_IM229_C_ID_*/
 # Belt and braces: block any per-student upload folder wherever it appears in a
 # week directory, whatever it is named.
 Wk*/**/No_File_Upload.txt
+
+# Week 9 teaching media: a 21 MB lecture video and a 5 MB slide deck. They are
+# used in class from this folder, but they are not part of the published site
+# and would bloat the repository. Un-ignored by !Wk9/**, so they must be
+# blocked here, after that whitelist.
+Wk9/Skimming and Scanning.mp4
+Wk9/Reading Skills - Skimming and Scanning - wk9.pptx
