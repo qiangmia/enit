@@ -768,7 +768,7 @@ CPU&#9;the central processing unit"></textarea>
                 <button class="btn btn-secondary" onclick="resetThemeFromConfig()">&#128260; Reset to Default</button>
             </div>
             <div id="theme-status" class="status-bar info">
-                Current theme: <span id="theme-status-name">ENIT Default</span>.
+                Current theme: <span id="theme-status-name">Warm Sand</span>.
             </div>
         </div>
     </div>
@@ -1177,7 +1177,7 @@ function handleThemeSelectChange() {
     var sel = document.getElementById('theme-select');
     var id = sel ? sel.value : 'default';
     var applied = window.ENIT_Theme.current();
-    var label = (window.ENIT_Theme.THEMES[id] || {}).label || 'ENIT Default';
+    var label = (window.ENIT_Theme.THEMES[id] || {}).label || 'Warm Sand';
     updateThemePreview(id);
     var st = document.getElementById('theme-status');
     if (!st) return;
@@ -1213,7 +1213,7 @@ function updateThemePreview(id) {
 function updateThemeStatus(id) {
     var name = document.getElementById('theme-status-name');
     if (!name) return;
-    name.textContent = (window.ENIT_Theme.THEMES[id] || {}).label || 'ENIT Default';
+    name.textContent = (window.ENIT_Theme.THEMES[id] || {}).label || 'Warm Sand';
 }
 function applyThemeFromConfig() {
     var id = document.getElementById('theme-select').value;
@@ -1229,7 +1229,7 @@ function resetThemeFromConfig() {
     updateThemeSelectUI();
     var st = document.getElementById('theme-status');
     st.className = 'status-bar info';
-    st.innerHTML = '&#8635; Theme reset to the ENIT Default.';
+    st.innerHTML = '&#8635; Theme reset to the site default (Warm Sand).';
 }
 
 // ── Google Sheets Functions ────────────────────────────

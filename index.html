@@ -4,45 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="English for Information Technology — an 18-week course for information management students at Yuan Ze University. Weekly lesson plans, readings, and interactive activities.">
-    <meta name="theme-color" content="#1a365d">
+    <meta name="theme-color" content="#4a3122">
     <title>English for Information Technology · Yuan Ze University</title>
     <style>
         /* ── Reset ───────────────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         /* Full variable set, matching the lesson pages.
-           theme.js re-declares all of these at runtime for its 5 palettes, so
+           theme.js re-declares all of these at runtime for its 6 palettes, so
            every colour below must come from a variable -- no hard-coded
-           values, or the dark themes (gaming, developer) become unreadable. */
+           values, or the dark themes (gaming, developer) become unreadable.
+           These literals are Warm Sand, the site's palette and theme.js's
+           fallback: the values here and sand.vars there must stay in step, or
+           the page repaints one shade darker the moment the script runs. */
         :root {
-            --primary: #1a365d;
-            --primary-light: #2c5282;
-            --primary-solid: #1a365d;
-            --accent: #2b6cb0;
-            --accent-light: #bee3f8;
-            --warm: #c05621;
-            --warm-light: #fefcbf;
-            --bg: #f7fafc;
-            --card-bg: #ffffff;
+            --primary: #4a3122;
+            --primary-light: #7a5a42;
+            --primary-solid: #4a3122;
+            --accent: #a94e27;
+            --accent-light: #f4ddcb;
+            --warm: #8b5a1e;
+            --warm-light: #f7e3c0;
+            --bg: #f1eae0;
+            --card-bg: #fffdf9;
             --week-photo: none;   /* per-week card photo, set per data-week below */
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --success: #276749;
-            --success-bg: #f0fff4;
-            --error: #c53030;
-            --error-bg: #fff5f5;
-            --info-bg: #ebf8ff;
-            --grammar-bg: #faf5ff;
-            --vocab-bg: #fffaf0;
-            --task-bg: #f0fff4;
-            --homework-bg: #fff5f5;
-            --team-a: #2b6cb0;
-            --team-a-bg: #ebf8ff;
-            --team-b: #805ad5;
-            --team-b-bg: #faf5ff;
-            --overlay-a: rgba(30, 58, 95, 0.85);
-            --overlay-b: rgba(30, 58, 95, 0.90);
+            --text: #2a241e;
+            --text-light: #6a5f54;
+            --border: #ded2c2;
+            --success: #2f6b4a;
+            --success-bg: #e9f2ea;
+            --error: #a3352b;
+            --error-bg: #fae9e5;
+            --info-bg: #f3eadf;
+            --grammar-bg: #f6efe4;
+            --vocab-bg: #fbf0de;
+            --task-bg: #edf3ea;
+            --homework-bg: #fbede9;
+            --team-a: #a94e27;
+            --team-a-bg: #f4ddcb;
+            --team-b: #3f6b6b;
+            --team-b-bg: #e4efee;
+            --overlay-a: rgba(45, 35, 27, 0.85);
+            --overlay-b: rgba(45, 35, 27, 0.92);
 
             /* Page-local design tokens (not themeable) */
             --radius: 14px;
@@ -65,7 +68,8 @@
         /* Only the prose stays serif; interface text is sans for legibility
            at small sizes, which is the convention the lesson pages follow. */
         .ui, .pill, .btn, .numeral, .chip, .eyebrow, .meta-row,
-        .row-label, .progress-label, footer {
+        .row-label, .progress-label, .term-switch, .term-tab, .term-break,
+        footer {
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
@@ -202,7 +206,7 @@
            segment so it reads as a tick on the bar rather than as another
            state of the segment -- filled, empty and marked stay distinct.
            var(--primary) because that pairing is already verified at
-           6.06-12.14:1 across the five palettes, dark ones included. */
+           6.06-12.14:1 across the six palettes, dark ones included. */
         .progress-track { margin-bottom: 12px; }
         .week-seg.is-assess { position: relative; }
         .week-seg.is-assess::after {
@@ -252,6 +256,100 @@
             .progress-ticks .legend-item:nth-child(2) { left: 41.67%; transform: translateX(-50%); }
             .progress-ticks .legend-item:nth-child(3) { left: 86.11%; transform: translateX(-100%); }
         }
+
+        /* ── Term tabs ───────────────────────────────────── */
+        /* Eighteen cards in one column was a long scroll, and the second half
+           of the semester sat past the fold with nothing marking where the
+           mid-term falls. The list is split at week 8 into two halves, with a
+           tab strip above them, so the default view is eight cards.
+
+           The strip is only useful if scripting runs, so both it and the
+           one-half-at-a-time display are gated on @media (scripting: enabled).
+           That feature is how the page tells "no JavaScript" apart from "the
+           script will handle it" without shipping a second inline script (this
+           page deliberately keeps exactly one). On a browser that does not
+           know the feature the block is ignored: the strip stays hidden and
+           both halves render open, which is the page as it was rather than a
+           list trapped behind a tab that cannot open. */
+        .term-switch {
+            display: none;      /* re-enabled under @media (scripting: enabled) */
+            gap: .3rem;
+            padding: .3rem;
+            margin-bottom: 1.1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            box-shadow: var(--shadow-sm);
+        }
+        .term-tab {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: .05rem;
+            min-height: 48px;
+            padding: .5rem .9rem;
+            border: 1px solid transparent;
+            border-radius: 100px;
+            background: transparent;
+            color: var(--text);
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: -.01em;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color .15s ease, border-color .15s ease;
+        }
+        .term-tab small {
+            font-size: .66rem;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+        }
+        .term-tab:hover { background: var(--bg); border-color: var(--border); }
+        /* Same reasoning as .pill-primary: a filled --accent is not a safe
+           text background across the six palettes, so the paired soft tint
+           carries the selected state. */
+        .term-tab.is-active { background: var(--accent-light); border-color: var(--accent); }
+        .term-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        @media (scripting: enabled) {
+            .term-switch { display: flex; }
+            .term-panel:not(.is-active) { display: none; }
+        }
+
+        /* ── Mid-term marker ─────────────────────────────── */
+        /* Week 8 is a real week but not a lesson, so it gets a row of its own
+           at the foot of the first half: dashed, and not a link, so it reads
+           as the boundary it is instead of as a card that looks clickable and
+           is not. */
+        .term-break {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: 1rem 1.15rem;
+            background: var(--card-bg);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+        }
+        .term-break-num {
+            flex: 0 0 auto;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border);
+            border-radius: 13px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: var(--text);
+        }
+        .term-break-body { display: flex; flex-direction: column; gap: .1rem; }
+        .term-break-body strong { font-size: .95rem; color: var(--primary); }
+        .term-break-body span { font-size: .82rem; color: var(--text); }
 
         /* ── Week cards ──────────────────────────────────── */
         .weeks { display: flex; flex-direction: column; gap: 1rem; }
@@ -309,7 +407,7 @@
 
         .week-head { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; margin-bottom: .3rem; }
         /* One line icon per week, in the title's own colour so the pairing is
-           the one already measured across the five palettes. Inline SVG rather
+           the one already measured across the six palettes. Inline SVG rather
            than emoji because emoji render differently per device -- and this is
            the page students see first -- and take their colour from the OS
            rather than the palette. Decorative, hence aria-hidden. */
@@ -377,7 +475,7 @@
         /* --warm ranges from a dark rust to a bright cyan or pink depending on
            the active theme, so white text on it is not reliably readable.
            Tinting with the paired soft background and colouring the text with
-           --warm keeps the contrast correct in all five palettes. */
+           --warm keeps the contrast correct in all six palettes. */
         .pill-game { background: var(--vocab-bg); border-color: var(--warm); color: var(--text); }
         .pill-game:hover { background: var(--warm); color: var(--text); }
         .pill-file { background: transparent; color: var(--text); }
@@ -394,11 +492,10 @@
             border: 1px dashed var(--border);
             border-radius: var(--radius);
             padding: 1.5rem;
-            margin: 1.2rem 0 0;
+            margin: 0;
             text-align: center;
         }
-        .roadmap h3 { font-size: 1.05rem; color: var(--primary); margin-bottom: .4rem; }
-        .roadmap p { color: var(--text); font-size: .92rem; max-width: 46ch; margin: 0 auto .9rem; }
+        .roadmap h3 { font-size: 1.05rem; color: var(--primary); margin-bottom: .9rem; }
         .roadmap .topics {
             display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center;
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -436,6 +533,10 @@
             .meta-row { gap: .4rem; }
             .pill { flex: 1 1 auto; justify-content: center; min-height: 44px; }
             .week-head h3 { font-size: 1.05rem; }
+            /* The two tabs have to hold "Weeks 1–8" and its caption at 320px,
+               so the caption loses weight before the week range does. */
+            .term-tab { padding: .45rem .6rem; font-size: .82rem; }
+            .term-tab small { font-size: .6rem; letter-spacing: .04em; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -447,7 +548,10 @@
         @media print {
             body { background: #fff; }
             .hero { background: none; color: #000; padding: 0 0 1rem; }
-            .hero::before, .hero-actions, .progress, .roadmap .topics { display: none; }
+            .hero::before, .hero-actions, .progress, .roadmap .topics,
+            .term-switch { display: none; }
+            /* Both halves print: the tab strip is the one thing that cannot. */
+            .term-panel, .term-panel:not(.is-active) { display: flex; }
             .eyebrow { border-color: #999; color: #000; background: none; }
             .hero .byline { color: #333; }
             .week-card { break-inside: avoid; box-shadow: none; background-image: none; }
@@ -484,11 +588,11 @@
 
     <div class="progress">
         <div class="progress-label">
-            <span><strong>Week 7</strong> of 18</span>
-            <span>11 weeks to go</span>
+            <span><strong>Week 8</strong> of 18</span>
+            <span>10 weeks to go</span>
         </div>
         <div class="progress-track" role="img"
-             aria-label="Week 7 of 18. Weeks 1 to 7 are complete; the remaining 11 have not been taught yet.">
+             aria-label="Week 8 of 18. Weeks 1 to 8 are complete; the remaining 10 have not been taught yet.">
             <span class="week-seg is-done" title="Week 1"></span>
             <span class="week-seg is-done" title="Week 2"></span>
             <span class="week-seg is-done" title="Week 3"></span>
@@ -496,7 +600,7 @@
             <span class="week-seg is-done" title="Week 5"></span>
             <span class="week-seg is-done" title="Week 6"></span>
             <span class="week-seg is-done" title="Week 7"></span>
-            <span class="week-seg is-assess" data-assess="Mid-term" title="Week 8"></span>
+            <span class="week-seg is-done is-assess" data-assess="Mid-term" title="Week 8"></span>
             <span class="week-seg" title="Week 9"></span>
             <span class="week-seg" title="Week 10"></span>
             <span class="week-seg" title="Week 11"></span>
@@ -516,7 +620,26 @@
         </div>
     </div>
 
-    <div class="weeks" id="weeks">
+    <!-- Two halves, split at the mid-term. The strip sits at the top of the
+         schedule and carries the #weeks anchor, so "Browse the weeks" lands on
+         it rather than on the first card. -->
+    <div class="term-switch" id="weeks" role="tablist" aria-label="Semester half">
+        <button type="button" class="term-tab is-active" id="term-tab-1"
+                role="tab" aria-selected="true" aria-controls="weeks-1"
+                data-panel="1">
+            Weeks 1–8
+            <small>Mid-term at the end</small>
+        </button>
+        <button type="button" class="term-tab" id="term-tab-2" tabindex="-1"
+                role="tab" aria-selected="false" aria-controls="weeks-2"
+                data-panel="2">
+            Weeks 9–18
+            <small>Final exam in week 16</small>
+        </button>
+    </div>
+
+    <div class="weeks term-panel is-active" id="weeks-1" role="tabpanel"
+         aria-labelledby="term-tab-1" data-term="1">
 
         <!-- WEEK 1 -->
         <article data-week="1" class="week-card">
@@ -679,14 +802,12 @@
         </article>
 
         <!-- WEEK 7 -->
-        <article data-week="7" class="week-card is-current">
+        <article data-week="7" class="week-card">
             <div class="numeral">07</div>
             <div class="week-head">
                 <svg class="week-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="12" cy="6" rx="7.5" ry="2.8"/><path d="M4.5 6v5.5c0 1.55 3.35 2.8 7.5 2.8s7.5-1.25 7.5-2.8V6"/><path d="M4.5 11.5V17c0 1.55 3.35 2.8 7.5 2.8s7.5-1.25 7.5-2.8v-5.5"/></svg>
                 <h3>Database Fundamentals</h3>
                 <span class="chip chip-grammar">past simple</span>
-            
-                <span class="chip chip-current">This week</span>
             </div>
             <p>How organisations store, find and protect their data: tables, keys, queries and backups.</p>
             <div class="resources">
@@ -706,6 +827,18 @@
                 </div>
             </div>
         </article>
+
+        <div class="term-break">
+            <span class="term-break-num" aria-hidden="true">08</span>
+            <span class="term-break-body">
+                <strong>Mid-term</strong>
+                <span>Week 8 · assessment week, no lesson</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="weeks term-panel" id="weeks-2" role="tabpanel"
+         aria-labelledby="term-tab-2" data-term="2">
 
         <!-- WEEK 9 -->
         <article data-week="9" class="week-card">
@@ -732,18 +865,17 @@
                 </div>
             </div>
         </article>
-    </div>
 
-    <!-- ══════════ ROADMAP ══════════ -->
-    <div class="roadmap">
-        <h3>Weeks 10–18 · in preparation</h3>
-        <p>The remaining nine weeks of the course are being written.</p>
-        <div class="topics">
-            <span>Programming</span>
-            <span>Web Development</span>
-            <span>Databases</span>
-            <span>Cybersecurity</span>
-            <span>and more</span>
+        <!-- ══════════ ROADMAP ══════════ -->
+        <div class="roadmap">
+            <h3>Weeks 10–18 · forthcoming</h3>
+            <div class="topics">
+                <span>Programming</span>
+                <span>Web Development</span>
+                <span>Databases</span>
+                <span>Cybersecurity</span>
+                <span>and more</span>
+            </div>
         </div>
     </div>
 
@@ -755,7 +887,7 @@
         Yuan Ze University
     </p>
     <p style="margin-top:.4rem;">
-        Readings adapted from <a href="https://www.bbc.com/future" target="_blank" rel="noopener">BBC Future</a>.
+        Readings adapted from <a href="https://www.bbc.com/future" target="_blank" rel="noopener">BBC Technology</a>.
         Student work and rosters are never published on this site.
     </p>
 </footer>
@@ -783,6 +915,66 @@
     var body = document.body;
     var startAttr = body.getAttribute('data-term-start');
     var override = body.getAttribute('data-current-week');
+
+    // ── Term tabs ─────────────────────────────────────────────────
+    // Both halves ship in the markup; this only decides which one is on
+    // screen. It lives in the one inline script the page is allowed rather
+    // than in a second block, so the tab state and the current week cannot
+    // disagree about where the term is.
+    var tabs = document.querySelectorAll('.term-tab');
+    var panels = document.querySelectorAll('.term-panel');
+
+    // Week 8 is the mid-term, so the second half begins at week 9.
+    var SECOND_HALF = 9;
+
+    function halfOf(n) { return n >= SECOND_HALF ? '2' : '1'; }
+
+    function showHalf(n, updateHash) {
+        var i, on;
+        for (i = 0; i < tabs.length; i++) {
+            on = tabs[i].getAttribute('data-panel') === n;
+            tabs[i].classList.toggle('is-active', on);
+            tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+            tabs[i].tabIndex = on ? 0 : -1;
+        }
+        for (i = 0; i < panels.length; i++) {
+            panels[i].classList.toggle('is-active',
+                panels[i].getAttribute('data-term') === n);
+        }
+        // replaceState rather than location.hash: switching halves is a view
+        // change on the same page, and the back button should not become an
+        // undo stack of tabs. The fragment survives in the address bar so it
+        // can still be copied into a message. It throws on file:// in some
+        // browsers, where the page is often opened straight off disk.
+        if (updateHash) {
+            try { history.replaceState(null, '', '#weeks-' + n); } catch (err) {}
+        }
+    }
+
+    for (var ti = 0; ti < tabs.length; ti++) {
+        tabs[ti].addEventListener('click', function () {
+            showHalf(this.getAttribute('data-panel'), true);
+        });
+        // Arrow keys and Home/End move between the tabs, which is what a
+        // role="tablist" is expected to do once the tabs are in the tab order.
+        tabs[ti].addEventListener('keydown', function (e) {
+            var at = Array.prototype.indexOf.call(tabs, this);
+            var to;
+            if (e.key === 'ArrowRight') to = (at + 1) % tabs.length;
+            else if (e.key === 'ArrowLeft') to = (at - 1 + tabs.length) % tabs.length;
+            else if (e.key === 'Home') to = 0;
+            else if (e.key === 'End') to = tabs.length - 1;
+            else return;
+            e.preventDefault();
+            showHalf(tabs[to].getAttribute('data-panel'), true);
+            tabs[to].focus();
+        });
+    }
+
+    // A #weeks-1 / #weeks-2 fragment wins over the date, so a link can point
+    // at a half directly.
+    var hashHalf = /^#?weeks-([12])$/.exec(window.location.hash || '');
+    hashHalf = hashHalf ? hashHalf[1] : '';
 
     // The term length is read from the rendered bar, so changing 18 segments
     // to 20 needs no second edit here.
@@ -818,6 +1010,13 @@
         var o = parseInt(override, 10);
         if (!isNaN(o)) week = o;
     }
+
+    // Open the half that holds today's week, clamped to the ends of the term
+    // so a week 0 (term not started) opens the first half and a finished term
+    // opens the second. A fragment in the URL overrides both, and an
+    // unparseable date falls back to the first half.
+    showHalf(hashHalf ||
+             halfOf(week === null ? 1 : Math.min(Math.max(week, 1), total)), false);
 
     if (week === null) return;            // bad date: leave the static markup
 

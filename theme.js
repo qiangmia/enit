@@ -12,10 +12,17 @@
 //   etc.
 //
 // palettes come from the uupm.cc color catalog:
+//   sand         = "Warm Sand"              (sand paper + espresso ink + terracotta)
+//   default      = "ENIT Navy"              (the original navy & white classroom look)
 //   educational  = "Educational App"        (playful indigo + energetic orange)
 //   gaming       = "Gaming"                 (neon purple + rose action, dark)
 //   creative     = "Creative Agency"        (bold pink + cyan accent)
 //   developer    = "Developer Tool / IDE"   (code dark + run green)
+//
+// Warm Sand is the site's look now: it is the fallback in current() and
+// reset(), and it is the :root committed in index.html. The other palettes
+// stay selectable from the Class Config page, including ENIT Navy, the old
+// default, so anyone who chose it explicitly keeps it.
 
 (function () {
     'use strict';
@@ -27,9 +34,42 @@
     // --primary-solid is used where white text sits on a solid primary
     // background (e.g. the selected week chips in the config page).
     var THEMES = {
+        sand: {
+            label: 'Warm Sand',
+            desc: 'Sand paper, espresso ink, terracotta accent (light, the current look)',
+            vars: {
+                'bg': '#f1eae0',
+                'card-bg': '#fffdf9',
+                'text': '#2a241e',
+                'text-light': '#6a5f54',
+                'border': '#ded2c2',
+                'primary': '#4a3122',
+                'primary-light': '#7a5a42',
+                'primary-solid': '#4a3122',
+                'accent': '#a94e27',
+                'accent-light': '#f4ddcb',
+                'warm': '#8b5a1e',
+                'warm-light': '#f7e3c0',
+                'success': '#2f6b4a',
+                'success-bg': '#e9f2ea',
+                'error': '#a3352b',
+                'error-bg': '#fae9e5',
+                'grammar-bg': '#f6efe4',
+                'vocab-bg': '#fbf0de',
+                'task-bg': '#edf3ea',
+                'homework-bg': '#fbede9',
+                'info-bg': '#f3eadf',
+                'team-a': '#a94e27',
+                'team-a-bg': '#f4ddcb',
+                'team-b': '#3f6b6b',
+                'team-b-bg': '#e4efee',
+                'overlay-a': 'rgba(45,35,27,0.85)',
+                'overlay-b': 'rgba(45,35,27,0.92)'
+            }
+        },
         default: {
-            label: 'ENIT Default',
-            desc: 'Navy & white classroom look (current)',
+            label: 'ENIT Navy',
+            desc: 'Navy & white classroom look (the original default)',
             vars: {
                 'bg': '#f7fafc',
                 'card-bg': '#ffffff',
@@ -204,13 +244,17 @@
         try { localStorage.removeItem(key); } catch (e) { /* private mode */ }
     }
 
+    // The site's look. Everything below falls back to it: no stored choice,
+    // an unknown key (a palette that was removed), or Reset.
+    var FALLBACK = 'sand';
+
     function current() {
         var key = safeGet(STORE_KEY);
-        return THEMES[key] ? key : 'default';
+        return THEMES[key] ? key : FALLBACK;
     }
 
     function apply(key, persist) {
-        if (!THEMES[key]) key = 'default';
+        if (!THEMES[key]) key = FALLBACK;
         var t = THEMES[key];
         var css = ':root{';
         for (var name in t.vars) {
@@ -234,7 +278,7 @@
 
     function reset() {
         safeRemove(STORE_KEY);
-        apply('default', false);
+        apply(FALLBACK, false);
     }
 
     function list() {
