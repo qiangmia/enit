@@ -1063,17 +1063,19 @@
         document.body.appendChild(overlay);
     };
 
-    // Read-along (paragraph driven, speechSynthesis fallback; swap for MP3s via audio/manifest.json later)
+    // Read-along (manifest-driven MP3 playback via HeyGen TTS; speechSynthesis fallback)
     var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
     var play = document.getElementById('ra-play');
-    var pause = document.getElementById('ra-pause');
-    var stop = document.getElementById('ra-stop');
+    var pauseBtn = document.getElementById('ra-pause');
+    var stopBtn = document.getElementById('ra-stop');
     var status = document.getElementById('ra-status');
     var rateBtns = document.querySelectorAll('.readalong button[data-rate]');
     var rate = 1.0;
     var idx = 0;
     var speaking = false;
     var utter = null;
+    var audioPlayer = null;  // HTMLAudioElement when using manifest MP3s
+    var manifestLoaded = false;
 
     rateBtns.forEach(function(b){
         b.addEventListener('click', function(){
@@ -1084,7 +1086,13 @@
     });
 
     function clear(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
-    function speak(i){
+    function mp3Path(p){
+        if (!manifestLoaded) return null;
+        // audio/ lives next to Week9_Cybersecurity.html in the same dir.
+        return 'audio/' + (window.HELLOGEN_VOICE ? window.HELLOGEN_VOICE : 'v1') + '/' + p.dataset.audioFile;
+    }
+
+    function speakMP3(i){
         if(i >= paras.length){ stopAll(); status.textContent = 'Finished.'; return; }
         idx = i;
         clear();
@@ -1094,30 +1102,112 @@
             status.textContent = 'Paragraph ' + (i+1) + ' of ' + paras.length + ' (reduced motion).';
             return;
         }
-        var text = paras[i].textContent.replace(/\s+/g,' ').trim();
-        if('speechSynthesis' in window){
-            window.speechSynthesis.cancel();
-            utter = new SpeechSynthesisUtterance(text);
-            utter.rate = rate;
-            utter.onend = function(){ speak(i+1); };
-            utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
-            window.speechSynthesis.speak(utter);
-            speaking = true;
-            status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
+        var src = mp3Path(paras[i]);
+        if(src && audioPlayer){
+            // Use pre-generated HeyGen MP3 from the manifest.
+            audioPlayer.src = src;
+            audioPlayer.rate = rate;
+            audioPlayer.onended = function(){
+                speakMP3(i + 1);
+            };
+            audioPlayer.onerror = function(){
+                // Audio file failed to load — fall back to speechSynthesis.
+                status.textContent = 'Audio unavailable for paragraph ' + (i+1) + '. Speech fallback.';
+
+                if('speechSynthesis' in window){
+                    window.speechSynthesis.cancel();
+                    utter = new SpeechSynthesisUtterance(paras[i].textContent.replace(/\s+/g,' ').trim());
+                    utter.rate = rate;
+                    utter.onend = function(){ speakMP3(i + 1); };
+                    utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
+                    window.speechSynthesis.speak(utter);
+                    speaking = true;
+                    status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
+                } else {
+                    status.textContent = 'Speech not supported in this browser.';
+                }
+            };
+            audioPlayer.load();
+            var playPromise = audioPlayer.play();
+            if (playPromise) {
+                playPromise.then(function(){ speaking = true; }).catch(function(){
+                    status.textContent = 'Audio playback blocked. Click Play to retry.';
+                });
+            }
+            status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (HeyGen MP3, ' + rate + '\u00d7).';
         } else {
-            status.textContent = 'Speech not supported in this browser.';
+            // speechSynthesis fallback
+            var text = paras[i].textContent.replace(/\s+/g,' ').trim();
+            if('speechSynthesis' in window){
+                window.speechSynthesis.cancel();
+                utter = new SpeechSynthesisUtterance(text);
+                utter.rate = rate;
+                utter.onend = function(){ speakMP3(i + 1); };
+                utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
+                window.speechSynthesis.speak(utter);
+                speaking = true;
+                status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
+            } else {
+                status.textContent = 'Speech not supported in this browser.';
+            }
         }
     }
     function stopAll(){
         if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+        if(audioPlayer){ try { audioPlayer.pause(); } catch(e) {} }
         speaking = false;
         clear();
     }
 
-    if(play){ play.addEventListener('click', function(){ speak(idx); }); }
-    if(pause){ pause.addEventListener('click', function(){ if('speechSynthesis' in window){ window.speechSynthesis.pause(); } }); }
-    if(stop){ stop.addEventListener('click', function(){ stopAll(); status.textContent = 'Stopped.'; }); }
-})();
+    if(play){ play.addEventListener('click', function(){ speakMP3(idx); }); }
+    if(pauseBtn){ pauseBtn.addEventListener('click', function(){
+        if(audioPlayer){ audioPlayer.pause(); }
+        if('speechSynthesis' in window){ window.speechSynthesis.pause(); }
+    }); }
+    if(stopBtn){ stopBtn.addEventListener('click', function(){ stopAll(); status.textContent = 'Stopped.'; }); }
+
+    // Load audio manifest (HeyGen TTS MP3s) when present.
+    if (window.fetch) {
+        fetch('audio/manifest.json')
+            .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+            .then(function(m){
+                if (!m || !m.paragraphs) return;
+                var mp3Paras = [];
+                m.paragraphs.forEach(function(p, idx){
+                    // Map manifest paragraph order to DOM paras order by index.
+                    var el = paras[idx];
+                    if (!el) return;
+                    el.setAttribute('data-audio-file', p.audio_file || ('para-' + (idx + 1).toString().padStart(2, '0') + '.mp3'));
+                    el.setAttribute('data-audio-voice', p.voice || 'nadine');
+                    el.setAttribute('data-audio-src', (p.audio_file || ('para-' + (idx + 1).toString().padStart(2, '0') + '.mp3')));
+                    mp3Paras.push({n: idx, el: el, p: p});
+                });
+                // Create the audio element after DOM is ready — it's in the same doc.
+                var a = new Audio();
+                a.preload = 'metadata';
+                a.addEventListener('loadedmetadata', function(){ if (manifestLoaded && idx === 0) { /* noop */ } });
+                window.__heygenAudio = a;
+                window.__heygenManifest = m;
+                audioPlayer = a;
+                manifestLoaded = true;
+                // Auto-start loading the first MP3 to verify availability.
+                if (mp3Paras.length && mp3Paras[0] && mp3Paras[0].p.audio_file) {
+                    var firstSrc = 'audio/' + 'v1' + '/' + mp3Paras[0].p.audio_file;
+                    a.src = firstSrc;
+                    a.load();
+                }
+                status.textContent = 'Ready: HeyGen MP3s loaded (' + mp3Paras.length + ' paragraphs).';
+            })
+            .catch(function(e){
+                // Fall back silently — speechSynthesis remains available.
+                window.__heygenAudio = null;
+                window.__heygenManifest = null;
+                manifestLoaded = false;
+                status.textContent = 'Click Play to start. Uses built-in speech if no audio files are loaded.';
+            });
+    } else {
+        status.textContent = 'Click Play to start. Uses built-in speech if no audio files are loaded.';
+    }
 </script>
 </body>
 </html>
