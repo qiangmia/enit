@@ -1,13 +1,14 @@
 {
   "version": 1,
   "lesson_file": "Week9_Cybersecurity.html",
-  "generated_at": "2026-10-29T19:26:14Z",
+  "generated_at": "2026-10-29T19:33:33Z",
   "model": "heygen/heygen-voice-1-turbo",
   "audio_dir": "audio/",
   "notes": [
     "Audio files are pre-generated MP3s from HeyGen Voice Turbo via OpenRouter.",
     "If OPENROUTER_API_KEY is not available, set to speechSynthesis fallback.",
-    "Rate control uses HTMLAudioElement playbackRate (0.85 / 1.0)."
+    "Rate control uses HTMLAudioElement playbackRate (0.85 / 1.0).",
+    "Placeholder MP3s generated. Replace with real TTS using OPENROUTER_API_KEY."
   ],
   "paragraphs": [
     {
@@ -17,7 +18,7 @@
       "text_preview": "It was Monday morning at NovaNet Solutions when Lin Mei-hui first noticed something was wrong. At 02:43, the access log ...",
       "text_length": 320,
       "audio_file": "para-01.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 2,
@@ -26,7 +27,7 @@
       "text_preview": "\"I've just seen it,\" said Mason, the IT Analyst, as he sat down next to Lin. \"Three different admin accounts have had fa...",
       "text_length": 206,
       "audio_file": "para-02.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 3,
@@ -35,7 +36,7 @@
       "text_preview": "\"We've had a problem like this once before,\" Lin replied. \"But this time, it looks more organised. I think someone has b...",
       "text_length": 157,
       "audio_file": "para-03.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 4,
@@ -44,7 +45,7 @@
       "text_preview": "Lin had not seen a targeted attack of this kind since she had joined NovaNet. Within five minutes, her team had blocked ...",
       "text_length": 318,
       "audio_file": "para-04.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 5,
@@ -53,7 +54,7 @@
       "text_preview": "\"Good call,\" said Chen from the support desk. \"I have already had two users ask me why they were logged out. I've told t...",
       "text_length": 143,
       "audio_file": "para-05.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 6,
@@ -62,7 +63,7 @@
       "text_preview": "\"Keep a record of every call,\" Lin said. \"So far, we haven't found any proof that anyone has actually broken in. But we ...",
       "text_length": 146,
       "audio_file": "para-06.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 7,
@@ -71,7 +72,7 @@
       "text_preview": "For the next three hours, the team checked access logs, email logs and file permissions. They found one short window of ...",
       "text_length": 377,
       "audio_file": "para-07.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 8,
@@ -80,7 +81,7 @@
       "text_preview": "The logs also showed how patient the attacker had been. For almost two days, one IP address had tried a small number of ...",
       "text_length": 355,
       "audio_file": "para-08.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 9,
@@ -89,7 +90,7 @@
       "text_preview": "\"Should we tell the customers?\" Chen asked. \"Not yet,\" Lin said. \"So far, we have only seen failed logins and one short ...",
       "text_length": 307,
       "audio_file": "para-09.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 10,
@@ -98,7 +99,7 @@
       "text_preview": "\"This could have been much worse,\" Lin told the meeting. \"We have since disabled that account, applied a critical patch ...",
       "text_length": 271,
       "audio_file": "para-10.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 11,
@@ -107,7 +108,7 @@
       "text_preview": "Before lunch, Lin added a short section to the report called \"What we have learned\". It listed three things: the old acc...",
       "text_length": 327,
       "audio_file": "para-11.mp3",
-      "file_exists": false
+      "file_exists": true
     },
     {
       "n": 12,
@@ -116,8 +117,9 @@
       "text_preview": "By late morning, Lin was writing the incident report. She knew the team had acted quickly, but she also knew they had no...",
       "text_length": 307,
       "audio_file": "para-12.mp3",
-      "file_exists": false
+      "file_exists": true
     }
   ],
-  "generated_ok": false
+  "generated_ok": false,
+  "updated_at": "2026-10-29T19:39:50Z"
 }
