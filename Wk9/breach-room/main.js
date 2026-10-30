@@ -10,6 +10,14 @@ import {
   QUIZ,
   POINTS,
 } from './content.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+
+const SB_READY = Boolean(
+  SUPABASE_URL &&
+    SUPABASE_ANON_KEY &&
+    !SUPABASE_URL.includes('YOUR_PROJECT') &&
+    !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY')
+);
 
 const $ = (id) => document.getElementById(id);
 
@@ -32,12 +40,33 @@ const state = {
   station: null,
   soundOn: true,
   best: 0,
+  group: null,
+  playerName: '',
+  groupLocked: false,
+  startedAt: 0,
+  durationSeconds: 0,
+  attemptId: '',
+  submitted: false,
+  submitting: false,
+  boardTab: 'all',
+  boardSummary: null,
+  boardRows: [],
+  boardOpen: false,
 };
 
 try {
   state.best = Number(localStorage.getItem('breach-room-best') || 0) || 0;
 } catch (e) {
   state.best = 0;
+}
+
+try {
+  const savedGroup = localStorage.getItem('breach-room-group');
+  if (savedGroup === 'A' || savedGroup === 'B') state.group = savedGroup;
+  state.playerName = localStorage.getItem('breach-room-name') || '';
+} catch (e) {
+  state.group = null;
+  state.playerName = '';
 }
 
 const sceneApi = createScene($('scene'));
@@ -63,6 +92,60 @@ for (const id of Object.keys(stationMeta)) {
   btn.addEventListener('click', () => openStation(id));
   hotspotsEl.appendChild(btn);
   hotspotEls[id] = btn;
+}
+
+// ---------- Supabase REST helpers ----------
+async function sb(path, options = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error('Supabase ' + res.status + ': ' + text.slice(0, 200));
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+function fmtTime(sec) {
+  if (sec === null || sec === undefined || Number.isNaN(Number(sec))) return '—';
+  const total = Math.max(0, Math.round(Number(sec)));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  } catch (e) {
+    return '';
+  }
+}
+
+function getPlayerName() {
+  const input = $('player-name');
+  const raw = (input ? input.value : state.playerName || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .slice(0, 24);
+  return raw || 'Anonymous';
+}
+
+function uuid() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
 // ---------- helpers ----------
@@ -145,6 +228,215 @@ function updateAll() {
   updateTargets();
   updateHotspots();
   updateTimerUI();
+}
+
+// ---------- group and leaderboard ----------
+function updateGroupUI() {
+  document.querySelectorAll('.seg-btn').forEach((btn) => {
+    const on = btn.dataset.group === state.group;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  const start = $('start');
+  if (start) start.disabled = !state.group || state.started;
+  const hint = $('group-hint');
+  if (hint) {
+    hint.textContent = state.group
+      ? 'Group ' + state.group + ' selected · columns ' + (state.group === 'A' ? '1–5' : '6–10') + '.'
+      : 'Choose your group to start.';
+  }
+}
+
+function setGroup(group, persist = true) {
+  if (state.groupLocked) return;
+  if (group !== 'A' && group !== 'B') return;
+  state.group = group;
+  if (persist) {
+    try {
+      localStorage.setItem('breach-room-group', group);
+    } catch (e) {
+      // ignore storage failures
+    }
+  }
+  updateGroupUI();
+  if (state.boardOpen) {
+    state.boardTab = group;
+    updateBoardTabs();
+    loadBoardRows();
+  }
+}
+
+function openBoard() {
+  if (!SB_READY) {
+    toast('The leaderboard is not configured.', 'bad');
+    return;
+  }
+  state.boardOpen = true;
+  state.boardTab = state.group || 'all';
+  updateBoardTabs();
+  $('panel-board').hidden = false;
+  loadBoard();
+}
+
+function closeBoard() {
+  state.boardOpen = false;
+  $('panel-board').hidden = true;
+}
+
+function updateBoardTabs() {
+  document.querySelectorAll('.board-tab').forEach((tab) => {
+    const on = tab.dataset.tab === state.boardTab;
+    tab.classList.toggle('active', on);
+    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+
+async function loadBoard() {
+  if (!SB_READY || !state.boardOpen) return;
+  $('board-list').innerHTML = '<div class="board-empty">Loading…</div>';
+  try {
+    const summary = await sb(
+      'breach_room_group_summary?select=group_label,runs,total_score,best_score,avg_score,best_time_seconds'
+    );
+    state.boardSummary = summary || [];
+    renderBoardSummary();
+    await loadBoardRows();
+  } catch (e) {
+    $('board-summary').innerHTML = '';
+    $('board-list').innerHTML =
+      '<div class="board-empty">Could not load the leaderboard. Check your connection and refresh.</div>';
+    $('board-note').textContent = 'Offline';
+  }
+}
+
+async function loadBoardRows() {
+  if (!SB_READY || !state.boardOpen) return;
+  $('board-list').innerHTML = '<div class="board-empty">Loading…</div>';
+  let path =
+    'breach_room_leaderboard?select=attempt_id,display_name,group_label,score,rank,log_score,contain_score,order_score,quiz_score,duration_seconds,created_at&order=score.desc,created_at.asc&limit=10';
+  if (state.boardTab === 'A' || state.boardTab === 'B') {
+    path += '&group_label=eq.' + state.boardTab;
+  }
+  try {
+    const rows = await sb(path);
+    state.boardRows = rows || [];
+    renderBoardRows();
+  } catch (e) {
+    $('board-list').innerHTML =
+      '<div class="board-empty">Could not load scores. Refresh to try again.</div>';
+  }
+}
+
+function renderBoardSummary() {
+  const wrap = $('board-summary');
+  wrap.innerHTML = '';
+  for (const group of ['A', 'B']) {
+    const info = (state.boardSummary || []).find((row) => row.group_label === group);
+    const card = document.createElement('div');
+    card.className = 'group-card' + (info ? '' : ' empty');
+    const badge = document.createElement('span');
+    badge.className = 'group-badge' + (group === 'B' ? ' b' : '');
+    badge.textContent = group;
+    const text = document.createElement('div');
+    const name = document.createElement('div');
+    name.className = 'g-name';
+    name.textContent = 'GROUP ' + group + ' · ' + (group === 'A' ? 'COLUMNS 1–5' : 'COLUMNS 6–10');
+    const total = document.createElement('div');
+    total.className = 'g-total';
+    const totalLabel = document.createElement('small');
+    totalLabel.textContent = 'TOTAL';
+    total.append(totalLabel, document.createTextNode(info ? Number(info.total_score || 0).toLocaleString() : '—'));
+    const line = document.createElement('div');
+    line.className = 'g-line';
+    line.textContent = info
+      ? 'best ' +
+        info.best_score +
+        ' · avg ' +
+        info.avg_score +
+        ' · ' +
+        info.runs +
+        ' runs · best ' +
+        fmtTime(info.best_time_seconds)
+      : 'No runs yet.';
+    text.append(name, total, line);
+    card.append(badge, text);
+    wrap.appendChild(card);
+  }
+}
+
+function renderBoardRows() {
+  const list = $('board-list');
+  list.innerHTML = '';
+  if (!state.boardRows.length) {
+    const empty = document.createElement('div');
+    empty.className = 'board-empty';
+    empty.textContent =
+      state.boardTab === 'all'
+        ? 'No scores yet. Be the first.'
+        : 'No scores in Group ' + state.boardTab + ' yet.';
+    list.appendChild(empty);
+    $('board-note').textContent = 'Top 10';
+    return;
+  }
+  state.boardRows.forEach((row, index) => {
+    const entry = document.createElement('div');
+    entry.className = 'board-entry' + (row.attempt_id === state.attemptId ? ' mine' : '');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'board-row';
+
+    const rank = document.createElement('span');
+    rank.className = 'r-rank';
+    rank.textContent = String(index + 1);
+    const group = document.createElement('span');
+    group.className = 'board-group-badge' + (row.group_label === 'B' ? ' b' : '');
+    group.textContent = row.group_label || '?';
+    const name = document.createElement('span');
+    name.className = 'r-name';
+    name.textContent = row.display_name || 'Anonymous';
+    const score = document.createElement('span');
+    score.className = 'r-score';
+    score.textContent = String(row.score);
+    const time = document.createElement('span');
+    time.className = 'r-time';
+    time.textContent = fmtTime(row.duration_seconds);
+    const chev = document.createElement('span');
+    chev.className = 'chev';
+    chev.textContent = '▸';
+
+    btn.append(rank, group, name, score, time, chev);
+
+    const detail = document.createElement('div');
+    detail.className = 'board-detail';
+    detail.hidden = true;
+    const line = document.createElement('div');
+    line.className = 'd-line';
+    line.textContent =
+      'Log ' +
+      row.log_score +
+      ' · Contain ' +
+      row.contain_score +
+      ' · Report ' +
+      row.order_score +
+      ' · Questions ' +
+      row.quiz_score;
+    const sub = document.createElement('div');
+    sub.className = 'd-sub';
+    sub.textContent =
+      (row.rank || '') + ' · ' + fmtTime(row.duration_seconds) + ' · ' + formatDate(row.created_at);
+    detail.append(line, sub);
+
+    btn.addEventListener('click', () => {
+      const open = !detail.hidden;
+      detail.hidden = open;
+      entry.classList.toggle('open', !open);
+    });
+
+    entry.append(btn, detail);
+    list.appendChild(entry);
+  });
+  $('board-note').textContent =
+    'Top 10 · ' + (state.boardTab === 'all' ? 'all groups' : 'Group ' + state.boardTab);
 }
 
 // ---------- log station ----------
@@ -526,7 +818,11 @@ function closeStation() {
 }
 
 document.querySelectorAll('[data-close]').forEach((btn) => {
-  btn.addEventListener('click', closeStation);
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.close;
+    if (target === 'board') closeBoard();
+    else if (state.station === target) closeStation();
+  });
 });
 
 $('contain-deploy').addEventListener('click', () => {
@@ -551,6 +847,7 @@ $('file-report').addEventListener('click', () => {
 // ---------- debrief ----------
 function fileReport() {
   state.reportFiled = true;
+  state.durationSeconds = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
   const pct = state.score / MAX_SCORE;
   let rank = 'Trainee';
   if (pct >= 0.9) rank = 'SOC Lead';
@@ -565,16 +862,30 @@ function fileReport() {
     ['Report order', state.stageScores.order, 200],
     ['Questions', state.stageScores.quiz, 225],
   ];
-  $('breakdown').innerHTML = rows
-    .map(([label, got, max]) => {
-      const sign = got >= 0 ? '+' : '';
-      return '<div><span>' + label + '</span><b>' + sign + got + ' / ' + max + '</b></div>';
-    })
-    .join('');
+  $('breakdown').innerHTML =
+    rows
+      .map(([label, got, max]) => {
+        const sign = got >= 0 ? '+' : '';
+        return '<div><span>' + label + '</span><b>' + sign + got + ' / ' + max + '</b></div>';
+      })
+      .join('') +
+    '<div><span>Completion time</span><b>' +
+    fmtTime(state.durationSeconds) +
+    '</b></div>';
   $('debrief-note').textContent =
     pct >= 0.75
       ? 'You found the door that was left open and closed it. The report is ready to file.'
       : 'The attacker got further than we would like. Replay and scan the log more carefully — the indicators are always there.';
+
+  if (SB_READY) {
+    $('submit-row').hidden = false;
+    $('submit-status').textContent =
+      'Ready to submit as ' + getPlayerName() + ' · Group ' + state.group + '.';
+    $('submit-score').disabled = false;
+    $('submit-score').textContent = 'Submit to leaderboard';
+  } else {
+    $('submit-row').hidden = true;
+  }
 
   try {
     if (state.score > state.best) {
@@ -593,6 +904,51 @@ function fileReport() {
   for (const key of Object.keys(panels)) panels[key].hidden = true;
   $('debrief').hidden = false;
   sfx('good');
+}
+
+async function submitScore() {
+  if (!SB_READY || state.submitting || state.submitted) return;
+  if (!state.group) {
+    toast('Choose your group first.', 'bad');
+    return;
+  }
+  state.submitting = true;
+  const submitBtn = $('submit-score');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+  const name = getPlayerName();
+  const row = {
+    attempt_id: state.attemptId,
+    display_name: name,
+    group_label: state.group,
+    score: Math.max(0, Math.round(state.score)),
+    rank: $('rank').textContent,
+    log_score: state.stageScores.log,
+    contain_score: state.stageScores.contain,
+    order_score: state.stageScores.order,
+    quiz_score: state.stageScores.quiz,
+    duration_seconds: state.durationSeconds,
+    game_version: '1.0',
+  };
+  try {
+    await sb('breach_room_scores', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify(row),
+    });
+    state.submitted = true;
+    $('submit-status').textContent = 'Submitted as ' + name + ' · Group ' + state.group + '.';
+    submitBtn.textContent = 'Submitted';
+    submitBtn.disabled = true;
+    toast('Score submitted to the class leaderboard.', 'good');
+  } catch (e) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Try again';
+    $('submit-status').textContent = 'Could not submit. Check your connection and try again.';
+    toast('Submission failed. Your score is still saved locally.', 'bad');
+  } finally {
+    state.submitting = false;
+  }
 }
 
 // ---------- audio ----------
@@ -678,7 +1034,23 @@ function sfx(kind) {
 // ---------- intro / lifecycle ----------
 function startGame(silent) {
   if (state.started) return;
+  if (!state.group) {
+    if (silent) {
+      state.group = 'A';
+      updateGroupUI();
+    } else {
+      toast('Choose your group first.', 'bad');
+      return;
+    }
+  }
   state.started = true;
+  state.groupLocked = true;
+  document.querySelectorAll('.seg-btn').forEach((btn) => {
+    btn.disabled = true;
+  });
+  state.playerName = getPlayerName();
+  state.attemptId = uuid();
+  state.startedAt = Date.now();
   $('intro').hidden = true;
   $('hud').classList.remove('hidden');
   hotspotsEl.classList.remove('hidden');
@@ -693,6 +1065,41 @@ function startGame(silent) {
 function renderTargetsIfNeeded() {
   if ($('log-targets').children.length) return;
   updateTargets();
+}
+
+// ---------- identity and leaderboard wiring ----------
+const nameInput = $('player-name');
+if (nameInput) {
+  nameInput.value = state.playerName;
+  nameInput.addEventListener('input', () => {
+    state.playerName = nameInput.value.slice(0, 24);
+    try {
+      localStorage.setItem('breach-room-name', state.playerName);
+    } catch (e) {
+      // ignore storage failures
+    }
+  });
+}
+document.querySelectorAll('.seg-btn').forEach((btn) => {
+  btn.addEventListener('click', () => setGroup(btn.dataset.group));
+});
+updateGroupUI();
+
+if (!SB_READY) {
+  $('intro-board').hidden = true;
+  $('submit-row').hidden = true;
+} else {
+  $('intro-board').addEventListener('click', openBoard);
+  $('view-board').addEventListener('click', openBoard);
+  $('submit-score').addEventListener('click', submitScore);
+  $('board-refresh').addEventListener('click', loadBoard);
+  document.querySelectorAll('.board-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      state.boardTab = tab.dataset.tab;
+      updateBoardTabs();
+      loadBoardRows();
+    });
+  });
 }
 
 $('start').addEventListener('click', () => {
@@ -713,7 +1120,7 @@ $('mute').addEventListener('click', () => {
 
 if (state.best > 0) {
   document.querySelector('.intro-foot').textContent =
-    'Self-study game · best score ' + state.best + '/' + MAX_SCORE + ' · nothing is sent anywhere.';
+    'Best score ' + state.best + '/' + MAX_SCORE + ' · scores stay in this browser unless you submit them.';
 }
 
 // ---------- render loop ----------
@@ -811,11 +1218,44 @@ function runQA() {
 
 const params = new URLSearchParams(location.search);
 const qaMode = params.get('qa') === '1';
+const boardDemo = params.get('boarddemo') === '1';
 const stateParam = params.get('state');
 const skipIntro = params.get('skipintro') === '1';
 
 if (qaMode) {
   setTimeout(runQA, 500);
+} else if (boardDemo) {
+  state.group = 'A';
+  updateGroupUI();
+  startGame(true);
+  state.boardOpen = true;
+  state.boardTab = 'all';
+  updateBoardTabs();
+  $('panel-board').hidden = false;
+  state.attemptId = 'demo-row-1';
+  state.boardSummary = [
+    { group_label: 'A', runs: 14, total_score: 8420, best_score: 1025, avg_score: 812, best_time_seconds: 412 },
+    { group_label: 'B', runs: 11, total_score: 6980, best_score: 980, avg_score: 760, best_time_seconds: 430 },
+  ];
+  state.boardRows = [
+    {
+      attempt_id: 'demo-row-1', display_name: 'Alice', group_label: 'A', score: 1025, rank: 'SOC Lead',
+      log_score: 300, contain_score: 300, order_score: 200, quiz_score: 225,
+      duration_seconds: 412, created_at: new Date().toISOString(),
+    },
+    {
+      attempt_id: 'demo-row-2', display_name: 'Anonymous', group_label: 'B', score: 980, rank: 'SOC Lead',
+      log_score: 300, contain_score: 255, order_score: 200, quiz_score: 225,
+      duration_seconds: 430, created_at: new Date().toISOString(),
+    },
+    {
+      attempt_id: 'demo-row-3', display_name: 'G07-A', group_label: 'A', score: 845, rank: 'Incident Responder',
+      log_score: 300, contain_score: 225, order_score: 200, quiz_score: 120,
+      duration_seconds: 455, created_at: new Date().toISOString(),
+    },
+  ];
+  renderBoardSummary();
+  renderBoardRows();
 } else if (stateParam) {
   startGame(true);
   if (stateParam === 'contain') {

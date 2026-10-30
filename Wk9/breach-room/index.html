@@ -41,15 +41,37 @@
           <li><strong>Contain</strong> the breach with the right response.</li>
           <li><strong>Report</strong> what happened, in the right order.</li>
         </ul>
+
+        <div class="identity">
+          <div class="field">
+            <span class="field-label">Your group <em>(required)</em></span>
+            <div class="segmented" role="radiogroup" aria-label="Your group">
+              <button type="button" class="seg-btn" data-group="A" role="radio" aria-checked="false">
+                <strong>Group A</strong><span>columns 1–5</span>
+              </button>
+              <button type="button" class="seg-btn" data-group="B" role="radio" aria-checked="false">
+                <strong>Group B</strong><span>columns 6–10</span>
+              </button>
+            </div>
+            <p class="field-hint" id="group-hint">Choose your group to start.</p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="player-name">Leaderboard name <em>(optional)</em></label>
+            <input id="player-name" class="text-input" type="text" maxlength="24" autocomplete="nickname" placeholder="Your English name or a nickname">
+            <p class="field-hint">Shown with your group and score. Blank = Anonymous.</p>
+          </div>
+        </div>
+
         <div class="intro-actions">
-          <button id="start" class="btn btn-primary">Start shift</button>
+          <button id="start" class="btn btn-primary" disabled>Start shift</button>
           <button id="intro-help" class="btn btn-ghost">How to play</button>
+          <button id="intro-board" class="btn btn-ghost">View leaderboard</button>
         </div>
         <div id="help" class="help" hidden>
           <p>Click a glowing station to open it. In the log, click a line that contains the suspicious IP, the time of the first burst, or the old admin account.</p>
           <p>You can close a station and return to the room; your progress is kept. Sound starts after you press Start; use the speaker button to mute.</p>
         </div>
-        <p class="intro-foot">Self-study game · no data is sent or stored on a server.</p>
+        <p class="intro-foot">Scores stay in this browser unless you submit them to the class leaderboard.</p>
       </div>
     </div>
 
@@ -130,11 +152,45 @@
         <div class="score-big"><span id="final-score">0</span><small>/ 1025</small></div>
         <div class="breakdown" id="breakdown"></div>
         <p id="debrief-note"></p>
+        <div id="submit-row" class="submit-row" hidden>
+          <div class="submit-status" id="submit-status">Submit your score to the live leaderboard.</div>
+          <div class="submit-actions">
+            <button id="submit-score" class="btn btn-primary">Submit to leaderboard</button>
+            <button id="view-board" class="btn btn-ghost">View leaderboard</button>
+          </div>
+          <p class="field-hint">Your group and leaderboard name are shown publicly. No student ID is collected.</p>
+        </div>
         <div class="intro-actions">
           <button id="replay" class="btn btn-primary">Play again</button>
           <a class="btn btn-ghost" href="../Week9_Cybersecurity.html">Back to the lesson</a>
         </div>
-        <p class="intro-foot">Self-study only. Nothing is sent anywhere; the score stays in this browser.</p>
+        <p class="intro-foot">Your score is stored in this browser. Submitting sends only your group, name, score and timing to the class leaderboard.</p>
+      </div>
+    </div>
+
+    <div id="panel-board" class="panel board-panel" hidden>
+      <div class="panel-card board-card">
+        <header class="panel-head">
+          <div>
+            <div class="eyebrow">LIVE LEADERBOARD</div>
+            <h2>Breach Room standings</h2>
+          </div>
+          <div class="panel-meta">
+            <button id="board-refresh" class="icon-btn" title="Refresh" aria-label="Refresh leaderboard">↻</button>
+            <button class="icon-btn" data-close="board" aria-label="Close leaderboard">✕</button>
+          </div>
+        </header>
+        <div class="board-summary" id="board-summary"></div>
+        <div class="board-tabs" role="tablist" aria-label="Leaderboard group">
+          <button class="board-tab" data-tab="all" role="tab" aria-selected="true">All</button>
+          <button class="board-tab" data-tab="A" role="tab" aria-selected="false">Group A</button>
+          <button class="board-tab" data-tab="B" role="tab" aria-selected="false">Group B</button>
+        </div>
+        <div class="board-list" id="board-list"></div>
+        <footer class="panel-foot">
+          <span id="board-note">Top 10</span>
+          <button class="btn btn-ghost" data-close="board">Back</button>
+        </footer>
       </div>
     </div>
 

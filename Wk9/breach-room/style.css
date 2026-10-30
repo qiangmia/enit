@@ -272,6 +272,210 @@ html, body {
 }
 .help p { margin: 0 0 10px; font-size: 13.5px; }
 
+/* ── Identity step ─────────────────────────────── */
+.identity {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0 4px;
+  padding: 16px;
+  border: 1px solid var(--game-line);
+  border-radius: 12px;
+  background: rgba(10, 18, 32, 0.6);
+}
+.field { display: grid; gap: 7px; }
+.field-label {
+  font-family: var(--game-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--game-muted);
+}
+.field-label em {
+  font-style: normal;
+  color: var(--game-dim);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.text-input {
+  width: 100%;
+  background: rgba(3, 8, 16, 0.8);
+  border: 1px solid var(--game-line);
+  border-radius: 9px;
+  padding: 11px 12px;
+  color: var(--game-text);
+  font-family: var(--game-sans);
+  font-size: 14px;
+}
+.text-input:focus {
+  outline: none;
+  border-color: var(--game-cyan);
+  box-shadow: 0 0 0 2px rgba(110, 231, 255, 0.18);
+}
+.field-hint { margin: 0; font-size: 12px; color: var(--game-dim); }
+.segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg-btn {
+  text-align: left;
+  background: var(--game-panel-2);
+  border: 1px solid var(--game-line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--game-text);
+  cursor: pointer;
+  display: grid;
+  gap: 2px;
+  font-family: var(--game-sans);
+}
+.seg-btn strong { font-size: 14px; }
+.seg-btn span { font-size: 12px; color: var(--game-muted); }
+.seg-btn:hover { border-color: var(--game-blue); }
+.seg-btn.active {
+  border-color: var(--game-cyan);
+  background: rgba(110, 231, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.3);
+}
+.seg-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── Submit block ──────────────────────────────── */
+.submit-row {
+  margin: 18px 0 4px;
+  padding: 14px;
+  border: 1px solid var(--game-line);
+  border-radius: 12px;
+  background: rgba(10, 18, 32, 0.6);
+  display: grid;
+  gap: 10px;
+}
+.submit-status { font-size: 13px; color: var(--game-muted); }
+.submit-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── Leaderboard ───────────────────────────────── */
+.board-panel { z-index: 60; }
+.board-card { width: min(980px, calc(100vw - 36px)); }
+.board-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 22px 6px;
+}
+.group-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--game-line);
+  border-radius: 10px;
+  background: var(--game-panel-2);
+}
+.group-card .g-name {
+  font-family: var(--game-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--game-muted);
+}
+.group-card .g-total {
+  font-family: var(--game-mono);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--game-text);
+  line-height: 1.15;
+  margin-top: 2px;
+}
+.group-card .g-total small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--game-dim);
+  font-weight: 400;
+}
+.group-card .g-line { font-size: 12px; color: var(--game-text); margin-top: 2px; }
+.group-card.empty { opacity: 0.7; }
+.group-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--game-mono);
+  font-weight: 800;
+  font-size: 13px;
+  background: var(--game-cyan);
+  color: #041018;
+  flex: 0 0 auto;
+}
+.group-badge.b { background: var(--game-amber); }
+.board-tabs { display: flex; gap: 6px; padding: 8px 22px 10px; flex-wrap: wrap; }
+.board-tab {
+  background: transparent;
+  border: 1px solid var(--game-line);
+  color: var(--game-muted);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: var(--game-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.board-tab:hover { border-color: var(--game-blue); color: var(--game-text); }
+.board-tab.active {
+  background: var(--game-cyan);
+  border-color: var(--game-cyan);
+  color: #041018;
+  font-weight: 700;
+}
+.board-list { flex: 1; min-height: 180px; overflow: auto; padding: 0 22px 14px; }
+.board-entry { border-bottom: 1px solid var(--game-line); }
+.board-entry.mine .board-row { background: rgba(110, 231, 255, 0.08); }
+.board-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px 44px 1fr 72px 66px 20px;
+  gap: 8px;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--game-text);
+  padding: 10px 8px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--game-sans);
+  font-size: 13px;
+}
+.board-row:hover { background: rgba(79, 140, 255, 0.1); }
+.board-row .r-rank { font-family: var(--game-mono); color: var(--game-dim); }
+.board-row .r-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-row .r-score {
+  font-family: var(--game-mono);
+  font-weight: 700;
+  color: var(--game-cyan);
+  text-align: right;
+}
+.board-row .r-time { font-family: var(--game-mono); color: var(--game-muted); text-align: right; }
+.board-row .chev { color: var(--game-dim); transition: transform 0.2s; text-align: center; }
+.board-entry.open .chev { transform: rotate(90deg); }
+.board-detail {
+  padding: 0 8px 10px 94px;
+  font-size: 12px;
+  color: var(--game-muted);
+  display: grid;
+  gap: 3px;
+}
+.board-detail .d-line { color: var(--game-text); }
+.board-detail .d-sub { color: var(--game-dim); }
+.board-empty { padding: 26px 10px; color: var(--game-dim); text-align: center; font-size: 13px; }
+.board-group-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--game-cyan);
+  color: #041018;
+  font-family: var(--game-mono);
+  font-weight: 800;
+  font-size: 11px;
+}
+.board-group-badge.b { background: var(--game-amber); }
+
 .btn {
   appearance: none;
   border: 1px solid transparent;
@@ -606,6 +810,13 @@ html, body {
   .order-list { padding: 0 16px 12px; }
   .order-chosen { margin: 0 16px 12px; }
   .quiz-q { padding: 0 16px 14px; }
+  .identity { padding: 12px; }
+  .board-summary { grid-template-columns: 1fr; padding: 12px 14px 4px; }
+  .board-tabs { padding: 6px 14px 8px; }
+  .board-list { padding: 0 10px 10px; }
+  .board-row { grid-template-columns: 28px 36px 1fr 54px 46px 16px; gap: 5px; font-size: 12px; padding: 9px 5px; }
+  .board-detail { padding-left: 70px; }
+  .submit-actions .btn { flex: 1 1 auto; }
   .score-big { font-size: 48px; }
 }
 
