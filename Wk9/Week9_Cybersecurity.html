@@ -1004,41 +1004,123 @@
 
 
 <script>
+
 (function(){
-var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
-var audioPlayer = new Audio();
-audioPlayer.preload = 'metadata';
-var rate = 1.0;
-var currentParaIndex = -1;
-function clearActive(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
-function playParagraph(i, btn){
-    if(i >= paras.length) return;
-    paras.forEach(function(p, idx){
-        p.classList.remove('active');
-        var b = p.previousElementSibling;
-        if(b && b.classList.contains('para-play') && b !== btn){ b.innerHTML = '▶'; b.setAttribute('aria-label','Play narration for this paragraph'); }
+    // Accordion
+    document.querySelectorAll('.section-toggle').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var content = btn.nextElementSibling;
+            var open = content.classList.contains('open');
+            if(open){ content.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+            else { content.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+        });
     });
-    paras[i].classList.add('active');
-    currentParaIndex = i;
-    if(btn){ btn.innerHTML = '⏸'; btn.setAttribute('aria-label','Pause narration'); }
-    var fileNum = (i+1).toString().padStart(2,'0');
-    var fname = 'audio/para-'+fileNum+'.wav';
-    audioPlayer.src = fname; audioPlayer.rate = rate;
-    audioPlayer.onended = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } paras[i].classList.remove('active'); };
-    audioPlayer.onerror = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } };
-    audioPlayer.play().catch(function(){});
-}
-window.playThisPara = function(btn){
-    var para = btn.nextElementSibling;
-    if(!para || !para.classList.contains('readalong-para')) return;
-    var idx = paras.indexOf(para);
-    if(currentParaIndex === idx && !audioPlayer.paused){
-        audioPlayer.pause(); btn.innerHTML = '▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); para.classList.remove('active'); currentParaIndex = -1;
-    } else {
-        playParagraph(idx, btn);
+
+    // Extract — modal overlay, same as Weeks 1-7 (print styles target #extract-overlay)
+    window.extractSection = function(btn){
+        var section = btn.closest('section');
+        if(!section) return;
+        var content = section.querySelector('.section-content');
+        var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'extract-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+        header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.textContent = '\u2715';
+        closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+        closeBtn.onclick = function(){ document.body.removeChild(overlay); };
+        header.appendChild(closeBtn);
+
+        var contentDiv = document.createElement('div');
+        contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+        contentDiv.innerHTML = content.innerHTML;
+
+        var footer = document.createElement('div');
+        footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+        var printBtn = document.createElement('button');
+        printBtn.textContent = '\uD83D\uDDA8\uFE0F Print';
+        printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        printBtn.onclick = function(){ window.print(); };
+
+        var closeFooterBtn = document.createElement('button');
+        closeFooterBtn.textContent = 'Close';
+        closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        closeFooterBtn.onclick = function(){ document.body.removeChild(overlay); };
+
+        footer.appendChild(printBtn);
+        footer.appendChild(closeFooterBtn);
+        modal.appendChild(header);
+        modal.appendChild(contentDiv);
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
+        overlay.onclick = function(e){ if(e.target === overlay) document.body.removeChild(overlay); };
+        document.body.appendChild(overlay);
+    };
+
+    // Read-along: per-paragraph toggle play/pause (HeyGen WAV audio)
+    var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+    var audioPlayer = new Audio();
+    audioPlayer.preload = 'metadata';
+    var rate = 1.0;
+    var currentParaIndex = -1;
+
+    function clearActive(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
+
+    function playParagraph(i, btn){
+        if(i >= paras.length) return;
+        paras.forEach(function(p, idx){
+            p.classList.remove('active');
+            var b = p.previousElementSibling;
+            if(b && b.classList.contains('para-play') && b !== btn){
+                b.innerHTML = '▶';
+                b.setAttribute('aria-label','Play narration for this paragraph');
+            }
+        });
+        paras[i].classList.add('active');
+        currentParaIndex = i;
+        if(btn){ btn.innerHTML = '⏸'; btn.setAttribute('aria-label','Pause narration'); }
+        var fileNum = (i+1).toString().padStart(2,'0');
+        var fname = 'audio/para-' + fileNum + '.wav';
+        audioPlayer.src = fname;
+        audioPlayer.rate = rate;
+        audioPlayer.onended = function(){
+            currentParaIndex = -1;
+            if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); }
+            paras[i].classList.remove('active');
+        };
+        audioPlayer.onerror = function(){
+            currentParaIndex = -1;
+            if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); }
+        };
+        audioPlayer.play().catch(function(){});
     }
-};
+
+    window.playThisPara = function(btn){
+        var para = btn.nextElementSibling;
+        if(!para || !para.classList.contains('readalong-para')) return;
+        var idx = paras.indexOf(para);
+        if(currentParaIndex === idx && !audioPlayer.paused){
+            audioPlayer.pause();
+            btn.innerHTML = '▶';
+            btn.setAttribute('aria-label','Play narration for this paragraph');
+            para.classList.remove('active');
+            currentParaIndex = -1;
+        } else {
+            playParagraph(idx, btn);
+        }
+    };
 })();
+
 </script>
 </body>
 </html>
