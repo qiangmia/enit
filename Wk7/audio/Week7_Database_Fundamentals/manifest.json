@@ -1,0 +1,161 @@
+{
+  "paragraphs": [
+    {
+      "n": 1,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Nothing to prepare. This is a speaking warm-up in pairs.",
+      "audio_file": "para-01.wav",
+      "file_exists": true
+    },
+    {
+      "n": 2,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "A: “I went to the library at nine.” B: “Did you study there?” A: “I did. I read for two hours, then I came home.”",
+      "audio_file": "para-02.wav",
+      "file_exists": false
+    },
+    {
+      "n": 3,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Chia-Yu is a database administrator at a large hospital in Tainan. Yesterday afternoon her phone rang while she was reviewing the morning's logs: a backup job had failed, and nobody noticed for six hours. At first she did not understand the message, because the system reported “0 files copied” instead of “job failed” — and she had seen that message before without worrying about it.",
+      "audio_file": "para-03.wav",
+      "file_exists": true
+    },
+    {
+      "n": 4,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "She logged in and looked at the disk. The server had run out of space at 13:04 the same afternoon. Nobody had deleted a file: a log file had simply grown until it filled the disk. She found the folder, checked the file sizes, and found one file of 41 gigabytes. The system had been writing the same message since 2019.",
+      "audio_file": "para-04.wav",
+      "file_exists": false
+    },
+    {
+      "n": 5,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Chia-Yu moved the file, freed the space, and restarted the job. It finished at 16:30. Then she checked the records, because a failed backup is only a problem if the live data is also damaged. Nothing was lost, and she wrote down the time, the cause, and the fix.",
+      "audio_file": "para-05.wav",
+      "file_exists": false
+    },
+    {
+      "n": 6,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Later that afternoon she wrote the incident report. It was only one page long. “The backup failed at 13:04 because the disk was full. The reason was a log file of 41 gigabytes. I moved the file at 15:10 and the job finished at 16:30. In future, the server will send an email when the disk is above 80%.”",
+      "audio_file": "para-06.wav",
+      "file_exists": false
+    },
+    {
+      "n": 7,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "1. Why did nobody notice the failed backup for six hours?",
+      "audio_file": "para-07.wav",
+      "file_exists": false
+    },
+    {
+      "n": 8,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "2. What caused the disk to fill up?",
+      "audio_file": "para-08.wav",
+      "file_exists": false
+    },
+    {
+      "n": 9,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "3. How did Chia-Yu know the live records were safe?",
+      "audio_file": "para-09.wav",
+      "file_exists": false
+    },
+    {
+      "n": 10,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "4. What did she change after the incident?",
+      "audio_file": "para-10.wav",
+      "file_exists": true
+    },
+    {
+      "n": 11,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "1. b",
+      "audio_file": "para-11.wav",
+      "file_exists": true
+    },
+    {
+      "n": 12,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "2. c",
+      "audio_file": "para-12.wav",
+      "file_exists": true
+    },
+    {
+      "n": 13,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "3. c",
+      "audio_file": "para-13.wav",
+      "file_exists": true
+    },
+    {
+      "n": 14,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "4. c",
+      "audio_file": "para-14.wav",
+      "file_exists": true
+    },
+    {
+      "n": 15,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "The past simple describes actions that are finished. The form of the verb changes, but the time of speaking does not change.",
+      "audio_file": "para-15.wav",
+      "file_exists": true
+    },
+    {
+      "n": 16,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Decide which tense each sentence needs, and say why.",
+      "audio_file": "para-16.wav",
+      "file_exists": true
+    },
+    {
+      "n": 17,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "“Sentence 2 is the trap: three times this month is not finished, so it needs the present perfect. Yesterday needs the past simple.”",
+      "audio_file": "para-17.wav",
+      "file_exists": true
+    },
+    {
+      "n": 18,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Try: “The classroom projector failed at 10:00. The technician came at 10:40. He replaced the cable, but the screen stayed white. He found a loose connection, fixed it, and the projector worked by 11:15. Nobody noticed the problem for twenty minutes.”",
+      "audio_file": "para-18.wav",
+      "file_exists": true
+    },
+    {
+      "n": 19,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "English for Information Technology · Dept. of Information Management · Yuan Ze University",
+      "audio_file": "para-19.wav",
+      "file_exists": true
+    }
+  ],
+  "generated_ok": false,
+  "updated_at": "2026-10-30T04:41:01Z",
+  "notes": [
+    "Real HeyGen Voice Turbo WAV audio — text paragraphs only."
+  ]
+}

@@ -804,6 +804,10 @@
         blockquote cite { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; color: var(--text-muted, #4a5568); }
     </style>
     <script src="../theme.js"></script>
+<style>.para-play { display:inline-block; margin-right:.4rem; padding:.15rem .5rem; background:var(--accent); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.85rem; vertical-align:middle; }
+</style>
+<style>.para-play { display:inline-block; margin-right:.4rem; padding:.15rem .5rem; background:var(--accent); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.85rem; vertical-align:middle; }
+</style>
 </head>
 <body>
 
@@ -845,7 +849,7 @@
     <section id="objectives">
         <div class="card card-info">
             <h2 class="card-header">&#127919; Learning Objectives</h2>
-            <p>By the end of this unit, students will be able to:</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">By the end of this unit, students will be able to:</p>
             <ol>
                 <li>Explain in their own words what an AI <em>agent</em> is, and how it differs from a chatbot.</li>
                 <li>Describe three problems that AI agents create &mdash; for websites, for businesses and for users.</li>
@@ -858,22 +862,22 @@
     <section id="vocab-preview">
         <div class="card card-vocab">
             <h2 class="card-header">&#128221; Pre-reading: Vocabulary Preview</h2>
-            <p>Click each term to see its meaning. These words appear in the text below.</p>
-            <p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Click each term to see its meaning. These words appear in the text below.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">
                 <span class="vocab-term" data-def="a computer program that takes actions for you, not just answers questions" tabindex="0" role="button" aria-expanded="false">agent</span> &middot;
                 <span class="vocab-term" data-def="happening without a person watching or controlling it" tabindex="0" role="button" aria-expanded="false">unsupervised</span> &middot;
                 <span class="vocab-term" data-def="a person who buys tickets only to resell them at a higher price" tabindex="0" role="button" aria-expanded="false">scalper</span> &middot;
                 <span class="vocab-term" data-def="to collect and keep a lot of something that other people also need" tabindex="0" role="button" aria-expanded="false">hoard</span> &middot;
                 <span class="vocab-term" data-def="the flow of visitors and bots to a website" tabindex="0" role="button" aria-expanded="false">traffic</span>
             </p>
-            <p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">
                 <span class="vocab-term" data-def="a paid message on a page that earns the website money" tabindex="0" role="button" aria-expanded="false">advertisement</span> &middot;
                 <span class="vocab-term" data-def="a regular payment that lets you use a service" tabindex="0" role="button" aria-expanded="false">subscription</span> &middot;
                 <span class="vocab-term" data-def="an official rule that controls how something is done" tabindex="0" role="button" aria-expanded="false">regulation</span> &middot;
                 <span class="vocab-term" data-def="the rules you agree to when you use a service" tabindex="0" role="button" aria-expanded="false">terms of service</span> &middot;
                 <span class="vocab-term" data-def="to use something unfairly for your own benefit" tabindex="0" role="button" aria-expanded="false">exploit</span>
             </p>
-            <p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">
                 <span class="vocab-term" data-def="a weakness that lets someone break into a system" tabindex="0" role="button" aria-expanded="false">flaw</span> &middot;
                 <span class="vocab-term" data-def="a system where a website charges AI programs a fee to collect its data" tabindex="0" role="button" aria-expanded="false">pay-per-crawl</span> &middot;
                 <span class="vocab-term" data-def="a rule or law that is designed to control an activity" tabindex="0" role="button" aria-expanded="false">rules of the road</span> &middot;
@@ -893,38 +897,38 @@
             <div class="article-subtitle">Adapted from a BBC Future article by Thomas Germain</div>
 
             <div class="card card-info" style="margin-bottom: 1rem;">
-                <p style="margin-bottom: 0.5rem;"><strong>Where this comes from.</strong> This is a <strong>simplified and shortened adaptation</strong> of a BBC Future article by the technology writer Thomas Germain. He spent a week testing Meta's new AI agent, "Muse". Only a few short phrases are quoted directly; the rest has been rewritten for this course.</p>
-                <p style="margin-bottom: 0;"><a href="https://www.bbc.com/future/article/20260930-metas-new-ai-is-about-to-break-the-internet" target="_blank" rel="noopener">Read the original BBC article &#8594;</a></p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p style="margin-bottom: 0.5rem;"><strong>Where this comes from.</strong> This is a <strong>simplified and shortened adaptation</strong> of a BBC Future article by the technology writer Thomas Germain. He spent a week testing Meta's new AI agent, "Muse". Only a few short phrases are quoted directly; the rest has been rewritten for this course.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" style="margin-bottom: 0;"><a href="https://www.bbc.com/future/article/20260930-metas-new-ai-is-about-to-break-the-internet" target="_blank" rel="noopener">Read the original BBC article &#8594;</a></p>
             </div>
 
             <h3>1. A helper with a browser</h3>
-            <p>Last month, Meta released a new AI <span class="vocab-term" data-def="a computer program that takes actions for you" tabindex="0" role="button" aria-expanded="false">agent</span> called Muse. An agent is different from a chatbot. A chatbot answers your questions; an agent goes out into the world and <em>does things</em> for you. Muse has its own web browser. It can cancel your gym membership, argue about a price with customer service, order your groceries, and invite your friends to a party. Soon, it will be able to make phone calls, too.</p>
-            <p>Muse is the first free, full-featured agent from a big technology company, and millions of people downloaded it in the first few weeks. Other companies are building agents as well. To do its job, Muse asks for a great deal of trust: it wants to read your email and your calendar, and on some computers it asks to control the whole machine.</p>
-            <p>This sounds convenient. But the experts who spoke to the BBC say it is the start of a difficult period for the internet. The web was designed for humans, who have limited time and patience. AI agents have neither.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Last month, Meta released a new AI <span class="vocab-term" data-def="a computer program that takes actions for you" tabindex="0" role="button" aria-expanded="false">agent</span> called Muse. An agent is different from a chatbot. A chatbot answers your questions; an agent goes out into the world and <em>does things</em> for you. Muse has its own web browser. It can cancel your gym membership, argue about a price with customer service, order your groceries, and invite your friends to a party. Soon, it will be able to make phone calls, too.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Muse is the first free, full-featured agent from a big technology company, and millions of people downloaded it in the first few weeks. Other companies are building agents as well. To do its job, Muse asks for a great deal of trust: it wants to read your email and your calendar, and on some computers it asks to control the whole machine.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">This sounds convenient. But the experts who spoke to the BBC say it is the start of a difficult period for the internet. The web was designed for humans, who have limited time and patience. AI agents have neither.</p>
 
             <h3>2. The "Swiftie problem"</h3>
-            <p>In 2024, fans of the singer Taylor Swift found that concert tickets in the United States were extremely expensive. Many of them flew to Europe instead, where the same tickets cost much less. Ticket <span class="vocab-term" data-def="a person who buys tickets only to resell them at a higher price" tabindex="0" role="button" aria-expanded="false">scalpers</span> &mdash; people who buy tickets only to resell them at a higher price &mdash; had taken most of the seats before real fans could.</p>
-            <p>Now imagine that every fan has a personal scalper robot. Calli Schroeder, who works for a privacy group in the United States, predicts that this problem will "explode". When you try to book a table at a popular restaurant, or renew a passport in the busy season, you may find that agents have already taken every slot. Because booking is effortless for a machine, some people will even <span class="vocab-term" data-def="to collect and keep a lot of something other people also need" tabindex="0" role="button" aria-expanded="false">hoard</span> appointments &mdash; booking five "just in case".</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">In 2024, fans of the singer Taylor Swift found that concert tickets in the United States were extremely expensive. Many of them flew to Europe instead, where the same tickets cost much less. Ticket <span class="vocab-term" data-def="a person who buys tickets only to resell them at a higher price" tabindex="0" role="button" aria-expanded="false">scalpers</span> &mdash; people who buy tickets only to resell them at a higher price &mdash; had taken most of the seats before real fans could.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Now imagine that every fan has a personal scalper robot. Calli Schroeder, who works for a privacy group in the United States, predicts that this problem will "explode". When you try to book a table at a popular restaurant, or renew a passport in the busy season, you may find that agents have already taken every slot. Because booking is effortless for a machine, some people will even <span class="vocab-term" data-def="to collect and keep a lot of something other people also need" tabindex="0" role="button" aria-expanded="false">hoard</span> appointments &mdash; booking five "just in case".</p>
 
             <h3>3. Things fall apart</h3>
-            <p>The trouble does not stop at tickets. If one agent sends 600 enquiries to a small business while an ordinary person might send two, the business is buried under machine-made messages. Robots do not look at <span class="vocab-term" data-def="a paid message on a page that earns the site money" tabindex="0" role="button" aria-expanded="false">advertisements</span> and do not buy <span class="vocab-term" data-def="a regular payment that lets you use a service" tabindex="0" role="button" aria-expanded="false">subscriptions</span>, and many websites depend on exactly that money.</p>
-            <p>For years, <span class="vocab-term" data-def="the flow of visitors and bots to a website" tabindex="0" role="button" aria-expanded="false">traffic</span> from bots has quietly grown. One study found that bot traffic rose by more than 120% in the year to June 2026 &mdash; roughly nine times faster than traffic from real people. Some websites are already struggling to stay online under the load.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">The trouble does not stop at tickets. If one agent sends 600 enquiries to a small business while an ordinary person might send two, the business is buried under machine-made messages. Robots do not look at <span class="vocab-term" data-def="a paid message on a page that earns the site money" tabindex="0" role="button" aria-expanded="false">advertisements</span> and do not buy <span class="vocab-term" data-def="a regular payment that lets you use a service" tabindex="0" role="button" aria-expanded="false">subscriptions</span>, and many websites depend on exactly that money.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">For years, <span class="vocab-term" data-def="the flow of visitors and bots to a website" tabindex="0" role="button" aria-expanded="false">traffic</span> from bots has quietly grown. One study found that bot traffic rose by more than 120% in the year to June 2026 &mdash; roughly nine times faster than traffic from real people. Some websites are already struggling to stay online under the load.</p>
 
             <h3>4. Will the robots betray you?</h3>
-            <p>There are personal risks, too. Schroeder says that if you let an agent plan your holiday, you cannot easily check whether it found the best price &mdash; or a flight that pays its own company a fee instead. She examined Muse's <span class="vocab-term" data-def="the rules you agree to when you use a service" tabindex="0" role="button" aria-expanded="false">terms of service</span> and says they do not promise that the agent will act in your interest.</p>
-            <p>Security experts also found serious <span class="vocab-term" data-def="a weakness that lets someone break into a system" tabindex="0" role="button" aria-expanded="false">flaws</span> in the Muse app within days of its release. Meta says the problem was fixed immediately, and that Muse had been delayed for months to make it safer. But the researcher who found the flaw said the mistakes were so easy to find that he could not trust the company's promises.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">There are personal risks, too. Schroeder says that if you let an agent plan your holiday, you cannot easily check whether it found the best price &mdash; or a flight that pays its own company a fee instead. She examined Muse's <span class="vocab-term" data-def="the rules you agree to when you use a service" tabindex="0" role="button" aria-expanded="false">terms of service</span> and says they do not promise that the agent will act in your interest.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Security experts also found serious <span class="vocab-term" data-def="a weakness that lets someone break into a system" tabindex="0" role="button" aria-expanded="false">flaws</span> in the Muse app within days of its release. Meta says the problem was fixed immediately, and that Muse had been delayed for months to make it safer. But the researcher who found the flaw said the mistakes were so easy to find that he could not trust the company's promises.</p>
 
             <h3>5. The rules of the road</h3>
-            <p>Not everyone is pessimistic. Ramesh Raskar, a professor at MIT, says we need "<span class="vocab-term" data-def="rules that control how an activity is allowed to happen" tabindex="0" role="button" aria-expanded="false">rules of the road</span>".</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Not everyone is pessimistic. Ramesh Raskar, a professor at MIT, says we need "<span class="vocab-term" data-def="rules that control how an activity is allowed to happen" tabindex="0" role="button" aria-expanded="false">rules of the road</span>".</p>
             <blockquote>
                 "Imagine there are no rules of the road, and you release billions of cars &mdash; the AI agents &mdash; and you just let them drive through playgrounds. That's where we are."
                 <cite>&mdash; Ramesh Raskar, MIT</cite>
             </blockquote>
-            <p>Raskar suggests treating the AI models as <em>engines</em> and the agents as <em>cars</em>, and then writing real traffic rules for them: windshields, brakes and traffic lights. Some of that is already beginning. A few restaurant booking platforms have <span class="vocab-term" data-def="removed or blocked someone because they broke the rules" tabindex="0" role="button" aria-expanded="false">banned</span> people who misuse AI. The UK rewrote the rules for booking driving tests, partly to fight bots. And some websites are now testing a "<span class="vocab-term" data-def="a system where a website charges AI programs a fee to collect its data" tabindex="0" role="button" aria-expanded="false">pay-per-crawl</span>" system that charges AI programs a fee when they collect the site's data.</p>
-            <p>The road ahead will be bumpy, and users will pay a price in personal data. But the internet was rebuilt for smartphones once before &mdash; with apps, mobile pages and touch screens. It can be rebuilt for agents, too.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Raskar suggests treating the AI models as <em>engines</em> and the agents as <em>cars</em>, and then writing real traffic rules for them: windshields, brakes and traffic lights. Some of that is already beginning. A few restaurant booking platforms have <span class="vocab-term" data-def="removed or blocked someone because they broke the rules" tabindex="0" role="button" aria-expanded="false">banned</span> people who misuse AI. The UK rewrote the rules for booking driving tests, partly to fight bots. And some websites are now testing a "<span class="vocab-term" data-def="a system where a website charges AI programs a fee to collect its data" tabindex="0" role="button" aria-expanded="false">pay-per-crawl</span>" system that charges AI programs a fee when they collect the site's data.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">The road ahead will be bumpy, and users will pay a price in personal data. But the internet was rebuilt for smartphones once before &mdash; with apps, mobile pages and touch screens. It can be rebuilt for agents, too.</p>
 
             <div class="card card-homework" style="margin-top: 1rem;">
-                <p style="margin-bottom: 0;"><strong>A note on balance.</strong> This article looks mainly at the problems, because that is what the experts were asked about. Meta argues that Muse is safe and that users stay "in charge". Keep both sides in mind when you discuss the questions below.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p style="margin-bottom: 0;"><strong>A note on balance.</strong> This article looks mainly at the problems, because that is what the experts were asked about. Meta argues that Muse is safe and that users stay "in charge". Keep both sides in mind when you discuss the questions below.</p>
             </div>
         </article>
     </section>
@@ -932,7 +936,7 @@
     <section id="rules">
         <div class="card">
             <h2 class="card-header">&#128506; The Rules of the Road: Who Has to Do What?</h2>
-            <p>The article describes one problem with many players. The table shows what each player <strong>must</strong>, <strong>must not</strong> and <strong>should</strong> do &mdash; the same grammar you will practise further down the page.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">The article describes one problem with many players. The table shows what each player <strong>must</strong>, <strong>must not</strong> and <strong>should</strong> do &mdash; the same grammar you will practise further down the page.</p>
             <table>
                 <thead>
                     <tr><th>Player</th><th>Must / has to</th><th>Mustn't</th><th>Should</th></tr>
@@ -946,7 +950,7 @@
                 </tbody>
             </table>
             <div class="card card-task" style="margin-top: 0.6rem;">
-                <p style="margin-bottom: 0;"><strong>Talk about it.</strong> Choose one row. Does everyone in your group agree? Change one cell and explain why your version is better.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p style="margin-bottom: 0;"><strong>Talk about it.</strong> Choose one row. Does everyone in your group agree? Change one cell and explain why your version is better.</p>
             </div>
         </div>
     </section>
@@ -954,7 +958,7 @@
     <section id="grammar">
         <div class="card card-grammar">
             <h2 class="card-header">&#128218; Grammar Link: Modals of Obligation (Week 6 Focus)</h2>
-            <p>The article is full of rules: what agents should do, what websites must not do, and what is simply not necessary. Here are the modals from the Week 6 lesson, with examples from this article.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">The article is full of rules: what agents should do, what websites must not do, and what is simply not necessary. Here are the modals from the Week 6 lesson, with examples from this article.</p>
             <table>
                 <thead>
                     <tr><th>Form</th><th>What it means</th><th>Example</th></tr>
@@ -969,7 +973,7 @@
                 </tbody>
             </table>
             <div class="card card-homework" style="margin-top: 0.6rem;">
-                <p style="margin-bottom: 0;"><strong>Watch out.</strong> <em>mustn't</em> (forbidden) and <em>don't have to</em> (not necessary) are <strong>not</strong> the same. And there is no <em>to</em> after a modal: &#10007; <em>I must to go</em> &rarr; &#10003; <em>I must go</em>.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" style="margin-bottom: 0;"><strong>Watch out.</strong> <em>mustn't</em> (forbidden) and <em>don't have to</em> (not necessary) are <strong>not</strong> the same. And there is no <em>to</em> after a modal: &#10007; <em>I must to go</em> &rarr; &#10003; <em>I must go</em>.</p>
             </div>
         </div>
     </section>
@@ -977,54 +981,54 @@
     <section id="traps">
         <div class="card card-vocab">
             <h2 class="card-header">&#9888;&#65039; Six phrases that will block you</h2>
-            <p>These are the hardest parts of the article. Tap each one to open it.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">These are the hardest parts of the article. Tap each one to open it.</p>
             <div class="traps">
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#129302;</span><span>unsupervised</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Meaning</span>Doing something without a person watching or controlling it.</p>
-                        <p><span class="label">In context</span>Muse goes out and does tasks <em>unsupervised</em> &mdash; you are not clicking "yes" at every step.</p>
-                        <p class="try"><strong>Try it:</strong> "Some AI agents run <em>unsupervised</em> for hours."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">Meaning</span>Doing something without a person watching or controlling it.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>Muse goes out and does tasks <em>unsupervised</em> &mdash; you are not clicking "yes" at every step.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "Some AI agents run <em>unsupervised</em> for hours."</p>
                     </div>
                 </div>
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#127903;&#65039;</span><span>the "Swiftie problem"</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Meaning</span>Not a standard phrase. The writer creates a name (from Taylor Swift's fans) for one kind of damage.</p>
-                        <p><span class="label">In context</span>When everyone has a robot that books first and asks later, the demand for a limited resource &mdash; tickets, tables, appointments &mdash; explodes.</p>
-                        <p class="try"><strong>Try it:</strong> "Cheap bots create a <em>Swiftie problem</em> for anything in short supply."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p ><span class="label">Meaning</span>Not a standard phrase. The writer creates a name (from Taylor Swift's fans) for one kind of damage.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>When everyone has a robot that books first and asks later, the demand for a limited resource &mdash; tickets, tables, appointments &mdash; explodes.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "Cheap bots create a <em>Swiftie problem</em> for anything in short supply."</p>
                     </div>
                 </div>
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128229;</span><span>buried under</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Literal meaning</span>Covered with a lot of earth.</p>
-                        <p><span class="label">In context</span>A business is <em>buried under</em> messages: it receives far more than it can possibly deal with.</p>
-                        <p class="try"><strong>Try it:</strong> "The team was <em>buried under</em> support tickets after the launch."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">Literal meaning</span>Covered with a lot of earth.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>A business is <em>buried under</em> messages: it receives far more than it can possibly deal with.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "The team was <em>buried under</em> support tickets after the launch."</p>
                     </div>
                 </div>
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#9881;&#65039;</span><span>treat X as Y</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Meaning</span>To decide to think about something in a particular way, for a practical purpose.</p>
-                        <p><span class="label">In context</span>Raskar says: "treat the models like an engine, and the agents like cars". He sets up a comparison to make his rule-making idea clear.</p>
-                        <p class="try"><strong>Try it:</strong> "<em>Treat</em> the API <em>as</em> a service, not a product."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">Meaning</span>To decide to think about something in a particular way, for a practical purpose.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>Raskar says: "treat the models like an engine, and the agents like cars". He sets up a comparison to make his rule-making idea clear.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "<em>Treat</em> the API <em>as</em> a service, not a product."</p>
                     </div>
                 </div>
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#128721;</span><span>the rules of the road</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Meaning</span>The shared rules that stop people from crashing into each other. Here, used as a metaphor.</p>
-                        <p><span class="label">In context</span>The "road" is the internet, the "cars" are AI agents, and the missing rules are the laws and standards that do not exist yet.</p>
-                        <p class="try"><strong>Try it:</strong> "Before we ship it, we need <em>rules of the road</em> for who is responsible."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">Meaning</span>The shared rules that stop people from crashing into each other. Here, used as a metaphor.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>The "road" is the internet, the "cars" are AI agents, and the missing rules are the laws and standards that do not exist yet.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "Before we ship it, we need <em>rules of the road</em> for who is responsible."</p>
                     </div>
                 </div>
                 <div class="trap">
                     <button class="trap-btn" onclick="toggleTrap(this)"><span class="trap-ico">&#127987;&#65039;</span><span>pay a price / pay a toll</span><span class="trap-chevron">&#9662;</span></button>
                     <div class="trap-body">
-                        <p><span class="label">Meaning</span>To suffer a cost or a loss in order to get something.</p>
-                        <p><span class="label">In context</span>Users get the convenience of agents, but "pay a price" in personal data. A <em>toll</em> also fits the road metaphor.</p>
-                        <p class="try"><strong>Try it:</strong> "We saved time, but we <em>paid a price</em> in accuracy."</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">Meaning</span>To suffer a cost or a loss in order to get something.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><span class="label">In context</span>Users get the convenience of agents, but "pay a price" in personal data. A <em>toll</em> also fits the road metaphor.</p>
+                        <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" class="try"><strong>Try it:</strong> "We saved time, but we <em>paid a price</em> in accuracy."</p>
                     </div>
                 </div>
             </div>
@@ -1034,27 +1038,27 @@
     <section id="selfcheck">
         <div class="card card-info">
             <h2 class="card-header">&#9989; Self-Check</h2>
-            <p>Choose the best answer. Feedback appears immediately.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Choose the best answer. Feedback appears immediately.</p>
             <div id="sc-1" style="margin-bottom: 1rem;">
-                <p><strong>1. An AI agent is different from a chatbot because it</strong></p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>1. An AI agent is different from a chatbot because it</strong></p>
                 <button class="opt-btn" onclick="checkOpt(this, true)">takes actions in the outside world</button>
                 <button class="opt-btn" onclick="checkOpt(this, false)">answers questions much faster</button>
                 <button class="opt-btn" onclick="checkOpt(this, false)">never makes mistakes</button>
             </div>
             <div id="sc-2" style="margin-bottom: 1rem;">
-                <p><strong>2. A "scalper" is someone who</strong></p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>2. A "scalper" is someone who</strong></p>
                 <button class="opt-btn" onclick="checkOpt(this, false)">repairs broken tickets</button>
                 <button class="opt-btn" onclick="checkOpt(this, true)">buys tickets only to resell them at a higher price</button>
                 <button class="opt-btn" onclick="checkOpt(this, false)">watches a concert online</button>
             </div>
             <div id="sc-3" style="margin-bottom: 1rem;">
-                <p><strong>3. If a small business is "buried under" messages, it</strong></p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>3. If a small business is "buried under" messages, it</strong></p>
                 <button class="opt-btn" onclick="checkOpt(this, false)">ignores them all</button>
                 <button class="opt-btn" onclick="checkOpt(this, true)">receives far more than it can handle</button>
                 <button class="opt-btn" onclick="checkOpt(this, false)">sends them to another company</button>
             </div>
             <div id="sc-4">
-                <p><strong>4. "Pay-per-crawl" means a website charges AI programs</strong></p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>4. "Pay-per-crawl" means a website charges AI programs</strong></p>
                 <button class="opt-btn" onclick="checkOpt(this, false)">a fine for breaking the law</button>
                 <button class="opt-btn" onclick="checkOpt(this, false)">a monthly fee for advertising</button>
                 <button class="opt-btn" onclick="checkOpt(this, true)">a fee when they collect its data</button>
@@ -1074,12 +1078,12 @@
     <section id="practice-reading">
         <div class="card">
             <h2 class="card-header">&#127919; Mid-term Practice: Reading (Part 1a)</h2>
-            <p class="examtip">These questions use the same formats as the Week 8 mid-term. Instructions are bilingual; the article and the questions are in English. 以下題型與期中考相同；指示為中英雙語，文章與題目為英文。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="examtip">These questions use the same formats as the Week 8 mid-term. Instructions are bilingual; the article and the questions are in English. 以下題型與期中考相同；指示為中英雙語，文章與題目為英文。</p>
 
             <h3>A1 &mdash; Multiple choice (6 marks)</h3>
-            <p>Choose the best answer. 選出最佳答案。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Choose the best answer. 選出最佳答案。</p>
             <div class="quiz-question">
-                <p>1. What can Muse do that an ordinary chatbot cannot?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">1. What can Muse do that an ordinary chatbot cannot?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr1"> a) answer simple questions</label>
                     <label><input type="radio" name="pr1"> b) take actions such as ordering groceries</label>
@@ -1088,7 +1092,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>2. Why does the article mention Taylor Swift?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">2. Why does the article mention Taylor Swift?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr2"> a) to show that bots already take tickets before real fans</label>
                     <label><input type="radio" name="pr2"> b) because she uses an AI agent</label>
@@ -1097,7 +1101,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>3. What happened to bot traffic in the year to June 2026?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">3. What happened to bot traffic in the year to June 2026?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr3"> a) it fell sharply</label>
                     <label><input type="radio" name="pr3"> b) it rose by more than 120%</label>
@@ -1106,7 +1110,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>4. Why does Schroeder doubt that Muse will act in the user's interest?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">4. Why does Schroeder doubt that Muse will act in the user's interest?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr4"> a) the app is too slow</label>
                     <label><input type="radio" name="pr4"> b) its terms of service do not promise it</label>
@@ -1115,7 +1119,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>5. What does Raskar compare AI agents to?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">5. What does Raskar compare AI agents to?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr5"> a) aeroplanes without pilots</label>
                     <label><input type="radio" name="pr5"> b) cars driving without rules of the road</label>
@@ -1124,7 +1128,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>6. Which change does the article say is already happening?</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">6. Which change does the article say is already happening?</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pr6"> a) every country has banned AI agents</label>
                     <label><input type="radio" name="pr6"> b) some platforms charge AI programs for data</label>
@@ -1133,10 +1137,10 @@
                 </div>
             </div>
             <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-            <div class="answers"><p><strong>1 b · 2 a · 3 b · 4 b · 5 b · 6 b</strong></p></div>
+            <div class="answers"><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>1 b · 2 a · 3 b · 4 b · 5 b · 6 b</strong></p></div>
 
             <h3>A2 &mdash; Short answer (6 marks, 2 each)</h3>
-            <p>Write in full sentences. 請用完整句子作答。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Write in full sentences. 請用完整句子作答。</p>
             <div class="card card-task">
                 <ol>
                     <li>What does Muse want to access in order to do its job?</li>
@@ -1145,21 +1149,21 @@
                 </ol>
                 <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show sample answers</div>
                 <div class="answers">
-                    <p><strong>1.</strong> It wants to read the user's email and calendar, and on some computers it asks to control the whole machine.</p>
-                    <p><strong>2.</strong> Because it works automatically, it can repeat the same task very many times without getting tired or bored.</p>
-                    <p><strong>3.</strong> He means shared rules and standards, like traffic laws, so that agents, websites and people do not harm each other.</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>1.</strong> It wants to read the user's email and calendar, and on some computers it asks to control the whole machine.</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>2.</strong> Because it works automatically, it can repeat the same task very many times without getting tired or bored.</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>3.</strong> He means shared rules and standards, like traffic laws, so that agents, websites and people do not harm each other.</p>
                 </div>
             </div>
 
             <h3>A3 &mdash; Find the word (4 marks, 2 each)</h3>
-            <p>Find one word in the article for each meaning. 在文章中為下列每個意思找出一個單字。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Find one word in the article for each meaning. 在文章中為下列每個意思找出一個單字。</p>
             <div class="card card-vocab">
                 <ol>
                     <li>"a person who buys tickets only to resell them at a higher price" &rarr; ________</li>
                     <li>"a weakness that lets someone break into a system" &rarr; ________</li>
                 </ol>
                 <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-                <div class="answers"><p><strong>1.</strong> scalper &nbsp;&nbsp;&nbsp; <strong>2.</strong> flaw</p></div>
+                <div class="answers"><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>1.</strong> scalper &nbsp;&nbsp;&nbsp; <strong>2.</strong> flaw</p></div>
             </div>
         </div>
     </section>
@@ -1167,13 +1171,13 @@
     <section id="practice-rephrase">
         <div class="card">
             <h2 class="card-header">&#9997;&#65039; Mid-term Practice: Rephrase (Part 1b)</h2>
-            <p class="examtip">In the mid-term, Part 1b asks you to rephrase a whole essay in <strong>300&ndash;400 words</strong>, keeping every main idea and using your own words. Here is the mini version. 期中考需改寫整篇文章（300&ndash;400 字）；這裡是縮短版練習。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="examtip">In the mid-term, Part 1b asks you to rephrase a whole essay in <strong>300&ndash;400 words</strong>, keeping every main idea and using your own words. Here is the mini version. 期中考需改寫整篇文章（300&ndash;400 字）；這裡是縮短版練習。</p>
             <div class="card card-task">
-                <p><strong>Task.</strong> Rephrase section 3, "Things fall apart", in your own words. Write <strong>60&ndash;80 words</strong>. Keep all the main ideas, use your own vocabulary and sentence structures, and do not copy the original sentences.</p>
-                <p>用自己的話改寫第 3 段「Things fall apart」，約 60&ndash;80 字；保留主要概念，使用自己的詞彙與句型，不要抄寫原句。</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p ><strong>Task.</strong> Rephrase section 3, "Things fall apart", in your own words. Write <strong>60&ndash;80 words</strong>. Keep all the main ideas, use your own vocabulary and sentence structures, and do not copy the original sentences.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">用自己的話改寫第 3 段「Things fall apart」，約 60&ndash;80 字；保留主要概念，使用自己的詞彙與句型，不要抄寫原句。</p>
                 <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show a model answer (yours will differ)</div>
                 <div class="answers">
-                    <p>Ticket problems are only the beginning. When machines send hundreds of requests instead of two, small companies cannot keep up. Advertisements and paid subscriptions pay for many websites, but bots use neither, so that income falls. Bot traffic is also growing about nine times faster than human traffic, and some sites are already struggling to stay online.</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Ticket problems are only the beginning. When machines send hundreds of requests instead of two, small companies cannot keep up. Advertisements and paid subscriptions pay for many websites, but bots use neither, so that income falls. Bot traffic is also growing about nine times faster than human traffic, and some sites are already struggling to stay online.</p>
                 </div>
             </div>
         </div>
@@ -1182,10 +1186,10 @@
     <section id="practice-vocab">
         <div class="card">
             <h2 class="card-header">&#128218; Mid-term Practice: Vocabulary (Part 2A)</h2>
-            <p class="examtip">The mid-term has two vocabulary tasks: match a term to its definition, and choose the correct English word for a Chinese term. 期中考字彙有兩種題型：詞彙配對與中翻英選字。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="examtip">The mid-term has two vocabulary tasks: match a term to its definition, and choose the correct English word for a Chinese term. 期中考字彙有兩種題型：詞彙配對與中翻英選字。</p>
 
             <h3>C1 &mdash; Match the term to its definition (8 marks)</h3>
-            <p>Write the letter (A&ndash;H) next to each term. 將詞彙與定義配對，寫下字母。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Write the letter (A&ndash;H) next to each term. 將詞彙與定義配對，寫下字母。</p>
             <table>
                 <thead><tr><th style="width:6%;">#</th><th style="width:32%;">Term</th><th>Your answer</th></tr></thead>
                 <tbody>
@@ -1211,13 +1215,13 @@
                     <li><strong>G</strong> &mdash; a regular payment that lets you use a service</li>
                     <li><strong>H</strong> &mdash; to use something unfairly for your own benefit</li>
                 </ul>
-                <p><strong>Answers:</strong> 1 A &middot; 2 D &middot; 3 G &middot; 4 B &middot; 5 E &middot; 6 H &middot; 7 C &middot; 8 F</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p ><strong>Answers:</strong> 1 A &middot; 2 D &middot; 3 G &middot; 4 B &middot; 5 E &middot; 6 H &middot; 7 C &middot; 8 F</p>
             </div>
 
             <h3>C2 &mdash; Choose the correct English word (6 marks)</h3>
-            <p>Choose the correct English word. 選出正確的英文單字。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Choose the correct English word. 選出正確的英文單字。</p>
             <div class="quiz-question">
-                <p>1. 代理程式 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">1. 代理程式 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv1"> a) agent</label>
                     <label><input type="radio" name="pv1"> b) engine</label>
@@ -1226,7 +1230,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>2. 訂閱 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">2. 訂閱 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv2"> a) description</label>
                     <label><input type="radio" name="pv2"> b) subscription</label>
@@ -1235,7 +1239,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>3. 流量 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">3. 流量 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv3"> a) traffic</label>
                     <label><input type="radio" name="pv3"> b) transfer</label>
@@ -1244,7 +1248,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>4. 法規 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">4. 法規 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv4"> a) relation</label>
                     <label><input type="radio" name="pv4"> b) region</label>
@@ -1253,7 +1257,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>5. 漏洞 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">5. 漏洞 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv5"> a) floor</label>
                     <label><input type="radio" name="pv5"> b) flaw</label>
@@ -1262,7 +1266,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>6. 服務條款 is &hellip;</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">6. 服務條款 is &hellip;</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="pv6"> a) terms of service</label>
                     <label><input type="radio" name="pv6"> b) tour of service</label>
@@ -1271,23 +1275,23 @@
                 </div>
             </div>
             <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
-            <div class="answers"><p><strong>1 a &middot; 2 b &middot; 3 a &middot; 4 c &middot; 5 b &middot; 6 a</strong></p></div>
+            <div class="answers"><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>1 a &middot; 2 b &middot; 3 a &middot; 4 c &middot; 5 b &middot; 6 a</strong></p></div>
         </div>
     </section>
 
     <section id="practice-grammar">
         <div class="card card-grammar">
             <h2 class="card-header">&#9997;&#65039; Mid-term Practice: Grammar (Part 2B)</h2>
-            <p class="examtip">The mid-term grammar section has three question types: a cloze, error correction, and completing sentences. 期中文法有三種題型：填空、挑錯與完成句子。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="examtip">The mid-term grammar section has three question types: a cloze, error correction, and completing sentences. 期中文法有三種題型：填空、挑錯與完成句子。</p>
 
             <h3>D1 &mdash; Cloze (6 marks)</h3>
-            <p>Read the passage and choose the correct form for each gap. 閱讀短文，為每個空格選出正確的型態。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Read the passage and choose the correct form for each gap. 閱讀短文，為每個空格選出正確的型態。</p>
             <div class="example-box">
                 <div class="label">Rules for AI Agents</div>
-                <p>Before an agent buys anything, it ___(1)___ ask the user first. You ___(2)___ give an agent your bank details if you are not comfortable doing so. You ___(3)___ read the terms of service carefully; it is good advice. Websites ___(4)___ tell visitors when a robot is collecting their data &mdash; in some countries this is now a legal rule. Users ___(5)___ share more information than the task needs. And companies ___(6)___ not hide how their agents behave.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Before an agent buys anything, it ___(1)___ ask the user first. You ___(2)___ give an agent your bank details if you are not comfortable doing so. You ___(3)___ read the terms of service carefully; it is good advice. Websites ___(4)___ tell visitors when a robot is collecting their data &mdash; in some countries this is now a legal rule. Users ___(5)___ share more information than the task needs. And companies ___(6)___ not hide how their agents behave.</p>
             </div>
             <div class="quiz-question">
-                <p>1. it ___ ask the user first</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">1. it ___ ask the user first</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg1"> a) must</label>
                     <label><input type="radio" name="dg1"> b) mustn't</label>
@@ -1296,7 +1300,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>2. You ___ give an agent your bank details</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">2. You ___ give an agent your bank details</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg2"> a) must</label>
                     <label><input type="radio" name="dg2"> b) mustn't</label>
@@ -1305,7 +1309,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>3. You ___ read the terms of service carefully</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">3. You ___ read the terms of service carefully</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg3"> a) should</label>
                     <label><input type="radio" name="dg3"> b) mustn't</label>
@@ -1314,7 +1318,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>4. Websites ___ tell visitors when a robot collects data</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">4. Websites ___ tell visitors when a robot collects data</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg4"> a) mustn't</label>
                     <label><input type="radio" name="dg4"> b) have to</label>
@@ -1323,7 +1327,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>5. Users ___ share more information than the task needs</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">5. Users ___ share more information than the task needs</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg5"> a) mustn't</label>
                     <label><input type="radio" name="dg5"> b) don't have to</label>
@@ -1332,7 +1336,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>6. companies ___ not hide how their agents behave</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">6. companies ___ not hide how their agents behave</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="dg6"> a) must</label>
                     <label><input type="radio" name="dg6"> b) mustn't</label>
@@ -1342,9 +1346,9 @@
             </div>
 
             <h3>D2 &mdash; Choose the correct sentence (4 marks)</h3>
-            <p>Choose the correct sentence. 選出正確的句子。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Choose the correct sentence. 選出正確的句子。</p>
             <div class="quiz-question">
-                <p>1.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">1.</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="de1"> a) Agents must to follow the rules.</label>
                     <label><input type="radio" name="de1"> b) Agents must follow the rules.</label>
@@ -1353,7 +1357,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>2.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">2.</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="de2"> a) You don't have to share your password.</label>
                     <label><input type="radio" name="de2"> b) You don't have to sharing your password.</label>
@@ -1362,7 +1366,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>3.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">3.</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="de3"> a) We mustn't to edit the live site.</label>
                     <label><input type="radio" name="de3"> b) We mustn't editing the live site.</label>
@@ -1371,7 +1375,7 @@
                 </div>
             </div>
             <div class="quiz-question">
-                <p>4.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">4.</p>
                 <div class="quiz-options">
                     <label><input type="radio" name="de4"> a) Should I to check it?</label>
                     <label><input type="radio" name="de4"> b) Should I checking it?</label>
@@ -1381,7 +1385,7 @@
             </div>
 
             <h3>D3 &mdash; Complete the sentence (3 marks)</h3>
-            <p>Complete the sentence. 完成句子。</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Complete the sentence. 完成句子。</p>
             <div class="card card-task">
                 <ol>
                     <li>Agents __________ (be supposed to) ask before they buy anything.</li>
@@ -1390,9 +1394,9 @@
                 </ol>
                 <div class="answers-toggle" onclick="toggleAnswers(this)">&#128273; Show answers</div>
                 <div class="answers">
-                    <p><strong>D1:</strong> 1 a (must) &middot; 2 c (don't have to) &middot; 3 a (should) &middot; 4 b (have to) &middot; 5 a (mustn't) &middot; 6 a (must)</p>
-                    <p><strong>D2:</strong> 1 b &middot; 2 a &middot; 3 c &middot; 4 c</p>
-                    <p><strong>D3:</strong> 1 are supposed to &middot; 2 must &middot; 3 don't have to</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>D1:</strong> 1 a (must) &middot; 2 c (don't have to) &middot; 3 a (should) &middot; 4 b (have to) &middot; 5 a (mustn't) &middot; 6 a (must)</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>D2:</strong> 1 b &middot; 2 a &middot; 3 c &middot; 4 c</p>
+                    <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para"><strong>D3:</strong> 1 are supposed to &middot; 2 must &middot; 3 don't have to</p>
                 </div>
             </div>
         </div>
@@ -1401,7 +1405,7 @@
     <section id="vocab-builder">
         <div class="card card-vocab">
             <h2 class="card-header">&#128218; Vocabulary: Six Terms to Keep</h2>
-            <p>Study these, then cover the definitions and test yourself.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p >Study these, then cover the definitions and test yourself.</p>
             <div class="study-grid">
                 <div class="study-card">
                     <div class="study-term">agent</div>
@@ -1458,7 +1462,7 @@
     <section id="activity">
         <div class="card card-task">
             <h2 class="card-header">&#128295; Activity: Write the Rules of the Road (15 minutes)</h2>
-            <p>Work in small groups. You are the web team for a school club's website.</p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para">Work in small groups. You are the web team for a school club's website.</p>
             <ol>
                 <li>Write <strong>six rules</strong> for AI agents that visit your site. Use a different modal in each rule: <em>must</em>, <em>mustn't</em>, <em>have to</em>, <em>don't have to</em>, <em>should</em>, <em>are supposed to</em>.</li>
                 <li>For each rule, say who the rule is for (the agent, the user, or the website) and why it matters.</li>
@@ -1466,7 +1470,7 @@
                 <li>Choose the three strongest rules and read them aloud to the class.</li>
             </ol>
             <div class="card card-homework" style="margin-top: 0.8rem;">
-                <p style="margin-bottom: 0;"><strong>Extension.</strong> Write one sentence that starts "However, ..." to say what might go wrong with your rules. Every good policy has at least one weakness.</p>
+                <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p style="margin-bottom: 0;"><strong>Extension.</strong> Write one sentence that starts "However, ..." to say what might go wrong with your rules. Every good policy has at least one weakness.</p>
             </div>
         </div>
     </section>
@@ -1481,7 +1485,7 @@
                 <li>Modals of obligation (<em>must, have to, should, mustn't, don't have to</em>) are the language of rules.</li>
                 <li>You have now practised all four mid-term question types: reading, rephrasing, vocabulary and grammar.</li>
             </ul>
-            <p style="margin-top: 0.8rem;"><a href="Week6_Web_Development.html" class="btn btn-primary">&#8592; Back to the Week 6 lesson</a> &nbsp; <a href="tic-tac-toe.html" class="btn btn-secondary">&#127918; Play tic-tac-toe</a> &nbsp; <a href="../index.html" class="btn btn-secondary">&#127968; Course home</a></p>
+            <button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><button class="para-play" onclick="window.playThisPara(this)" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" style="margin-top: 0.8rem;"><a href="Week6_Web_Development.html" class="btn btn-primary">&#8592; Back to the Week 6 lesson</a> &nbsp; <a href="tic-tac-toe.html" class="btn btn-secondary">&#127918; Play tic-tac-toe</a> &nbsp; <a href="../index.html" class="btn btn-secondary">&#127968; Course home</a></p>
         </div>
     </section>
 
@@ -1540,5 +1544,79 @@ function checkOpt(btn, right) {
 }
 </script>
 
+<script>
+(function(){
+var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+var audioPlayer = new Audio();
+audioPlayer.preload = 'metadata';
+var rate = 1.0;
+var currentParaIndex = -1;
+function clearActive(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
+function playParagraph(i, btn){
+    if(i >= paras.length) return;
+    paras.forEach(function(p, idx){
+        p.classList.remove('active');
+        var b = p.previousElementSibling;
+        if(b && b.classList.contains('para-play') && b !== btn){ b.innerHTML = '▶'; b.setAttribute('aria-label','Play narration for this paragraph'); }
+    });
+    paras[i].classList.add('active');
+    currentParaIndex = i;
+    if(btn){ btn.innerHTML = '⏸'; btn.setAttribute('aria-label','Pause narration'); }
+    var fileNum = (i+1).toString().padStart(2,'0');
+    var fname = 'Wk6/audio/When_Bots/para-' + fileNum + '.wav';
+    audioPlayer.src = fname; audioPlayer.rate = rate;
+    audioPlayer.onended = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } paras[i].classList.remove('active'); };
+    audioPlayer.onerror = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } };
+    audioPlayer.play().catch(function(){});
+}
+window.playThisPara = function(btn){
+    var para = btn.nextElementSibling;
+    if(!para || !para.classList.contains('readalong-para')) return;
+    var idx = paras.indexOf(para);
+    if(currentParaIndex === idx && !audioPlayer.paused){
+        audioPlayer.pause(); btn.innerHTML = '▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); para.classList.remove('active'); currentParaIndex = -1;
+    } else {
+        playParagraph(idx, btn);
+    }
+};
+})();
+</script>
+<script>
+(function(){
+var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+var audioPlayer = new Audio();
+audioPlayer.preload = 'metadata';
+var rate = 1.0;
+var currentParaIndex = -1;
+function clearActive(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
+function playParagraph(i, btn){
+    if(i >= paras.length) return;
+    paras.forEach(function(p, idx){
+        p.classList.remove('active');
+        var b = p.previousElementSibling;
+        if(b && b.classList.contains('para-play') && b !== btn){ b.innerHTML = '▶'; b.setAttribute('aria-label','Play narration for this paragraph'); }
+    });
+    paras[i].classList.add('active');
+    currentParaIndex = i;
+    if(btn){ btn.innerHTML = '⏸'; btn.setAttribute('aria-label','Pause narration'); }
+    var fileNum = (i+1).toString().padStart(2,'0');
+    var fname = 'Wk6/audio/When_Bots/para-' + fileNum + '.wav';
+    audioPlayer.src = fname; audioPlayer.rate = rate;
+    audioPlayer.onended = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } paras[i].classList.remove('active'); };
+    audioPlayer.onerror = function(){ currentParaIndex = -1; if(btn){ btn.innerHTML='▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); } };
+    audioPlayer.play().catch(function(){});
+}
+window.playThisPara = function(btn){
+    var para = btn.nextElementSibling;
+    if(!para || !para.classList.contains('readalong-para')) return;
+    var idx = paras.indexOf(para);
+    if(currentParaIndex === idx && !audioPlayer.paused){
+        audioPlayer.pause(); btn.innerHTML = '▶'; btn.setAttribute('aria-label','Play narration for this paragraph'); para.classList.remove('active'); currentParaIndex = -1;
+    } else {
+        playParagraph(idx, btn);
+    }
+};
+})();
+</script>
 </body>
 </html>

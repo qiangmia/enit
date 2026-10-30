@@ -643,7 +643,8 @@
         .readalong button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
         .readalong-status { font-size:.85rem; color:var(--text-light); }
         .readalong-para { padding:.35rem .5rem; border-radius:8px; transition:background .2s ease, box-shadow .2s ease; }
-        .readalong-para.active { background:var(--accent-light); box-shadow:inset 3px 0 0 var(--accent); }
+        .para-play { display:inline-block; margin-right:.4rem; padding:.15rem .5rem; background:var(--accent); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.85rem; vertical-align:middle; }
+.readalong-para.active { background:var(--accent-light); box-shadow:inset 3px 0 0 var(--accent); }
         .readalong-para[data-speaker]::before { display:block; font-size:.8rem; font-weight:700; color:var(--accent); margin-bottom:.25rem; }
         .readalong-para[data-speaker="narrator"]::before { content:"Narrator"; }
         .readalong-para[data-speaker="mason"]::before { content:"Mason (IT Analyst)"; }
@@ -822,29 +823,29 @@
                     </div>
                 </header>
 
-                <p class="readalong-para" data-speaker="narrator">It was Monday morning at NovaNet Solutions when Lin Mei-hui first noticed something was wrong. At 02:43, the access log had shown an unusual number of login attempts from an IP address in another country. By the time she had checked the log in more detail, someone had already tried to sign in to several admin accounts.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">It was Monday morning at NovaNet Solutions when Lin Mei-hui first noticed something was wrong. At 02:43, the access log had shown an unusual number of login attempts from an IP address in another country. By the time she had checked the log in more detail, someone had already tried to sign in to several admin accounts.</p>
 
-                <p class="readalong-para" data-speaker="mason">"I've just seen it," said Mason, the IT Analyst, as he sat down next to Lin. "Three different admin accounts have had failed logins in the last twenty minutes. Two of them have used very similar passwords."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="mason">"I've just seen it," said Mason, the IT Analyst, as he sat down next to Lin. "Three different admin accounts have had failed logins in the last twenty minutes. Two of them have used very similar passwords."</p>
 
-                <p class="readalong-para" data-speaker="lin">"We've had a problem like this once before," Lin replied. "But this time, it looks more organised. I think someone has been trying to guess our credentials."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="lin">"We've had a problem like this once before," Lin replied. "But this time, it looks more organised. I think someone has been trying to guess our credentials."</p>
 
-                <p class="readalong-para" data-speaker="narrator">Lin had not seen a targeted attack of this kind since she had joined NovaNet. Within five minutes, her team had blocked the suspicious IP address at the firewall. They had also forced a password reset for every admin account, and they had turned on multi-factor authentication for accounts that had not used it before.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">Lin had not seen a targeted attack of this kind since she had joined NovaNet. Within five minutes, her team had blocked the suspicious IP address at the firewall. They had also forced a password reset for every admin account, and they had turned on multi-factor authentication for accounts that had not used it before.</p>
 
-                <p class="readalong-para" data-speaker="chen">"Good call," said Chen from the support desk. "I have already had two users ask me why they were logged out. I've told them it's a precaution."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="chen">"Good call," said Chen from the support desk. "I have already had two users ask me why they were logged out. I've told them it's a precaution."</p>
 
-                <p class="readalong-para" data-speaker="lin">"Keep a record of every call," Lin said. "So far, we haven't found any proof that anyone has actually broken in. But we need to check everything."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="lin">"Keep a record of every call," Lin said. "So far, we haven't found any proof that anyone has actually broken in. But we need to check everything."</p>
 
-                <p class="readalong-para" data-speaker="narrator">For the next three hours, the team checked access logs, email logs and file permissions. They found one short window of time at 02:46 when an old, unused admin account had been accessed. The account had too many privileges, and the team had never disabled it. Luckily, the attacker had only been able to look at a system health page — they had not downloaded any customer data.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">For the next three hours, the team checked access logs, email logs and file permissions. They found one short window of time at 02:46 when an old, unused admin account had been accessed. The account had too many privileges, and the team had never disabled it. Luckily, the attacker had only been able to look at a system health page — they had not downloaded any customer data.</p>
 
-                <p class="readalong-para" data-speaker="narrator">The logs also showed how patient the attacker had been. For almost two days, one IP address had tried a small number of common passwords on many different accounts — never enough on any single account to trigger a lockout. That pattern is exactly what credential stuffing looks like, and it was the reason nobody had noticed anything until Monday morning.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">The logs also showed how patient the attacker had been. For almost two days, one IP address had tried a small number of common passwords on many different accounts — never enough on any single account to trigger a lockout. That pattern is exactly what credential stuffing looks like, and it was the reason nobody had noticed anything until Monday morning.</p>
 
-                <p class="readalong-para" data-speaker="chen">"Should we tell the customers?" Chen asked. "Not yet," Lin said. "So far, we have only seen failed logins and one short session. If we announce a breach before we understand it, we will worry thousands of people for no reason. But if we find that data has left the building, we will tell them the same day."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="chen">"Should we tell the customers?" Chen asked. "Not yet," Lin said. "So far, we have only seen failed logins and one short session. If we announce a breach before we understand it, we will worry thousands of people for no reason. But if we find that data has left the building, we will tell them the same day."</p>
 
-                <p class="readalong-para" data-speaker="lin">"This could have been much worse," Lin told the meeting. "We have since disabled that account, applied a critical patch to the login server, and reviewed all of our admin privileges. We have also made it a rule that unused admin accounts must be removed within 24 hours."</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="lin">"This could have been much worse," Lin told the meeting. "We have since disabled that account, applied a critical patch to the login server, and reviewed all of our admin privileges. We have also made it a rule that unused admin accounts must be removed within 24 hours."</p>
 
-                <p class="readalong-para" data-speaker="narrator">Before lunch, Lin added a short section to the report called "What we have learned". It listed three things: the old account should have been removed a year ago, the patch had been available for two weeks, and the login server had no alert for repeated failures. None of these were new problems. They had simply been invisible.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">Before lunch, Lin added a short section to the report called "What we have learned". It listed three things: the old account should have been removed a year ago, the patch had been available for two weeks, and the login server had no alert for repeated failures. None of these were new problems. They had simply been invisible.</p>
 
-                <p class="readalong-para" data-speaker="narrator">By late morning, Lin was writing the incident report. She knew the team had acted quickly, but she also knew they had not checked for that old account in their last security review. It was a small gap — and it had nearly become a serious breach. Now, she just hoped they would not leave that gap open again.</p>
+                <button class="para-play" title="Play narration" aria-label="Play narration for this paragraph">▶</button><p class="readalong-para" data-speaker="narrator">By late morning, Lin was writing the incident report. She knew the team had acted quickly, but she also knew they had not checked for that old account in their last security review. It was a small gap — and it had nearly become a serious breach. Now, she just hoped they would not leave that gap open again.</p>
 
                 <div class="article-divider">❖</div>
 
@@ -1063,151 +1064,99 @@
         document.body.appendChild(overlay);
     };
 
-    // Read-along (manifest-driven MP3 playback via HeyGen TTS; speechSynthesis fallback)
+    // Read-along: per-paragraph play buttons.
+    // Each .para-play button plays its own audio file (para-01.mp3 … para-12.mp3),
+    // falling back to the browser's built-in speechSynthesis if the file is absent.
     var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
-    var play = document.getElementById('ra-play');
-    var pauseBtn = document.getElementById('ra-pause');
-    var stopBtn = document.getElementById('ra-stop');
-    var status = document.getElementById('ra-status');
-    var rateBtns = document.querySelectorAll('.readalong button[data-rate]');
-    var rate = 1.0;
-    var idx = 0;
-    var speaking = false;
-    var utter = null;
-    var audioPlayer = null;  // HTMLAudioElement when using manifest MP3s
+    var audioPlayer = new Audio();
+    audioPlayer.preload = 'metadata';
     var manifestLoaded = false;
+    var manifestParas = null;  // cached audio_file names from manifest
+    var rate = 1.0;
+    var playing = false;
+    var utter = null;
 
-    rateBtns.forEach(function(b){
-        b.addEventListener('click', function(){
-            rateBtns.forEach(function(x){ x.classList.remove('active'); });
-            b.classList.add('active');
-            rate = parseFloat(b.getAttribute('data-rate')) || 1.0;
+    // Load audio manifest to resolve correct file names (optional, for accuracy).
+    // If the file isn't reachable or returns nothing, we fall back to para-NN.mp3.
+    var manifestFile = 'audio/manifest.json';
+    var hasManifest = false;
+    fetch(manifestFile)
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(m){
+            if (m && m.paragraphs && paras.length > 0) {
+                manifestParas = {};
+                m.paragraphs.forEach(function(p, idx){
+                    if (paras[idx]) {
+                        manifestParas[idx] = (p.audio_file ? p.audio_file.replace('.mp3','.pcm') : ('para-' + (idx + 1).toString().padStart(2, '0') + '.pcm'));
+                    }
+                });
+                hasManifest = Object.keys(manifestParas).length > 0;
+            }
+            if (hasManifest && manifestParas) {
+                var firstKey = Object.keys(manifestParas)[0];
+                audioPlayer.src = 'audio/' + manifestParas[firstKey];
+                audioPlayer.load();
+            }
+        })
+        .catch(function(){ hasManifest = false; });
+
+    function clearActive(){
+        paras.forEach(function(p){ p.classList.remove('active'); });
+    }
+
+    function playParagraph(i){
+        if(i >= paras.length) return;
+        clearActive();
+        paras[i].classList.add('active');
+        playing = true;
+
+        // Resolve file name: prefer manifest, else default para-NN.pcm
+        var fname = manifestParas ? (manifestParas[i].replace('.mp3','.pcm')) : ('audio/para-' + (i + 1).toString().padStart(2, '0') + '.pcm');
+        audioPlayer.src = fname;
+        audioPlayer.rate = rate;
+
+        audioPlayer.onended = function(){ playing = false; };
+        audioPlayer.onerror = function(){
+            playing = false;
+            trySpeech(i);
+        };
+
+        audioPlayer.play().then(function(){ playing = true; }).catch(function(){ trySpeech(i); });
+    }
+
+    function trySpeech(i){
+        var text = paras[i].textContent.replace(/\s+/g,' ').trim();
+        if('speechSynthesis' in window){
+            window.speechSynthesis.cancel();
+            utter = new SpeechSynthesisUtterance(text);
+            utter.rate = rate;
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    // Bind per-paragraph buttons
+    document.querySelectorAll('.para-play').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var para = btn.parentElement.closest('.readalong-para');
+            if (!para) return;
+            playParagraph(paras.indexOf(para));
         });
     });
 
-    function clear(){ paras.forEach(function(p){ p.classList.remove('active'); }); }
-    function mp3Path(p){
-        if (!manifestLoaded) return null;
-        // audio/ lives next to Week9_Cybersecurity.html in the same dir.
-        return 'audio/' + (window.HELLOGEN_VOICE ? window.HELLOGEN_VOICE : 'v1') + '/' + p.dataset.audioFile;
-    }
-
-    function speakMP3(i){
-        if(i >= paras.length){ stopAll(); status.textContent = 'Finished.'; return; }
-        idx = i;
-        clear();
-        paras[i].classList.add('active');
-        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-            // just highlight, no auto-advance speech
-            status.textContent = 'Paragraph ' + (i+1) + ' of ' + paras.length + ' (reduced motion).';
-            return;
-        }
-        var src = mp3Path(paras[i]);
-        if(src && audioPlayer){
-            // Use pre-generated HeyGen MP3 from the manifest.
-            audioPlayer.src = src;
-            audioPlayer.rate = rate;
-            audioPlayer.onended = function(){
-                speakMP3(i + 1);
-            };
-            audioPlayer.onerror = function(){
-                // Audio file failed to load — fall back to speechSynthesis.
-                status.textContent = 'Audio unavailable for paragraph ' + (i+1) + '. Speech fallback.';
-
-                if('speechSynthesis' in window){
-                    window.speechSynthesis.cancel();
-                    utter = new SpeechSynthesisUtterance(paras[i].textContent.replace(/\s+/g,' ').trim());
-                    utter.rate = rate;
-                    utter.onend = function(){ speakMP3(i + 1); };
-                    utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
-                    window.speechSynthesis.speak(utter);
-                    speaking = true;
-                    status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
-                } else {
-                    status.textContent = 'Speech not supported in this browser.';
-                }
-            };
-            audioPlayer.load();
-            var playPromise = audioPlayer.play();
-            if (playPromise) {
-                playPromise.then(function(){ speaking = true; }).catch(function(){
-                    status.textContent = 'Audio playback blocked. Click Play to retry.';
-                });
-            }
-            status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (HeyGen MP3, ' + rate + '\u00d7).';
-        } else {
-            // speechSynthesis fallback
-            var text = paras[i].textContent.replace(/\s+/g,' ').trim();
-            if('speechSynthesis' in window){
-                window.speechSynthesis.cancel();
-                utter = new SpeechSynthesisUtterance(text);
-                utter.rate = rate;
-                utter.onend = function(){ speakMP3(i + 1); };
-                utter.onerror = function(){ status.textContent = 'Speech unavailable. Scroll and read aloud.'; };
-                window.speechSynthesis.speak(utter);
-                speaking = true;
-                status.textContent = 'Reading paragraph ' + (i+1) + ' of ' + paras.length + ' (' + rate + '\u00d7).';
-            } else {
-                status.textContent = 'Speech not supported in this browser.';
-            }
-        }
-    }
-    function stopAll(){
-        if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
-        if(audioPlayer){ try { audioPlayer.pause(); } catch(e) {} }
-        speaking = false;
-        clear();
-    }
-
-    if(play){ play.addEventListener('click', function(){ speakMP3(idx); }); }
+    // Kept-for-compatibility: old card handlers (Play → first paragraph)
+    var play = document.getElementById('ra-play');
+    var pauseBtn = document.getElementById('ra-pause');
+    var stopBtn = document.getElementById('ra-stop');
+    if(play){ play.addEventListener('click', function(){ playParagraph(0); }); }
     if(pauseBtn){ pauseBtn.addEventListener('click', function(){
         if(audioPlayer){ audioPlayer.pause(); }
         if('speechSynthesis' in window){ window.speechSynthesis.pause(); }
     }); }
-    if(stopBtn){ stopBtn.addEventListener('click', function(){ stopAll(); status.textContent = 'Stopped.'; }); }
-
-    // Load audio manifest (HeyGen TTS MP3s) when present.
-    if (window.fetch) {
-        fetch('audio/manifest.json')
-            .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-            .then(function(m){
-                if (!m || !m.paragraphs) return;
-                var mp3Paras = [];
-                m.paragraphs.forEach(function(p, idx){
-                    // Map manifest paragraph order to DOM paras order by index.
-                    var el = paras[idx];
-                    if (!el) return;
-                    el.setAttribute('data-audio-file', p.audio_file || ('para-' + (idx + 1).toString().padStart(2, '0') + '.mp3'));
-                    el.setAttribute('data-audio-voice', p.voice || 'nadine');
-                    el.setAttribute('data-audio-src', (p.audio_file || ('para-' + (idx + 1).toString().padStart(2, '0') + '.mp3')));
-                    mp3Paras.push({n: idx, el: el, p: p});
-                });
-                // Create the audio element after DOM is ready — it's in the same doc.
-                var a = new Audio();
-                a.preload = 'metadata';
-                a.addEventListener('loadedmetadata', function(){ if (manifestLoaded && idx === 0) { /* noop */ } });
-                window.__heygenAudio = a;
-                window.__heygenManifest = m;
-                audioPlayer = a;
-                manifestLoaded = true;
-                // Auto-start loading the first MP3 to verify availability.
-                if (mp3Paras.length && mp3Paras[0] && mp3Paras[0].p.audio_file) {
-                    var firstSrc = 'audio/' + 'v1' + '/' + mp3Paras[0].p.audio_file;
-                    a.src = firstSrc;
-                    a.load();
-                }
-                status.textContent = 'Ready: HeyGen MP3s loaded (' + mp3Paras.length + ' paragraphs).';
-            })
-            .catch(function(e){
-                // Fall back silently — speechSynthesis remains available.
-                window.__heygenAudio = null;
-                window.__heygenManifest = null;
-                manifestLoaded = false;
-                status.textContent = 'Click Play to start. Uses built-in speech if no audio files are loaded.';
-            });
-    } else {
-        status.textContent = 'Click Play to start. Uses built-in speech if no audio files are loaded.';
-    }
+    if(stopBtn){ stopBtn.addEventListener('click', function(){
+        if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+        try { audioPlayer.pause(); } catch(e){}
+        clearActive();
+    }); }
 </script>
 </body>
 </html>

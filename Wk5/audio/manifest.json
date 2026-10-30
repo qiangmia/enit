@@ -1,0 +1,129 @@
+{
+  "paragraphs": [
+    {
+      "n": 1,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Think of one small program or app you would like to build. Do not name it yet — just picture it.",
+      "audio_file": "para-01.wav",
+      "file_exists": true
+    },
+    {
+      "n": 2,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Tell your partner: what is it, who is it for, and what is the first version going to do? Listen for the words will and going to in your partner's sentence.",
+      "audio_file": "para-02.wav",
+      "file_exists": true
+    },
+    {
+      "n": 3,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "“I am going to build an app that reminds me to water my plants. It will send a message every morning.”",
+      "audio_file": "para-03.wav",
+      "file_exists": true
+    },
+    {
+      "n": 4,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "1. What did the team decide to do in the sprint?",
+      "audio_file": "para-04.wav",
+      "file_exists": true
+    },
+    {
+      "n": 5,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "3. What is the basis of “We're going to have problems on Friday”?",
+      "audio_file": "para-05.wav",
+      "file_exists": true
+    },
+    {
+      "n": 6,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "4. Which sentence describes a plan made BEFORE the moment of speaking?",
+      "audio_file": "para-06.wav",
+      "file_exists": true
+    },
+    {
+      "n": 7,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "1. b",
+      "audio_file": "para-07.wav",
+      "file_exists": true
+    },
+    {
+      "n": 8,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "2. c",
+      "audio_file": "para-08.wav",
+      "file_exists": true
+    },
+    {
+      "n": 9,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "3. b",
+      "audio_file": "para-09.wav",
+      "file_exists": true
+    },
+    {
+      "n": 10,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "4. b",
+      "audio_file": "para-10.wav",
+      "file_exists": true
+    },
+    {
+      "n": 11,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "English has two ways to talk about the future. will is for decisions and promises; going to is for plans and predictions from evidence.",
+      "audio_file": "para-11.wav",
+      "file_exists": true
+    },
+    {
+      "n": 12,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Put each sentence into the right column. Then say WHY you chose it.",
+      "audio_file": "para-12.wav",
+      "file_exists": true
+    },
+    {
+      "n": 13,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "“Sentence 3 is evidence-based: the speaker can see the failing tests, so the prediction is grounded in the present.”",
+      "audio_file": "para-13.wav",
+      "file_exists": true
+    },
+    {
+      "n": 14,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "Try: “We're going to finish the login page by Thursday. I'll help you with the database part — I remember the query. If we don't test it tonight, we're going to find bugs at the weekend.”",
+      "audio_file": "para-14.wav",
+      "file_exists": true
+    },
+    {
+      "n": 15,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "text": "English for Information Technology · Dept. of Information Management · Yuan Ze University",
+      "audio_file": "para-15.wav",
+      "file_exists": true
+    }
+  ],
+  "generated_ok": true,
+  "updated_at": "2026-10-30T04:40:56Z",
+  "notes": [
+    "Real HeyGen Voice Turbo WAV audio — text paragraphs only."
+  ]
+}

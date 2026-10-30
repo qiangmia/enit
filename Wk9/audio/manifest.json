@@ -5,9 +5,7 @@
   "model": "heygen/heygen-voice-1-turbo",
   "audio_dir": "audio/",
   "notes": [
-    "Audio files are pre-generated MP3s from HeyGen Voice Turbo via OpenRouter.",
-    "If OPENROUTER_API_KEY is not available, set to speechSynthesis fallback.",
-    "Rate control uses HTMLAudioElement playbackRate (0.85 / 1.0)."
+    "Real HeyGen Voice Turbo PCM audio (44100 Hz, mono) — playback uses .pcm directly; transcoding to .mp3 optional."
   ],
   "paragraphs": [
     {
@@ -16,7 +14,7 @@
       "voice": "nadine",
       "text_preview": "It was Monday morning at NovaNet Solutions when Lin Mei-hui first noticed something was wrong. At 02:43, the access log ...",
       "text_length": 320,
-      "audio_file": "para-01.mp3",
+      "audio_file": "para-01.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-01.pcm Wk9/audio/para-01.mp3"
     },
@@ -26,7 +24,7 @@
       "voice": "bram",
       "text_preview": "\"I've just seen it,\" said Mason, the IT Analyst, as he sat down next to Lin. \"Three different admin accounts have had fa...",
       "text_length": 206,
-      "audio_file": "para-02.mp3",
+      "audio_file": "para-02.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-02.pcm Wk9/audio/para-02.mp3"
     },
@@ -36,7 +34,7 @@
       "voice": "meredith",
       "text_preview": "\"We've had a problem like this once before,\" Lin replied. \"But this time, it looks more organised. I think someone has b...",
       "text_length": 157,
-      "audio_file": "para-03.mp3",
+      "audio_file": "para-03.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-03.pcm Wk9/audio/para-03.mp3"
     },
@@ -46,7 +44,7 @@
       "voice": "nadine",
       "text_preview": "Lin had not seen a targeted attack of this kind since she had joined NovaNet. Within five minutes, her team had blocked ...",
       "text_length": 318,
-      "audio_file": "para-04.mp3",
+      "audio_file": "para-04.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-04.pcm Wk9/audio/para-04.mp3"
     },
@@ -56,7 +54,7 @@
       "voice": "tabitha",
       "text_preview": "\"Good call,\" said Chen from the support desk. \"I have already had two users ask me why they were logged out. I've told t...",
       "text_length": 143,
-      "audio_file": "para-05.mp3",
+      "audio_file": "para-05.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-05.pcm Wk9/audio/para-05.mp3"
     },
@@ -66,7 +64,7 @@
       "voice": "meredith",
       "text_preview": "\"Keep a record of every call,\" Lin said. \"So far, we haven't found any proof that anyone has actually broken in. But we ...",
       "text_length": 146,
-      "audio_file": "para-06.mp3",
+      "audio_file": "para-06.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-06.pcm Wk9/audio/para-06.mp3"
     },
@@ -76,7 +74,7 @@
       "voice": "nadine",
       "text_preview": "For the next three hours, the team checked access logs, email logs and file permissions. They found one short window of ...",
       "text_length": 377,
-      "audio_file": "para-07.mp3",
+      "audio_file": "para-07.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-07.pcm Wk9/audio/para-07.mp3"
     },
@@ -86,7 +84,7 @@
       "voice": "nadine",
       "text_preview": "The logs also showed how patient the attacker had been. For almost two days, one IP address had tried a small number of ...",
       "text_length": 355,
-      "audio_file": "para-08.mp3",
+      "audio_file": "para-08.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-08.pcm Wk9/audio/para-08.mp3"
     },
@@ -96,7 +94,7 @@
       "voice": "tabitha",
       "text_preview": "\"Should we tell the customers?\" Chen asked. \"Not yet,\" Lin said. \"So far, we have only seen failed logins and one short ...",
       "text_length": 307,
-      "audio_file": "para-09.mp3",
+      "audio_file": "para-09.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-09.pcm Wk9/audio/para-09.mp3"
     },
@@ -106,7 +104,7 @@
       "voice": "meredith",
       "text_preview": "\"This could have been much worse,\" Lin told the meeting. \"We have since disabled that account, applied a critical patch ...",
       "text_length": 271,
-      "audio_file": "para-10.mp3",
+      "audio_file": "para-10.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-10.pcm Wk9/audio/para-10.mp3"
     },
@@ -116,7 +114,7 @@
       "voice": "nadine",
       "text_preview": "Before lunch, Lin added a short section to the report called \"What we have learned\". It listed three things: the old acc...",
       "text_length": 327,
-      "audio_file": "para-11.mp3",
+      "audio_file": "para-11.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-11.pcm Wk9/audio/para-11.mp3"
     },
@@ -126,11 +124,11 @@
       "voice": "nadine",
       "text_preview": "By late morning, Lin was writing the incident report. She knew the team had acted quickly, but she also knew they had no...",
       "text_length": 307,
-      "audio_file": "para-12.mp3",
+      "audio_file": "para-12.pcm",
       "file_exists": true,
       "notes": "Real TTS PCM audio exists; transcode with: lameenc -b 64 --mono Wk9/audio/para-12.pcm Wk9/audio/para-12.mp3"
     }
   ],
   "generated_ok": true,
-  "updated_at": "2026-10-29T19:51:32Z"
+  "updated_at": "2026-10-29T20:07:57Z"
 }
