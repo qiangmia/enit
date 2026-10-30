@@ -97,6 +97,20 @@
             font-size: 0.95rem;
         }
         .example-box strong { color: var(--primary); }
+        .example-box ul { margin-left: 1.3rem; line-height: 1.75; }
+        .example-box p { margin: 0.45rem 0 0.15rem; }
+        .subhead {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 1.4rem;
+        }
+        .table-wrap { overflow-x: auto; margin-top: 0.6rem; }
+        .compare { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        .compare th, .compare td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+        .compare thead th { background: var(--info-bg); color: var(--primary); }
+        .compare tbody tr:nth-child(even) { background: var(--bg); }
 
         .figure-wrap {
             background: var(--card-bg);
@@ -198,10 +212,10 @@
 
     <section class="card" id="definitions">
         <div class="card-header"><span class="card-icon">🧠</span>1 · What are skimming and scanning?</div>
-        <p>Skimming and scanning are two reading techniques that help you find information quickly. They are not the same.</p>
+        <p>When you need to read efficiently, skimming and scanning are the two most essential speed-reading strategies. While they are often mentioned together, they serve completely different purposes.</p>
         <div class="grid-2">
-            <div class="example-box"><strong>Skim = binoculars</strong><br>Look over the whole text quickly to get the general idea. You do not read every word.<br><span style="color:var(--text-light);">"What is this text about?"</span></div>
-            <div class="example-box"><strong>Scan = magnifying glass</strong><br>Look through the text for one specific piece of information: a name, a number, a date, a word.<br><span style="color:var(--text-light);">"Where exactly is X?"</span></div>
+            <div class="example-box"><strong>⚡ Skim = reading for the "big picture"</strong><br>Speed-reading to grasp the general overview or main idea of a text. You intentionally skip details to look at the overall structure.<br><span style="color:var(--text-light);">"What is this text about?"</span></div>
+            <div class="example-box"><strong>🔍 Scan = reading for specific information</strong><br>Darting your eyes across a text to locate a specific piece of information — a name, date, statistic or keyword. You do not read the sentences; you only look for the target.<br><span style="color:var(--text-light);">"Where exactly is X?"</span></div>
         </div>
         <div class="figure-wrap">
             <img src="images/skim-scan-concept.png" alt="Skimming with binoculars, scanning with a magnifying glass" loading="lazy">
@@ -209,12 +223,59 @@
     </section>
 
     <section class="card" id="how-to">
-        <div class="card-header"><span class="card-icon">💡</span>2 · How do I use them?</div>
+        <div class="card-header"><span class="card-icon">💡</span>2 · How and when do I use them?</div>
         <div class="figure-wrap">
             <img src="images/skim-scan-tips.png" alt="Tips for skimming and scanning" loading="lazy">
         </div>
-        <div class="example-box" style="margin-top:0.8rem;"><strong>Skim:</strong> pictures, headings, bold / italic words, the first and last sentence of each paragraph.</div>
-        <div class="example-box" style="margin-top:0.6rem;"><strong>Scan:</strong> decide what you are looking for, move your eyes quickly, stop only when you find it, then read the words around it carefully.</div>
+        <div class="grid-2">
+            <div class="example-box">
+                <strong>⚡ Skimming: reading for the "big picture"</strong>
+                <p><strong>When to use it</strong></p>
+                <ul>
+                    <li>Pre-reading a chapter before studying it in depth.</li>
+                    <li>Reviewing a text you have already read to refresh your memory.</li>
+                    <li>Deciding if a research paper or article is relevant to your needs.</li>
+                </ul>
+                <p><strong>How to do it</strong></p>
+                <ul>
+                    <li>Read the title and subtitles: they give you the framework of the text.</li>
+                    <li>Read the first and last paragraphs: authors usually introduce and conclude their main arguments there.</li>
+                    <li>Read the first sentence of every paragraph: this is typically the topic sentence.</li>
+                    <li>Focus on text features: bold words, bullet points, charts and diagrams.</li>
+                </ul>
+            </div>
+            <div class="example-box">
+                <strong>🔍 Scanning: reading for specific information</strong>
+                <p><strong>When to use it</strong></p>
+                <ul>
+                    <li>Finding a specific date in a history book.</li>
+                    <li>Looking up a word in a dictionary.</li>
+                    <li>Checking a schedule for a train departure time.</li>
+                    <li>Finding a specific quote or statistic to support an essay.</li>
+                </ul>
+                <p><strong>How to do it</strong></p>
+                <ul>
+                    <li>Identify your keywords: know exactly what word, phrase or format (a number for a year, a capital letter for a name) you are looking for before you start.</li>
+                    <li>Move quickly: let your eyes slide rapidly down the page in a Z-pattern or U-pattern.</li>
+                    <li>Use your finger or a pen: guide your eyes along the lines to keep your focus sharp.</li>
+                    <li>Stop and read closely only when you locate your keyword, to get the correct context.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3 class="subhead">Direct comparison</h3>
+        <div class="table-wrap">
+            <table class="compare">
+                <thead>
+                    <tr><th>Feature</th><th>Skimming ⚡</th><th>Scanning 🔍</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Goal</td><td>Understand the overall gist / main idea.</td><td>Locate specific details or keywords.</td></tr>
+                    <tr><td>Reading method</td><td>Reading selective parts (introductions, headings).</td><td>Moving eyes rapidly without reading sentences.</td></tr>
+                    <tr><td>End result</td><td>You know what the text is about.</td><td>You found the exact fact or answer you needed.</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="card task-card" id="finding-suzie">
