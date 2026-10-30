@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Strategy: Skim &amp; Scan | Week 9 | English for Information Technology</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --info-bg: #ebf8ff;
+            --task-bg: #f0fff4;
+            --success: #276749;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .course-header {
+            background: linear-gradient(rgba(30,58,95,0.86), rgba(30,58,95,0.92)),
+                        url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .course-header h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 0.4rem; }
+        .course-header .subtitle { font-size: 1.1rem; font-style: italic; opacity: 0.92; }
+        .course-header .meta { margin-top: 1.1rem; font-size: 0.85rem; opacity: 0.85; }
+        .course-header .meta span { margin: 0 0.55rem; }
+        .header-home-link { color: inherit; text-decoration: none; border-bottom: 2px dashed rgba(255,255,255,0.7); }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        .container { max-width: 920px; margin: 0 auto; padding: 1.6rem 1rem 3rem; }
+
+        .lead {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            margin: 1rem 0 1.4rem;
+            font-size: 0.98rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.4rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            color: var(--primary);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-light);
+            margin-bottom: 0.7rem;
+        }
+        .card-icon { font-size: 1.15rem; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.9rem;
+        }
+
+        .example-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem 0.95rem;
+            font-size: 0.95rem;
+        }
+        .example-box strong { color: var(--primary); }
+
+        .figure-wrap {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin: 1rem 0 0.4rem;
+        }
+        .figure-wrap img { width: 100%; height: auto; display: block; border-radius: 6px; }
+
+        .task-card { border-top: 5px solid var(--accent); }
+
+        .profile {
+            background: var(--task-bg);
+            border: 1px solid #c6f6d5;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-top: 0.8rem;
+        }
+        .profile ul { margin-left: 1.4rem; line-height: 1.9; }
+
+        .timer-row { display: flex; align-items: center; gap: 0.8rem; margin: 0.8rem 0; flex-wrap: wrap; }
+        .timer-btn {
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .timer-btn:hover { background: var(--primary-light); }
+        .timer-btn:disabled { opacity: 0.55; cursor: default; }
+        .timer-display {
+            font-weight: 800;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.1rem;
+        }
+        .timer-display.time-up { color: #c53030; }
+
+        details { margin-top: 0.8rem; }
+        summary {
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        summary:hover { color: var(--primary); }
+
+        .video-wrap {
+            margin-top: 0.9rem;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .video-wrap video { display: block; width: 100%; height: auto; }
+
+        .footer-nav {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.9rem;
+        }
+        .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        .footer-nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .course-header h1 { font-size: 1.6rem; }
+            .card { padding: 1.1rem 1rem; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Reading Strategy: Skim &amp; Scan</h1>
+    <div class="subtitle">Week 9 · First task — do this before the main lesson</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 9</span>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="lead">
+        <strong>Start here.</strong> This week's first task is a reading strategy lesson. You will learn two ways to read faster — <strong>skimming</strong> and <strong>scanning</strong> — then try them in a 20-second game and watch the full video. When you finish, continue to <a href="Week9_Cybersecurity.html">the main lesson</a>.
+    </div>
+
+    <section class="card" id="definitions">
+        <div class="card-header"><span class="card-icon">🧠</span>1 · What are skimming and scanning?</div>
+        <p>Skimming and scanning are two reading techniques that help you find information quickly. They are not the same.</p>
+        <div class="grid-2">
+            <div class="example-box"><strong>Skim = binoculars</strong><br>Look over the whole text quickly to get the general idea. You do not read every word.<br><span style="color:var(--text-light);">"What is this text about?"</span></div>
+            <div class="example-box"><strong>Scan = magnifying glass</strong><br>Look through the text for one specific piece of information: a name, a number, a date, a word.<br><span style="color:var(--text-light);">"Where exactly is X?"</span></div>
+        </div>
+        <div class="figure-wrap">
+            <img src="images/skim-scan-concept.png" alt="Skimming with binoculars, scanning with a magnifying glass" loading="lazy">
+        </div>
+    </section>
+
+    <section class="card" id="how-to">
+        <div class="card-header"><span class="card-icon">💡</span>2 · How do I use them?</div>
+        <div class="figure-wrap">
+            <img src="images/skim-scan-tips.png" alt="Tips for skimming and scanning" loading="lazy">
+        </div>
+        <div class="example-box" style="margin-top:0.8rem;"><strong>Skim:</strong> pictures, headings, bold / italic words, the first and last sentence of each paragraph.</div>
+        <div class="example-box" style="margin-top:0.6rem;"><strong>Scan:</strong> decide what you are looking for, move your eyes quickly, stop only when you find it, then read the words around it carefully.</div>
+    </section>
+
+    <section class="card task-card" id="finding-suzie">
+        <div class="card-header"><span class="card-icon">👀</span>3 · In action: Finding Suzie (20 seconds)</div>
+        <p>Fred is looking for his friend Suzie in a busy café. This is what he knows about her:</p>
+        <div class="profile">
+            <ul>
+                <li>long dark hair</li>
+                <li>a red hair tie</li>
+                <li>a pink top</li>
+                <li>one hand raised to her head</li>
+            </ul>
+        </div>
+        <p style="margin-top:0.9rem;">Scan the café scene and find Suzie before the timer stops. Do not look at every face — scan for the features above.</p>
+        <div class="timer-row">
+            <button class="timer-btn" data-seconds="20" type="button">⏱ Start 20s</button>
+            <span class="timer-display">20s</span>
+        </div>
+        <div class="figure-wrap">
+            <img src="images/finding-suzie-puzzle.png" alt="A busy café scene: find Suzie" loading="lazy">
+        </div>
+        <details>
+            <summary>Show where Suzie is</summary>
+            <div class="figure-wrap" style="margin-top:0.6rem;">
+                <img src="images/finding-suzie-answer.png" alt="Suzie found in the café scene" loading="lazy">
+            </div>
+        </details>
+    </section>
+
+    <section class="card" id="video">
+        <div class="card-header"><span class="card-icon">🎬</span>4 · Watch: the whole video</div>
+        <p>Watch the full video together. Notice how Fred looks around the café, and how he finally finds Suzie.</p>
+        <div class="video-wrap">
+            <video controls preload="metadata" playsinline>
+                <source src="Skimming%20and%20Scanning.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                <a href="Skimming%20and%20Scanning.mp4">Download the video</a>.
+            </video>
+        </div>
+    </section>
+
+    <nav class="footer-nav">
+        <a href="Week9_Cybersecurity.html">Next: Week 9 main lesson →</a>
+        <a href="Supplementary_Cybersecurity_Breaches.html">Supplementary reading</a>
+        <a href="../index.html">← Back to home</a>
+    </nav>
+
+</main>
+
+<script>
+document.querySelectorAll('.timer-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+        if(btn.dataset.running === '1') return;
+        var secs = parseInt(btn.getAttribute('data-seconds'), 10) || 20;
+        var display = btn.parentElement.querySelector('.timer-display');
+        if(!display) return;
+        btn.dataset.running = '1';
+        btn.disabled = true;
+        var left = secs;
+        display.textContent = left + 's';
+        display.classList.remove('time-up');
+        var iv = setInterval(function(){
+            left--;
+            if(left <= 0){
+                clearInterval(iv);
+                display.textContent = "Time's up!";
+                display.classList.add('time-up');
+                btn.disabled = false;
+                btn.dataset.running = '0';
+            } else {
+                display.textContent = left + 's';
+            }
+        }, 1000);
+    });
+});
+</script>
+
+</body>
+</html>

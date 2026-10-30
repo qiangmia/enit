@@ -652,13 +652,6 @@
         .readalong-para[data-speaker="chen"]::before { content:"Chen (Support)"; }
         @media (prefers-reduced-motion: reduce) { .readalong-para { transition:none; } }
 
-        /* Skim & Scan timer */
-        .timer-row { display:flex; align-items:center; gap:.8rem; margin:.7rem 0; }
-        .timer-btn { border:none; background:var(--accent); color:#fff; padding:.45rem .9rem; border-radius:8px; font-weight:700; cursor:pointer; font-size:.9rem; }
-        .timer-btn:disabled { opacity:.55; cursor:default; }
-        .timer-display { font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
-        .timer-display.time-up { color:#c53030; }
-
         /* Step figure */
         .figure-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:1rem; margin:1rem 0; }
         .figure-steps { display:flex; flex-direction:column; gap:.6rem; }
@@ -686,13 +679,16 @@
 
 <div class="container">
 
+        <div style="background:var(--info-bg); border-left:4px solid var(--accent); border-radius:8px; padding:0.8rem 1rem; margin:1rem 0; font-size:0.95rem;">
+            🔎 <strong>First task:</strong> complete <a href="Reading_Strategy_Skim_and_Scan.html">Reading Strategy: Skim &amp; Scan</a> before this lesson.
+        </div>
+
         <nav class="toc">
             <strong>Contents</strong>
             <ul>
                 <li><a href="#objectives">Learning Objectives</a></li>
                 <li><a href="#warmup">Warm-up</a></li>
                 <li><a href="#pre-reading">Pre-reading</a></li>
-                <li><a href="#skim-scan">Reading Strategy: Skim &amp; Scan</a></li>
                 <li><a href="#reading">Reading: The Breach Report</a></li>
                 <li><a href="#comprehension">Reading Comprehension</a></li>
                 <li><a href="#vocabulary">Key Vocabulary</a></li>
@@ -794,109 +790,6 @@
                     <text x="740" y="96" text-anchor="middle" font-size="11" font-weight="800">5</text>
                     <text x="740" y="116" text-anchor="middle" font-size="9">Fix &amp; Review</text>
                 </svg>
-            </div>
-        </div>
-    </section>
-
-    <section id="skim-scan">
-        <button class="section-toggle" aria-expanded="false">
-            <span class="section-icon">🔎</span>
-            <span>Reading Strategy: Skim &amp; Scan</span>
-            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
-        </button>
-        <div class="section-content">
-            <div class="card card-info">
-                <div class="card-header"><span class="card-icon">🧠</span>Two techniques, two speeds</div>
-                <p style="margin-top:0.8rem;">Skimming and scanning are two reading techniques that help you find information quickly. They are not the same.</p>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0.8rem; margin-top:0.9rem;">
-                    <div class="example-box"><strong>Skim = binoculars</strong><br>Look over the whole text quickly to get the general idea. You do not read every word.<br><span style="color:var(--text-light);">"What is this text about?"</span></div>
-                    <div class="example-box"><strong>Scan = magnifying glass</strong><br>Look through the text for one specific piece of information: a name, a number, a date, a word.<br><span style="color:var(--text-light);">"Where exactly is X?"</span></div>
-                </div>
-                <div class="figure-wrap" style="margin-top:0.9rem;">
-                    <img src="images/skim-scan-concept.png" alt="Skimming with binoculars, scanning with a magnifying glass" style="width:100%; height:auto; display:block;">
-                </div>
-            </div>
-
-            <div class="card card-info">
-                <div class="card-header"><span class="card-icon">💡</span>How to use them</div>
-                <div class="figure-wrap">
-                    <img src="images/skim-scan-tips.png" alt="Tips for skimming and scanning" style="width:100%; height:auto; display:block;">
-                </div>
-                <div class="example-box" style="margin-top:0.9rem;"><strong>Skim:</strong> pictures, headings, bold / italic words, the first and last sentence of each paragraph.</div>
-                <div class="example-box" style="margin-top:0.6rem;"><strong>Scan:</strong> decide what you are looking for, move your eyes quickly, stop only when you find it, then read the words around it carefully.</div>
-            </div>
-
-            <div class="card card-task">
-                <div class="card-header"><span class="card-icon">👀</span>Warm-up: Finding Suzie (30 seconds)</div>
-                <p style="margin-top:0.8rem;">Fred is looking for his friend Suzie in a busy café. Before he starts looking, he reminds himself what she looks like:</p>
-                <div style="display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap; margin-top:0.8rem;">
-                    <img src="images/suzie-profile.png" alt="Suzie: long dark hair in a ponytail, pink top" style="width:150px; max-width:100%; border-radius:10px; border:1px solid var(--border);">
-                    <ul style="margin-left:1.2rem; line-height:1.9;">
-                        <li>long dark hair in a high ponytail</li>
-                        <li>a red hair tie</li>
-                        <li>a pink top</li>
-                        <li>one hand raised to her head</li>
-                    </ul>
-                </div>
-                <p style="margin-top:0.9rem;">Now scan the café scene and find Suzie before the timer stops. Do not look at every face — scan for the features above.</p>
-                <div class="timer-row">
-                    <button class="timer-btn" data-seconds="30" type="button">⏱ Start 30s</button>
-                    <span class="timer-display">30s</span>
-                </div>
-                <div class="figure-wrap">
-                    <img src="images/finding-suzie-puzzle.png" alt="A busy café scene: find Suzie" style="width:100%; height:auto; display:block;">
-                </div>
-                <details style="margin-top:0.8rem;">
-                    <summary style="cursor:pointer; font-weight:700; color:var(--accent);">Show where Suzie is</summary>
-                    <div class="figure-wrap" style="margin-top:0.6rem;">
-                        <img src="images/finding-suzie-answer.png" alt="Suzie found in the café scene" style="width:100%; height:auto; display:block;">
-                    </div>
-                </details>
-            </div>
-
-            <div class="card card-task">
-                <div class="card-header"><span class="card-icon">📖</span>Practice: The Breach Report</div>
-
-                <p style="margin-top:0.8rem;"><strong>A. Skim (60 seconds).</strong> Read only the title and the first sentence of each paragraph in <em>The Breach Report</em>. Then say what happened at NovaNet and how serious it was — in one sentence.</p>
-                <div class="timer-row">
-                    <button class="timer-btn" data-seconds="60" type="button">⏱ Start 60s</button>
-                    <span class="timer-display">60s</span>
-                </div>
-                <details style="margin-top:0.6rem;">
-                    <summary style="cursor:pointer; font-weight:700; color:var(--accent);">Check your skim answer</summary>
-                    <p style="margin-top:0.5rem;">Someone tried to guess admin passwords from another country. The team blocked the IP address, reset passwords and turned on multi-factor authentication. One old admin account was accessed for a short time, but no customer data was downloaded. Serious — but contained.</p>
-                </details>
-
-                <p style="margin-top:1.2rem;"><strong>B. Scan (90 seconds).</strong> Find these five facts. Write the paragraph number where you found each one.</p>
-                <ol style="margin-left:1.5rem; margin-top:0.6rem; line-height:1.9;">
-                    <li>At what time did the suspicious activity start?</li>
-                    <li>How many admin accounts had failed logins?</li>
-                    <li>At what time was the old admin account accessed?</li>
-                    <li>How long had the attacker been trying passwords?</li>
-                    <li>What could the attacker actually see?</li>
-                </ol>
-                <div class="timer-row">
-                    <button class="timer-btn" data-seconds="90" type="button">⏱ Start 90s</button>
-                    <span class="timer-display">90s</span>
-                </div>
-                <details style="margin-top:0.6rem;">
-                    <summary style="cursor:pointer; font-weight:700; color:var(--accent);">Check your scan answers</summary>
-                    <ul style="margin-left:1.5rem; margin-top:0.5rem; line-height:1.9;">
-                        <li><strong>02:43</strong> — paragraph 1.</li>
-                        <li><strong>Three</strong> admin accounts — paragraph 2.</li>
-                        <li><strong>02:46</strong> — paragraph 7.</li>
-                        <li><strong>Almost two days</strong> — paragraph 8.</li>
-                        <li>Only a <strong>system health page</strong> — paragraph 7.</li>
-                    </ul>
-                </details>
-            </div>
-
-            <div class="card card-info">
-                <div class="card-header"><span class="card-icon">💬</span>Reflect</div>
-                <ol style="margin-left:1.5rem; margin-top:0.8rem; line-height:1.9;">
-                    <li>Which technique did you use first — skim or scan? Why?</li>
-                    <li>Which was harder? What made it harder?</li>
-                </ol>
             </div>
         </div>
     </section>
@@ -1231,32 +1124,6 @@
         }
     };
 
-    // Skim & Scan timer
-    document.querySelectorAll('.timer-btn').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            if(btn.dataset.running === '1') return;
-            var secs = parseInt(btn.getAttribute('data-seconds'), 10) || 60;
-            var display = btn.parentElement.querySelector('.timer-display');
-            if(!display) return;
-            btn.dataset.running = '1';
-            btn.disabled = true;
-            var left = secs;
-            display.textContent = left + 's';
-            display.classList.remove('time-up');
-            var iv = setInterval(function(){
-                left--;
-                if(left <= 0){
-                    clearInterval(iv);
-                    display.textContent = "Time's up!";
-                    display.classList.add('time-up');
-                    btn.disabled = false;
-                    btn.dataset.running = '0';
-                } else {
-                    display.textContent = left + 's';
-                }
-            }, 1000);
-        });
-    });
 })();
 
 </script>

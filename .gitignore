@@ -59,9 +59,8 @@ Wk*/1151_IM229_C_ID_*/
 # week directory, whatever it is named.
 Wk*/**/No_File_Upload.txt
 
-# Week 9 teaching media: a 21 MB lecture video and a 5 MB slide deck. They are
-# used in class from this folder, but they are not part of the published site
-# and would bloat the repository. Un-ignored by !Wk9/**, so they must be
-# blocked here, after that whitelist.
-Wk9/Skimming and Scanning.mp4
+# Week 9 teaching media: the 5 MB slide deck is used in class from this folder
+# but is not part of the published site. The 21 MB lecture video IS published
+# because the Week 9 first-task page embeds it. Un-ignored by !Wk9/**, so the
+# deck must be blocked here, after that whitelist.
 Wk9/Reading Skills - Skimming and Scanning - wk9.pptx
