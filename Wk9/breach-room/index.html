@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breach Room | Week 9 | English for Information Technology</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="../../theme.js"></script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <div id="hud" class="hidden">
+      <div>
+        <div class="hud-brand">
+          <span class="hud-dot"></span>
+          <span>BREACH ROOM</span>
+          <span class="hud-shift">NOVANET · SOC</span>
+        </div>
+        <div class="hud-objective" id="objective">Investigate the log wall.</div>
+      </div>
+      <div class="hud-stats">
+        <div class="hud-stat"><span>SCORE</span><strong id="score">0</strong></div>
+        <div class="hud-stat" id="timer-stat" hidden><span>TIME</span><strong id="timer">75</strong></div>
+        <button id="mute" class="icon-btn" aria-label="Mute sound" title="Mute sound">🔊</button>
+      </div>
+    </div>
+
+    <div id="hotspots" class="hidden" aria-label="Stations"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <div id="intro" class="overlay">
+      <div class="intro-card">
+        <div class="eyebrow">WEEK 9 · CYBERSECURITY</div>
+        <h1>Breach Room</h1>
+        <p class="intro-sub">NovaNet Solutions · Security Operations Centre · Monday, 09:17</p>
+        <p>An alert has fired. The access log shows unusual login attempts from another country, and an old admin account may be involved. You have one shift to find the evidence, contain the incident, and file the report.</p>
+        <ul class="intro-list">
+          <li><strong>Scan</strong> the log wall for three indicators.</li>
+          <li><strong>Contain</strong> the breach with the right response.</li>
+          <li><strong>Report</strong> what happened, in the right order.</li>
+        </ul>
+        <div class="intro-actions">
+          <button id="start" class="btn btn-primary">Start shift</button>
+          <button id="intro-help" class="btn btn-ghost">How to play</button>
+        </div>
+        <div id="help" class="help" hidden>
+          <p>Click a glowing station to open it. In the log, click a line that contains the suspicious IP, the time of the first burst, or the old admin account.</p>
+          <p>You can close a station and return to the room; your progress is kept. Sound starts after you press Start; use the speaker button to mute.</p>
+        </div>
+        <p class="intro-foot">Self-study game · no data is sent or stored on a server.</p>
+      </div>
+    </div>
+
+    <div id="panel-log" class="panel" hidden>
+      <div class="panel-card">
+        <header class="panel-head">
+          <div>
+            <div class="eyebrow">STATION 1 · LOG WALL</div>
+            <h2>Find three indicators</h2>
+          </div>
+          <div class="panel-meta">
+            <div class="timer-big"><span id="log-timer">75</span>s</div>
+            <button class="icon-btn panel-close" data-close="log" aria-label="Back to room">✕</button>
+          </div>
+        </header>
+        <p class="panel-help">Scan, don't read every line. Click a line that contains the <strong>suspicious IP</strong>, the <strong>time of the first burst</strong>, and the <strong>old admin account</strong>.</p>
+        <div class="targets" id="log-targets"></div>
+        <div class="log-feed" id="log-feed" tabindex="0" aria-label="Access log"></div>
+        <footer class="panel-foot">
+          <span id="log-note">0 of 3 found</span>
+          <button class="btn btn-ghost" data-close="log">Back to room</button>
+        </footer>
+      </div>
+    </div>
+
+    <div id="panel-contain" class="panel" hidden>
+      <div class="panel-card">
+        <header class="panel-head">
+          <div>
+            <div class="eyebrow">STATION 2 · CONTAINMENT</div>
+            <h2>Choose four actions</h2>
+          </div>
+          <button class="icon-btn panel-close" data-close="contain" aria-label="Back to room">✕</button>
+        </header>
+        <p class="panel-help">Each card is a present-perfect sentence. Select the four actions the team has actually taken to contain the breach.</p>
+        <div class="cards" id="contain-cards"></div>
+        <footer class="panel-foot">
+          <span id="contain-note">0 of 4 selected</span>
+          <button id="contain-deploy" class="btn btn-primary" disabled>Deploy response</button>
+          <button class="btn btn-ghost" data-close="contain">Back to room</button>
+        </footer>
+      </div>
+    </div>
+
+    <div id="panel-report" class="panel" hidden>
+      <div class="panel-card">
+        <header class="panel-head">
+          <div>
+            <div class="eyebrow">STATION 3 · REPORT</div>
+            <h2>File the incident report</h2>
+          </div>
+          <button class="icon-btn panel-close" data-close="report" aria-label="Back to room">✕</button>
+        </header>
+        <section id="report-order">
+          <p class="panel-help">Put the report in order. Click the sentence that should come first, then the next, and so on.</p>
+          <div class="order-list" id="order-list"></div>
+          <div class="order-chosen" id="order-chosen"></div>
+          <footer class="panel-foot">
+            <span id="order-note">0 of 4 placed</span>
+            <button id="order-check" class="btn btn-primary" disabled>Read it back</button>
+          </footer>
+        </section>
+        <section id="report-quiz" hidden>
+          <p class="panel-help">Three questions before you file. Choose the best answer.</p>
+          <div id="quiz-list"></div>
+          <footer class="panel-foot">
+            <span id="quiz-note">0 of 3 answered</span>
+            <button id="file-report" class="btn btn-primary" disabled>File report</button>
+          </footer>
+        </section>
+      </div>
+    </div>
+
+    <div id="debrief" class="overlay" hidden>
+      <div class="debrief-card">
+        <div class="eyebrow">SHIFT COMPLETE</div>
+        <h1 id="rank">Incident contained</h1>
+        <div class="score-big"><span id="final-score">0</span><small>/ 1025</small></div>
+        <div class="breakdown" id="breakdown"></div>
+        <p id="debrief-note"></p>
+        <div class="intro-actions">
+          <button id="replay" class="btn btn-primary">Play again</button>
+          <a class="btn btn-ghost" href="../Week9_Cybersecurity.html">Back to the lesson</a>
+        </div>
+        <p class="intro-foot">Self-study only. Nothing is sent anywhere; the score stays in this browser.</p>
+      </div>
+    </div>
+
+    <div id="qa-report" hidden></div>
+  </div>
+
+  <script>
+    window.__breachErrors = [];
+    window.addEventListener('error', function (e) {
+      window.__breachErrors.push(String((e && e.message) || 'error'));
+      var qa = document.getElementById('qa-report');
+      if (qa) {
+        qa.hidden = false;
+        qa.textContent = 'ERRORS:' + window.__breachErrors.join(' | ');
+      }
+    });
+  </script>
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
