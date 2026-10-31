@@ -713,6 +713,21 @@ html, body {
 .chosen-item:hover { border-color: var(--game-cyan); }
 .order-note { color: var(--game-muted); font-size: 12px; }
 
+.level-quiz {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px 24px 14px;
+}
+.level-quiz .quiz-q { padding: 0 0 16px; }
+.quiz-title {
+  font-family: var(--game-sans);
+  font-size: 15px;
+  color: var(--game-cyan);
+  margin: 0 0 10px;
+  letter-spacing: 0.02em;
+}
+
 .quiz-q { padding: 0 24px 16px; }
 .quiz-q h3 {
   font-family: var(--game-sans);
@@ -826,6 +841,7 @@ html, body {
   .log-feed { padding: 4px 10px 12px; font-size: 11px; }
   .log-line { grid-template-columns: 64px 46px 1fr; gap: 5px; padding: 4px 5px; }
   .cards { grid-template-columns: 1fr; padding: 0 16px 14px; }
+  .level-quiz { padding: 4px 16px 12px; }
   .order-list { padding: 0 16px 12px; }
   .order-chosen { margin: 0 16px 12px; }
   .quiz-q { padding: 0 16px 14px; }

@@ -91,6 +91,10 @@
         <p class="panel-help">Scan, don't read every line. Click a line that contains the <strong>suspicious IP</strong>, the <strong>time of the first burst</strong>, and the <strong>old admin account</strong>.</p>
         <div class="targets" id="log-targets"></div>
         <div class="log-feed" id="log-feed" tabindex="0" aria-label="Access log"></div>
+        <div id="log-quiz" class="level-quiz" hidden>
+          <h3 class="quiz-title">Knowledge check · 3 questions</h3>
+          <div id="log-quiz-list"></div>
+        </div>
         <footer class="panel-foot">
           <span id="log-note">0 of 3 found</span>
           <button class="btn btn-ghost" data-close="log">Back to room</button>
@@ -109,6 +113,10 @@
         </header>
         <p class="panel-help">Each card is a present-perfect sentence. Select the four actions the team has actually taken to contain the breach.</p>
         <div class="cards" id="contain-cards"></div>
+        <div id="contain-quiz" class="level-quiz" hidden>
+          <h3 class="quiz-title">Knowledge check · 3 questions</h3>
+          <div id="contain-quiz-list"></div>
+        </div>
         <footer class="panel-foot">
           <span id="contain-note">0 of 4 selected</span>
           <button id="contain-deploy" class="btn btn-primary" disabled>Deploy response</button>
@@ -136,10 +144,10 @@
           </footer>
         </section>
         <section id="report-quiz" hidden>
-          <p class="panel-help">Three questions before you file. Choose the best answer.</p>
+          <p class="panel-help">Five questions before you file. Choose the best answer.</p>
           <div id="quiz-list"></div>
           <footer class="panel-foot">
-            <span id="quiz-note">0 of 3 answered</span>
+            <span id="quiz-note">0 of 5 answered</span>
             <button id="file-report" class="btn btn-primary" disabled>File report</button>
           </footer>
         </section>

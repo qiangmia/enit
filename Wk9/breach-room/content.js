@@ -138,52 +138,163 @@ export const REPORT_FRAGMENTS = [
   },
 ];
 
-export const QUIZ = [
-  {
-    id: 'q1',
-    question: 'What is credential stuffing?',
-    options: [
-      'Guessing one password many times on one account.',
-      'Trying stolen logins on many different websites.',
-      'Sending phishing emails to customers.',
-      'Deleting an old admin account.',
-    ],
-    answer: 1,
-    explanation: 'Credential stuffing reuses logins stolen in an earlier breach on other sites.',
-  },
-  {
-    id: 'q2',
-    question: 'Why was the old admin account dangerous?',
-    options: [
-      'It had too many privileges and had never been disabled.',
-      'It belonged to a customer.',
-      'It had no password.',
-      'It was shared with the marketing team.',
-    ],
-    answer: 0,
-    explanation: 'An unused account with admin privileges is an open door.',
-  },
-  {
-    id: 'q3',
-    question: 'What had the attacker been able to do?',
-    options: [
-      'Download all customer data.',
-      'Change every password.',
-      'Look at a system health page only.',
-      'Delete the access logs.',
-    ],
-    answer: 2,
-    explanation: 'The team found one short session that only reached a health page.',
-  },
-];
+export const LEVEL_QUESTIONS = {
+  log: [
+    {
+      id: 'log-src',
+      level: 'log',
+      prompt: 'In "failed login user=admin_ops src=203.0.113.77 geo=RO", what does src tell you?',
+      options: ['The user account', 'The source IP address', 'The time of the login', 'The server health'],
+      answer_index: 1,
+      explanation: 'src is the source address the login came from.',
+    },
+    {
+      id: 'log-success',
+      level: 'log',
+      prompt: 'Which line shows that someone actually got in?',
+      options: [
+        'failed login ... attempts=2',
+        'login success user=legacy_admin ...',
+        'firewall rules loaded',
+        'backup job started',
+      ],
+      answer_index: 1,
+      explanation: 'login success means the credentials worked.',
+    },
+    {
+      id: 'log-lockout',
+      level: 'log',
+      prompt: 'Why did the attacker avoid a lockout?',
+      options: [
+        'They used many accounts with few attempts each',
+        'They guessed one password many times',
+        'They turned off the firewall',
+        "They used the admin's own computer",
+      ],
+      answer_index: 0,
+      explanation:
+        'Credential stuffing spreads a few attempts across many accounts, so no single account locks out.',
+    },
+  ],
+  contain: [
+    {
+      id: 'contain-first',
+      level: 'contain',
+      prompt: 'Which action should come first?',
+      options: [
+        'Block the suspicious IP',
+        'Email every customer',
+        'Delete the logs',
+        'Shut down the login server for a week',
+      ],
+      answer_index: 0,
+      explanation: 'Block the source first, then reset credentials and close the old account.',
+    },
+    {
+      id: 'contain-meaning',
+      level: 'contain',
+      prompt: 'What does "contain" mean in incident response?',
+      options: [
+        'Stop the incident from spreading',
+        'Find out who did it',
+        'Write the report',
+        'Restore the backup',
+      ],
+      answer_index: 0,
+      explanation: 'Containment stops the damage from spreading before investigation and recovery.',
+    },
+    {
+      id: 'contain-perfect',
+      level: 'contain',
+      prompt: 'Choose the correct present-perfect sentence.',
+      options: [
+        'Lin has disabled the old admin account.',
+        'Lin have disabled the old admin account.',
+        'Lin has disable the old admin account.',
+        'Lin have disable the old admin account.',
+      ],
+      answer_index: 0,
+      explanation: 'Lin is singular, so use has + past participle: has disabled.',
+    },
+  ],
+  report: [
+    {
+      id: 'report-stuffing',
+      level: 'report',
+      prompt: 'What is credential stuffing?',
+      options: [
+        'Guessing one password many times on one account.',
+        'Trying stolen logins on many different websites.',
+        'Sending phishing emails to customers.',
+        'Deleting an old admin account.',
+      ],
+      answer_index: 1,
+      explanation: 'Credential stuffing reuses logins stolen in an earlier breach on other sites.',
+    },
+    {
+      id: 'report-old-account',
+      level: 'report',
+      prompt: 'Why was the old admin account dangerous?',
+      options: [
+        'It had too many privileges and had never been disabled.',
+        'It belonged to a customer.',
+        'It had no password.',
+        'It was shared with the marketing team.',
+      ],
+      answer_index: 0,
+      explanation: 'An unused account with admin privileges is an open door.',
+    },
+    {
+      id: 'report-attacker',
+      level: 'report',
+      prompt: 'What had the attacker been able to do?',
+      options: [
+        'Download all customer data.',
+        'Change every password.',
+        'Look at a system health page only.',
+        'Delete the access logs.',
+      ],
+      answer_index: 2,
+      explanation: 'The team found one short session that only reached a health page.',
+    },
+    {
+      id: 'report-customers',
+      level: 'report',
+      prompt: 'Why did Lin not tell customers immediately?',
+      options: [
+        'The team had not confirmed that customer data was stolen.',
+        'The customers were not important.',
+        'The breach was already public.',
+        'The team wanted to hide it.',
+      ],
+      answer_index: 0,
+      explanation: 'Lin says they will tell customers the same day if data has left the building.',
+    },
+    {
+      id: 'report-perfect',
+      level: 'report',
+      prompt: 'Which sentence uses the present perfect correctly?',
+      options: [
+        'So far, they have not found any proof of data theft.',
+        'So far, they did not found any proof of data theft.',
+        'So far, they have not find any proof of data theft.',
+        'So far, they are not finding any proof of data theft.',
+      ],
+      answer_index: 0,
+      explanation: 'Present perfect = have/has + past participle; "so far" signals up to now.',
+    },
+  ],
+};
 
 export const POINTS = {
-  logTarget: 100,
+  logTarget: 80,
   logWrong: -10,
   logWrongTime: 5,
-  containCorrect: 75,
+  logQuestion: 20,
+  containCorrect: 60,
   containWrong: -50,
+  containQuestion: 20,
   orderCorrect: 200,
   orderWrong: -50,
-  quizCorrect: 75,
+  quizCorrect: 45,
 };

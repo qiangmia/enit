@@ -7,7 +7,7 @@ import {
   LOG_LINES,
   CONTAIN_CARDS,
   REPORT_FRAGMENTS,
-  QUIZ,
+  LEVEL_QUESTIONS,
   POINTS,
 } from './content.js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
@@ -31,11 +31,14 @@ const state = {
   logTimedOut: false,
   containSelected: new Set(),
   containChecked: false,
+  containQuizShown: false,
   reportOrderDone: false,
   order: [],
   orderPool: [],
-  quizAnswered: new Set(),
-  quizCorrect: 0,
+  questions: { log: [], contain: [], report: [] },
+  questionsSource: 'local',
+  quizAnswered: { log: new Set(), contain: new Set(), report: new Set() },
+  quizResults: { log: [], contain: [], report: [] },
   reportFiled: false,
   station: null,
   soundOn: true,
@@ -148,6 +151,90 @@ function uuid() {
   });
 }
 
+// ---------- question bank ----------
+const LEVEL_SLOTS = { log: 3, contain: 3, report: 5 };
+
+function normalizeQuestion(row, level) {
+  const options = Array.isArray(row.options) ? row.options.filter((x) => typeof x === 'string') : null;
+  if (!options || options.length < 2) return null;
+  const answer = Number(row.answer_index);
+  if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
+  const prompt = String(row.prompt || row.question || '').trim();
+  if (!prompt) return null;
+  return {
+    key: row.id || row.key || level + '-' + Math.random().toString(36).slice(2),
+    level,
+    prompt,
+    options: options.slice(),
+    answer,
+    explanation: String(row.explanation || '').trim(),
+  };
+}
+
+function shuffleOptions(q) {
+  const items = q.options.map((text, index) => ({ text, index }));
+  shuffle(items);
+  return {
+    ...q,
+    options: items.map((x) => x.text),
+    answer: items.findIndex((x) => x.index === q.answer),
+  };
+}
+
+function buildQuestionSets(pool) {
+  const sets = { log: [], contain: [], report: [] };
+  const hasPool = Array.isArray(pool) && pool.length > 0;
+  for (const level of ['log', 'contain', 'report']) {
+    const slots = LEVEL_SLOTS[level];
+    const valid = [];
+    if (hasPool) {
+      for (const row of pool) {
+        if (row && row.level === level) {
+          const q = normalizeQuestion(row, level);
+          if (q) valid.push(q);
+        }
+      }
+    }
+    shuffle(valid);
+    const picked = valid.slice(0, slots);
+    if (picked.length < slots) {
+      const locals = (LEVEL_QUESTIONS[level] || [])
+        .map((q) => normalizeQuestion(q, level))
+        .filter(Boolean);
+      shuffle(locals);
+      for (const q of locals) {
+        if (picked.length >= slots) break;
+        if (!picked.some((p) => p.prompt === q.prompt)) picked.push(q);
+      }
+    }
+    sets[level] = picked.map(shuffleOptions);
+  }
+  state.questions = sets;
+  state.questionsSource = hasPool ? 'supabase' : 'local';
+  state.quizAnswered = { log: new Set(), contain: new Set(), report: new Set() };
+  state.quizResults = { log: [], contain: [], report: [] };
+}
+
+let questionsPromise = null;
+function ensureQuestions() {
+  if (questionsPromise) return questionsPromise;
+  questionsPromise = (async () => {
+    let pool = null;
+    if (SB_READY) {
+      try {
+        pool = await sb(
+          'breach_room_questions?select=id,level,prompt,options,answer_index,explanation&active=eq.true&order=sort_order.asc'
+        );
+      } catch (e) {
+        pool = null;
+      }
+    }
+    buildQuestionSets(pool);
+    return state.questions;
+  })();
+  return questionsPromise;
+}
+
 // ---------- helpers ----------
 let toastTimer = null;
 function toast(message, kind = '') {
@@ -164,6 +251,32 @@ function logDone() {
   return state.logFound.size === LOG_TARGETS.length;
 }
 
+function logQuizDone() {
+  return state.questions.log.length > 0 && state.quizAnswered.log.size === state.questions.log.length;
+}
+
+function logLevelDone() {
+  return logDone() && logQuizDone();
+}
+
+function containQuizDone() {
+  return (
+    state.questions.contain.length > 0 &&
+    state.quizAnswered.contain.size === state.questions.contain.length
+  );
+}
+
+function containLevelDone() {
+  return state.containChecked && containQuizDone();
+}
+
+function reportQuizDone() {
+  return (
+    state.questions.report.length > 0 &&
+    state.quizAnswered.report.size === state.questions.report.length
+  );
+}
+
 function updateScore() {
   $('score').textContent = Math.max(0, Math.round(state.score));
 }
@@ -172,9 +285,13 @@ function updateTimerUI() {
   $('log-timer').textContent = Math.max(0, state.logTime);
   $('timer').textContent = Math.max(0, state.logTime);
   const danger = state.logTime <= 15 && state.logTime > 0;
-  document.querySelector('.timer-big').classList.toggle('danger', danger);
+  const timerBig = document.querySelector('.timer-big');
+  if (timerBig) {
+    timerBig.classList.toggle('danger', danger);
+    timerBig.hidden = logDone();
+  }
   $('timer-stat').classList.toggle('danger', danger);
-  $('timer-stat').hidden = state.station !== 'log';
+  $('timer-stat').hidden = state.station !== 'log' || logDone();
 }
 
 function updateTargets() {
@@ -192,7 +309,12 @@ function updateTargets() {
   for (const chip of wrap.children) {
     chip.classList.toggle('found', state.logFound.has(chip.dataset.target));
   }
-  $('log-note').textContent = state.logFound.size + ' of ' + LOG_TARGETS.length + ' found';
+  if ($('log-quiz').hidden) {
+    $('log-note').textContent = state.logFound.size + ' of ' + LOG_TARGETS.length + ' found';
+  } else {
+    $('log-note').textContent =
+      state.quizAnswered.log.size + ' of ' + state.questions.log.length + ' answered';
+  }
 }
 
 function updateObjective() {
@@ -202,16 +324,20 @@ function updateObjective() {
     obj.textContent = 'Shift complete. Review your report.';
   } else if (!logDone()) {
     obj.textContent = 'Investigate the log wall. Find the suspicious IP, the first burst, and the old admin account.';
+  } else if (!logQuizDone()) {
+    obj.textContent = 'Knowledge check: log wall. Answer three questions to unlock containment.';
   } else if (!state.containChecked) {
     obj.textContent = 'Contain the breach. Choose four response actions.';
+  } else if (!containQuizDone()) {
+    obj.textContent = 'Knowledge check: containment. Answer three questions to unlock the report.';
   } else {
-    obj.textContent = 'File the incident report. Put it in order, then answer three questions.';
+    obj.textContent = 'File the incident report. Put it in order, then answer five questions.';
   }
 }
 
 function updateHotspots() {
-  const ld = logDone();
-  const cd = state.containChecked;
+  const ld = logLevelDone();
+  const cd = containLevelDone();
   hotspotEls.log.classList.toggle('done', ld);
   hotspotEls.log.classList.toggle('urgent', !ld);
   hotspotEls.contain.classList.toggle('done', cd);
@@ -439,6 +565,150 @@ function renderBoardRows() {
     'Top 10 · ' + (state.boardTab === 'all' ? 'all groups' : 'Group ' + state.boardTab);
 }
 
+// ---------- level knowledge checks ----------
+function renderLevelQuiz(level, listId) {
+  const list = $(listId);
+  if (!list) return;
+  list.innerHTML = '';
+  const questions = state.questions[level] || [];
+  questions.forEach((q, qi) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'quiz-q';
+    const h = document.createElement('h3');
+    h.textContent = qi + 1 + '. ' + q.prompt;
+    const opts = document.createElement('div');
+    opts.className = 'quiz-opts';
+    q.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => answerLevelQuestion(level, qi, oi, opts, wrap));
+      opts.appendChild(btn);
+    });
+    wrap.append(h, opts);
+    list.appendChild(wrap);
+    applyAnsweredState(level, qi, opts, wrap);
+  });
+}
+
+function applyAnsweredState(level, qi, opts, wrap) {
+  if (!state.quizAnswered[level].has(qi)) return;
+  const chosen = state.quizResults[level][qi];
+  const q = state.questions[level][qi];
+  if (!q) return;
+  const buttons = opts.querySelectorAll('.quiz-opt');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === chosen) btn.classList.add('wrong');
+  });
+  const exp = document.createElement('p');
+  exp.className = 'quiz-exp ' + (chosen === q.answer ? 'correct' : 'wrong');
+  exp.textContent = q.explanation;
+  wrap.appendChild(exp);
+}
+
+function answerLevelQuestion(level, qi, oi, opts, wrap) {
+  if (state.quizAnswered[level].has(qi)) return;
+  const q = state.questions[level][qi];
+  if (!q) return;
+  state.quizAnswered[level].add(qi);
+  state.quizResults[level][qi] = oi;
+  const correct = oi === q.answer;
+  if (correct) {
+    const points =
+      level === 'log'
+        ? POINTS.logQuestion
+        : level === 'contain'
+        ? POINTS.containQuestion
+        : POINTS.quizCorrect;
+    state.score += points;
+    if (level === 'report') state.stageScores.quiz += points;
+    else state.stageScores[level] += points;
+  }
+  const buttons = opts.querySelectorAll('.quiz-opt');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
+  });
+  const exp = document.createElement('p');
+  exp.className = 'quiz-exp ' + (correct ? 'correct' : 'wrong');
+  exp.textContent = q.explanation;
+  wrap.appendChild(exp);
+  updateScore();
+  updateLevelQuizNote(level);
+  sfx(correct ? 'good' : 'bad');
+  if (levelQuizDone(level)) onLevelQuizComplete(level);
+}
+
+function levelQuizDone(level) {
+  if (level === 'log') return logQuizDone();
+  if (level === 'contain') return containQuizDone();
+  return reportQuizDone();
+}
+
+function updateLevelQuizNote(level) {
+  const total = (state.questions[level] || []).length;
+  const answered = state.quizAnswered[level].size;
+  if (level === 'log') {
+    $('log-note').textContent = answered + ' of ' + total + ' answered';
+  } else if (level === 'contain') {
+    $('contain-note').textContent = answered + ' of ' + total + ' answered';
+    const deploy = $('contain-deploy');
+    if (state.containQuizShown) {
+      deploy.disabled = !containQuizDone();
+      deploy.textContent = 'Continue to report';
+    }
+  } else {
+    $('quiz-note').textContent = answered + ' of ' + total + ' answered';
+    $('file-report').disabled = !reportQuizDone();
+  }
+}
+
+function onLevelQuizComplete(level) {
+  if (level === 'log') {
+    toast('Log check complete. Containment is unlocked.', 'good');
+  } else if (level === 'contain') {
+    toast('Containment check complete. The report is unlocked.', 'good');
+  } else {
+    toast('Report check complete. File the report when ready.', 'good');
+  }
+  updateObjective();
+  updateHotspots();
+  updateLevelQuizNote(level);
+}
+
+function showLogQuiz() {
+  const h = document.querySelector('#panel-log h2');
+  const p = document.querySelector('#panel-log .panel-help');
+  if (h) h.textContent = 'Log wall check';
+  if (p) p.textContent = 'Answer the three questions. Feedback appears immediately.';
+  $('log-feed').hidden = true;
+  $('log-quiz').hidden = false;
+  renderLevelQuiz('log', 'log-quiz-list');
+  updateLevelQuizNote('log');
+}
+
+function showContainQuiz() {
+  const h = document.querySelector('#panel-contain h2');
+  const p = document.querySelector('#panel-contain .panel-help');
+  if (h) h.textContent = 'Containment check';
+  if (p) p.textContent = 'Answer the three questions about containment. Feedback appears immediately.';
+  state.containQuizShown = true;
+  $('contain-cards').hidden = true;
+  $('contain-quiz').hidden = false;
+  renderLevelQuiz('contain', 'contain-quiz-list');
+  updateLevelQuizNote('contain');
+}
+
+function markAllQuestionsAnswered(level) {
+  const qs = state.questions[level] || [];
+  state.quizAnswered[level] = new Set(qs.map((_, index) => index));
+  state.quizResults[level] = qs.map((q) => q.answer);
+}
+
 // ---------- log station ----------
 function renderLog() {
   const feed = $('log-feed');
@@ -504,8 +774,9 @@ function onLogClick(index, btn) {
 function completeLog() {
   stopLogTimer();
   updateAll();
+  showLogQuiz();
   sfx('good');
-  toast('All three indicators found. The containment console is open.', 'good');
+  toast('All three indicators found. One knowledge check, then containment.', 'good');
 }
 
 function logTimeout() {
@@ -581,11 +852,20 @@ function toggleContain(id, btn) {
 
 function updateContainUI() {
   const n = state.containSelected.size;
-  $('contain-note').textContent = n + ' of 4 selected';
   const deploy = $('contain-deploy');
   if (!state.containChecked) {
+    $('contain-note').textContent = n + ' of 4 selected';
     deploy.disabled = n !== 4;
     deploy.textContent = 'Deploy response';
+  } else if (!state.containQuizShown) {
+    $('contain-note').textContent = 'Response deployed';
+    deploy.disabled = false;
+    deploy.textContent = 'Start knowledge check';
+  } else {
+    $('contain-note').textContent =
+      state.quizAnswered.contain.size + ' of ' + state.questions.contain.length + ' answered';
+    deploy.disabled = !containQuizDone();
+    deploy.textContent = 'Continue to report';
   }
 }
 
@@ -620,13 +900,11 @@ function checkContain() {
   state.stageScores.contain = correct * POINTS.containCorrect + wrong * POINTS.containWrong;
   updateAll();
   sfx(correct === 4 ? 'good' : 'bad');
-  const deploy = $('contain-deploy');
-  deploy.textContent = 'Continue to report';
-  deploy.disabled = false;
+  updateContainUI();
   if (correct === 4) {
-    toast('Containment complete. ' + correct + ' of 4 correct.', 'good');
+    toast('Containment complete. ' + correct + ' of 4 correct — start the knowledge check.', 'good');
   } else {
-    toast('Response deployed. ' + correct + ' of 4 correct — read the feedback.', 'bad');
+    toast('Response deployed. ' + correct + ' of 4 correct — read the feedback, then start the knowledge check.', 'bad');
   }
 }
 
@@ -713,74 +991,19 @@ function checkOrder() {
 function showQuizSection() {
   $('report-order').hidden = true;
   $('report-quiz').hidden = false;
-  renderQuiz();
-}
-
-function renderQuiz() {
-  const list = $('quiz-list');
-  list.innerHTML = '';
-  QUIZ.forEach((q, qi) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'quiz-q';
-    const h = document.createElement('h3');
-    h.textContent = qi + 1 + '. ' + q.question;
-    const opts = document.createElement('div');
-    opts.className = 'quiz-opts';
-    q.options.forEach((opt, oi) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'quiz-opt';
-      btn.textContent = opt;
-      btn.addEventListener('click', () => answerQuiz(qi, oi, opts, wrap));
-      opts.appendChild(btn);
-    });
-    wrap.append(h, opts);
-    list.appendChild(wrap);
-  });
-  updateQuizUI();
-}
-
-function answerQuiz(qi, oi, opts, wrap) {
-  if (state.quizAnswered.has(qi)) return;
-  state.quizAnswered.add(qi);
-  const q = QUIZ[qi];
-  const buttons = opts.querySelectorAll('.quiz-opt');
-  buttons.forEach((b, i) => {
-    b.disabled = true;
-    if (i === q.answer) b.classList.add('correct');
-    else if (i === oi) b.classList.add('wrong');
-  });
-  const exp = document.createElement('p');
-  exp.className = 'quiz-exp ' + (oi === q.answer ? 'correct' : 'wrong');
-  exp.textContent = q.explanation;
-  wrap.appendChild(exp);
-  if (oi === q.answer) {
-    state.quizCorrect += 1;
-    state.score += POINTS.quizCorrect;
-    state.stageScores.quiz += POINTS.quizCorrect;
-    sfx('good');
-  } else {
-    sfx('bad');
-  }
-  updateScore();
-  updateQuizUI();
-}
-
-function updateQuizUI() {
-  const n = state.quizAnswered.size;
-  $('quiz-note').textContent = n + ' of 3 answered';
-  $('file-report').disabled = n !== QUIZ.length;
+  renderLevelQuiz('report', 'quiz-list');
+  updateLevelQuizNote('report');
 }
 
 // ---------- station flow ----------
 function openStation(id) {
   if (!state.started) return;
-  if (id === 'contain' && !logDone()) {
-    toast('Finish the log wall first — you need the indicators.', 'bad');
+  if (id === 'contain' && !logLevelDone()) {
+    toast('Finish the log wall and its knowledge check first.', 'bad');
     return;
   }
-  if (id === 'report' && !state.containChecked) {
-    toast('Contain the breach first.', 'bad');
+  if (id === 'report' && !containLevelDone()) {
+    toast('Contain the breach and finish the containment check first.', 'bad');
     return;
   }
   state.station = id;
@@ -790,10 +1013,22 @@ function openStation(id) {
   if (id === 'log') {
     updateTargets();
     updateTimerUI();
-    startLogTimer();
+    if (logDone()) {
+      showLogQuiz();
+    } else {
+      $('log-feed').hidden = false;
+      $('log-quiz').hidden = true;
+      startLogTimer();
+    }
   }
   if (id === 'contain') {
-    renderContain();
+    if (state.containChecked && state.containQuizShown) {
+      showContainQuiz();
+    } else {
+      $('contain-cards').hidden = false;
+      $('contain-quiz').hidden = true;
+      renderContain();
+    }
   }
   if (id === 'report') {
     if (state.reportOrderDone) showQuizSection();
@@ -832,15 +1067,19 @@ $('contain-deploy').addEventListener('click', () => {
       return;
     }
     checkContain();
-  } else {
+  } else if (!state.containQuizShown) {
+    showContainQuiz();
+  } else if (containQuizDone()) {
     closeStation();
     openStation('report');
+  } else {
+    toast('Answer the containment knowledge check first.', 'bad');
   }
 });
 
 $('order-check').addEventListener('click', checkOrder);
 $('file-report').addEventListener('click', () => {
-  if (state.quizAnswered.size !== QUIZ.length) return;
+  if (!reportQuizDone()) return;
   fileReport();
 });
 
@@ -928,7 +1167,7 @@ async function submitScore() {
     order_score: state.stageScores.order,
     quiz_score: state.stageScores.quiz,
     duration_seconds: state.durationSeconds,
-    game_version: '1.0',
+    game_version: '1.1',
   };
   try {
     await sb('breach_room_scores', {
@@ -1102,8 +1341,17 @@ if (!SB_READY) {
   });
 }
 
-$('start').addEventListener('click', () => {
-  startGame(false);
+$('start').addEventListener('click', async () => {
+  const btn = $('start');
+  if (btn.dataset.loading === '1') return;
+  btn.dataset.loading = '1';
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+  await ensureQuestions();
+  btn.textContent = 'Start shift';
+  btn.dataset.loading = '0';
+  updateGroupUI();
+  if (state.group) startGame(false);
 });
 $('intro-help').addEventListener('click', () => {
   $('help').hidden = !$('help').hidden;
@@ -1159,16 +1407,19 @@ function finishQA(parts) {
   qa.textContent = 'QA:' + parts.join(' | ');
 }
 
-function runQA() {
+async function runQA() {
   const out = [];
   try {
+    await ensureQuestions();
     if (LOG_TARGETS.length !== 3) return finishQA(['FAIL log targets']);
     if (!LOG_TARGETS.every((t) => LOG_LINES.some((l) => t.test(l.t + ' ' + l.msg)))) {
       return finishQA(['FAIL target match']);
     }
     if (CONTAIN_CARDS.filter((c) => c.correct).length !== 4) return finishQA(['FAIL contain count']);
     if (REPORT_FRAGMENTS.length !== 4) return finishQA(['FAIL fragments']);
-    if (QUIZ.length !== 3) return finishQA(['FAIL quiz']);
+    if (state.questions.log.length !== 3) return finishQA(['FAIL log questions']);
+    if (state.questions.contain.length !== 3) return finishQA(['FAIL contain questions']);
+    if (state.questions.report.length !== 5) return finishQA(['FAIL report questions']);
     if (MAX_SCORE !== 1025) return finishQA(['FAIL max score']);
 
     startGame(true);
@@ -1180,6 +1431,15 @@ function runQA() {
       if (LOG_TARGETS.some((t) => !state.logFound.has(t.id) && t.test(text))) line.click();
     }
     if (state.logFound.size !== 3) return finishQA(['FAIL log completion']);
+
+    state.questions.log.forEach((q, qi) => {
+      const qEl = document.querySelectorAll('#log-quiz .quiz-q')[qi];
+      if (!qEl) return;
+      const opts = qEl.querySelectorAll('.quiz-opt');
+      if (opts[q.answer]) opts[q.answer].click();
+    });
+    if (!logQuizDone()) return finishQA(['FAIL log quiz']);
+
     closeStation();
     openStation('contain');
     for (const card of CONTAIN_CARDS.filter((c) => c.correct)) {
@@ -1188,6 +1448,17 @@ function runQA() {
     }
     $('contain-deploy').click();
     if (!state.containChecked) return finishQA(['FAIL contain check']);
+    $('contain-deploy').click();
+    if (!state.containQuizShown) return finishQA(['FAIL contain quiz shown']);
+
+    state.questions.contain.forEach((q, qi) => {
+      const qEl = document.querySelectorAll('#contain-quiz .quiz-q')[qi];
+      if (!qEl) return;
+      const opts = qEl.querySelectorAll('.quiz-opt');
+      if (opts[q.answer]) opts[q.answer].click();
+    });
+    if (!containQuizDone()) return finishQA(['FAIL contain quiz']);
+
     $('contain-deploy').click();
     if (state.station !== 'report') return finishQA(['FAIL report open']);
 
@@ -1199,17 +1470,17 @@ function runQA() {
     $('order-check').click();
     if (!state.reportOrderDone) return finishQA(['FAIL order check']);
 
-    QUIZ.forEach((q, qi) => {
-      const qEl = document.querySelectorAll('.quiz-q')[qi];
+    state.questions.report.forEach((q, qi) => {
+      const qEl = document.querySelectorAll('#quiz-list .quiz-q')[qi];
       if (!qEl) return;
       const opts = qEl.querySelectorAll('.quiz-opt');
       if (opts[q.answer]) opts[q.answer].click();
     });
-    if (state.quizAnswered.size !== 3) return finishQA(['FAIL quiz answers']);
+    if (!reportQuizDone()) return finishQA(['FAIL report quiz']);
     $('file-report').click();
     if ($('debrief').hidden) return finishQA(['FAIL debrief']);
     if (Math.round(state.score) !== MAX_SCORE) return finishQA(['FAIL score ' + state.score]);
-    out.push('PASS score=' + state.score);
+    out.push('PASS score=' + state.score + ' source=' + state.questionsSource);
   } catch (e) {
     out.push('EXCEPTION:' + (e && e.message ? e.message : e));
   }
@@ -1222,71 +1493,95 @@ const boardDemo = params.get('boarddemo') === '1';
 const stateParam = params.get('state');
 const skipIntro = params.get('skipintro') === '1';
 
-if (qaMode) {
-  setTimeout(runQA, 500);
-} else if (boardDemo) {
-  state.group = 'A';
-  updateGroupUI();
-  startGame(true);
-  state.boardOpen = true;
-  state.boardTab = 'all';
-  updateBoardTabs();
-  $('panel-board').hidden = false;
-  state.attemptId = 'demo-row-1';
-  state.boardSummary = [
-    { group_label: 'A', runs: 14, total_score: 8420, best_score: 1025, avg_score: 812, best_time_seconds: 412 },
-    { group_label: 'B', runs: 11, total_score: 6980, best_score: 980, avg_score: 760, best_time_seconds: 430 },
-  ];
-  state.boardRows = [
-    {
-      attempt_id: 'demo-row-1', display_name: 'Alice', group_label: 'A', score: 1025, rank: 'SOC Lead',
-      log_score: 300, contain_score: 300, order_score: 200, quiz_score: 225,
-      duration_seconds: 412, created_at: new Date().toISOString(),
-    },
-    {
-      attempt_id: 'demo-row-2', display_name: 'Anonymous', group_label: 'B', score: 980, rank: 'SOC Lead',
-      log_score: 300, contain_score: 255, order_score: 200, quiz_score: 225,
-      duration_seconds: 430, created_at: new Date().toISOString(),
-    },
-    {
-      attempt_id: 'demo-row-3', display_name: 'G07-A', group_label: 'A', score: 845, rank: 'Incident Responder',
-      log_score: 300, contain_score: 225, order_score: 200, quiz_score: 120,
-      duration_seconds: 455, created_at: new Date().toISOString(),
-    },
-  ];
-  renderBoardSummary();
-  renderBoardRows();
-} else if (stateParam) {
-  startGame(true);
-  if (stateParam === 'contain') {
-    state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
-    updateAll();
-    openStation('contain');
-  } else if (stateParam === 'report') {
-    state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
-    state.containChecked = true;
-    updateAll();
-    openStation('report');
-  } else if (stateParam === 'quiz') {
-    state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
-    state.containChecked = true;
-    state.reportOrderDone = true;
-    updateAll();
-    openStation('report');
-    showQuizSection();
-  } else if (stateParam === 'debrief') {
-    state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
-    state.containChecked = true;
-    state.reportOrderDone = true;
-    state.quizAnswered = new Set([0, 1, 2]);
-    state.quizCorrect = 3;
-    state.score = MAX_SCORE;
-    state.stageScores = { log: 300, contain: 300, order: 200, quiz: 225 };
-    updateAll();
-    fileReport();
-  } else {
-    openStation('log');
+
+(async () => {
+  if (qaMode) {
+    setTimeout(runQA, 500);
+    return;
   }
-} else if (skipIntro) {
-  startGame(true);
-}
+
+  await ensureQuestions();
+
+  if (boardDemo) {
+    state.group = 'A';
+    updateGroupUI();
+    startGame(true);
+    state.boardOpen = true;
+    state.boardTab = 'all';
+    updateBoardTabs();
+    $('panel-board').hidden = false;
+    state.attemptId = 'demo-row-1';
+    state.boardSummary = [
+      { group_label: 'A', runs: 14, total_score: 8420, best_score: 1025, avg_score: 812, best_time_seconds: 412 },
+      { group_label: 'B', runs: 11, total_score: 6980, best_score: 980, avg_score: 760, best_time_seconds: 430 },
+    ];
+    state.boardRows = [
+      {
+        attempt_id: 'demo-row-1', display_name: 'Alice', group_label: 'A', score: 1025, rank: 'SOC Lead',
+        log_score: 300, contain_score: 300, order_score: 200, quiz_score: 225,
+        duration_seconds: 412, created_at: new Date().toISOString(),
+      },
+      {
+        attempt_id: 'demo-row-2', display_name: 'Anonymous', group_label: 'B', score: 980, rank: 'SOC Lead',
+        log_score: 300, contain_score: 255, order_score: 200, quiz_score: 225,
+        duration_seconds: 430, created_at: new Date().toISOString(),
+      },
+      {
+        attempt_id: 'demo-row-3', display_name: 'G07-A', group_label: 'A', score: 845, rank: 'Incident Responder',
+        log_score: 300, contain_score: 225, order_score: 200, quiz_score: 120,
+        duration_seconds: 455, created_at: new Date().toISOString(),
+      },
+    ];
+    renderBoardSummary();
+    renderBoardRows();
+    return;
+  }
+
+  if (stateParam) {
+    startGame(true);
+
+    if (stateParam === 'contain') {
+      state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
+      markAllQuestionsAnswered('log');
+      updateAll();
+      openStation('contain');
+    } else if (stateParam === 'report') {
+      state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
+      markAllQuestionsAnswered('log');
+      state.containChecked = true;
+      state.containQuizShown = true;
+      markAllQuestionsAnswered('contain');
+      updateAll();
+      openStation('report');
+    } else if (stateParam === 'quiz') {
+      state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
+      markAllQuestionsAnswered('log');
+      state.containChecked = true;
+      state.containQuizShown = true;
+      markAllQuestionsAnswered('contain');
+      state.reportOrderDone = true;
+      updateAll();
+      openStation('report');
+      showQuizSection();
+    } else if (stateParam === 'debrief') {
+      state.logFound = new Set(LOG_TARGETS.map((t) => t.id));
+      markAllQuestionsAnswered('log');
+      state.containChecked = true;
+      state.containQuizShown = true;
+      markAllQuestionsAnswered('contain');
+      state.reportOrderDone = true;
+      markAllQuestionsAnswered('report');
+      state.score = MAX_SCORE;
+      state.stageScores = { log: 300, contain: 300, order: 200, quiz: 225 };
+      updateAll();
+      fileReport();
+    } else {
+      openStation('log');
+    }
+    return;
+  }
+
+  if (skipIntro) {
+    startGame(true);
+  }
+})();
