@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Records Room | Skim &amp; Scan | Week 9</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="../../theme.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header id="hud" hidden>
+      <a class="hud-back" href="../Reading_Strategy_Skim_and_Scan.html">← Reading strategy</a>
+      <div class="brand">THE RECORDS ROOM</div>
+      <div class="hud-stats">
+        <div class="hud-stat"><span>DOC</span><strong id="doc-progress">1 / 3</strong></div>
+        <div class="hud-stat"><span>SCORE</span><strong id="score">0</strong></div>
+        <div class="hud-stat"><span>TIME</span><strong id="timer">60</strong></div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <section id="intro" class="overlay">
+        <div class="intro-card">
+          <a class="intro-exit" href="../Reading_Strategy_Skim_and_Scan.html" aria-label="Back to the reading strategy page">✕ Exit</a>
+          <div class="eyebrow">WEEK 9 · READING PRACTICE</div>
+          <h1>The Records Room</h1>
+          <p class="sub">Three documents. Two tools. One shift.</p>
+          <p>Skim for the big picture. Scan for the one detail. The text stays in front of you; speed is part of the score, not a lock on the door.</p>
+          <div class="tool-row">
+            <div class="tool"><span class="tool-icon">🔭</span><div><strong>Skim</strong><span>Read for the gist</span></div></div>
+            <div class="tool"><span class="tool-icon">🔍</span><div><strong>Scan</strong><span>Find one fact</span></div></div>
+          </div>
+          <ul class="intro-list">
+            <li>Each document has <strong>2 skim questions</strong> and <strong>3 scan targets</strong>.</li>
+            <li>Correct answers score points plus a time bonus.</li>
+            <li>A wrong scan click costs 20 points and 5 seconds.</li>
+          </ul>
+          <div class="actions">
+            <button id="start" class="btn btn-primary">Start shift</button>
+            <a class="btn btn-ghost" href="../Reading_Strategy_Skim_and_Scan.html">Back to the strategy page</a>
+          </div>
+          <p class="foot">Local practice · your score stays in this browser.</p>
+        </div>
+      </section>
+
+      <section id="game" hidden>
+        <div class="game-grid">
+          <article class="paper" id="paper">
+            <header class="paper-head">
+              <div>
+                <div class="paper-kicker" id="paper-kicker">DOCUMENT 1 · INCIDENT REPORT</div>
+                <h2 id="paper-title">The Breach Report</h2>
+                <div class="paper-source" id="paper-source">NovaNet Solutions · Security Lead</div>
+              </div>
+              <div class="stamp" id="stamp">SKIM</div>
+            </header>
+            <div id="document-text" class="document-text"></div>
+          </article>
+
+          <aside class="task" id="task" aria-live="polite">
+            <div class="task-head">
+              <span class="task-tool" id="task-tool">🔭 SKIM</span>
+              <span class="task-count" id="task-count">Question 1 of 2</span>
+            </div>
+            <h2 id="task-title">What is this report mainly about?</h2>
+            <p id="task-help" class="task-help">Choose the best answer.</p>
+            <div id="task-body" class="task-body"></div>
+            <div id="feedback" class="feedback" hidden></div>
+            <div class="task-foot">
+              <button id="task-next" class="btn btn-primary" hidden>Next</button>
+              <a class="btn btn-ghost" href="../Reading_Strategy_Skim_and_Scan.html">Exit</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="results" class="overlay" hidden>
+        <div class="result-card">
+          <div class="eyebrow">SHIFT COMPLETE</div>
+          <h1 id="result-rank">Records Clerk</h1>
+          <div class="score-big"><span id="final-score">0</span><small id="max-score">/ 2250</small></div>
+          <div class="result-grid">
+            <div><span>Accuracy</span><strong id="final-accuracy">0%</strong></div>
+            <div><span>Time</span><strong id="final-time">0:00</strong></div>
+          </div>
+          <div id="doc-breakdown" class="doc-breakdown"></div>
+          <div class="actions">
+            <button id="replay" class="btn btn-primary">Play again</button>
+            <a class="btn btn-ghost" href="../Reading_Strategy_Skim_and_Scan.html">Back to the strategy page</a>
+          </div>
+          <p class="foot">Local practice · no data is sent anywhere.</p>
+        </div>
+      </section>
+
+      <div id="qa-report" hidden></div>
+    </main>
+  </div>
+
+  <script>
+    window.__recordsErrors = [];
+    window.addEventListener('error', function (e) {
+      window.__recordsErrors.push(String((e && e.message) || 'error'));
+      var qa = document.getElementById('qa-report');
+      if (qa) {
+        qa.hidden = false;
+        qa.textContent = 'ERRORS:' + window.__recordsErrors.join(' | ');
+      }
+    });
+  </script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
