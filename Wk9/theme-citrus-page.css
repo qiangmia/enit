@@ -1,0 +1,312 @@
+/* Citrus Press theme for the Week 9 reading-strategy page.
+   Palette and print-style components adapted from Asiakirjat/layout.html.
+   The photo header keeps the original Unsplash image under a navy wash. */
+
+html.citrus {
+  --primary: #1B2A4A;
+  --primary-light: #2B3D63;
+  --accent: #22C55E;
+  --accent-light: #DCFCE7;
+  --accent-ink: #0B7A43;
+  --on-accent: #08251A;
+  --warm: #A33A3A;
+  --warm-light: #FEE2E2;
+  --bg: #FFF8E7;
+  --card-bg: #FFFFFF;
+  --text: #1B2A4A;
+  --text-light: #55627A;
+  --border: #DED5C2;
+  --rule: #DED5C2;
+  --info-bg: #EAF8FF;
+  --task-bg: #F3FCF6;
+  --success: #0B7A43;
+  --success-bg: #DCFCE7;
+  --grammar-bg: #F7F3FF;
+  --vocab-bg: #FFF8E7;
+  --homework-bg: #FFF1F1;
+  --shadow: #1B2A4A;
+  --highlight: #FFD84D;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --display: "Instrument Serif", Georgia, "Times New Roman", serif;
+}
+
+html.citrus body {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+}
+html.citrus ::selection {
+  background: var(--highlight);
+  color: var(--text);
+}
+
+/* ── Masthead: photo under a navy wash ──────────── */
+html.citrus .course-header {
+  background:
+    linear-gradient(105deg, rgba(27, 42, 74, 0.95) 0%, rgba(27, 42, 74, 0.88) 55%, rgba(27, 42, 74, 0.74) 100%),
+    url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=400&fit=crop');
+  background-size: cover;
+  background-position: center;
+  color: #FFF8E7;
+  text-align: left;
+  padding: 62px 24px 42px;
+  border-top: 10px solid var(--accent);
+  border-bottom: 6px solid var(--accent);
+  box-shadow: inset 0 -3px 0 var(--primary);
+  position: relative;
+  overflow: visible;
+}
+html.citrus .course-header::before { display: none; }
+html.citrus .course-header h1 {
+  font-family: var(--display);
+  font-size: clamp(3.4rem, 8vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  color: #FFF8E7;
+  max-width: 1072px;
+  margin: 0 auto;
+  text-shadow: 2px 2px 0 rgba(11, 20, 38, 0.35);
+}
+html.citrus .course-header .subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.45;
+  opacity: 1;
+  color: rgba(255, 248, 231, 0.92);
+  max-width: 1072px;
+  margin: 12px auto 0;
+}
+html.citrus .course-header .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.55rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.8;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 1;
+  color: rgba(255, 248, 231, 0.78);
+  max-width: 1072px;
+  margin: 26px auto 0;
+  border-top: 1px solid rgba(255, 248, 231, 0.35);
+  padding-top: 14px;
+}
+html.citrus .course-header .meta span { margin: 0; }
+html.citrus .header-home-link {
+  color: #FFF8E7;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 248, 231, 0.7);
+}
+html.citrus .header-home-link:hover {
+  color: #A7F3C4;
+  border-bottom-color: #A7F3C4;
+}
+
+html.citrus .container {
+  max-width: 1120px;
+  padding: 32px 24px 64px;
+}
+
+html.citrus .section-title {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--primary);
+  margin: 30px 0 18px;
+  padding-left: 16px;
+  border-left: 6px solid var(--accent);
+  letter-spacing: -0.01em;
+}
+
+/* ── Cards ──────────────────────────────────────── */
+html.citrus .card {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 30px 32px;
+  margin: 26px 0;
+  box-shadow: 5px 5px 0 var(--shadow);
+}
+html.citrus .card-header {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary);
+  margin-bottom: 18px;
+}
+html.citrus .card-icon { font-size: 18px; }
+
+html.citrus #definitions > p:first-of-type {
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+html.citrus #definitions > p:first-of-type::first-letter {
+  font-family: var(--display);
+  float: left;
+  font-size: 4.2rem;
+  line-height: 0.75;
+  padding: 8px 10px 0 0;
+  color: var(--accent-ink);
+}
+
+html.citrus .grid-2 { gap: 16px; }
+html.citrus .example-box {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 16px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+html.citrus .example-box strong {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+html.citrus .example-box ul { line-height: 1.7; }
+html.citrus .example-box p { margin: 0.5rem 0 0.2rem; }
+
+html.citrus .subhead {
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--primary);
+  margin-top: 1.6rem;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--primary);
+}
+html.citrus .table-wrap { margin-top: 0.8rem; }
+html.citrus .compare {
+  font-family: var(--serif);
+  font-size: 0.98rem;
+}
+html.citrus .compare th,
+html.citrus .compare td {
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+}
+html.citrus .compare thead th {
+  background: var(--accent-light);
+  color: var(--primary);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+html.citrus .compare tbody tr:nth-child(even) { background: var(--bg); }
+
+html.citrus .figure-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 12px;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+html.citrus .figure-wrap img { border-radius: 0; }
+html.citrus .diagram rect { rx: 0; }
+
+html.citrus .task-card { border-top: 6px solid var(--accent); }
+html.citrus .profile {
+  background: var(--task-bg);
+  border: 1px solid #BBF7D0;
+  border-radius: 0;
+  padding: 16px 18px;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+html.citrus .profile ul { line-height: 1.8; }
+
+/* ── Small controls ────────────────────────────── */
+html.citrus .timer-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 1px solid var(--primary);
+  border-radius: 0;
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+html.citrus .timer-btn:hover {
+  background: var(--accent);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+html.citrus .timer-btn:disabled { opacity: 0.5; }
+html.citrus .timer-display {
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: 1.15rem;
+}
+html.citrus .timer-display.time-up { color: var(--warm); }
+
+html.citrus details { margin-top: 0.9rem; }
+html.citrus summary {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+html.citrus summary:hover { color: var(--primary); }
+
+html.citrus .video-wrap {
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+html.citrus .practice-link {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 1px solid var(--primary);
+  border-radius: 0;
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+html.citrus .practice-link:hover {
+  filter: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+html.citrus .footer-nav {
+  border-top: 2px solid var(--primary);
+  padding-top: 16px;
+  margin-top: 36px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+html.citrus .footer-nav a { color: var(--accent-ink); }
+
+@media (max-width: 640px) {
+  html.citrus .course-header { padding: 40px 14px 28px; }
+  html.citrus .course-header h1 { font-size: clamp(2.35rem, 12.5vw, 2.9rem); }
+  html.citrus .course-header .subtitle { font-size: 1.1rem; }
+  html.citrus .course-header .meta { display: block; }
+  html.citrus .course-header .meta span { display: block; }
+  html.citrus .course-header .meta span:nth-child(even) { display: none; }
+  html.citrus .container { padding: 22px 14px 48px; }
+  html.citrus .card { padding: 22px 18px; box-shadow: 4px 4px 0 var(--shadow); }
+  html.citrus .section-title { font-size: 2rem; }
+}
