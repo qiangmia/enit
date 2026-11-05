@@ -43,6 +43,13 @@
         .screen { display: none; padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
         .screen.active { display: block; }
 
+        /* The play screen uses the full window; setup/results stay readable. */
+        #game-screen.screen {
+            max-width: none;
+            width: 100%;
+            padding: clamp(0.55rem, 1vw, 1rem);
+        }
+
         .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
         .team-panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
         .team-panel.team-a { border-top: 4px solid var(--team-a); }
@@ -130,34 +137,61 @@
         .btn-warm { background: var(--warm); color: white; }
         .btn-warm:hover { background: #9c4221; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
         .btn-lg { padding: 0.8rem 2rem; font-size: 1.1rem; }
 
         .stats-bar { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-light); flex-wrap: wrap; }
         .stat-item { display: flex; align-items: center; gap: 0.3rem; }
         .stat-value { font-weight: 700; color: var(--text); }
 
-        /* ── Live strip: the in-game scoreboard ───────────── */
-        .game-top-bar { display: flex; flex-direction: column; align-items: stretch; gap: 0.7rem; margin-bottom: 1rem; }
-        .game-toolbar { display: flex; justify-content: flex-end; gap: 0.5rem; flex-wrap: wrap; }
-        .live-strip { display: grid; grid-template-columns: 1fr minmax(11rem, auto) 1fr; align-items: stretch; gap: 0.8rem; }
-        .live-team { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.45rem 0.9rem; border-radius: 12px; background: var(--gomoku-paper); border: 4px solid var(--border); color: #1a202c; }
-        .live-team.red { border-color: var(--gomoku-red); }
-        .live-team.black { border-color: var(--gomoku-black); }
-        .live-team.active { box-shadow: 0 0 0 5px #f6ad55; }
-        .live-team-name { font-size: 0.78rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-        .live-team.red .live-team-name { color: var(--gomoku-red); }
-        .live-team.black .live-team-name { color: var(--gomoku-black); }
-        .live-team-score { font-size: clamp(2rem, 4.2vw, 3rem); font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; }
-        .live-team-sub { font-size: 0.78rem; font-weight: 700; color: #4a5568; text-align: center; }
-        .live-centre { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; }
+        /* ── Game layout: board + control rail ─────────────── */
+        .game-layout {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: clamp(0.75rem, 1.4vw, 1.2rem);
+        }
+        .board-column {
+            flex: 0 0 auto;
+            width: min(calc(100vw - 380px), calc(100vh - 12rem), 1100px);
+            min-width: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .game-side { flex: 0 0 340px; max-width: 340px; display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
+        .game-toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .game-toolbar .btn { flex: 1 1 auto; }
+        .side-draw {
+            background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px;
+            padding: 0.85rem 0.9rem; display: flex; flex-direction: column;
+            align-items: center; gap: 0.55rem; text-align: center;
+        }
+        .side-draw .btn { width: 100%; }
+        .side-hint { font-size: 0.8rem; color: var(--text-light); line-height: 1.4; }
         .round-indicator { text-align: center; padding: 0.3rem 0.85rem; background: var(--warm-light); border-radius: 8px; font-weight: 700; color: var(--warm); font-size: 0.85rem; }
+        .side-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+        .live-team {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 0.7rem 0.75rem; border-radius: 12px; border: 0; color: #fff; min-width: 0;
+        }
+        .live-team.red { background: var(--gomoku-red); }
+        .live-team.black { background: var(--gomoku-black); }
+        .live-team.active { box-shadow: 0 0 0 5px #f6ad55; }
+        .live-team-name { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+        .live-team-score { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; color: #fff; }
+        .live-team-sub { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.85); text-align: center; }
         .streak-dots { display: flex; gap: 0.25rem; margin-top: 0.25rem; }
-        .streak-dot { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: #cbd5e0; }
-        .streak-dot.on.red { background: var(--gomoku-red); }
-        .streak-dot.on.black { background: var(--gomoku-black); }
+        .streak-dot { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: rgba(255,255,255,0.35); }
+        .live-team .streak-dot.on.red,
+        .live-team .streak-dot.on.black { background: #fff; }
+        @media (max-width: 900px) {
+            .game-layout { flex-direction: column; align-items: center; }
+            .board-column { width: min(100%, 560px); }
+            .game-side { order: -1; flex: 0 0 auto; width: 100%; max-width: none; }
+        }
         @media (max-width: 640px) {
-            .live-strip { grid-template-columns: 1fr 1fr; }
-            .live-centre { grid-column: 1 / -1; order: -1; }
+            .side-scores { grid-template-columns: 1fr; }
+            .live-team { padding: 0.55rem 0.7rem; }
             .live-team-score { font-size: 1.9rem; }
         }
 
@@ -166,17 +200,40 @@
            object: paper, red and black stay fixed across all five themes, so
            the stones never change colour mid-game and the wood tone keeps both
            stone colours legible. See design.md, "Documented exceptions". */
-        .board-container { display: flex; justify-content: center; margin-bottom: 0.5rem; }
-        .board-wrap { position: relative; }
+        .board-container { display: flex; justify-content: center; margin-bottom: 0; width: 100%; }
+        .board-wrap { position: relative; display: flex; justify-content: center; width: 100%; }
+        .board-frame {
+            --n: 10;
+            display: grid;
+            grid-template-columns: 1.5rem minmax(0, 1fr);
+            grid-template-rows: 1.5rem minmax(0, 1fr);
+            gap: 0.12rem;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .board-corner { grid-column: 1; grid-row: 1; }
+        .col-labels {
+            grid-column: 2; grid-row: 1; display: grid;
+            grid-template-columns: repeat(var(--n), 1fr); align-items: center;
+            padding: 0 0.85rem;
+            text-align: center; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+            font-size: clamp(0.55rem, 0.7vw, 0.72rem); font-weight: 700; color: #8a6b3f;
+        }
+        .row-labels {
+            grid-column: 1; grid-row: 2; display: grid;
+            grid-template-rows: repeat(var(--n), 1fr); align-items: center;
+            padding: 0.85rem 0;
+            text-align: center; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+            font-size: clamp(0.55rem, 0.7vw, 0.72rem); font-weight: 700; color: #8a6b3f;
+        }
         .board {
-            --n: 11;
+            --n: 10;
+            grid-column: 2; grid-row: 2;
             display: grid;
             grid-template-columns: repeat(var(--n), 1fr);
-            /* Sized from the space left below the header, live strip and turn
-               bar, not from the raw viewport: 30rem is the chrome above the
-               board, and the fixed shortcuts bar takes the last 2.5rem. At
-               1080p this lands on 584px, which fits without scrolling. */
-            width: clamp(320px, min(94vw, calc(100vh - 31rem)), 860px);
+            /* Height-aware: the frame leaves room for the header and the
+               fixed shortcuts bar, so the board fills the remaining window. */
+            width: 100%;
             aspect-ratio: 1;
             background-color: var(--gomoku-board);
             background-image:
@@ -188,6 +245,13 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 0 0 2px rgba(70,48,12,0.35);
         }
         .cell { position: relative; display: flex; align-items: center; justify-content: center; }
+        .cell-coord {
+            position: absolute; top: 2px; left: 3px; z-index: 0;
+            font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+            font-size: clamp(0.42rem, 0.62vw, 0.58rem);
+            line-height: 0.9; color: rgba(70,48,12,0.34);
+            pointer-events: none; user-select: none;
+        }
         .cell.placable { cursor: pointer; }
         .cell.placable:hover::before {
             content: ''; position: absolute; width: 72%; height: 72%; border-radius: 50%;
@@ -196,6 +260,7 @@
         .cell.placable:focus-visible { outline: 4px solid #2b6cb0; outline-offset: -4px; }
         .stone {
             width: 80%; height: 80%; border-radius: 50%;
+            position: relative; z-index: 1;
             box-shadow: inset -2px -3px 7px rgba(0,0,0,0.40), 0 3px 5px rgba(0,0,0,0.35);
             animation: stoneDrop 0.2s ease-out;
         }
@@ -210,15 +275,16 @@
 
         .turn-info {
             background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px;
-            padding: 1rem 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between;
-            align-items: center; flex-wrap: wrap; gap: 1rem;
-            box-shadow: 0 2px 12px rgba(43,108,176,0.15);
+            padding: 0.9rem 1rem; margin-bottom: 0; display: flex; flex-direction: column;
+            align-items: flex-start; gap: 0.55rem;
         }
+        .turn-info .turn-team { font-size: 1.3rem; }
         .turn-team { font-weight: 900; font-size: 1.6rem; letter-spacing: 0.02em; }
         .turn-team.team-a-text { color: var(--team-a); }
         .turn-team.team-b-text { color: var(--team-b); }
-        .spokesperson-display { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
-        .spokesperson-name { font-size: 1.3rem; font-weight: 700; color: var(--primary); background: var(--warm-light); padding: 0.3rem 1rem; border-radius: 8px; }
+        .spokesperson-display { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .spokesperson-label { color: var(--text-light); font-size: 0.85rem; }
+        .spokesperson-name { font-size: 1rem; font-weight: 700; color: var(--primary); background: var(--warm-light); padding: 0.25rem 0.7rem; border-radius: 8px; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
@@ -241,9 +307,12 @@
         .timer-fill { height: 100%; background: var(--success); border-radius: 4px; transition: width 1s linear, background-color 0.3s; width: 100%; }
         .timer-fill.warn { background: var(--warm); }
         .timer-fill.danger { background: var(--error); }
+        .timer-row { display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
         .timer-text { font-size: 1.5rem; font-weight: 800; }
         .timer-text.warn { color: var(--warm); }
         .timer-text.danger { color: var(--error); animation: blink 0.5s ease infinite; }
+        .timer-container.paused .timer-text { color: var(--warm); animation: none; }
+        .timer-pause { min-width: 6rem; }
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .question-category { display: inline-block; padding: 0.2rem 0.6rem; background: var(--accent-light); color: var(--accent); border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.8rem; }
@@ -297,9 +366,9 @@
         }
         @media (max-width: 600px) {
             .seating-grid { display: none; }
-            .board { max-width: 320px; }
+            .board-frame { max-width: 340px; }
             .cell-mark { font-size: 2rem; }
-            .turn-info { flex-direction: column; text-align: center; }
+            .turn-info { align-items: center; text-align: center; }
             .final-scores { flex-direction: column; align-items: center; gap: 1rem; }
         }
 
@@ -566,46 +635,56 @@
         <button class="btn btn-primary" onclick="showResults()">See results</button>
     </div>
 
-    <div class="game-top-bar">
-        <div class="game-toolbar">
-            <button class="btn btn-secondary" onclick="showSetup()">&#9881; Setup</button>
-            <button class="btn btn-warm" onclick="showBillboard()">&#128250; Billboard</button>
-        </div>
-        <div class="live-strip">
-            <div class="live-team red" id="box-a">
-                <div class="live-team-name">Red &middot; Group A</div>
-                <div class="live-team-score" id="score-a">0</div>
-                <div class="live-team-sub"><span id="stones-a">0</span> stones &middot; <span id="acc-a">&mdash;</span> accuracy</div>
-                <div class="streak-dots" id="streak-a"></div>
+    <div class="game-layout">
+        <div class="board-column">
+            <div class="board-container">
+                <div class="board-wrap">
+                    <div class="board-frame" id="board-frame">
+                        <div class="board-corner" aria-hidden="true"></div>
+                        <div class="col-labels" id="col-labels" aria-hidden="true"></div>
+                        <div class="row-labels" id="row-labels" aria-hidden="true"></div>
+                        <div class="board" id="board" role="grid" aria-label="Gomoku board, 10 by 10"></div>
+                    </div>
+                </div>
             </div>
-            <div class="live-centre">
+        </div>
+
+        <aside class="game-side">
+            <div class="side-draw">
                 <div class="round-indicator" id="round-indicator">Question 1</div>
                 <button class="btn btn-success btn-lg" id="draw-btn" onclick="drawQuestion()">&#9654; Draw a question</button>
-                <div class="live-team-sub" id="phase-hint">Draw a question, judge the answer, then place the stone.</div>
+                <div class="side-hint" id="phase-hint">Draw a question, judge the answer, then place the stone.</div>
             </div>
-            <div class="live-team black" id="box-b">
-                <div class="live-team-name">Black &middot; Group B</div>
-                <div class="live-team-score" id="score-b">0</div>
-                <div class="live-team-sub"><span id="stones-b">0</span> stones &middot; <span id="acc-b">&mdash;</span> accuracy</div>
-                <div class="streak-dots" id="streak-b"></div>
+
+            <div class="turn-info" id="turn-info">
+                <span class="turn-team" id="turn-team-label">Red's Turn</span>
+                <div class="spokesperson-display">
+                    <span class="spokesperson-label">Spokesperson:</span>
+                    <span class="spokesperson-name" id="spokesperson-name">&mdash;</span>
+                    <button class="btn btn-warm" onclick="pickSpokesperson()" id="pick-btn">&#127922; Who's Next?</button>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="turn-info" id="turn-info">
-        <div>
-            <span class="turn-team" id="turn-team-label">Red's Turn</span>
-            <span class="hint" id="turn-hint">Answer first, then place one stone anywhere on the board.</span>
-        </div>
-        <div class="spokesperson-display">
-            <span style="color:var(--text-light);">Spokesperson:</span>
-            <span class="spokesperson-name" id="spokesperson-name">&mdash;</span>
-            <button class="btn btn-warm" onclick="pickSpokesperson()" id="pick-btn">&#127922; Who's Next?</button>
-        </div>
-    </div>
+            <div class="side-scores">
+                <div class="live-team red" id="box-a">
+                    <div class="live-team-name">Red &middot; Group A</div>
+                    <div class="live-team-score" id="score-a">0</div>
+                    <div class="live-team-sub"><span id="stones-a">0</span> stones &middot; <span id="acc-a">&mdash;</span> accuracy</div>
+                    <div class="streak-dots" id="streak-a"></div>
+                </div>
+                <div class="live-team black" id="box-b">
+                    <div class="live-team-name">Black &middot; Group B</div>
+                    <div class="live-team-score" id="score-b">0</div>
+                    <div class="live-team-sub"><span id="stones-b">0</span> stones &middot; <span id="acc-b">&mdash;</span> accuracy</div>
+                    <div class="streak-dots" id="streak-b"></div>
+                </div>
+            </div>
 
-    <div class="board-container">
-        <div class="board-wrap"><div class="board" id="board" role="grid" aria-label="Gomoku board, 11 by 11"></div></div>
+            <div class="game-toolbar">
+                <button class="btn btn-secondary" onclick="showSetup()">&#9881; Setup</button>
+                <button class="btn btn-warm" onclick="showBillboard()">&#128250; Billboard</button>
+            </div>
+        </aside>
     </div>
 </div>
 
@@ -729,7 +808,10 @@
             <div class="question-text" id="modal-question-text">Loading...</div>
             <div class="timer-container" id="timer-container">
                 <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
-                <div class="timer-text" id="timer-text">30</div>
+                <div class="timer-row">
+                    <div class="timer-text" id="timer-text">30</div>
+                    <button class="btn btn-secondary btn-sm timer-pause" id="timer-pause" type="button" onclick="toggleTimerPause()" aria-pressed="false">Pause</button>
+                </div>
             </div>
             <div id="answer-area"></div>
         </div>
@@ -784,7 +866,7 @@ const TIMER_SECONDS = gameSettings.timer || 30;
 // ── Gomoku settings ────────────────────────────────────
 // The board is square, five in a line wins, and a full board is decided on
 // stones. BOARD_SIZE is the only number to change to play 9x9 or 13x13.
-const BOARD_SIZE = 11;
+const BOARD_SIZE = 10;
 const WIN_LENGTH = 5;
 const BOARD_CELLS = BOARD_SIZE * BOARD_SIZE;
 const BILLBOARD_KEY = 'enit_billboard';
@@ -808,6 +890,7 @@ let gameState = {
     timerInterval: null,
     timerRemaining: TIMER_SECONDS,
     timerTotal: TIMER_SECONDS,
+    timerPaused: false,
     spokespersonHistory: {},
     participationLog: [],
     isModalOpen: false,
@@ -1226,13 +1309,35 @@ function startGame() {
 }
 
 // ── Render Board ───────────────────────────────────────
+function renderBoardLabels() {
+    var cols = document.getElementById('col-labels');
+    var rows = document.getElementById('row-labels');
+    var board = document.getElementById('board');
+    if (board) board.setAttribute('aria-label', 'Gomoku board, ' + BOARD_SIZE + ' by ' + BOARD_SIZE);
+    if (!cols || !rows) return;
+    cols.innerHTML = '';
+    rows.innerHTML = '';
+    for (var c = 0; c < BOARD_SIZE; c++) {
+        var col = document.createElement('span');
+        col.textContent = String.fromCharCode(65 + c);
+        cols.appendChild(col);
+    }
+    for (var r = 1; r <= BOARD_SIZE; r++) {
+        var row = document.createElement('span');
+        row.textContent = r;
+        rows.appendChild(row);
+    }
+}
+
 function renderBoard() {
     var board = document.getElementById('board');
     if (!board) return;
+    var frame = document.getElementById('board-frame');
+    if (frame) frame.style.setProperty('--n', BOARD_SIZE);
     board.style.setProperty('--n', BOARD_SIZE);
     board.innerHTML = '';
 
-    // One extra scan of the board per render is cheap at 121 cells, and it
+    // One extra scan of the board per render is cheap at 100 cells, and it
     // keeps the winning five highlighted while the class looks at the result.
     var winLine = getWinningLine();
     var winSet = {};
@@ -1245,7 +1350,14 @@ function renderBoard() {
             cell.setAttribute('role', 'gridcell');
             var row = Math.floor(idx / BOARD_SIZE) + 1;
             var col = (idx % BOARD_SIZE) + 1;
+            var coord = String.fromCharCode(65 + col - 1) + row;
             var val = gameState.board[idx];
+
+            var coordEl = document.createElement('span');
+            coordEl.className = 'cell-coord';
+            coordEl.textContent = coord;
+            coordEl.setAttribute('aria-hidden', 'true');
+            cell.appendChild(coordEl);
 
             if (val) {
                 var stone = document.createElement('div');
@@ -1253,14 +1365,14 @@ function renderBoard() {
                 if (winSet[idx]) stone.className += ' win';
                 cell.appendChild(stone);
                 cell.setAttribute('aria-label',
-                    (val === 'A' ? 'Red' : 'Black') + ' stone, row ' + row + ', column ' + col);
+                    (val === 'A' ? 'Red' : 'Black') + ' stone, ' + coord);
             } else {
-                cell.setAttribute('aria-label', 'Empty, row ' + row + ', column ' + col);
+                cell.setAttribute('aria-label', 'Empty, ' + coord);
                 if (gameState.placing && !gameState.winner) {
                     cell.className = 'cell placable';
                     cell.setAttribute('role', 'button');
                     cell.setAttribute('tabindex', '0');
-                    cell.setAttribute('aria-label', 'Place a stone, row ' + row + ', column ' + col);
+                    cell.setAttribute('aria-label', 'Place a stone at ' + coord);
                     cell.onclick = function () { placeStone(idx); };
                     cell.onkeydown = function (e) {
                         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); placeStone(idx); }
@@ -1534,27 +1646,60 @@ function questionSeconds(q) {
 
 function startTimer() {
     clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+    gameState.timerPaused = false;
     var q = gameState.currentQuestion;
     var secs = questionSeconds(q);
     var timerBox = document.getElementById('timer-container');
     if (secs <= 0) {
         gameState.timerTotal = 0;
         if (timerBox) timerBox.style.display = 'none';
+        updatePauseButton();
         return;
     }
-    if (timerBox) timerBox.style.display = '';
+    if (timerBox) {
+        timerBox.style.display = '';
+        timerBox.classList.remove('paused');
+    }
     gameState.timerTotal = secs;
     gameState.timerRemaining = secs;
     updateTimerDisplay();
+    updatePauseButton();
 
-    gameState.timerInterval = setInterval(function() {
-        gameState.timerRemaining--;
-        updateTimerDisplay();
-        if (gameState.timerRemaining <= 0) {
-            clearInterval(gameState.timerInterval);
-            judgeAnswer(false);
-        }
-    }, 1000);
+    gameState.timerInterval = setInterval(tickTimer, 1000);
+}
+
+function tickTimer() {
+    if (gameState.timerPaused) return;
+    gameState.timerRemaining--;
+    updateTimerDisplay();
+    if (gameState.timerRemaining <= 0) {
+        clearInterval(gameState.timerInterval);
+        gameState.timerInterval = null;
+        judgeAnswer(false);
+    }
+}
+
+function toggleTimerPause() {
+    if (!gameState.isModalOpen || gameState.timerTotal <= 0) return;
+    gameState.timerPaused = !gameState.timerPaused;
+    clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+    if (!gameState.timerPaused) {
+        gameState.timerInterval = setInterval(tickTimer, 1000);
+    }
+    updatePauseButton();
+}
+
+function updatePauseButton() {
+    var btn = document.getElementById('timer-pause');
+    if (!btn) return;
+    var visible = gameState.isModalOpen && gameState.timerTotal > 0;
+    btn.style.display = visible ? '' : 'none';
+    btn.textContent = gameState.timerPaused ? 'Resume' : 'Pause';
+    btn.setAttribute('aria-pressed', gameState.timerPaused ? 'true' : 'false');
+    var box = document.getElementById('timer-container');
+    if (box) box.classList.toggle('paused', !!gameState.timerPaused);
 }
 
 function updateTimerDisplay() {
@@ -1663,7 +1808,10 @@ function passTurn() {
 function closeModal() {
     document.getElementById('question-modal').classList.remove('active');
     gameState.isModalOpen = false;
+    gameState.timerPaused = false;
     clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+    updatePauseButton();
 }
 
 function repickFromModal() {
@@ -2663,6 +2811,7 @@ loadConfig();
 })();
 renderWeekStrip();
 applyQuestionScale();
+renderBoardLabels();
 </script>
 </body>
 </html>
