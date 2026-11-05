@@ -28,6 +28,7 @@ const state = {
   docStartScore: 0,
   docStartCorrect: 0,
   docScores: [],
+  completedDocs: new Set(),
 };
 
 function currentDoc() {
@@ -283,6 +284,41 @@ function nextTask() {
   }
 }
 
+function nextUncompletedIndex(fromIndex) {
+  for (let step = 1; step <= DOCUMENTS.length; step++) {
+    const index = (fromIndex + step) % DOCUMENTS.length;
+    if (index !== fromIndex && !state.completedDocs.has(index)) return index;
+  }
+  return -1;
+}
+
+function updateSkipButton() {
+  const btn = $('skip-article');
+  if (!btn) return;
+  const hasNext = nextUncompletedIndex(state.docIndex) !== -1;
+  btn.textContent = hasNext ? 'Skip this article →' : 'Finish run';
+  btn.title = hasNext
+    ? 'Skip this article and choose another. Unanswered tasks count as missed.'
+    : 'Finish the run now. Unanswered tasks count as missed.';
+}
+
+function populateDocSelect() {
+  const select = $('doc-select');
+  if (!select) return;
+  select.innerHTML = '';
+  DOCUMENTS.forEach((doc, index) => {
+    const option = document.createElement('option');
+    const done = state.completedDocs.has(index);
+    const record = state.docScores[index];
+    const status = done ? (record && record.skipped ? ' (skipped)' : ' (done)') : '';
+    option.value = String(index);
+    option.textContent = (index + 1) + '. ' + doc.title + status;
+    option.disabled = done;
+    select.appendChild(option);
+  });
+  select.value = String(state.docIndex);
+}
+
 function loadDocument() {
   state.phase = 'skim';
   state.skimIndex = 0;
@@ -292,23 +328,40 @@ function loadDocument() {
   state.docStartCorrect = state.correct;
   renderPaper(false);
   updateDocProgress();
+  populateDocSelect();
+  updateSkipButton();
   showSkim();
 }
 
-function finishDocument() {
+function finishDocument(skipped = false, targetIndex = null) {
   const doc = currentDoc();
-  state.docScores.push({
+  const index = state.docIndex;
+  state.docScores[index] = {
     title: doc.title,
     score: state.score - state.docStartScore,
     correct: state.correct - state.docStartCorrect,
     tasks: doc.skim.length + doc.scan.length,
-  });
-  if (state.docIndex < DOCUMENTS.length - 1) {
-    state.docIndex += 1;
-    loadDocument();
-  } else {
-    finishGame();
+    skipped: Boolean(skipped),
+  };
+  state.completedDocs.add(index);
+
+  let next = targetIndex;
+  if (next === null || next === undefined || next === index || state.completedDocs.has(next)) {
+    next = nextUncompletedIndex(index);
   }
+  if (next === -1) {
+    finishGame();
+    return;
+  }
+  state.docIndex = next;
+  loadDocument();
+}
+
+function skipArticle() {
+  if (!state.started || $('game').hidden) return;
+  stopTimer();
+  finishDocument(true);
+  window.scrollTo(0, 0);
 }
 
 function startGame() {
@@ -319,6 +372,7 @@ function startGame() {
   state.score = 0;
   state.correct = 0;
   state.docScores = [];
+  state.completedDocs = new Set();
   state.docStartScore = 0;
   state.docStartCorrect = 0;
   $('intro').hidden = true;
@@ -344,19 +398,19 @@ function finishGame() {
   $('max-score').textContent = '/ ' + MAX_SCORE;
   $('final-accuracy').textContent = accuracy + '%';
   $('final-time').textContent = fmtTime(elapsed);
-  $('doc-breakdown').innerHTML = state.docScores
-    .map((doc) => {
-      return (
-        '<div><span>' +
-        escapeHtml(doc.title) +
-        '</span><b>+' +
-        Math.max(0, Math.round(doc.score)) +
-        ' · ' +
-        doc.correct +
-        ' / ' +
-        doc.tasks +
-        '</b></div>'
-      );
+  $('doc-breakdown').innerHTML = DOCUMENTS
+    .map((doc, index) => {
+      const entry = state.docScores[index] || {
+        score: 0,
+        correct: 0,
+        tasks: doc.skim.length + doc.scan.length,
+        skipped: true,
+      };
+      const points = Math.max(0, Math.round(entry.score));
+      const detail = entry.skipped
+        ? '+' + points + ' · skipped'
+        : '+' + points + ' · ' + entry.correct + ' / ' + entry.tasks;
+      return '<div><span>' + escapeHtml(doc.title) + '</span><b>' + detail + '</b></div>';
     })
     .join('');
   $('game').hidden = true;
@@ -367,6 +421,17 @@ function finishGame() {
 
 $('start').addEventListener('click', startGame);
 $('task-next').addEventListener('click', nextTask);
+$('skip-article').addEventListener('click', skipArticle);
+$('doc-select').addEventListener('change', (event) => {
+  const index = Number(event.target.value);
+  if (!Number.isInteger(index) || index === state.docIndex || state.completedDocs.has(index)) {
+    event.target.value = String(state.docIndex);
+    return;
+  }
+  stopTimer();
+  finishDocument(true, index);
+  window.scrollTo(0, 0);
+});
 $('replay').addEventListener('click', () => location.reload());
 
 // ---------- automated QA ----------
@@ -425,9 +490,71 @@ async function runQA() {
   qa.textContent = 'QA:' + out.join(' | ');
 }
 
+async function runSkipQA() {
+  const out = [];
+  try {
+    startGame();
+    for (let i = 0; i < DOCUMENTS.length; i++) {
+      const btn = $('skip-article');
+      if (!btn) throw new Error('skip button missing');
+      btn.click();
+      await delay(80);
+    }
+    if ($('results').hidden) throw new Error('results not shown after skipping all');
+    const rows = Array.from(document.querySelectorAll('#doc-breakdown div'));
+    if (rows.length !== DOCUMENTS.length) throw new Error('rows=' + rows.length);
+    const skipped = rows.filter((row) => row.textContent.includes('skipped')).length;
+    if (skipped !== DOCUMENTS.length) throw new Error('skipped=' + skipped);
+    const score = Number($('final-score').textContent);
+    if (score !== 0) throw new Error('score=' + score);
+    out.push('PASS skip score=0 rows=' + rows.length + ' skipped=' + skipped);
+  } catch (e) {
+    out.push('EXCEPTION:' + (e && e.message ? e.message : e));
+  }
+  const qa = $('qa-report');
+  qa.hidden = false;
+  qa.textContent = 'QA:' + out.join(' | ');
+}
+
+async function runPickQA() {
+  const out = [];
+  try {
+    startGame();
+    const select = $('doc-select');
+    const choose = async (value) => {
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
+      await delay(80);
+    };
+    await choose('2');
+    if ($('paper-title').textContent !== DOCUMENTS[2].title) throw new Error('choose document 3 failed');
+    await choose('3');
+    if ($('paper-title').textContent !== DOCUMENTS[3].title) throw new Error('choose document 4 failed');
+    $('skip-article').click();
+    await delay(80);
+    if ($('paper-title').textContent !== DOCUMENTS[1].title) throw new Error('skip to remaining failed');
+    if ($('skip-article').textContent !== 'Finish run') throw new Error('last-remaining label');
+    $('skip-article').click();
+    await delay(80);
+    if ($('results').hidden) throw new Error('results not shown');
+    const rows = Array.from(document.querySelectorAll('#doc-breakdown div'));
+    if (rows.length !== DOCUMENTS.length) throw new Error('rows=' + rows.length);
+    out.push('PASS pick+skip rows=' + rows.length);
+  } catch (e) {
+    out.push('EXCEPTION:' + (e && e.message ? e.message : e));
+  }
+  const qa = $('qa-report');
+  qa.hidden = false;
+  qa.textContent = 'QA:' + out.join(' | ');
+}
+
 const params = new URLSearchParams(location.search);
 if (params.get('qa') === '1') {
   setTimeout(runQA, 350);
+} else if (params.get('qa') === 'skip') {
+  setTimeout(runSkipQA, 350);
+} else if (params.get('qa') === 'pick') {
+  setTimeout(runPickQA, 350);
 } else if (params.get('state') === 'scan') {
   startGame();
   startScan();

@@ -33,6 +33,7 @@
           </div>
           <ul class="intro-list">
             <li>Each document has <strong>2 skim questions</strong> and <strong>3 scan targets</strong>.</li>
+            <li>Choose any document from the <strong>article menu</strong>. Skipping or switching ends the current article.</li>
             <li>Correct answers score points plus a time bonus.</li>
             <li>A wrong scan click costs 20 points and 5 seconds.</li>
           </ul>
@@ -59,6 +60,10 @@
           </article>
 
           <aside class="task" id="task" aria-live="polite">
+            <div class="doc-picker" aria-live="off">
+              <label for="doc-select">Article</label>
+              <select id="doc-select" aria-label="Choose an article"></select>
+            </div>
             <div class="task-head">
               <span class="task-tool" id="task-tool">🔭 SKIM</span>
               <span class="task-count" id="task-count">Question 1 of 2</span>
@@ -69,7 +74,10 @@
             <div id="feedback" class="feedback" hidden></div>
             <div class="task-foot">
               <button id="task-next" class="btn btn-primary" hidden>Next</button>
-              <a class="btn btn-ghost" href="../Reading_Strategy_Skim_and_Scan.html">Exit</a>
+              <div class="task-exits">
+                <button id="skip-article" class="btn btn-ghost btn-skip" type="button" title="Move to the next article. Unanswered tasks count as missed.">Skip this article →</button>
+                <a class="btn btn-ghost" href="../Reading_Strategy_Skim_and_Scan.html">Exit</a>
+              </div>
             </div>
           </aside>
         </div>
