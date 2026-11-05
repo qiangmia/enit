@@ -219,6 +219,12 @@ h1 {
   margin: 4px 0 2px;
 }
 .paper-source { font-family: var(--rr-mono); font-size: 11px; color: #6b6251; }
+.paper-source-link {
+  color: #3c9a63;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.paper-source-link:hover { color: var(--rr-ink); }
 .stamp {
   align-self: flex-start;
   border: 2px solid #b23a3a;

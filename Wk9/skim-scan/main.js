@@ -92,7 +92,18 @@ function renderPaper(interactive) {
   const doc = currentDoc();
   $('paper-kicker').textContent = doc.kicker;
   $('paper-title').textContent = doc.title;
-  $('paper-source').textContent = doc.source;
+  const sourceEl = $('paper-source');
+  sourceEl.textContent = doc.source;
+  if (doc.source_url) {
+    const link = document.createElement('a');
+    link.href = doc.source_url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.className = 'paper-source-link';
+    link.textContent = 'Original report ↗';
+    sourceEl.appendChild(document.createTextNode(' · '));
+    sourceEl.appendChild(link);
+  }
   $('stamp').textContent = interactive ? 'SCAN' : 'SKIM';
   const wrap = $('document-text');
   wrap.innerHTML = '';
@@ -364,6 +375,21 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function runQA() {
   const out = [];
   try {
+    for (const doc of DOCUMENTS) {
+      if (doc.skim.length !== 2 || doc.scan.length !== 3) {
+        throw new Error('unexpected task count: ' + doc.id);
+      }
+      for (const target of doc.scan) {
+        const text = doc.paragraphs[target.paragraph];
+        if (!text || !text.includes(target.phrase)) {
+          throw new Error('missing scan phrase: ' + doc.id + ' / ' + target.phrase);
+        }
+        const matches = doc.paragraphs.filter((p) => p.includes(target.phrase)).length;
+        if (matches !== 1) {
+          throw new Error('scan phrase not unique: ' + doc.id + ' / ' + target.phrase + ' (' + matches + ')');
+        }
+      }
+    }
     startGame();
     for (let d = 0; d < DOCUMENTS.length; d++) {
       for (let q = 0; q < DOCUMENTS[d].skim.length; q++) {

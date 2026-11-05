@@ -1,5 +1,5 @@
 // The Records Room — skim & scan practice content.
-// Three Week 9 documents. Each has 2 skim questions and 3 scan targets.
+// Four Week 9 documents. Each has 2 skim questions and 3 scan targets.
 
 export const DOCUMENTS = [
   {
@@ -111,9 +111,9 @@ export const DOCUMENTS = [
         explanation: 'Paragraph 1 names The North Face and Cartier.',
       },
       {
-        prompt: 'When did North Face discover the attack?',
+        prompt: 'What kind of attack did North Face discover?',
         paragraph: 1,
-        phrase: 'April',
+        phrase: 'small-scale',
         explanation: 'Paragraph 2: North Face discovered a “small-scale” attack in April.',
       },
       {
@@ -125,9 +125,74 @@ export const DOCUMENTS = [
     ],
   },
   {
+    id: 'freezer-hack',
+    title: 'The Freezer Hack',
+    kicker: 'DOCUMENT 3 · TECH REPORT',
+    source: 'Adapted from BBC News · Shiona McCallum',
+    source_url: 'https://www.bbc.com/news/articles/ckpqg8lve73go',
+    paragraphs: [
+      `Supermarkets across Europe have been hit by a suspected cyber-attack affecting their fridges and freezers. The incident has raised concerns about the security of internet-connected hardware, from industrial machinery to ordinary domestic appliances.`,
+      `Smart devices connected to the internet include fridges, central heating systems and even washing machines. Being online makes them easier to control remotely, but in theory any device that goes online can be exploited by malicious actors.`,
+      `That does not mean hackers can easily take control of them. Big brands generally go to great lengths to make their technology secure, and there is no evidence that domestic appliances were targeted in the supermarket attacks in November.`,
+      `Exploits have been found before. In 2015, researchers showed how a vulnerability in a Samsung smart fridge could allow them to intercept internet traffic.`,
+      `Ciaran Martin, former chief executive of the UK's National Cyber Security Centre (NCSC), said manufacturers needed to do more. “There's a lot more that we need to demand of big tech to give us safer devices and products in the first place,” he said. He advised consumers to keep devices updated and enable multi-factor authentication wherever possible.`,
+      `Since April 2024, UK law has required manufacturers of certain consumer smart devices to meet minimum cyber security standards, including requirements around passwords and security updates.`,
+      `The NCSC said it was working with international partners and industry to understand the supermarket incidents, but it was unaware of any impact on the UK. However, researchers from UK Cyber Defence have identified more than 800 refrigeration and building-control interfaces associated with British retailers that can be accessed over the public internet.`,
+      `That does not necessarily mean they can be hacked, but it could leave them exposed to attackers exploiting weak passwords or software vulnerabilities. The government has already held talks with senior food retailers about cyber resilience.`,
+      `It would not be the first time that hacks have raised concern about food supply. When UK supermarkets M&S and the Co-op were targeted by ransomware hackers in May 2025, the retailers struggled to stock some shop shelves with fresh deliveries. Customers across the UK complained of empty shelves in the days following the attack.`,
+      `Tom Hegel, a researcher at cyber-security firm SentinelOne, said retailers must be clearer about responsibility. “The question retailers need to answer is who owns the security of that equipment, not just who repairs it,” he said. He warned that once an attacker can operate those controls, legitimate functions such as defrosting become tools for disruption. “Changing a setting can destroy physical stock, not just interrupt a computer system.”`,
+      `Outside the home, connected technology is used to manage industrial machinery and vehicles. Cyber security expert Ken Munro pointed to a 2015 demonstration in which researchers remotely hacked a Jeep through its internet-connected entertainment system. The vehicle industry later fixed the problem.`,
+      `Munro said UK utilities were generally good at securing mobile connections, but standards varied around the world. His biggest concern was smaller, poorly funded utility companies that may still rely on older, vulnerable equipment. Olivier Daloy, a cybersecurity expert at Zscaler, added that without proper protections, “any factory or equipment” connected to the internet — from carmakers to electricity or transport infrastructure — could face similar risks.`,
+    ],
+    skim: [
+      {
+        prompt: 'What is the article mainly about?',
+        options: [
+          'A cyber-attack on supermarket freezers and the risks of connected devices.',
+          'How to repair a supermarket freezer after a power cut.',
+          'A new law that bans smart appliances.',
+          'Why supermarkets are removing frozen food.',
+        ],
+        answer_index: 0,
+        explanation: 'The article uses the freezer attack to examine the wider security of internet-connected devices.',
+      },
+      {
+        prompt: 'What advice does the article give to consumers?',
+        options: [
+          'Keep devices updated and enable multi-factor authentication.',
+          'Disconnect every smart device immediately.',
+          'Only buy appliances made before 2015.',
+          'Use the same password on every device.',
+        ],
+        answer_index: 0,
+        explanation: 'Ciaran Martin says updates and multi-factor authentication are simple steps that take only a few seconds.',
+      },
+    ],
+    scan: [
+      {
+        prompt: 'Which brand’s smart fridge did researchers exploit?',
+        paragraph: 3,
+        phrase: 'Samsung',
+        explanation: 'Paragraph 4: in 2015, researchers showed how a Samsung smart fridge could be exploited.',
+      },
+      {
+        prompt: 'How many refrigeration and building-control interfaces did UK Cyber Defence find?',
+        paragraph: 6,
+        phrase: 'more than 800',
+        explanation: 'Paragraph 7: researchers found more than 800 interfaces linked to British retailers.',
+      },
+      {
+        prompt: 'When did ransomware hackers target M&S and the Co-op?',
+        paragraph: 8,
+        phrase: 'May 2025',
+        explanation: 'Paragraph 9: the retailers were targeted in May 2025 and later struggled to stock shelves.',
+      },
+    ],
+  },
+  {
     id: 'what-we-learned',
     title: 'What We Have Learned',
-    kicker: 'DOCUMENT 3 · INCIDENT UPDATE',
+    kicker: 'DOCUMENT 4 · INCIDENT UPDATE',
     source: 'NovaNet Solutions · Follow-up note',
     paragraphs: [
       `Before lunch, Lin added a short section to the report called "What we have learned". It listed three things: the old account should have been removed a year ago, the patch had been available for two weeks, and the login server had no alert for repeated failures.`,
