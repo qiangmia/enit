@@ -172,18 +172,28 @@
         .side-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
         .live-team {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 0.7rem 0.75rem; border-radius: 12px; border: 0; color: #fff; min-width: 0;
+            padding: 0.7rem 0.75rem; border-radius: 12px; color: #1a202c;
+            background: var(--gomoku-paper); border: 4px solid var(--border); min-width: 0;
         }
-        .live-team.red { background: var(--gomoku-red); }
-        .live-team.black { background: var(--gomoku-black); }
+        .live-team.red { border-color: var(--gomoku-red); }
+        .live-team.black { border-color: var(--gomoku-black); }
         .live-team.active { box-shadow: 0 0 0 5px #f6ad55; }
-        .live-team-name { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
-        .live-team-score { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; color: #fff; }
-        .live-team-sub { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.85); text-align: center; }
+        .live-team.red.active { background: var(--gomoku-red); border-color: var(--gomoku-red); }
+        .live-team.black.active { background: var(--gomoku-black); border-color: var(--gomoku-black); }
+        .live-team-name { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: inherit; }
+        .live-team.red .live-team-name { color: var(--gomoku-red); }
+        .live-team.black .live-team-name { color: var(--gomoku-black); }
+        .live-team-score { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; color: inherit; }
+        .live-team-sub { font-size: 0.7rem; font-weight: 700; color: #4a5568; text-align: center; }
         .streak-dots { display: flex; gap: 0.25rem; margin-top: 0.25rem; }
-        .streak-dot { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: rgba(255,255,255,0.35); }
-        .live-team .streak-dot.on.red,
-        .live-team .streak-dot.on.black { background: #fff; }
+        .streak-dot { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: #cbd5e0; }
+        .live-team.red .streak-dot.on.red { background: var(--gomoku-red); }
+        .live-team.black .streak-dot.on.black { background: var(--gomoku-black); }
+        .live-team.active .live-team-name,
+        .live-team.active .live-team-score,
+        .live-team.active .live-team-sub { color: #fff; }
+        .live-team.active .streak-dot { background: rgba(255,255,255,0.35); }
+        .live-team.active .streak-dot.on { background: #fff; }
         @media (max-width: 900px) {
             .game-layout { flex-direction: column; align-items: center; }
             .board-column { width: min(100%, 560px); }
@@ -205,8 +215,8 @@
         .board-frame {
             --n: 10;
             display: grid;
-            grid-template-columns: 1.5rem minmax(0, 1fr);
-            grid-template-rows: 1.5rem minmax(0, 1fr);
+            grid-template-columns: 2.2rem minmax(0, 1fr);
+            grid-template-rows: 2.2rem minmax(0, 1fr);
             gap: 0.12rem;
             width: 100%;
             max-width: 1100px;
@@ -217,14 +227,14 @@
             grid-template-columns: repeat(var(--n), 1fr); align-items: center;
             padding: 0 0.85rem;
             text-align: center; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
-            font-size: clamp(0.55rem, 0.7vw, 0.72rem); font-weight: 700; color: #8a6b3f;
+            font-size: clamp(1rem, 1.6vw, 1.6rem); font-weight: 700; color: #8a6b3f;
         }
         .row-labels {
             grid-column: 1; grid-row: 2; display: grid;
             grid-template-rows: repeat(var(--n), 1fr); align-items: center;
             padding: 0.85rem 0;
             text-align: center; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
-            font-size: clamp(0.55rem, 0.7vw, 0.72rem); font-weight: 700; color: #8a6b3f;
+            font-size: clamp(1rem, 1.6vw, 1.6rem); font-weight: 700; color: #8a6b3f;
         }
         .board {
             --n: 10;
