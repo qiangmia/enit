@@ -10,6 +10,7 @@
 !Wk6/
 !Wk7/
 !Wk9/
+!Wk10/
 !README.md
 !index.html
 !theme.js
@@ -34,6 +35,7 @@
 !Wk6/**
 !Wk7/**
 !Wk9/**
+!Wk10/**
 
 # NOTE: the week list above is explicit on purpose and must be extended
 # each time a new week is published. A blanket !Wk*/ would also un-ignore
@@ -64,3 +66,6 @@ Wk*/**/No_File_Upload.txt
 # because the Week 9 first-task page embeds it. Un-ignored by !Wk9/**, so the
 # deck must be blocked here, after that whitelist.
 Wk9/Reading Skills - Skimming and Scanning - wk9.pptx
+
+# Week 10 teaching deck: used in class from this folder, not published.
+Wk10/Skimming and Scanning - wk10.pptx

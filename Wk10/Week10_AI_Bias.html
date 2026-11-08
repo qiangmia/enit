@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10: AI, Bias &amp; Data Poisoning</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+            --error: #c53030;
+            --overlay-a: rgba(30, 58, 95, 0.86);
+            --overlay-b: rgba(30, 58, 95, 0.93);
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .course-header {
+            background:
+                linear-gradient(var(--overlay-a), var(--overlay-b)),
+                url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .course-header h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            font-style: italic;
+            opacity: 0.93;
+        }
+        .course-header .meta {
+            margin-top: 1.1rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+        }
+        .course-header .meta span { margin: 0 0.55rem; }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1rem;
+            justify-content: center;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.55rem;
+            border-radius: 4px;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1.8rem 1rem 3.5rem;
+        }
+
+        .lead {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            font-size: 1rem;
+        }
+        .lead p + p { margin-top: 0.6rem; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.4rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--primary);
+            padding-bottom: 0.55rem;
+            border-bottom: 2px solid var(--accent-light);
+            margin-bottom: 0.9rem;
+        }
+        .card-icon { font-size: 1.15rem; }
+        .card-info { border-left: 4px solid var(--accent); }
+        .card-vocab { border-left: 4px solid var(--warm); }
+        .card-task { border-left: 4px solid var(--success); }
+        .card-homework { border-left: 4px solid var(--error); }
+
+        h2.section-title {
+            font-size: 1.65rem;
+            line-height: 1.25;
+            color: var(--primary);
+            margin: 2rem 0 0.7rem;
+            letter-spacing: -0.01em;
+        }
+        h3.subhead {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1.3rem 0 0.45rem;
+        }
+
+        .article {
+            font-size: 1.03rem;
+            line-height: 1.85;
+        }
+        .article p { margin: 0 0 1rem; }
+        .article strong { color: var(--primary); }
+        .article .dropcap::first-letter {
+            float: left;
+            font-size: 3.4rem;
+            line-height: 0.8;
+            padding: 0.15rem 0.55rem 0 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.8rem;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .video-caption {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.9rem;
+        }
+        .example-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            font-size: 0.96rem;
+        }
+        .example-box strong { color: var(--success); }
+
+        .task-list {
+            list-style: none;
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.6rem;
+        }
+        .task-list li {
+            position: relative;
+            padding-left: 1.45rem;
+            line-height: 1.6;
+        }
+        .task-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .quiz {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            margin: 0.8rem 0;
+        }
+        .quiz p { margin-bottom: 0.5rem; }
+        .quiz ol, .quiz ul { margin: 0.35rem 0 0 1.3rem; }
+        .quiz li { margin: 0.2rem 0; }
+
+        details.answer {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            margin: 0.7rem 0;
+            font-size: 0.95rem;
+        }
+        details.answer summary {
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        details.answer[open] summary { margin-bottom: 0.45rem; }
+
+        .table-wrap { overflow-x: auto; margin-top: 0.8rem; }
+        table.vocab {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.vocab th, table.vocab td {
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.vocab thead th {
+            background: var(--accent-light);
+            color: var(--primary);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        table.vocab tbody tr:nth-child(even) { background: var(--bg); }
+        table.vocab .word { font-weight: 700; color: var(--primary); }
+        table.vocab .zh { color: var(--text-light); font-size: 0.88rem; }
+
+        .pill {
+            display: inline-block;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin: 0.25rem 0.35rem 0.25rem 0;
+        }
+        .pill-primary { background: var(--accent); color: #ffffff; }
+        .pill-primary:hover { background: var(--primary); }
+        .pill-soft { background: var(--accent-light); color: var(--primary); border: 1px solid var(--accent); }
+        .pill-soft:hover { background: var(--accent); color: #ffffff; }
+        .pill-game { background: var(--warm); color: #ffffff; }
+        .pill-game:hover { background: var(--primary); }
+
+        .footer-nav {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+        }
+        .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        .footer-nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .course-header { padding: 2.1rem 1rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .container { padding: 1.2rem 0.75rem 2.5rem; }
+            .card { padding: 1.05rem 1rem; }
+            .toc { padding: 0.65rem 0.5rem; }
+            .toc a { font-size: 0.68rem; }
+            table.vocab { font-size: 0.82rem; }
+        }
+
+        @media print {
+            .toc, .video-wrap { display: none; }
+            .card { break-inside: avoid; box-shadow: none; }
+        }
+    </style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>AI, Bias &amp; Data Poisoning</h1>
+    <div class="subtitle">Reading technical texts: skimming, scanning and simplification</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 10</span>
+    </div>
+</header>
+
+<nav class="toc" aria-label="Lesson sections">
+    <ul>
+        <li><a href="#before">Before you read</a></li>
+        <li><a href="#poisoning">Data poisoning</a></li>
+        <li><a href="#reading">Hidden bias in AI</a></li>
+        <li><a href="#skills">Skim &amp; scan</a></li>
+        <li><a href="#vocabulary">Vocabulary</a></li>
+        <li><a href="#simplify">Simplification</a></li>
+        <li><a href="#homework">Homework</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <section class="lead" id="before">
+        <p><strong>This week:</strong> AI is often described as neutral and objective, but it learns from data — and data can be biased, incomplete, or deliberately poisoned. You will read about the risks, practise skimming for the main idea, scan for details, and simplify difficult sentences.</p>
+        <p><strong>Before you read:</strong> Can a computer program be unfair? What might make an AI system treat one group of people differently from another?</p>
+    </section>
+
+    <section class="card card-info">
+        <div class="card-header"><span class="card-icon">🎯</span>By the end of this week, you will be able to</div>
+        <ul class="task-list">
+            <li>explain what <strong>data poisoning</strong> and <strong>algorithmic bias</strong> mean;</li>
+            <li>skim a technical article for its main argument and purpose;</li>
+            <li>scan for names, groups, definitions and lists of principles;</li>
+            <li>recognise and use vocabulary such as <em>opaque</em>, <em>mitigate</em>, <em>accountable</em> and <em>institutionalize</em>;</li>
+            <li>simplify long sentences without changing their meaning.</li>
+        </ul>
+    </section>
+
+    <section class="card" id="poisoning">
+        <div class="card-header"><span class="card-icon">🎬</span>Watch: What is data poisoning?</div>
+        <div class="video-wrap">
+            <iframe src="https://www.youtube.com/embed/a92SWvqgMCE" title="AI/ML data poisoning attacks explained" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <p class="video-caption">Video: “AI/ML Data Poisoning Attacks Explained”. Watch once for the general idea, then watch again for the examples. If the video does not load, <a href="https://www.youtube.com/watch?v=a92SWvqgMCE" target="_blank" rel="noopener">watch it on YouTube</a>.</p>
+        <div class="quiz">
+            <p><strong>While you watch, listen for the answers to these questions:</strong></p>
+            <ol>
+                <li>What is data poisoning?</li>
+                <li>What is a backdoor attack?</li>
+                <li>Why can a small amount of poisoned data cause serious errors?</li>
+                <li>Which real-world examples are mentioned?</li>
+            </ol>
+        </div>
+        <details class="answer">
+            <summary>Show suggested answers</summary>
+            <p>Data poisoning is when someone adds false or malicious data to the data used to train a model, so the model learns the wrong pattern. A backdoor attack hides a trigger in the training data: when the trigger appears later, the model produces the attacker’s chosen output. A small amount of poison can be enough because the model may generalise from it. The video mentions examples such as Microsoft’s Tay chatbot and Google’s Gmail spam filter.</p>
+        </details>
+    </section>
+
+    <h2 class="section-title" id="reading">Read: Hidden Bias in AI</h2>
+
+    <section class="card">
+        <div class="article">
+            <p class="dropcap">The rapid deployment of Artificial Intelligence (AI) across various sectors — from hiring to healthcare and law enforcement — promises greater efficiency and objectivity. However, beneath the algorithms and impressive processing power lies a significant challenge: the risk of <strong>perpetuating</strong> and amplifying human biases. AI systems are not <strong>inherently</strong> neutral; they learn from the data they are fed. If that training data reflects existing societal inequalities, the AI will learn and <strong>institutionalize</strong> those biases.</p>
+
+            <p>The primary <strong>culprit</strong> is biased training data. Imagine an AI hiring tool trained on historical hiring decisions from a company that primarily employed men in leadership roles. This is precisely what happened with a recruiting tool used by a major tech company, which had to be scrapped after it demonstrated clear discrimination. Similarly, in facial recognition technology, studies have frequently shown that AI systems trained predominantly on images of lighter-skinned males exhibit significantly lower accuracy rates when identifying women and people with darker skin tones. In medicine, surgeons also use these models to improve pre-planning, which makes accurate and fair training data even more important.</p>
+
+            <p>A second major issue is the “black box” problem. Many complex AI models, particularly deep learning networks, arrive at decisions through processes that are <strong>opaque</strong> even to their own engineers. This lack of transparency makes it incredibly difficult to audit the systems, <strong>pinpoint</strong> why a decision was made, or fix a specific source of bias. If an AI unjustly denies a loan application or flags an innocent person as a risk, it is nearly impossible to hold the system or the company <strong>accountable</strong> if the decision-making logic remains hidden.</p>
+
+            <p>To <strong>mitigate</strong> these risks, the <strong>burgeoning</strong> field of AI Ethics advocates for principles such as fairness, accountability, transparency, and human <strong>oversight</strong>. Governments and corporations are now working to establish <strong>regulatory</strong> frameworks and ethical guidelines. The goal is to ensure that AI serves as a tool for progress rather than a mechanism for social injustice. They aim to create systems that are not just intelligent, but also ethical and equitable for all users.</p>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Adapted from the Week 10 reading text, “Hidden Bias in AI” (<a href="https://docs.google.com/document/d/1gb4jDywoDCzmwijxuMs_5vCHBnunMKmx4-JaNz_qYuA/edit?usp=sharing" target="_blank" rel="noopener">original document</a>).</p>
+    </section>
+
+    <section class="card card-task" id="skills">
+        <div class="card-header"><span class="card-icon">🔭</span>Skim: the big picture</div>
+        <p>Skim the article in 60–90 seconds. Do not stop for every word. Read the title, the first and last sentences of each paragraph, and the words in bold.</p>
+        <div class="quiz">
+            <p><strong>1. What is the article mainly about?</strong></p>
+            <ol type="a">
+                <li>Why AI systems can reproduce human bias, and how to reduce the risk.</li>
+                <li>How to build a career in AI engineering.</li>
+                <li>Why facial recognition should be banned completely.</li>
+                <li>How to write a better resume for a tech company.</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>a.</strong> The article explains the sources of AI bias and the ethical principles that can reduce it.</p></details>
+
+        <div class="quiz">
+            <p><strong>2. Headline hunt: which headline best matches the article?</strong></p>
+            <ol type="a">
+                <li>“AI Is Always Fair: Here Is Why”</li>
+                <li>“When AI Learns Our Biases”</li>
+                <li>“The End of Facial Recognition”</li>
+                <li>“How to Train Your Chatbot in One Week”</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>b.</strong> The article focuses on how AI learns and reproduces bias, not on claiming AI is always fair or that facial recognition is ending.</p></details>
+
+        <div class="quiz">
+            <p><strong>3. What is the writer’s purpose?</strong></p>
+            <ol type="a">
+                <li>To sell an AI product.</li>
+                <li>To explain a problem and discuss possible responses.</li>
+                <li>To tell a personal story about a job interview.</li>
+                <li>To prove that AI has no practical use.</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>b.</strong> The writer explains the risks of bias and then describes ethical and regulatory responses.</p></details>
+    </section>
+
+    <section class="card card-task">
+        <div class="card-header"><span class="card-icon">🔍</span>Scan: find the detail</div>
+        <p>Scan the article for the exact information. Look for names, groups, numbers, definitions and lists — do not read every sentence.</p>
+        <ul class="task-list">
+            <li>What is the “black box” problem?</li>
+            <li>Which two groups are identified less accurately by biased facial recognition systems?</li>
+            <li>What four ethical principles are advocated by AI Ethics?</li>
+            <li>What happened to the recruiting tool used by the major tech company?</li>
+            <li>In which field do surgeons use these models for pre-planning?</li>
+            <li>What is the “primary culprit” behind AI bias?</li>
+        </ul>
+        <details class="answer">
+            <summary>Show answers</summary>
+            <ol>
+                <li>The model’s decision process is opaque, even to its own engineers, so it is hard to audit or explain.</li>
+                <li>Women and people with darker skin tones.</li>
+                <li>Fairness, accountability, transparency and human oversight.</li>
+                <li>It was scrapped after it showed clear discrimination.</li>
+                <li>Medicine / healthcare.</li>
+                <li>Biased training data.</li>
+            </ol>
+        </details>
+    </section>
+
+    <section class="card card-vocab" id="vocabulary">
+        <div class="card-header"><span class="card-icon">📚</span>Vocabulary: words for AI ethics</div>
+        <p>These words appear in the article. Read the definition and example, then find the word in the text.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead>
+                    <tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="word">bias</span><br><span class="zh">偏見</span></td><td>An unfair preference that affects how people or things are treated.</td><td>Biased training data can teach an AI to treat one group unfairly.</td></tr>
+                    <tr><td><span class="word">accountable</span><br><span class="zh">負責任的</span></td><td>Responsible for your actions and expected to explain them.</td><td>It is difficult to hold the company accountable when the decision logic is hidden.</td></tr>
+                    <tr><td><span class="word">burgeoning</span><br><span class="zh">迅速發展的</span></td><td>Growing or developing quickly.</td><td>The burgeoning field of AI Ethics is calling for clearer rules.</td></tr>
+                    <tr><td><span class="word">culprit</span><br><span class="zh">罪魁禍首</span></td><td>The person or thing responsible for a problem.</td><td>The primary culprit is biased training data.</td></tr>
+                    <tr><td><span class="word">disproportionate</span><br><span class="zh">不成比例的</span></td><td>Too large or too small compared with something else.</td><td>Some groups face a disproportionate number of errors.</td></tr>
+                    <tr><td><span class="word">inherently</span><br><span class="zh">本質上</span></td><td>As a natural or essential part of something.</td><td>AI systems are not inherently neutral.</td></tr>
+                    <tr><td><span class="word">institutionalize</span><br><span class="zh">制度化</span></td><td>To make something a permanent norm or part of a system.</td><td>If the data is biased, the AI may institutionalize those biases.</td></tr>
+                    <tr><td><span class="word">marginalized</span><br><span class="zh">被邊緣化的</span></td><td>Treated as less important or less powerful.</td><td>Marginalized groups can be harmed by unfair AI decisions.</td></tr>
+                    <tr><td><span class="word">mitigate</span><br><span class="zh">減輕</span></td><td>To make something less severe or serious.</td><td>Ethical guidelines aim to mitigate the risks of AI bias.</td></tr>
+                    <tr><td><span class="word">opaque</span><br><span class="zh">不透明的</span></td><td>Not clear or difficult to understand.</td><td>The decision-making process of many AI models is opaque.</td></tr>
+                    <tr><td><span class="word">oversight</span><br><span class="zh">監督</span></td><td>The act of watching or managing something to make sure it is done correctly.</td><td>Human oversight is needed to keep AI systems fair.</td></tr>
+                    <tr><td><span class="word">penalizing</span><br><span class="zh">懲罰；不利對待</span></td><td>Treating someone unfairly or giving them a disadvantage.</td><td>The hiring tool was penalizing resumes associated with women.</td></tr>
+                    <tr><td><span class="word">perpetuating</span><br><span class="zh">使持續</span></td><td>Making something continue for a long time.</td><td>AI can end up perpetuating existing social inequalities.</td></tr>
+                    <tr><td><span class="word">pinpoint</span><br><span class="zh">精確指出</span></td><td>To find the exact reason or cause of something.</td><td>It is difficult to pinpoint why the model made that decision.</td></tr>
+                    <tr><td><span class="word">regulatory</span><br><span class="zh">法規的</span></td><td>Related to rules or laws made by a government or official group.</td><td>Governments are discussing regulatory frameworks for AI.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <details class="answer">
+            <summary>Quick check: choose three words and explain them without looking at the table</summary>
+            <p>Useful sentence pattern: “<em>Opaque</em> means something is difficult to understand. For example, a black-box model is opaque because even its engineers cannot explain its decisions.”</p>
+        </details>
+    </section>
+
+    <section class="card" id="simplify">
+        <div class="card-header"><span class="card-icon">✂️</span>Language: simplification</div>
+        <p><strong>Vocabulary simplification</strong> replaces a difficult word with a simpler everyday synonym. <strong>Sentence simplification</strong> breaks a long, complex sentence into shorter sentences while keeping the same meaning.</p>
+
+        <div class="grid-2">
+            <div class="example-box">
+                <strong>Vocabulary simplification</strong><br>
+                Original: “These measures may <em>mitigate</em> the risk.”<br>
+                Simpler: “These measures may <strong>reduce</strong> the risk.”
+            </div>
+            <div class="example-box">
+                <strong>Sentence simplification</strong><br>
+                Original: “If an AI unjustly denies a loan application, it is nearly impossible to hold the company accountable if the decision-making logic remains hidden.”<br>
+                Simpler: “An AI may deny a loan unfairly. If we cannot see how it decided, we cannot hold the company responsible.”
+            </div>
+        </div>
+
+        <h3 class="subhead">Try it</h3>
+        <p>Simplify each sentence. Keep the meaning, but make it easier for a general reader.</p>
+        <div class="quiz">
+            <ol>
+                <li>“AI systems are not inherently neutral; they learn from the data they are fed.”</li>
+                <li>“If that training data reflects existing societal inequalities, the AI will learn and institutionalize those biases.”</li>
+                <li>“This lack of transparency makes it incredibly difficult to audit the systems, pinpoint why a decision was made, or fix a specific source of bias.”</li>
+            </ol>
+        </div>
+        <details class="answer">
+            <summary>Show model answers</summary>
+            <ol>
+                <li>AI is not naturally fair. It learns from the data people give it.</li>
+                <li>If the training data is unfair, the AI will learn that unfairness and make it part of its normal decisions.</li>
+                <li>Because the system is not transparent, it is hard to check it, explain a decision, or fix the cause of the bias.</li>
+            </ol>
+        </details>
+    </section>
+
+    <section class="card card-homework" id="homework">
+        <div class="card-header"><span class="card-icon">📝</span>Homework &amp; practice</div>
+        <ul class="task-list">
+            <li>Complete the simplification exercise in the <a href="https://docs.google.com/forms/d/e/1FAIpQLSdpXT82gOGiWd652QxiSUR-PiJ_RT5fWC247s8UrtbgB0NVEg/viewform?usp=sharing&amp;ouid=110429907782480603822" target="_blank" rel="noopener">Week 10 Google Form</a>.</li>
+            <li>Play the <a href="gomoku.html">Week 10 Gomoku challenge</a> and review the language from Weeks 9–10.</li>
+            <li>Re-read the <a href="../Wk9/Reading_Strategy_Skim_and_Scan.html">Week 9 reading strategy page</a> if you need a reminder of skim and scan techniques.</li>
+        </ul>
+    </section>
+
+    <nav class="footer-nav">
+        <a href="../Wk9/Week9_Cybersecurity.html">← Week 9: Cybersecurity &amp; Breaches</a>
+        <a href="gomoku.html">Week 10 Gomoku →</a>
+        <a href="../index.html">← Back to home</a>
+    </nav>
+
+</main>
+
+</body>
+</html>
