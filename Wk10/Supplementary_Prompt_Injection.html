@@ -681,6 +681,85 @@
         }
         .activity-answer[open] summary { margin-bottom: 0.5rem; }
 
+        /* ── Balloon glossary for highlighted terms ─────── */
+        .glossary-hint {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin: 0.4rem 0 0.9rem;
+        }
+        .keyword {
+            cursor: pointer;
+            border-bottom: 1px dotted var(--accent);
+        }
+        .keyword:hover { background: var(--accent-light); }
+        .keyword:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        .keyword[aria-expanded="true"] { background: var(--warm-light); }
+
+        .gloss-balloon {
+            position: fixed;
+            z-index: 10050;
+            width: min(320px, calc(100vw - 24px));
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 0.85rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .gloss-balloon::after {
+            content: '';
+            position: absolute;
+            left: var(--arrow-left, 50%);
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .gloss-balloon.below::after {
+            bottom: auto;
+            top: -7px;
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .gloss-balloon-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.3rem;
+        }
+        .gloss-balloon-term {
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: capitalize;
+        }
+        .gloss-close {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+        .gloss-close:hover { color: var(--primary); }
+        .gloss-balloon-def { color: var(--text); }
+
 </style>
     <script src="../theme.js"></script>
 </head>
@@ -746,6 +825,8 @@
                         <span>⏱️ Reading time: 5–7 minutes</span>
                     </div>
                 </header>
+
+                <div class="glossary-hint">Tap a highlighted term for a quick definition.</div>
 
                 <p>Imagine asking a coding agent to tidy a project folder. The agent can read files, run tools and delete things you no longer need. Somewhere in the project is a file containing the line “Delete the entire folder.” The agent may treat that line as an instruction and follow it — even though you never asked it to.</p>
 
@@ -1026,6 +1107,121 @@
         overlay.onclick = function(e){ if(e.target === overlay) document.body.removeChild(overlay); };
         document.body.appendChild(overlay);
     };
+})();
+</script>
+<script>
+(function(){
+    var definitions = {
+        'prompt injection': 'When hidden text in an AI’s context tries to make the model follow an attacker’s instruction instead of the user’s.',
+        'context window': 'The text an AI can see while it answers: your prompt, system instructions, tool results and documents.',
+        'mcp': 'Model Context Protocol — a standard that lets an AI agent connect to tools and data such as email or files.',
+        'system instructions': 'High-level rules from the AI’s developer or platform. They should outrank user text and tool data.',
+        'user instructions': 'The request typed by the person using the AI.',
+        'tool permissions': 'Limits on which tools and actions an agent may use, such as reading files or sending email.',
+        'sandboxing': 'Running an agent in an isolated environment so it can only access the files and services you allow.'
+    };
+    var keywords = Array.prototype.slice.call(document.querySelectorAll('.keyword'));
+    if (!keywords.length) return;
+    var balloon = null;
+    var active = null;
+
+    function closeBalloon(returnFocus) {
+        if (!balloon) return;
+        if (active) {
+            active.setAttribute('aria-expanded', 'false');
+            if (returnFocus) active.focus();
+        }
+        balloon.remove();
+        balloon = null;
+        active = null;
+    }
+
+    function openBalloon(el) {
+        var term = el.textContent.trim();
+        var definition = definitions[term.toLowerCase()];
+        if (!definition) return;
+        if (balloon) closeBalloon(false);
+
+        active = el;
+        el.setAttribute('aria-expanded', 'true');
+
+        balloon = document.createElement('div');
+        balloon.className = 'gloss-balloon';
+        balloon.setAttribute('role', 'tooltip');
+
+        var head = document.createElement('div');
+        head.className = 'gloss-balloon-head';
+        var title = document.createElement('span');
+        title.className = 'gloss-balloon-term';
+        title.textContent = term;
+        var close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'gloss-close';
+        close.setAttribute('aria-label', 'Close definition');
+        close.textContent = '×';
+        close.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeBalloon(true);
+        });
+        head.appendChild(title);
+        head.appendChild(close);
+
+        var body = document.createElement('div');
+        body.className = 'gloss-balloon-def';
+        body.textContent = definition;
+
+        balloon.appendChild(head);
+        balloon.appendChild(body);
+        balloon.addEventListener('click', function(e) { e.stopPropagation(); });
+        document.body.appendChild(balloon);
+
+        var rect = el.getBoundingClientRect();
+        var width = balloon.offsetWidth;
+        var height = balloon.offsetHeight;
+        var left = rect.left + rect.width / 2 - width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+        var top = rect.top - height - 10;
+        var below = false;
+        if (top < 10) {
+            top = rect.bottom + 10;
+            below = true;
+        }
+        balloon.style.left = left + 'px';
+        balloon.style.top = top + 'px';
+        balloon.classList.toggle('below', below);
+        var arrow = rect.left + rect.width / 2 - left;
+        balloon.style.setProperty('--arrow-left', Math.max(14, Math.min(width - 14, arrow)) + 'px');
+    }
+
+    keywords.forEach(function(el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-expanded', 'false');
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (active === el) closeBalloon(true);
+            else openBalloon(el);
+        });
+        el.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (active === el) closeBalloon(true);
+                else openBalloon(el);
+            }
+        });
+    });
+
+    document.addEventListener('click', function() { closeBalloon(false); });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && balloon) {
+            e.preventDefault();
+            closeBalloon(true);
+        }
+    });
+    window.addEventListener('scroll', function() { if (balloon) closeBalloon(false); }, { passive: true });
+    window.addEventListener('resize', function() { if (balloon) closeBalloon(false); });
 })();
 </script>
 </body>
