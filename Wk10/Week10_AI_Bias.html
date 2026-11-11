@@ -355,7 +355,7 @@
 <nav class="toc" aria-label="Lesson sections">
     <ul>
         <li><a href="#before">Before you read</a></li>
-        <li><a href="#poisoning">Data poisoning</a></li>
+        <li><a href="#bias-video">AI bias video</a></li>
         <li><a href="#reading">Hidden bias in AI</a></li>
         <li><a href="#skills">Skim &amp; scan</a></li>
         <li><a href="#vocabulary">Vocabulary</a></li>
@@ -382,24 +382,32 @@
         </ul>
     </section>
 
-    <section class="card" id="poisoning">
-        <div class="card-header"><span class="card-icon">🎬</span>Watch: What is data poisoning?</div>
+    <section class="card" id="bias-video">
+        <div class="card-header"><span class="card-icon">🎬</span>Watch: How does AI become biased?</div>
         <div class="video-wrap">
-            <iframe src="https://www.youtube.com/embed/a92SWvqgMCE" title="AI/ML data poisoning attacks explained" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <iframe src="https://www.youtube.com/embed/59bMh59JQDo" title="3 types of bias in AI | Machine learning" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>
-        <p class="video-caption">Video: “AI/ML Data Poisoning Attacks Explained”. Watch once for the general idea, then watch again for the examples. If the video does not load, <a href="https://www.youtube.com/watch?v=a92SWvqgMCE" target="_blank" rel="noopener">watch it on YouTube</a>.</p>
+        <p class="video-caption">Video: “3 types of bias in AI | Machine learning” by Google (2:33). Watch once for the three types, then watch again for the examples. If the video does not load, <a href="https://www.youtube.com/watch?v=59bMh59JQDo" target="_blank" rel="noopener">watch it on YouTube</a>.</p>
+        <p class="video-caption">Data poisoning is a related risk: attackers add false or malicious data to a training set. This video focuses on the wider problem of bias in AI.</p>
         <div class="quiz">
             <p><strong>While you watch, listen for the answers to these questions:</strong></p>
             <ol>
-                <li>What is data poisoning?</li>
-                <li>What is a backdoor attack?</li>
-                <li>Why can a small amount of poisoned data cause serious errors?</li>
-                <li>Which real-world examples are mentioned?</li>
+                <li>What is machine learning?</li>
+                <li>What are the three types of bias mentioned in the video?</li>
+                <li>What example does the video use for <strong>latent bias</strong>?</li>
+                <li>What example does it use for <strong>selection bias</strong>?</li>
+                <li>What does the video say we should do about bias in AI?</li>
             </ol>
         </div>
         <details class="answer">
             <summary>Show suggested answers</summary>
-            <p>Data poisoning is when someone adds false or malicious data to the data used to train a model, so the model learns the wrong pattern. A backdoor attack hides a trigger in the training data: when the trigger appears later, the model produces the attacker’s chosen output. A small amount of poison can be enough because the model may generalise from it. The video mentions examples such as Microsoft’s Tay chatbot and Google’s Gmail spam filter.</p>
+            <ol>
+                <li>Machine learning is when computers learn patterns from data instead of being given step-by-step instructions.</li>
+                <li>Interaction bias, latent bias and selection bias.</li>
+                <li>An image search or training set for “physicist” that mostly shows men.</li>
+                <li>Facial-recognition training photos that do not represent everyone.</li>
+                <li>Be aware of bias and take part in the conversation so technology works for everyone.</li>
+            </ol>
         </details>
     </section>
 
