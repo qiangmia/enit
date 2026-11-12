@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust or Trap | Week 10</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="../../theme.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header id="hud" hidden>
+      <a class="hud-back" href="../Week10_AI_Bias.html">← Week 10 lesson</a>
+      <div class="brand">TRUST OR TRAP</div>
+      <div class="hud-stats">
+        <div class="hud-stat"><span>CARD</span><strong id="card-progress">1 / 10</strong></div>
+        <div class="hud-stat"><span>SCORE</span><strong id="score">0</strong></div>
+        <div class="hud-stat"><span>STREAK</span><strong id="streak">0</strong></div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <section id="intro" class="overlay">
+        <div class="intro-card">
+          <a class="intro-exit" href="../Week10_AI_Bias.html" aria-label="Back to the Week 10 lesson">✕ Exit</a>
+          <div class="eyebrow">WEEK 10 · QUICK SORT</div>
+          <h1>Trust or Trap</h1>
+          <p class="sub">Ten messages. One question: is it safe?</p>
+          <p>Some messages are ordinary work. Others contain a hidden instruction aimed at an AI agent. Read each card and decide quickly: <strong>Trust</strong> it, or mark it as a <strong>Trap</strong>.</p>
+          <ul class="intro-list">
+            <li>Correct card: <strong>100 points</strong>.</li>
+            <li>Wrong card: <strong>−25 points</strong>.</li>
+            <li>Build a streak for bragging rights; speed is not scored.</li>
+            <li>After each answer, the suspicious line is revealed.</li>
+          </ul>
+          <div class="actions">
+            <button id="start" class="btn btn-primary">Start sorting</button>
+            <a class="btn btn-ghost" href="../Week10_AI_Bias.html">Back to the lesson</a>
+          </div>
+          <p class="foot">Local practice · your score stays in this browser.</p>
+        </div>
+      </section>
+
+      <section id="game" hidden>
+        <div class="table">
+          <div class="deck-status">
+            <span id="deck-label">CARD 1 · EMAIL</span>
+            <span id="deck-count">1 / 10</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+          <article class="card" id="card">
+            <header class="card-head">
+              <div>
+                <div class="card-kicker" id="card-kicker">EMAIL</div>
+                <h2 id="card-title">Scheduled maintenance</h2>
+                <div class="card-source" id="card-source">IT Service Desk</div>
+              </div>
+              <div class="card-stamp" id="card-stamp">UNVERIFIED</div>
+            </header>
+            <div class="card-lines" id="card-lines"></div>
+          </article>
+
+          <div class="trust-buttons">
+            <button class="btn btn-trust" type="button" data-answer="trust">✓ Trust</button>
+            <button class="btn btn-trap" type="button" data-answer="trap">⚠ Trap</button>
+          </div>
+
+          <div id="feedback" class="feedback" hidden></div>
+          <p class="hint">Keyboard: <strong>T</strong> = Trust · <strong>R</strong> = Trap · <strong>Enter</strong> = Next</p>
+        </div>
+      </section>
+
+      <section id="results" class="overlay" hidden>
+        <div class="result-card">
+          <div class="eyebrow">SORT COMPLETE</div>
+          <h1 id="result-rank">Trusted Reviewer</h1>
+          <div class="score-big"><span id="final-score">0</span><small id="max-score">/ 1000</small></div>
+          <div class="result-grid">
+            <div><span>ACCURACY</span><strong id="final-accuracy">0%</strong></div>
+            <div><span>BEST STREAK</span><strong id="final-streak">0</strong></div>
+          </div>
+          <p id="result-note"></p>
+          <div class="actions">
+            <button id="replay" class="btn btn-primary">Play again</button>
+            <a class="btn btn-ghost" href="../Week10_AI_Bias.html">Back to the lesson</a>
+            <a class="btn btn-ghost" href="../injection-room/">Try The Injection Room</a>
+          </div>
+          <p class="foot">Local practice · no data is sent anywhere.</p>
+        </div>
+      </section>
+
+      <div id="qa-report" hidden></div>
+    </main>
+  </div>
+
+  <script>
+    window.__trustErrors = [];
+    window.addEventListener('error', function (e) {
+      window.__trustErrors.push(String((e && e.message) || 'error'));
+      var qa = document.getElementById('qa-report');
+      if (qa) {
+        qa.hidden = false;
+        qa.textContent = 'ERRORS:' + window.__trustErrors.join(' | ');
+      }
+    });
+  </script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

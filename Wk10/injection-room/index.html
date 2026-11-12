@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Injection Room | Week 10</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="../../theme.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header id="hud" hidden>
+      <a class="hud-back" href="../Week10_AI_Bias.html">← Week 10 lesson</a>
+      <div class="brand">THE INJECTION ROOM</div>
+      <div class="hud-stats">
+        <div class="hud-stat"><span>CASE</span><strong id="case-progress">1 / 6</strong></div>
+        <div class="hud-stat"><span>SCORE</span><strong id="score">0</strong></div>
+        <div class="hud-stat"><span>TRUST</span><strong id="trust-hearts" class="trust-hearts">♥♥♥</strong></div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <section id="intro" class="overlay">
+        <div class="intro-card">
+          <a class="intro-exit" href="../Week10_AI_Bias.html" aria-label="Back to the Week 10 lesson">✕ Exit</a>
+          <div class="eyebrow">WEEK 10 · AI AGENT SECURITY</div>
+          <h1>The Injection Room</h1>
+          <p class="sub">Three trust tokens. Six documents. One hidden instruction at a time.</p>
+          <p>You are the human security layer for an AI assistant. The agent can read email, files and chat messages — and it is about to act. Find the line that should not be treated as an instruction, then decide what the agent should do.</p>
+          <div class="tool-row">
+            <div class="tool"><span class="tool-icon">🔎</span><div><strong>Spot</strong><span>Find the injected instruction</span></div></div>
+            <div class="tool"><span class="tool-icon">🛡️</span><div><strong>Decide</strong><span>Allow, block or ask first</span></div></div>
+          </div>
+          <ul class="intro-list">
+            <li>Some documents are safe. Not every message is an attack.</li>
+            <li>Correct line: <strong>100 points</strong>. Correct action: <strong>100 points</strong>.</li>
+            <li>A wrong action costs <strong>one trust token</strong> and 50 points.</li>
+            <li>Lose all three trust tokens and the agent is compromised.</li>
+          </ul>
+          <div class="actions">
+            <button id="start" class="btn btn-primary">Start shift</button>
+            <a class="btn btn-ghost" href="../Week10_AI_Bias.html">Back to the lesson</a>
+          </div>
+          <p class="foot">Local practice · your score stays in this browser.</p>
+        </div>
+      </section>
+
+      <section id="game" hidden>
+        <div class="game-grid">
+          <article class="doc" id="doc">
+            <header class="doc-head">
+              <div>
+                <div class="doc-kicker" id="doc-kicker">CASE 1 · EMAIL</div>
+                <h2 id="doc-title">Invoice for review</h2>
+                <div class="doc-source" id="doc-source">accounts@northwind.example</div>
+                <div class="doc-meta" id="doc-meta">Subject: Invoice #4821 — action needed</div>
+              </div>
+              <div class="doc-stamp" id="doc-stamp">UNTRUSTED</div>
+            </header>
+            <div class="doc-lines" id="doc-lines"></div>
+          </article>
+
+          <aside class="task" aria-live="polite">
+            <div class="task-head">
+              <span class="task-tool">CASE <span id="case-number">1</span></span>
+              <span id="case-type">EMAIL</span>
+            </div>
+            <h2>What should the agent do?</h2>
+            <p class="task-help" id="task-help">Click the line that contains the hidden instruction, then choose an action.</p>
+            <div class="agent-action">
+              <small>AGENT'S PLANNED ACTION</small>
+              <span id="agent-action">Send the customer database to backup@external.example.</span>
+            </div>
+            <button id="no-line" class="no-line" type="button">No suspicious line — this document is safe</button>
+            <div class="action-buttons">
+              <button class="btn btn-action btn-allow" type="button" data-action="allow" disabled>Allow</button>
+              <button class="btn btn-action btn-block" type="button" data-action="block" disabled>Block</button>
+              <button class="btn btn-action btn-confirm" type="button" data-action="confirm" disabled>Ask first</button>
+            </div>
+            <div id="feedback" class="feedback" hidden></div>
+            <div class="task-foot">
+              <button id="next-case" class="btn btn-primary" type="button" hidden>Next case</button>
+              <div class="task-exits">
+                <a class="btn btn-ghost" href="../Week10_AI_Bias.html">Exit</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="results" class="overlay" hidden>
+        <div class="result-card">
+          <div class="eyebrow">SHIFT COMPLETE</div>
+          <h1 id="result-rank">Agent Trainee</h1>
+          <div class="score-big"><span id="final-score">0</span><small id="max-score">/ 1200</small></div>
+          <div class="result-grid">
+            <div><span>ACCURACY</span><strong id="final-accuracy">0%</strong></div>
+            <div><span>TRUST LEFT</span><strong id="final-trust">3 / 3</strong></div>
+          </div>
+          <div id="case-breakdown" class="doc-breakdown"></div>
+          <div class="actions">
+            <button id="replay" class="btn btn-primary">Play again</button>
+            <a class="btn btn-ghost" href="../Week10_AI_Bias.html">Back to the lesson</a>
+            <a class="btn btn-ghost" href="../trust-or-trap/">Try Trust or Trap</a>
+          </div>
+          <p class="foot">Local practice · no data is sent anywhere.</p>
+        </div>
+      </section>
+
+      <div id="qa-report" hidden></div>
+    </main>
+  </div>
+
+  <script>
+    window.__injectionErrors = [];
+    window.addEventListener('error', function (e) {
+      window.__injectionErrors.push(String((e && e.message) || 'error'));
+      var qa = document.getElementById('qa-report');
+      if (qa) {
+        qa.hidden = false;
+        qa.textContent = 'ERRORS:' + window.__injectionErrors.join(' | ');
+      }
+    });
+  </script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
