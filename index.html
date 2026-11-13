@@ -67,8 +67,10 @@
 
         /* Only the prose stays serif; interface text is sans for legibility
            at small sizes, which is the convention the lesson pages follow. */
-        .ui, .pill, .btn, .numeral, .chip, .eyebrow, .meta-row,
-        .row-label, .progress-label, .term-switch, .term-tab, .term-break,
+        .ui, .pill, .btn, .numeral, .chip, .eyebrow,
+        .progress-label, .term-switch, .term-tab, .term-break,
+        .quiet-row, .q-label, .quiet-link, .lesson-link, .lesson-label,
+        .lesson-name, .lesson-arrow,
         footer {
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
@@ -359,14 +361,10 @@
             display: grid;
             grid-template-columns: 74px 1fr;
             gap: 0 1.15rem;
-            background-color: var(--card-bg);
-            background-image: var(--week-photo, none);
-            background-size: cover;
-            background-position: right center;
-            background-repeat: no-repeat;
+            background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 1.35rem 1.5rem;
+            padding: 1.2rem 1.4rem;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
@@ -382,13 +380,9 @@
             border-radius: 0 4px 4px 0;
         }
 
-        /* Every other week gets a photo, faded in from the right so the text
-           stays crisp and the list does not look busy. Each photo is the one
-           that week's lesson already uses as a page banner. */
-        .week-card[data-week="1"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=900&h=420&fit=crop'); }
-        .week-card[data-week="3"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=900&h=420&fit=crop'); }
-        .week-card[data-week="5"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&h=420&fit=crop'); }
-        .week-card[data-week="7"] { --week-photo: linear-gradient(90deg, var(--card-bg) 0 40%, rgba(255,255,255,0) 78%), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&h=420&fit=crop'); }
+        /* No per-week photographs. The hero carries the imagery; the list stays
+           uniform, so a card's weight comes from its content and not from
+           whether this week happened to have a photo. */
 
         .numeral {
             grid-row: 1 / span 2;
@@ -417,7 +411,7 @@
             stroke-linecap: round; stroke-linejoin: round;
         }
 
-        .week-head h3 { font-size: 1.16rem; color: var(--primary); letter-spacing: -.01em; }
+        .week-head h3 { font-size: 1.16rem; color: var(--primary); letter-spacing: -.01em; flex: 1 1 auto; }
 
         .chip {
             display: inline-block;
@@ -428,24 +422,79 @@
             padding: .22rem .6rem;
             border-radius: 100px;
         }
-        .chip-grammar { background: var(--grammar-bg); color: var(--text); border: 1px solid var(--border); }
+        /* The grammar label is information, not an action: it lost its border and
+           fill so that the only thing on the card that looks pressable is the
+           lesson button and the links. */
+        .chip-grammar {
+            background: transparent;
+            border: 0;
+            padding: 0;
+            color: var(--text);
+            font-size: .66rem;
+            letter-spacing: .09em;
+        }
         .chip-current { background: var(--accent-light); border: 1px solid var(--accent); color: var(--text); }
 
         .week-card p { grid-column: 2; color: var(--text); font-size: .95rem; margin-bottom: .9rem; }
 
-        .resources { grid-column: 2; display: flex; flex-direction: column; gap: .55rem; }
-        .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
-        /* Hierarchy here comes from size, case and tracking rather than a
-           lighter colour: --text-light is 4.02:1 on white in the default
-           palette, which is under the AA floor for small text. */
-        .row-label {
-            font-size: .68rem;
+        .resources { grid-column: 2; display: flex; flex-direction: column; gap: .5rem; }
+
+        /* A labelled line for something done first: last week's review, and any
+           "first task". Not a button — an instruction. */
+        .quiet-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: .2rem .55rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: .84rem;
+        }
+        .q-label {
+            font-size: .64rem;
             font-weight: 700;
-            letter-spacing: .07em;
+            letter-spacing: .09em;
             text-transform: uppercase;
             color: var(--text);
-            min-width: 8.5rem;
         }
+        .quiet-link {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1px;
+        }
+        .quiet-link:hover { color: var(--primary); border-bottom-color: var(--accent); }
+        .quiet-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        /* The lesson is the only button on the card. The tint carries the
+           emphasis because a filled --accent is not a safe text background in
+           every palette. */
+        .lesson-link {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            min-height: 46px;
+            padding: .6rem .85rem;
+            margin: .1rem 0;
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            background: var(--accent-light);
+            color: var(--text);
+            text-decoration: none;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: .95rem;
+            transition: border-color .15s ease;
+        }
+        .lesson-link:hover { border-color: var(--primary); }
+        .lesson-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .lesson-label {
+            font-size: .64rem;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .lesson-name { flex: 1 1 auto; font-weight: 700; color: var(--primary); }
+        .lesson-arrow { color: var(--primary); font-weight: 700; }
 
         .pill {
             display: inline-flex;
@@ -529,9 +578,11 @@
             .week-card { grid-template-columns: 1fr; padding: 1.15rem 1.15rem 1.15rem 1.35rem; background-image: none; }
             .numeral { grid-row: auto; width: 46px; height: 46px; font-size: 1.1rem; border-radius: 13px; margin-bottom: .7rem; }
             .week-card p, .resources { grid-column: 1; }
-            .row-label { min-width: 0; width: 100%; margin-bottom: .1rem; }
-            .meta-row { gap: .4rem; }
-            .pill { flex: 1 1 auto; justify-content: center; min-height: 44px; }
+            .week-head h3 { font-size: 1.05rem; }
+            .week-head { gap: .4rem .6rem; }
+            .chip-grammar { font-size: .62rem; }
+            .quiet-row { font-size: .82rem; }
+            .lesson-link { min-height: 48px; }
             .week-head h3 { font-size: 1.05rem; }
             /* The two tabs have to hold "Weeks 1–8" and its caption at 320px,
                so the caption loses weight before the week range does. */
@@ -651,17 +702,12 @@
             </div>
             <p>Job titles in IT, describing ability and skills, workplace vocabulary.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk1/Week1_Careers_and_Roles.html">Working in IT</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Resources</span>
-                    <a class="pill pill-file" href="Wk1/Unit 1.pptx" download>📄 Slides</a>
-                    <a class="pill pill-file" href="Wk1/IT_Career_Blueprint.pptx" download>📄 Blueprint</a>
-                    <a class="pill pill-file" href="Wk1/foreword.pptx" download>📄 Foreword</a>
-                    <a class="pill pill-file" href="Wk1/Core_IT_Roles_and_English_Interview_Skills.m4a" download>🎧 Audio</a>
-                </div>
+                <a class="lesson-link" href="Wk1/Week1_Careers_and_Roles.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Working in IT</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk1/Unit 1.pptx" download>📄 Slides</a><a class="quiet-link" href="Wk1/IT_Career_Blueprint.pptx" download>📄 Blueprint</a><a class="quiet-link" href="Wk1/foreword.pptx" download>📄 Foreword</a><a class="quiet-link" href="Wk1/Core_IT_Roles_and_English_Interview_Skills.m4a" download>🎧 Audio</a></div>
             </div>
         </article>
 
@@ -675,19 +721,12 @@
             </div>
             <p>Computer hardware, describing a system, talking about building a PC.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk2/Week2_Hardware_and_Components.html">Hardware &amp; Components</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Resources</span>
-                    <a class="pill pill-file" href="Wk2/Online Reading.pptx" download>📄 Slides</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk2/AI_Safety_Debate.html">📰 AI Safety Debate</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/c6n07ypqz8kzo" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
+                <a class="lesson-link" href="Wk2/Week2_Hardware_and_Components.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Hardware &amp; Components</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk2/Online Reading.pptx" download>📄 Slides</a><a class="quiet-link" href="Wk2/AI_Safety_Debate.html">📰 AI Safety Debate</a><a class="quiet-link" href="https://www.bbc.com/news/articles/c6n07ypqz8kzo" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -701,19 +740,13 @@
             </div>
             <p>Windows, macOS and Linux, giving instructions, file management.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk3/Week3_Operating_Systems.html">Operating Systems</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk3/Kindness_Mob_Reading.html">📰 Kindness Mob</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/future/article/20260922-kindness-trolls-the-internet-vigilantes-who-weaponise-kindness" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk3/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk3/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a></div>
+                <a class="lesson-link" href="Wk3/Week3_Operating_Systems.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Operating Systems</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk3/Kindness_Mob_Reading.html">📰 Kindness Mob</a><a class="quiet-link" href="https://www.bbc.com/future/article/20260922-kindness-trolls-the-internet-vigilantes-who-weaponise-kindness" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -727,24 +760,13 @@
             </div>
             <p>Network devices, actions in progress, troubleshooting a real outage.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk4/Week4_Networking_Basics.html">Networking Basics</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Resources</span>
-                    <a class="pill pill-file" href="Wk4/Online Reading - wk4.pptx" download>📄 Slides</a>
-                    <a class="pill pill-file" href="Wk4/241219_6_minute_english_call_centres_are_you_talking__to__ai.pdf" download>📄 PDF</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk4/AI_Listening_Reading.html">📰 AI and Listening</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/future/article/20251218-how-ai-can-teach-us-to-really-listen" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk4/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk4/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a></div>
+                <a class="lesson-link" href="Wk4/Week4_Networking_Basics.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Networking Basics</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk4/Online Reading - wk4.pptx" download>📄 Slides</a><a class="quiet-link" href="Wk4/241219_6_minute_english_call_centres_are_you_talking__to__ai.pdf" download>📄 PDF</a><a class="quiet-link" href="Wk4/AI_Listening_Reading.html">📰 AI and Listening</a><a class="quiet-link" href="https://www.bbc.com/future/article/20251218-how-ai-can-teach-us-to-really-listen" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -759,19 +781,13 @@
             </div>
             <p>Writing instructions a computer can follow: variables, loops, functions and debugging.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk5/Week5_Programming_Intro.html">Programming Intro</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk5/AI_Output_Formats.html">📰 Asking AI for the Right Format</a>
-                    <a class="pill pill-read" href="https://x.com/karpathy/status/2105819303471976479" target="_blank" rel="noopener">🔗 Karpathy on X</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk5/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk5/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a></div>
+                <a class="lesson-link" href="Wk5/Week5_Programming_Intro.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Programming Intro</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk5/AI_Output_Formats.html">📰 Asking AI for the Right Format</a><a class="quiet-link" href="https://x.com/karpathy/status/2105819303471976479" target="_blank" rel="noopener">🔗 Karpathy on X</a></div>
             </div>
         </article>
 
@@ -785,19 +801,13 @@
             </div>
             <p>How the web gets built and delivered: front-end, back-end, deployment and testing.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk6/Week6_Web_Development.html">Web Development</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk6/When_Bots_Take_Over_the_Web.html">📰 When Bots Take Over the Web</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/future/article/20260930-metas-new-ai-is-about-to-break-the-internet" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk6/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk6/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a></div>
+                <a class="lesson-link" href="Wk6/Week6_Web_Development.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Web Development</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk6/When_Bots_Take_Over_the_Web.html">📰 When Bots Take Over the Web</a><a class="quiet-link" href="https://www.bbc.com/future/article/20260930-metas-new-ai-is-about-to-break-the-internet" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -811,20 +821,13 @@
             </div>
             <p>How organisations store, find and protect their data: tables, keys, queries and backups.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk7/Week7_Database_Fundamentals.html">Database Fundamentals</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk7/Patch_Now_or_Go_Offline.html">📰 Patch Now or Go Offline</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/cmly0lg3w5x2o" target="_blank" rel="noopener">🔗 BBC article</a>
-                    <a class="pill pill-read" href="https://docs.google.com/document/d/1keMkZ3QfyFF_0W9oprJwUnn9Rwc5gUpqNicTJS8zo8g/edit?usp=sharing" target="_blank" rel="noopener">🔗 Google Doc</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk7/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk7/tic-tac-toe.html">🎮 Tic-tac-toe challenge</a></div>
+                <a class="lesson-link" href="Wk7/Week7_Database_Fundamentals.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Database Fundamentals</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk7/Patch_Now_or_Go_Offline.html">📰 Patch Now or Go Offline</a><a class="quiet-link" href="https://www.bbc.com/news/articles/cmly0lg3w5x2o" target="_blank" rel="noopener">🔗 BBC article</a><a class="quiet-link" href="https://docs.google.com/document/d/1keMkZ3QfyFF_0W9oprJwUnn9Rwc5gUpqNicTJS8zo8g/edit?usp=sharing" target="_blank" rel="noopener">🔗 Google Doc</a></div>
             </div>
         </article>
 
@@ -838,10 +841,11 @@
             </div>
             <p>Week 8 · open-book reading and rephrasing plus the language paper. No lesson this week.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Exam</span>
-                    <a class="pill pill-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScwbODD-5ThLrfVsHBUcu1X6sjnMkH0o_G-LNY91HT3pFPnlg/viewform?usp=dialog" target="_blank" rel="noopener">📝 Open the mid-term exam</a>
-                </div>
+                <a class="lesson-link" href="https://docs.google.com/forms/d/e/1FAIpQLScwbODD-5ThLrfVsHBUcu1X6sjnMkH0o_G-LNY91HT3pFPnlg/viewform?usp=dialog" target="_blank" rel="noopener">
+                    <span class="lesson-label">Exam</span>
+                    <span class="lesson-name">📝 Open the mid-term exam</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
             </div>
         </article>
     </div>
@@ -859,31 +863,14 @@
             </div>
             <p>Detecting, containing and reporting a security incident: credentials, patches, privileges and the language of an incident report.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">First task</span>
-                    <a class="pill pill-primary" href="Wk9/Reading_Strategy_Skim_and_Scan.html">Reading Strategies: Skimming and Scanning</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Practice</span>
-                    <a class="pill pill-game" href="Wk9/skim-scan/">🔎 Skim &amp; Scan: The Records Room</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk9/Week9_Cybersecurity.html">Cybersecurity &amp; Breaches</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk9/Supplementary_Cybersecurity_Breaches.html">📰 Stolen Passwords, Stolen Data</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/c39x3jpv8lyo" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Game</span>
-                    <a class="pill pill-game" href="Wk9/breach-room/">🚨 Breach Room</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk9/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk9/gomoku.html">🎮 Gomoku challenge</a></div>
+                <div class="quiet-row"><span class="q-label">First task</span><a class="quiet-link" href="Wk9/Reading_Strategy_Skim_and_Scan.html">Reading Strategies: Skimming and Scanning</a></div>
+                <a class="lesson-link" href="Wk9/Week9_Cybersecurity.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Cybersecurity &amp; Breaches</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk9/skim-scan/">🔎 Skim &amp; Scan: The Records Room</a><a class="quiet-link" href="Wk9/Supplementary_Cybersecurity_Breaches.html">📰 Stolen Passwords, Stolen Data</a><a class="quiet-link" href="https://www.bbc.com/news/articles/c39x3jpv8lyo" target="_blank" rel="noopener">🔗 BBC article</a><a class="quiet-link" href="Wk9/breach-room/">🚨 Breach Room</a></div>
             </div>
         </article>
 
@@ -899,27 +886,9 @@
             </div>
             <p>How AI learns from data, why bias becomes institutionalized, and how to read technical explanations quickly.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">First task</span>
-                    <a class="pill pill-primary" href="Wk10/Week10_AI_Bias.html">AI, Bias &amp; Data Poisoning</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk10/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Games</span>
-                    <a class="pill pill-game" href="Wk10/injection-room/">🚨 The Injection Room</a>
-                    <a class="pill pill-game" href="Wk10/trust-or-trap/">🎴 Trust or Trap</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Practice</span>
-                    <a class="pill pill-read" href="https://docs.google.com/forms/d/e/1FAIpQLSdpXT82gOGiWd652QxiSUR-PiJ_RT5fWC247s8UrtbgB0NVEg/viewform?usp=sharing&amp;ouid=110429907782480603822" target="_blank" rel="noopener">✂️ Simplification form</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk10/Supplementary_Prompt_Injection.html">📕 What Is Prompt Injection?</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk10/gomoku.html">🎮 Gomoku challenge</a></div>
+                <div class="quiet-row"><span class="q-label">First task</span><a class="quiet-link" href="Wk10/Week10_AI_Bias.html">AI, Bias &amp; Data Poisoning</a></div>
+                <div class="quiet-row"><a class="quiet-link" href="Wk10/injection-room/">🚨 The Injection Room</a><a class="quiet-link" href="Wk10/trust-or-trap/">🎴 Trust or Trap</a><a class="quiet-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdpXT82gOGiWd652QxiSUR-PiJ_RT5fWC247s8UrtbgB0NVEg/viewform?usp=sharing&amp;ouid=110429907782480603822" target="_blank" rel="noopener">✂️ Simplification form</a><a class="quiet-link" href="Wk10/Supplementary_Prompt_Injection.html">📕 What Is Prompt Injection?</a></div>
             </div>
         </article>
 
@@ -934,19 +903,13 @@
             </div>
             <p>A rollout goes wrong at 3 a.m.: reading an incident timeline and writing the three sentences of a status update.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk11/Week11_Cloud_and_Data_Centres.html">Cloud &amp; Data Centres</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Supplementary</span>
-                    <a class="pill pill-read" href="Wk11/Supplementary_Microsoft_Outage.html">📰 The Global Microsoft Outage</a>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/cwvg238zrnm5o" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk11/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk11/gomoku.html">🎮 Gomoku challenge</a></div>
+                <a class="lesson-link" href="Wk11/Week11_Cloud_and_Data_Centres.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Cloud &amp; Data Centres</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="Wk11/Supplementary_Microsoft_Outage.html">📰 The Global Microsoft Outage</a><a class="quiet-link" href="https://www.bbc.com/news/articles/cwvg238zrnm5o" target="_blank" rel="noopener">🔗 BBC article</a><a class="quiet-link" href="Wk11/status-room/">🚨 The Status Room</a></div>
             </div>
         </article>
 
@@ -960,18 +923,13 @@
             </div>
             <p>Separating tasks from jobs: reading a data story, its caveats, and the hedging words that keep a claim honest.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk12/Week12_AI_at_Work.html">AI at Work</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Source</span>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/cn7nllr4vd6o" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk12/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk12/gomoku.html">🎮 Gomoku challenge</a></div>
+                <a class="lesson-link" href="Wk12/Week12_AI_at_Work.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">AI at Work</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="https://www.bbc.com/news/articles/cn7nllr4vd6o" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -985,14 +943,12 @@
             </div>
             <p>One small request three days before a demo: reading a project timeline and the verb patterns a team uses to decide.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk13/Week13_Projects_and_Releases.html">Projects &amp; Releases</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk13/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk13/gomoku.html">🎮 Gomoku challenge</a></div>
+                <a class="lesson-link" href="Wk13/Week13_Projects_and_Releases.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Projects &amp; Releases</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
             </div>
         </article>
 
@@ -1006,18 +962,13 @@
             </div>
             <p>A ban, a list of apps and a dozen voices: tracking who said what, and turning quotes into reported speech.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk14/Week14_Platforms_and_Age_Rules.html">Platforms &amp; Age Rules</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Source</span>
-                    <a class="pill pill-read" href="https://www.bbc.com/news/articles/c9824zvpz9po" target="_blank" rel="noopener">🔗 BBC article</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk14/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk14/gomoku.html">🎮 Gomoku challenge</a></div>
+                <a class="lesson-link" href="Wk14/Week14_Platforms_and_Age_Rules.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Platforms &amp; Age Rules</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
+                <div class="quiet-row"><a class="quiet-link" href="https://www.bbc.com/news/articles/c9824zvpz9po" target="_blank" rel="noopener">🔗 BBC article</a></div>
             </div>
         </article>
 
@@ -1031,14 +982,12 @@
             </div>
             <p>Five moves that change a sentence without changing its meaning, practised on sentences from Weeks 11–14.</p>
             <div class="resources">
-                <div class="meta-row">
-                    <span class="row-label">Lesson</span>
-                    <a class="pill pill-primary" href="Wk15/Week15_Rephrasing_Lab.html">Rephrasing Lab</a>
-                </div>
-                <div class="meta-row">
-                    <span class="row-label">Activity</span>
-                    <a class="pill pill-game" href="Wk15/gomoku.html">🎮 Gomoku challenge</a>
-                </div>
+                <div class="quiet-row"><span class="q-label">Review</span><a class="quiet-link" href="Wk15/gomoku.html">🎮 Gomoku challenge</a></div>
+                <a class="lesson-link" href="Wk15/Week15_Rephrasing_Lab.html">
+                    <span class="lesson-label">Lesson</span>
+                    <span class="lesson-name">Rephrasing Lab</span>
+                    <span class="lesson-arrow" aria-hidden="true">→</span>
+                </a>
             </div>
         </article>
 
