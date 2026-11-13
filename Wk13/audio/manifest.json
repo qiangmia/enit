@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "lesson_file": "Week13",
+  "generated_at": "2026-11-13T09:07:22Z",
+  "model": "heygen/heygen-voice-1-turbo:free",
+  "audio_dir": "audio/",
+  "notes": [
+    "HeyGen Voice Turbo PCM via OpenRouter, voice \"nadine\", encoded to .mp3."
+  ],
+  "paragraphs": [
+    {
+      "n": 1,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "audio_file": "para-01.mp3"
+    },
+    {
+      "n": 2,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "audio_file": "para-02.mp3"
+    },
+    {
+      "n": 3,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "audio_file": "para-03.mp3"
+    },
+    {
+      "n": 4,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "audio_file": "para-04.mp3"
+    },
+    {
+      "n": 5,
+      "speaker": "narrator",
+      "voice": "nadine",
+      "audio_file": "para-05.mp3"
+    }
+  ]
+}

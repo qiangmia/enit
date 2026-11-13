@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11: Cloud &amp; Data Centres</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+                :root {
+            --primary: #4a3122;
+            --primary-light: #7a5a42;
+            --accent: #a94e27;
+            --accent-light: #f4ddcb;
+            --warm: #8b5a1e;
+            --warm-light: #f7e3c0;
+            --bg: #f1eae0;
+            --card-bg: #fffdf9;
+            --text: #2a241e;
+            --text-light: #6a5f54;
+            --border: #ded2c2;
+            --success: #2f6b4a;
+            --success-bg: #e9f2ea;
+            --info-bg: #f3eadf;
+            --vocab-bg: #fbf0de;
+            --task-bg: #edf3ea;
+            --homework-bg: #fbede9;
+            --error: #a3352b;
+            --overlay-a: rgba(45, 35, 27, 0.86);
+            --overlay-b: rgba(45, 35, 27, 0.93);
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .course-header {
+            background:
+                linear-gradient(var(--overlay-a), var(--overlay-b)),
+                url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .course-header h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            font-style: italic;
+            opacity: 0.93;
+        }
+        .course-header .meta {
+            margin-top: 1.1rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+        }
+        .course-header .meta span { margin: 0 0.55rem; }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1rem;
+            justify-content: center;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.55rem;
+            border-radius: 4px;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1.8rem 1rem 3.5rem;
+        }
+
+        .lead {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            font-size: 1rem;
+        }
+        .lead p + p { margin-top: 0.6rem; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.4rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--primary);
+            padding-bottom: 0.55rem;
+            border-bottom: 2px solid var(--accent-light);
+            margin-bottom: 0.9rem;
+        }
+        .card-icon { font-size: 1.15rem; }
+        .card-info { border-left: 4px solid var(--accent); }
+        .card-vocab { border-left: 4px solid var(--warm); }
+        .card-task { border-left: 4px solid var(--success); }
+        .card-homework { border-left: 4px solid var(--error); }
+
+        h2.section-title {
+            font-size: 1.65rem;
+            line-height: 1.25;
+            color: var(--primary);
+            margin: 2rem 0 0.7rem;
+            letter-spacing: -0.01em;
+        }
+        h3.subhead {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1.3rem 0 0.45rem;
+        }
+
+        .article {
+            font-size: 1.03rem;
+            line-height: 1.85;
+        }
+        .article p { margin: 0 0 1rem; }
+        .article strong { color: var(--primary); }
+        .article .dropcap::first-letter {
+            float: left;
+            font-size: 3.4rem;
+            line-height: 0.8;
+            padding: 0.15rem 0.55rem 0 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.8rem;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .video-caption {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.9rem;
+        }
+        .example-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            font-size: 0.96rem;
+        }
+        .example-box strong { color: var(--success); }
+
+        .task-list {
+            list-style: none;
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.6rem;
+        }
+        .task-list li {
+            position: relative;
+            padding-left: 1.45rem;
+            line-height: 1.6;
+        }
+        .task-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .quiz {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            margin: 0.8rem 0;
+        }
+        .quiz p { margin-bottom: 0.5rem; }
+        .quiz ol, .quiz ul { margin: 0.35rem 0 0 1.3rem; }
+        .quiz li { margin: 0.2rem 0; }
+
+        details.answer {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            margin: 0.7rem 0;
+            font-size: 0.95rem;
+        }
+        details.answer summary {
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        details.answer[open] summary { margin-bottom: 0.45rem; }
+
+        .table-wrap { overflow-x: auto; margin-top: 0.8rem; }
+        table.vocab {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.vocab th, table.vocab td {
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.vocab thead th {
+            background: var(--accent-light);
+            color: var(--primary);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        table.vocab tbody tr:nth-child(even) { background: var(--bg); }
+        table.vocab .word { font-weight: 700; color: var(--primary); }
+        table.vocab .zh { color: var(--text-light); font-size: 0.88rem; }
+
+        .pill {
+            display: inline-block;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin: 0.25rem 0.35rem 0.25rem 0;
+        }
+        .pill-primary { background: var(--accent); color: #ffffff; }
+        .pill-primary:hover { background: var(--primary); }
+        .pill-soft { background: var(--accent-light); color: var(--primary); border: 1px solid var(--accent); }
+        .pill-soft:hover { background: var(--accent); color: #ffffff; }
+        .pill-game { background: var(--warm); color: #ffffff; }
+        .pill-game:hover { background: var(--primary); }
+
+        .footer-nav {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+        }
+        .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        .footer-nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .course-header { padding: 2.1rem 1rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .container { padding: 1.2rem 0.75rem 2.5rem; }
+            .card { padding: 1.05rem 1rem; }
+            .toc { padding: 0.65rem 0.5rem; }
+            .toc a { font-size: 0.68rem; }
+            table.vocab { font-size: 0.82rem; }
+        }
+
+        @media print {
+            .toc, .video-wrap { display: none; }
+            .card { break-inside: avoid; box-shadow: none; }
+        }
+    
+        /* -- Read-along narration --------------------------- */
+        .audio-note {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            margin: 0 0 0.9rem;
+        }
+        .para-play {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            margin: 0 0 0.15rem;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--accent);
+            font-size: 0.72rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background-color .15s ease, border-color .15s ease;
+        }
+        .para-play:hover { background: var(--accent-light); border-color: var(--accent); }
+        .para-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .para-play.is-playing { background: var(--accent); border-color: var(--accent); color: var(--card-bg); }
+        .readalong-para.active {
+            background: var(--warm-light);
+            border-radius: 6px;
+            box-shadow: 0 0 0 6px var(--warm-light);
+        }
+
+        /* -- Balloon glossary for highlighted terms ---------- */
+        .keyword {
+            cursor: pointer;
+            border-bottom: 1px dotted var(--accent);
+        }
+        .keyword:hover { background: var(--accent-light); }
+        .keyword:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        .keyword[aria-expanded="true"] { background: var(--warm-light); }
+
+        .gloss-balloon {
+            position: fixed;
+            z-index: 10050;
+            width: min(320px, calc(100vw - 24px));
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 0.85rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .gloss-balloon::after {
+            content: '';
+            position: absolute;
+            left: var(--arrow-left, 50%);
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .gloss-balloon.below::after {
+            bottom: auto;
+            top: -7px;
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .gloss-balloon-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.3rem;
+        }
+        .gloss-balloon-term {
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: capitalize;
+        }
+        .gloss-zh {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+        .gloss-close {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+        .gloss-close:hover { color: var(--primary); }
+        .gloss-balloon-def { color: var(--text); }
+
+        @media print {
+            .para-play, .audio-note { display: none; }
+        }
+</style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Cloud &amp; Data Centres</h1>
+    <div class="subtitle">Reading an incident: what failed, and what was done about it</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 11</span>
+    </div>
+</header>
+
+<nav class="toc" aria-label="Lesson sections">
+    <ul>
+        <li><a href="#before">Before you read</a></li>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#reading">Read: The 3 a.m. Rollout</a></li>
+        <li><a href="#skills">Skim</a></li>
+        <li><a href="#scan">Scan</a></li>
+        <li><a href="#vocabulary">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#rephrase">Rephrasing</a></li>
+        <li><a href="#games">Game</a></li>
+        <li><a href="#homework">Homework</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <section class="lead" id="before">
+        <p><strong>This week:</strong> A routine deployment goes wrong at three in the morning. You will read an incident timeline from a cloud operations team, learn how engineers describe what happened without naming who did it, and write the three sentences of a status update.</p>
+        <p><strong>Before you read:</strong> A website stops working at 3 a.m. Who should tell the users what happened — and how much should they say?</p>
+    </section>
+
+    <section class="card card-info" id="objectives">
+        <div class="card-header"><span class="card-icon">🎯</span>By the end of this week, you will be able to</div>
+        <ul class="task-list">
+            <li>explain what a <strong>region</strong>, a <strong>replica</strong> and a <strong>failover</strong> are;</li>
+            <li>read a timeline and work out cause and effect in an outage;</li>
+            <li>use the <strong>passive voice</strong> to describe what was done;</li>
+            <li>write three status-page sentences that are accurate and calm;</li>
+            <li>explain what a <strong>post-mortem</strong> is for.</li>
+        </ul>
+    </section>
+
+    <h2 class="section-title" id="reading">Read: The 3 a.m. Rollout</h2>
+
+    <section class="card">
+        <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <div class="article">
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para dropcap" id="para-1">On Thursday at 02:50, Lin Yu-Ting started a routine rollout. She is 24 and works on the cloud operations team of a software company in Taipei. The new routing rule had been tested in the <span class="keyword" data-def="A test copy of a system, used before a change goes live." data-zh="預備環境">staging environment</span>, and two engineers had signed it off. It was pushed to the Singapore <span class="keyword" data-def="One large area of a cloud provider’s network, such as Singapore or Frankfurt." data-zh="區域">region</span> first, because that region carries the least <span class="keyword" data-def="The requests arriving at a service." data-zh="流量">traffic</span> at that hour.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-2">At 03:04 the first alert arrived. Requests to one <span class="keyword" data-def="A separate set of machines inside a region, so one failure cannot take everything down." data-zh="可用區">availability zone</span> were timing out. The dashboard showed healthy servers, which made no sense: the machines were running, but traffic was not reaching them.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-3">Yu-Ting opened the routing table. The new rule sent all traffic to the older zone, where the <span class="keyword" data-def="A copy of the data kept on another machine." data-zh="副本">replica</span> was already under heavy load. The replica was not down. It was <span class="keyword" data-def="Still running, but unable to handle more work." data-zh="滿載的">saturated</span>: still running, but unable to answer fast enough. <span class="keyword" data-def="The delay before a response arrives." data-zh="延遲">Latency</span> climbed for four minutes before anyone noticed.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-4">At 03:11 she <span class="keyword" data-def="To return a system to the version before a change." data-zh="回滾">rolled the change back</span>. Normal traffic returned at 03:19. The <span class="keyword" data-def="A public page that says whether a service is working." data-zh="狀態頁">status page</span> was updated once, and it was three sentences long: “A routing change was rolled back. Service was restored at 03:19. No data was lost.” The <span class="keyword" data-def="Time when a service is not available." data-zh="停機時間">downtime</span> was fifteen minutes: customers in the affected zone saw an error page, and everyone else noticed nothing.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-5">On Friday morning the team held a <span class="keyword" data-def="A meeting after an incident to find the cause without blaming people." data-zh="事後檢討">post-mortem</span>. Nobody was blamed. The question was why the staging test had passed. The answer was simple: it had been run against one region, and the problem only appeared when two regions were compared.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-6">Yu-Ting wrote the report in the passive on purpose. “When something breaks at three in the morning,” she says, “the last thing users need is a name. They need to know what happened, when it will be fixed, and whether their data is safe.”</p>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Original story for this course.</p>
+    </section>
+
+    <section class="card card-task" id="skills">
+        <div class="card-header"><span class="card-icon">🔭</span>Skim: the big picture</div>
+        <p>Skim the article in 60–90 seconds. Do not stop for every word. Read the title, the first and last sentences of each paragraph, and the words in bold.</p>
+        <div class="quiz">
+            <p><strong>1. What is the article mainly about?</strong></p>
+            <ol type="a">
+                <li>An outage, its cause, and how the team reported it.</li>
+                <li>Why companies should stop using the cloud.</li>
+                <li>How to apply for a job in a data centre.</li>
+                <li>Why customers should back up their own files.</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>a.</strong> The article follows one incident from the rollout to the post-mortem, and shows how it was reported.</p></details>
+        <div class="quiz">
+            <p><strong>2. Headline hunt: which headline best matches the article?</strong></p>
+            <ol type="a">
+                <li>“The Cloud Is Broken Forever”</li>
+                <li>“Fifteen Minutes: A Rollout, an Alert and a Rollback”</li>
+                <li>“How to Become a Cloud Engineer in One Week”</li>
+                <li>“Why Data Centres Waste Electricity”</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>b.</strong> The story is one short incident, told in time order — not a claim about the cloud in general.</p></details>
+        <div class="quiz">
+            <p><strong>3. What is the writer’s purpose?</strong></p>
+            <ol type="a">
+                <li>To sell a monitoring product.</li>
+                <li>To explain how a team found and fixed a problem, and how it wrote about it.</li>
+                <li>To prove that staging tests are useless.</li>
+                <li>To describe a career change.</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>b.</strong> The writer explains the cause and the fix, and points out why the report used the passive.</p></details>
+    </section>
+
+    <section class="card card-task" id="scan">
+        <div class="card-header"><span class="card-icon">🔍</span>Scan: find the detail</div>
+        <p>Scan the article for the exact information. Look for names, numbers, definitions and lists — do not read every sentence.</p>
+        <ul class="task-list">
+            <li>At what time did the rollout start?</li>
+            <li>Which region was updated first, and why?</li>
+            <li>What was the actual cause of the timeouts?</li>
+            <li>When was service restored?</li>
+            <li>How long was the downtime?</li>
+            <li>Why had the staging test passed?</li>
+            <li>What does the status page say?</li>
+        </ul>
+        <details class="answer">
+            <summary>Show answers</summary>
+            <ol>
+                <li>02:50 on Thursday.</li>
+                <li>Singapore, because it carries the least traffic at that hour.</li>
+                <li>A new routing rule sent all traffic to the older zone, where the replica was saturated.</li>
+                <li>03:19.</li>
+                <li>Fifteen minutes.</li>
+                <li>It had been run against a single region, so the two-region problem never appeared.</li>
+                <li>“A routing change was rolled back. Service was restored at 03:19. No data was lost.”</li>
+            </ol>
+        </details>
+    </section>
+
+    <section class="card card-vocab" id="vocabulary">
+        <div class="card-header"><span class="card-icon">📚</span>Vocabulary: running a service</div>
+        <p>These words appear in the article. Read the definition and the example, then find the word in the text.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Word</th><th>Meaning</th><th>Example</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="word">region</span><br><span class="zh">區域</span></td><td>One large area of a cloud provider’s network, such as Singapore or Frankfurt.</td><td>The rule was pushed to the Singapore region first.</td></tr>
+                    <tr><td><span class="word">availability zone</span><br><span class="zh">可用區</span></td><td>A separate set of machines inside a region, so one failure cannot take everything down.</td><td>Requests to one availability zone were timing out.</td></tr>
+                    <tr><td><span class="word">replica</span><br><span class="zh">副本</span></td><td>A copy of the data kept on another machine.</td><td>The replica was already under heavy load.</td></tr>
+                    <tr><td><span class="word">failover</span><br><span class="zh">容錯切換</span></td><td>Moving traffic to a working copy when one part fails.</td><td>Failover to the second region took eight minutes.</td></tr>
+                    <tr><td><span class="word">saturated</span><br><span class="zh">滿載的</span></td><td>Still running, but unable to handle more work.</td><td>The replica was saturated, not down.</td></tr>
+                    <tr><td><span class="word">roll back</span><br><span class="zh">回滾</span></td><td>To return a system to the version before a change.</td><td>At 03:11 she rolled the change back.</td></tr>
+                    <tr><td><span class="word">status page</span><br><span class="zh">狀態頁</span></td><td>A public page that says whether a service is working.</td><td>The status page was updated once.</td></tr>
+                    <tr><td><span class="word">downtime</span><br><span class="zh">停機時間</span></td><td>Time when a service is not available.</td><td>The downtime was fifteen minutes.</td></tr>
+                    <tr><td><span class="word">latency</span><br><span class="zh">延遲</span></td><td>The delay before a response arrives.</td><td>Latency climbed for four minutes.</td></tr>
+                    <tr><td><span class="word">post-mortem</span><br><span class="zh">事後檢討</span></td><td>A meeting after an incident to find the cause without blaming people.</td><td>The team held a post-mortem on Friday.</td></tr>
+                    <tr><td><span class="word">staging environment</span><br><span class="zh">預備環境</span></td><td>A test copy of a system, used before a change goes live.</td><td>The rule had been tested in staging.</td></tr>
+                    <tr><td><span class="word">traffic</span><br><span class="zh">流量</span></td><td>The requests arriving at a service.</td><td>That region carries the least traffic at night.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <details class="answer">
+            <summary>Quick check: choose three words and explain them without looking at the table</summary>
+            <p>Useful pattern: “<em>Failover</em> means moving traffic to a working copy. For example, when the first region slows down, traffic is sent to the second one.”</p>
+        </details>
+    </section>
+
+    <section class="card" id="grammar">
+        <div class="card-header"><span class="card-icon">📐</span>Grammar: The Passive Voice (present and past)</div>
+        <p>The passive moves the thing that was acted on to the front of the sentence. Incident reports and status pages use it because the action matters more than the person.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Form</th><th>Example</th></tr></thead>
+                <tbody>
+                <tr><td><strong>is / are + past participle</strong></td><td>Traffic <strong>is routed</strong> through two regions.</td></tr>
+                <tr><td><strong>was / were + past participle</strong></td><td>The change <strong>was rolled back</strong> at 03:11.</td></tr>
+                <tr><td><strong>has / have been + past participle</strong></td><td>The rule <strong>has been removed</strong>.</td></tr>
+                <tr><td><strong>will be + past participle</strong></td><td>A new test <strong>will be added</strong> next week.</td></tr>
+                <tr><td><strong>modal + be + past participle</strong></td><td>The status page <strong>must be updated</strong> immediately.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 class="subhead">Key rules</h3>
+        <ul class="task-list">
+            <li>The object moves to the front and the verb becomes <em>be + past participle</em>: <em>Two engineers signed off the change</em> → <em>The change was signed off by two engineers.</em></li>
+            <li>Use it when the action matters more than the actor: status pages, incident reports, procedures.</li>
+            <li>Use it when the actor is unknown (<em>No data was lost</em>) or obvious from the context.</li>
+            <li>Add <em>by + actor</em> only when the actor is the point of the sentence.</li>
+            <li>Keep the tense. A past event stays past: <em>was rolled back</em>, not <em>is rolled back</em>.</li>
+        </ul>
+        <h3 class="subhead">Common mistakes</h3>
+        <p>The most common error is dropping <em>be</em>: <em>✗ The rule rolled back at 03:11.</em> → <em>✓ The rule was rolled back at 03:11.</em><br><br>The second error is using the passive to hide responsibility. “Mistakes were made” is grammatically correct and useless in a report: say who did what, or say plainly that nobody knows.</p>
+        <h3 class="subhead">Activity A: Make it passive</h3>
+        <p>Rewrite each sentence in the passive. Keep the same tense.</p>
+        <div class="quiz"><ol>
+                <li>The change ___ (roll) back at 03:11.</li>
+                <li>Traffic ___ (route) through two regions.</li>
+                <li>No data ___ (lose) during the outage.</li>
+                <li>A new alert ___ (add) next week.</li>
+                <li>The status page ___ (update) every ten minutes.</li>
+        </ol></div>
+        <details class="answer"><summary>Show answers</summary><ol>
+                <li>was rolled</li>
+                <li>is routed</li>
+                <li>was lost</li>
+                <li>will be added</li>
+                <li>is updated</li>
+        </ol></details>
+        <h3 class="subhead">Activity B: Write a status update</h3>
+        <p>Your service has been down for twelve minutes because a configuration change broke the login page. Write three status-page sentences: what happened, what was done, and what happens next. Use the passive twice and the active once.</p>
+        <div class="example-box"><em>✓ A configuration change was deployed at 09:12. Login requests could not be completed. The change was rolled back at 09:24, and the service is being checked now.</em></div>
+    </section>
+
+    <section class="card" id="rephrase">
+        <div class="card-header"><span class="card-icon">🔁</span>Rephrasing</div>
+        <p>Changing between active and passive is a rephrasing move. The meaning stays; the focus moves.</p>
+        <div class="grid-2">
+            <div class="example-box">
+                <strong>Active → passive</strong><br>
+                Original: Two engineers signed off the change.<br>
+                Rephrased: The change <strong>was signed off</strong> by two engineers.
+            </div>
+            <div class="example-box">
+                <strong>Passive → active</strong><br>
+                Original: The change was rolled back at 03:11.<br>
+                Rephrased: <strong>Yu-Ting rolled back</strong> the change at 03:11.
+            </div>
+        </div>
+        <h3 class="subhead">Try it</h3>
+        <div class="quiz"><ol>
+                <li>The team pushed the rule to Singapore first.</li>
+                <li>Nobody lost any data.</li>
+                <li>The team will add a new test next week.</li>
+        </ol></div>
+        <details class="answer"><summary>Show model answers</summary><ol>
+                <li>The rule was first pushed to the Singapore region.</li>
+                <li>No data was lost.</li>
+                <li>A new test will be added next week.</li>
+        </ol></details>
+    </section>
+
+    <section class="card" id="games">
+        <div class="card-header"><span class="card-icon">🎮</span>Practice game</div>
+        <p>The Gomoku challenge draws its questions from this week's pool, which reviews the language of Week 10. Two teams, one board, and a spoken answer for every square.</p>
+        <p style="margin-top:0.8rem;">
+            <a class="pill pill-game" href="gomoku.html">🎮 Week 11 Gomoku →</a>
+        </p>
+    </section>
+
+    <section class="card card-homework" id="homework">
+        <div class="card-header"><span class="card-icon">📝</span>Homework &amp; practice</div>
+        <ul class="task-list">
+            <li>Find one real status page (many companies publish one). Copy three sentences and mark each one active or passive.</li>
+            <li>Write a six-sentence incident report about a problem you or your family had with a device or an account last month. Use the passive at least three times.</li>
+            <li>Play the <a href="gomoku.html">Week 11 Gomoku challenge</a> and review the Week 10 language.</li>
+        </ul>
+    </section>
+
+    <nav class="footer-nav">
+        <a href="../Wk10/Week10_AI_Bias.html">← Week 10: AI, Bias &amp; Data Poisoning</a>
+        <a href="gomoku.html">Week 11 Gomoku →</a>
+        <a href="../index.html">← Back to home</a>
+    </nav>
+
+</main>
+
+
+<script>
+/* Read-along narration: one button per paragraph, one audio element. */
+(function () {
+    var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+    if (!paras.length) return;
+    var audio = new Audio();
+    audio.preload = 'metadata';
+    var playing = -1;
+
+    function reset(btn) {
+        if (!btn) return;
+        btn.innerHTML = '\u25b6';
+        btn.classList.remove('is-playing');
+        btn.setAttribute('aria-label', 'Play narration for this paragraph');
+    }
+
+    window.playThisPara = function (btn) {
+        var para = btn.nextElementSibling;
+        if (!para || !para.classList.contains('readalong-para')) return;
+        var i = paras.indexOf(para);
+        if (i < 0) return;
+        if (playing === i && !audio.paused) {
+            audio.pause();
+            reset(btn);
+            para.classList.remove('active');
+            playing = -1;
+            return;
+        }
+        paras.forEach(function (p) { p.classList.remove('active'); });
+        Array.prototype.forEach.call(document.querySelectorAll('.para-play'), reset);
+        para.classList.add('active');
+        btn.classList.add('is-playing');
+        btn.innerHTML = '\u23f8';
+        btn.setAttribute('aria-label', 'Pause narration');
+        playing = i;
+        audio.src = 'audio/para-' + ('0' + (i + 1)).slice(-2) + '.mp3';
+        audio.onended = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.onerror = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.play().catch(function () {});
+    };
+})();
+
+/* Balloon glossary: the definition travels with the term. */
+(function () {
+    var keywords = Array.prototype.slice.call(document.querySelectorAll('.keyword'));
+    if (!keywords.length) return;
+    var balloon = null;
+    var active = null;
+    var openedAt = 0;
+
+    function closeBalloon(returnFocus) {
+        if (!balloon) return;
+        if (active) {
+            active.setAttribute('aria-expanded', 'false');
+            if (returnFocus) active.focus();
+        }
+        balloon.remove();
+        balloon = null;
+        active = null;
+    }
+
+    function openBalloon(el) {
+        var term = el.textContent.trim();
+        var definition = el.getAttribute('data-def');
+        if (!definition) return;
+        if (balloon) closeBalloon(false);
+
+        active = el;
+        el.setAttribute('aria-expanded', 'true');
+        openedAt = Date.now();
+
+        balloon = document.createElement('div');
+        balloon.className = 'gloss-balloon';
+        balloon.setAttribute('role', 'tooltip');
+
+        var head = document.createElement('div');
+        head.className = 'gloss-balloon-head';
+        var title = document.createElement('span');
+        title.className = 'gloss-balloon-term';
+        title.textContent = term;
+        var close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'gloss-close';
+        close.setAttribute('aria-label', 'Close definition');
+        close.innerHTML = '&times;';
+        close.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeBalloon(true);
+        });
+        head.appendChild(title);
+        head.appendChild(close);
+
+        var body = document.createElement('div');
+        body.className = 'gloss-balloon-def';
+        body.textContent = definition;
+        var zh = el.getAttribute('data-zh');
+        if (zh) {
+            var zhEl = document.createElement('span');
+            zhEl.className = 'gloss-zh';
+            zhEl.textContent = zh;
+            body.appendChild(zhEl);
+        }
+
+        balloon.appendChild(head);
+        balloon.appendChild(body);
+        balloon.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.body.appendChild(balloon);
+
+        var rect = el.getBoundingClientRect();
+        var width = balloon.offsetWidth;
+        var height = balloon.offsetHeight;
+        var left = rect.left + rect.width / 2 - width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+        var top = rect.top - height - 10;
+        var below = false;
+        if (top < 10) {
+            top = rect.bottom + 10;
+            below = true;
+        }
+        balloon.style.left = left + 'px';
+        balloon.style.top = top + 'px';
+        balloon.classList.toggle('below', below);
+        var arrow = rect.left + rect.width / 2 - left;
+        balloon.style.setProperty('--arrow-left', Math.max(14, Math.min(width - 14, arrow)) + 'px');
+    }
+
+    keywords.forEach(function (el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-expanded', 'false');
+        el.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (active === el) closeBalloon(true);
+            else openBalloon(el);
+        });
+        el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (active === el) closeBalloon(true);
+                else openBalloon(el);
+            }
+        });
+    });
+
+    document.addEventListener('click', function () { closeBalloon(false); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && balloon) {
+            e.preventDefault();
+            closeBalloon(true);
+        }
+    });
+    window.addEventListener('scroll', function () {
+        /* Ignore the burst of scroll events a smooth anchor jump produces just
+           after the balloon opens, or the balloon closes under the reader. */
+        if (balloon && Date.now() - openedAt > 400) closeBalloon(false);
+    }, true);
+    window.addEventListener('resize', function () {
+        if (balloon) closeBalloon(false);
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 15: Rephrasing Lab</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+                :root {
+            --primary: #4a3122;
+            --primary-light: #7a5a42;
+            --accent: #a94e27;
+            --accent-light: #f4ddcb;
+            --warm: #8b5a1e;
+            --warm-light: #f7e3c0;
+            --bg: #f1eae0;
+            --card-bg: #fffdf9;
+            --text: #2a241e;
+            --text-light: #6a5f54;
+            --border: #ded2c2;
+            --success: #2f6b4a;
+            --success-bg: #e9f2ea;
+            --info-bg: #f3eadf;
+            --vocab-bg: #fbf0de;
+            --task-bg: #edf3ea;
+            --homework-bg: #fbede9;
+            --error: #a3352b;
+            --overlay-a: rgba(45, 35, 27, 0.86);
+            --overlay-b: rgba(45, 35, 27, 0.93);
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .course-header {
+            background:
+                linear-gradient(var(--overlay-a), var(--overlay-b)),
+                url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .course-header h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            font-style: italic;
+            opacity: 0.93;
+        }
+        .course-header .meta {
+            margin-top: 1.1rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+        }
+        .course-header .meta span { margin: 0 0.55rem; }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1rem;
+            justify-content: center;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.55rem;
+            border-radius: 4px;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1.8rem 1rem 3.5rem;
+        }
+
+        .lead {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            font-size: 1rem;
+        }
+        .lead p + p { margin-top: 0.6rem; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.4rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--primary);
+            padding-bottom: 0.55rem;
+            border-bottom: 2px solid var(--accent-light);
+            margin-bottom: 0.9rem;
+        }
+        .card-icon { font-size: 1.15rem; }
+        .card-info { border-left: 4px solid var(--accent); }
+        .card-vocab { border-left: 4px solid var(--warm); }
+        .card-task { border-left: 4px solid var(--success); }
+        .card-homework { border-left: 4px solid var(--error); }
+
+        h2.section-title {
+            font-size: 1.65rem;
+            line-height: 1.25;
+            color: var(--primary);
+            margin: 2rem 0 0.7rem;
+            letter-spacing: -0.01em;
+        }
+        h3.subhead {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1.3rem 0 0.45rem;
+        }
+
+        .article {
+            font-size: 1.03rem;
+            line-height: 1.85;
+        }
+        .article p { margin: 0 0 1rem; }
+        .article strong { color: var(--primary); }
+        .article .dropcap::first-letter {
+            float: left;
+            font-size: 3.4rem;
+            line-height: 0.8;
+            padding: 0.15rem 0.55rem 0 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.8rem;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .video-caption {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.9rem;
+        }
+        .example-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            font-size: 0.96rem;
+        }
+        .example-box strong { color: var(--success); }
+
+        .task-list {
+            list-style: none;
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.6rem;
+        }
+        .task-list li {
+            position: relative;
+            padding-left: 1.45rem;
+            line-height: 1.6;
+        }
+        .task-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .quiz {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            margin: 0.8rem 0;
+        }
+        .quiz p { margin-bottom: 0.5rem; }
+        .quiz ol, .quiz ul { margin: 0.35rem 0 0 1.3rem; }
+        .quiz li { margin: 0.2rem 0; }
+
+        details.answer {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            margin: 0.7rem 0;
+            font-size: 0.95rem;
+        }
+        details.answer summary {
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        details.answer[open] summary { margin-bottom: 0.45rem; }
+
+        .table-wrap { overflow-x: auto; margin-top: 0.8rem; }
+        table.vocab {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.vocab th, table.vocab td {
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.vocab thead th {
+            background: var(--accent-light);
+            color: var(--primary);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        table.vocab tbody tr:nth-child(even) { background: var(--bg); }
+        table.vocab .word { font-weight: 700; color: var(--primary); }
+        table.vocab .zh { color: var(--text-light); font-size: 0.88rem; }
+
+        .pill {
+            display: inline-block;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin: 0.25rem 0.35rem 0.25rem 0;
+        }
+        .pill-primary { background: var(--accent); color: #ffffff; }
+        .pill-primary:hover { background: var(--primary); }
+        .pill-soft { background: var(--accent-light); color: var(--primary); border: 1px solid var(--accent); }
+        .pill-soft:hover { background: var(--accent); color: #ffffff; }
+        .pill-game { background: var(--warm); color: #ffffff; }
+        .pill-game:hover { background: var(--primary); }
+
+        .footer-nav {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+        }
+        .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        .footer-nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .course-header { padding: 2.1rem 1rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .container { padding: 1.2rem 0.75rem 2.5rem; }
+            .card { padding: 1.05rem 1rem; }
+            .toc { padding: 0.65rem 0.5rem; }
+            .toc a { font-size: 0.68rem; }
+            table.vocab { font-size: 0.82rem; }
+        }
+
+        @media print {
+            .toc, .video-wrap { display: none; }
+            .card { break-inside: avoid; box-shadow: none; }
+        }
+    
+        /* -- Read-along narration --------------------------- */
+        .audio-note {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            margin: 0 0 0.9rem;
+        }
+        .para-play {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            margin: 0 0 0.15rem;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--accent);
+            font-size: 0.72rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background-color .15s ease, border-color .15s ease;
+        }
+        .para-play:hover { background: var(--accent-light); border-color: var(--accent); }
+        .para-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .para-play.is-playing { background: var(--accent); border-color: var(--accent); color: var(--card-bg); }
+        .readalong-para.active {
+            background: var(--warm-light);
+            border-radius: 6px;
+            box-shadow: 0 0 0 6px var(--warm-light);
+        }
+
+        /* -- Balloon glossary for highlighted terms ---------- */
+        .keyword {
+            cursor: pointer;
+            border-bottom: 1px dotted var(--accent);
+        }
+        .keyword:hover { background: var(--accent-light); }
+        .keyword:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        .keyword[aria-expanded="true"] { background: var(--warm-light); }
+
+        .gloss-balloon {
+            position: fixed;
+            z-index: 10050;
+            width: min(320px, calc(100vw - 24px));
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 0.85rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .gloss-balloon::after {
+            content: '';
+            position: absolute;
+            left: var(--arrow-left, 50%);
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .gloss-balloon.below::after {
+            bottom: auto;
+            top: -7px;
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .gloss-balloon-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.3rem;
+        }
+        .gloss-balloon-term {
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: capitalize;
+        }
+        .gloss-zh {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+        .gloss-close {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+        .gloss-close:hover { color: var(--primary); }
+        .gloss-balloon-def { color: var(--text); }
+
+        @media print {
+            .para-play, .audio-note { display: none; }
+        }
+</style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Rephrasing Lab</h1>
+    <div class="subtitle">Saying the same thing another way — the skill behind every written answer</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 15</span>
+    </div>
+</header>
+
+<nav class="toc" aria-label="Lesson sections">
+    <ul>
+        <li><a href="#before">Before you read</a></li>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#moves">Five moves</a></li>
+        <li><a href="#recap">Grammar recap</a></li>
+        <li><a href="#rephrase">Rephrasing</a></li>
+        <li><a href="#practice">Practice</a></li>
+        <li><a href="#vocabulary">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#games">Game</a></li>
+        <li><a href="#homework">Homework</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <section class="lead" id="before">
+        <p><strong>This week:</strong> Every written answer in this course asks the same thing: say it again, in your own words, without losing the meaning. This week you will learn five rephrasing moves and practise them on sentences taken from the four weeks before it.</p>
+        <p><strong>Before you read:</strong> Rewrite this sentence without changing the meaning: “The team rolled back the change because the replica was saturated.” Try it before you read the five moves.</p>
+    </section>
+
+    <section class="card card-info" id="objectives">
+        <div class="card-header"><span class="card-icon">🎯</span>By the end of this week, you will be able to</div>
+        <ul class="task-list">
+            <li>use five moves to rephrase a sentence;</li>
+            <li>keep the meaning while changing the grammar;</li>
+            <li>choose the move that fits the purpose: report, explain, or shorten;</li>
+            <li>review the passive, conditionals, verb patterns and reported speech;</li>
+            <li>show which Week 11–14 vocabulary you can actively use.</li>
+        </ul>
+    </section>
+
+    <section class="card" id="moves">
+        <div class="card-header"><span class="card-icon">🔁</span>The Five Moves</div>
+        <p>A rephrase is not a synonym hunt. It is a change of structure that keeps the information. These are the five moves, with a sentence from Week 11.</p>
+                <div class="grid-2">
+                    <div class="example-box"><strong>1. Change the subject</strong><br>Original: “The team rolled back the change.”<br>Rephrased: “The change <strong>was rolled back</strong>.”</div>
+                    <div class="example-box"><strong>2. Change the voice</strong><br>Original: “The replica was saturated.”<br>Rephrased: “The replica <strong>could not handle the traffic</strong>.”</div>
+                    <div class="example-box"><strong>3. Split a long sentence</strong><br>Original: “The rule, which had been tested in staging, failed when a second region was added.”<br>Rephrased: “The rule <strong>had been tested</strong> in staging. <strong>It failed</strong> when a second region was used.”</div>
+                    <div class="example-box"><strong>4. Join two short ones</strong><br>Original: “The demo was close. The team cut the export.”<br>Rephrased: “<strong>Because</strong> the demo was close, the team cut the export.”</div>
+                    <div class="example-box"><strong>5. Swap the vocabulary</strong><br>Original: “The replica was saturated.”<br>Rephrased: “The replica was <strong>full</strong>.”</div>
+                    <div class="example-box"><strong>Careful</strong><br>“No data was lost” ≠ “Some data was lost.” A rephrase keeps <em>who, what, when, how much</em> — and keeps <em>not</em>.</div>
+                </div>
+    </section>
+
+    <section class="card" id="recap">
+        <div class="card-header"><span class="card-icon">📐</span>The Four Structures, in One Place</div>
+        <div class="table-wrap">
+                    <table class="vocab">
+                        <thead><tr><th>Structure</th><th>Week</th><th>Example</th><th>Rephrase it as</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Passive</strong></td><td>11</td><td>The change was rolled back at 03:11.</td><td>Yu-Ting rolled back the change at 03:11.</td></tr>
+                            <tr><td><strong>Conditional</strong></td><td>12</td><td>If companies automate routine tasks, junior roles will change.</td><td>Automation of routine tasks will change junior roles.</td></tr>
+                            <tr><td><strong>Gerund / infinitive</strong></td><td>13</td><td>The team decided to cut the export feature.</td><td>The team’s decision was to cut the export feature.</td></tr>
+                            <tr><td><strong>Reported speech</strong></td><td>14</td><td>The minister said the ban would start in 2027.</td><td>According to the minister, the ban will start in 2027.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+    </section>
+
+    <section class="card" id="rephrase">
+        <div class="card-header"><span class="card-icon">🔁</span>Rephrasing</div>
+        <p>The same three sentences you met in Weeks 11–14, for one last pass. Cover the right-hand column and work from memory.</p>
+        <div class="grid-2">
+            <div class="example-box">
+                <strong>Week 11</strong><br>
+                Original: No data was lost.<br>
+                Rephrased: Nobody lost any data.
+            </div>
+            <div class="example-box">
+                <strong>Week 12</strong><br>
+                Original: If companies automate routine tasks, junior roles will change.<br>
+                Rephrased: Automation will change junior roles.
+            </div>
+            <div class="example-box">
+                <strong>Week 14</strong><br>
+                Original: The minister said the ban would start in 2027.<br>
+                Rephrased: According to the minister, the ban starts in 2027.
+            </div>
+        </div>
+        <h3 class="subhead">Try it</h3>
+        <div class="quiz"><ol>
+                <li>The status page was updated once.</li>
+                <li>The effect might be smaller than the headline.</li>
+                <li>Ofcom told the government that checks at 16 were harder.</li>
+        </ol></div>
+        <details class="answer"><summary>Show model answers</summary><ol>
+                <li>The team updated the status page once.</li>
+                <li>The effect may be smaller than the headline suggests.</li>
+                <li>According to Ofcom, checks at 16 are harder.</li>
+        </ol></details>
+    </section>
+
+    <section class="card card-task" id="practice">
+        <div class="card-header"><span class="card-icon">✍️</span>Practice: eight sentences</div>
+        <p>Rephrase each sentence. Keep the meaning, change the structure, and say which move you used.</p>
+        <div class="quiz"><ol>
+                <li>The change was rolled back by the team at 03:11.</li>
+                <li>If companies automate routine tasks, junior roles will change.</li>
+                <li>The government said that the ban would come into force in 2027.</li>
+                <li>YouTube said it was a vital resource for young people.</li>
+                <li>The team decided to cut the export feature because the demo was close.</li>
+                <li>A study found a 12.8% fall in the most exposed sectors.</li>
+                <li>The rule, which had been tested in staging, failed in a second region.</li>
+                <li>The replica was saturated, not down.</li>
+        </ol></div>
+        <details class="answer"><summary>Show model answers</summary><ol>
+                <li>The team rolled back the change at 03:11. (change the subject)</li>
+                <li>Automation of routine tasks will change junior roles. (nominalise)</li>
+                <li>According to the government, the ban will start in 2027. (quote → source)</li>
+                <li>YouTube described itself as important for young people. (swap the vocabulary)</li>
+                <li>Because the demo was close, the team cut the export feature. (join)</li>
+                <li>In the most exposed sectors, employment fell by 12.8%, a study found. (move the source)</li>
+                <li>The rule had been tested in staging, but it failed when a second region was added. (split)</li>
+                <li>The replica was still running, but it could not handle the traffic. (swap the vocabulary)</li>
+        </ol></details>
+    </section>
+
+    <section class="card card-vocab" id="vocabulary">
+        <div class="card-header"><span class="card-icon">📚</span>Vocabulary review: Weeks 11–14</div>
+        <p>Twelve words from the last four weeks. If you cannot use a word in a sentence, it is not yours yet.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Word</th><th>Meaning</th><th>Example</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="word">failover</span><br><span class="zh">容錯切換</span></td><td>Moving traffic to a working copy when one part fails.</td><td>Failover to the second region took eight minutes.</td></tr>
+                    <tr><td><span class="word">latency</span><br><span class="zh">延遲</span></td><td>The delay before a response arrives.</td><td>Latency climbed for four minutes.</td></tr>
+                    <tr><td><span class="word">benchmark</span><br><span class="zh">基準</span></td><td>A standard test used to compare systems.</td><td>The benchmark measures how much of a task a model can finish.</td></tr>
+                    <tr><td><span class="word">caveat</span><br><span class="zh">但書；注意事項</span></td><td>A warning that limits how a claim should be read.</td><td>There is one important caveat: the price.</td></tr>
+                    <tr><td><span class="word">scope creep</span><br><span class="zh">範圍蔓延</span></td><td>A project growing slowly through small additions.</td><td>A filter, then a logo: that is scope creep.</td></tr>
+                    <tr><td><span class="word">stakeholder</span><br><span class="zh">利害關係人</span></td><td>Anyone affected by a project or able to ask for changes.</td><td>The stakeholder asked for one more feature.</td></tr>
+                    <tr><td><span class="word">deliverable</span><br><span class="zh">交付項目</span></td><td>Something the team must produce.</td><td>The export was one of three deliverables.</td></tr>
+                    <tr><td><span class="word">retrospective</span><br><span class="zh">回顧會議</span></td><td>A short meeting after a sprint to improve the next one.</td><td>The retrospective produced one sentence.</td></tr>
+                    <tr><td><span class="word">exemption</span><br><span class="zh">豁免</span></td><td>Official permission not to follow a rule.</td><td>The ban has a narrow list of exemptions.</td></tr>
+                    <tr><td><span class="word">enforce</span><br><span class="zh">執行</span></td><td>To make people obey a rule.</td><td>The regulator will enforce the checks.</td></tr>
+                    <tr><td><span class="word">bypass</span><br><span class="zh">繞過</span></td><td>To avoid a rule or a check.</td><td>A VPN can bypass a location check.</td></tr>
+                    <tr><td><span class="word">legislation</span><br><span class="zh">法規</span></td><td>A law or a set of laws.</td><td>The legislation could be challenged in court.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <details class="answer">
+            <summary>Quick check: choose three words and explain them without looking at the table</summary>
+            <p>Useful pattern: “<em>Failover</em> means moving traffic to a working copy. For example, when the first region slows down, traffic is sent to the second one.”</p>
+        </details>
+    </section>
+
+    <section class="card" id="grammar">
+        <div class="card-header"><span class="card-icon">📐</span>Grammar: Mixed Review</div>
+        <p>Five minutes, ten sentences. Decide which of the four structures each sentence needs, then write it.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Form</th><th>Example</th></tr></thead>
+                <tbody>
+                <tr><td><strong>Passive</strong></td><td>A change was made by someone.</td></tr>
+                <tr><td><strong>Conditional</strong></td><td>A real or imagined future, with a result.</td></tr>
+                <tr><td><strong>Gerund / infinitive</strong></td><td>A decision, an avoidance, or a suggestion.</td></tr>
+                <tr><td><strong>Reported speech</strong></td><td>What someone said, without quotation marks.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 class="subhead">Key rules</h3>
+        <ul class="task-list">
+            <li>If the actor is unknown or unimportant, the passive is shorter and calmer.</li>
+            <li>If the sentence has <em>if</em>, check the verb in both halves.</li>
+            <li>If two verbs meet, the first one decides whether the second takes <em>-ing</em> or <em>to</em>.</li>
+            <li>If you report a claim, move the tense back and keep the reporting verb honest.</li>
+            <li>Never change <em>not</em>, a number, a date or a name. Those are the facts.</li>
+        </ul>
+        <h3 class="subhead">Common mistakes</h3>
+        <p>The most expensive rephrasing error is dropping a negative: <em>“Not all economists agree”</em> becomes <em>“economists agree”</em>. The second most expensive is changing a number because the sentence read better.</p>
+        <h3 class="subhead">Activity A: Which structure?</h3>
+        <p>Complete each sentence with the structure named in brackets.</p>
+        <div class="quiz"><ol>
+                <li>The data ___ (replicate) across three regions. (passive)</li>
+                <li>If the demo ___ (be) closer, we would cut more. (second conditional)</li>
+                <li>She suggested ___ (move) the release. (gerund)</li>
+                <li>The regulator told the company that it ___ (have to) comply. (reported)</li>
+                <li>A new alert ___ (add) after the post-mortem. (passive, past)</li>
+        </ol></div>
+        <details class="answer"><summary>Show answers</summary><ol>
+                <li>is replicated</li>
+                <li>were</li>
+                <li>moving</li>
+                <li>had to</li>
+                <li>was added</li>
+        </ol></details>
+        <h3 class="subhead">Activity B: Say it another way</h3>
+        <p>Choose three sentences from the practice above and rephrase them again, using a different move. Two different rephrasings of the same sentence must mean the same thing.</p>
+        <div class="example-box"><em>“The change was rolled back at 03:11.”</em> → <em>“Yu-Ting undid the change at 03:11.”</em></div>
+    </section>
+
+    <section class="card" id="games">
+        <div class="card-header"><span class="card-icon">🎮</span>Practice game</div>
+        <p>The Gomoku challenge draws its questions from this week's pool, which reviews the language of Week 14. Two teams, one board, and a spoken answer for every square.</p>
+        <p style="margin-top:0.8rem;">
+            <a class="pill pill-game" href="gomoku.html">🎮 Week 15 Gomoku →</a>
+        </p>
+    </section>
+
+    <section class="card card-homework" id="homework">
+        <div class="card-header"><span class="card-icon">📝</span>Homework &amp; practice</div>
+        <ul class="task-list">
+            <li>Take the five-move list and rephrase ten sentences of your own from any lesson this semester. Label the move each time.</li>
+            <li>Write a 120-word summary of any one article from Weeks 9–14. Use at least one passive, one conditional and one reported statement.</li>
+            <li>Play the <a href="gomoku.html">Week 15 Gomoku challenge</a>. It reviews the language from Weeks 11–14.</li>
+        </ul>
+    </section>
+
+    <nav class="footer-nav">
+        <a href="../Wk14/Week14_Platforms_and_Age_Rules.html">← Week 14: Platforms &amp; Age Rules</a>
+        <a href="gomoku.html">Week 15 Gomoku →</a>
+        <a href="../index.html">← Back to home</a>
+    </nav>
+
+</main>
+
+
+<script>
+/* Read-along narration: one button per paragraph, one audio element. */
+(function () {
+    var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+    if (!paras.length) return;
+    var audio = new Audio();
+    audio.preload = 'metadata';
+    var playing = -1;
+
+    function reset(btn) {
+        if (!btn) return;
+        btn.innerHTML = '\u25b6';
+        btn.classList.remove('is-playing');
+        btn.setAttribute('aria-label', 'Play narration for this paragraph');
+    }
+
+    window.playThisPara = function (btn) {
+        var para = btn.nextElementSibling;
+        if (!para || !para.classList.contains('readalong-para')) return;
+        var i = paras.indexOf(para);
+        if (i < 0) return;
+        if (playing === i && !audio.paused) {
+            audio.pause();
+            reset(btn);
+            para.classList.remove('active');
+            playing = -1;
+            return;
+        }
+        paras.forEach(function (p) { p.classList.remove('active'); });
+        Array.prototype.forEach.call(document.querySelectorAll('.para-play'), reset);
+        para.classList.add('active');
+        btn.classList.add('is-playing');
+        btn.innerHTML = '\u23f8';
+        btn.setAttribute('aria-label', 'Pause narration');
+        playing = i;
+        audio.src = 'audio/para-' + ('0' + (i + 1)).slice(-2) + '.wav';
+        audio.onended = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.onerror = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.play().catch(function () {});
+    };
+})();
+
+/* Balloon glossary: the definition travels with the term. */
+(function () {
+    var keywords = Array.prototype.slice.call(document.querySelectorAll('.keyword'));
+    if (!keywords.length) return;
+    var balloon = null;
+    var active = null;
+    var openedAt = 0;
+
+    function closeBalloon(returnFocus) {
+        if (!balloon) return;
+        if (active) {
+            active.setAttribute('aria-expanded', 'false');
+            if (returnFocus) active.focus();
+        }
+        balloon.remove();
+        balloon = null;
+        active = null;
+    }
+
+    function openBalloon(el) {
+        var term = el.textContent.trim();
+        var definition = el.getAttribute('data-def');
+        if (!definition) return;
+        if (balloon) closeBalloon(false);
+
+        active = el;
+        el.setAttribute('aria-expanded', 'true');
+        openedAt = Date.now();
+
+        balloon = document.createElement('div');
+        balloon.className = 'gloss-balloon';
+        balloon.setAttribute('role', 'tooltip');
+
+        var head = document.createElement('div');
+        head.className = 'gloss-balloon-head';
+        var title = document.createElement('span');
+        title.className = 'gloss-balloon-term';
+        title.textContent = term;
+        var close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'gloss-close';
+        close.setAttribute('aria-label', 'Close definition');
+        close.innerHTML = '&times;';
+        close.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeBalloon(true);
+        });
+        head.appendChild(title);
+        head.appendChild(close);
+
+        var body = document.createElement('div');
+        body.className = 'gloss-balloon-def';
+        body.textContent = definition;
+        var zh = el.getAttribute('data-zh');
+        if (zh) {
+            var zhEl = document.createElement('span');
+            zhEl.className = 'gloss-zh';
+            zhEl.textContent = zh;
+            body.appendChild(zhEl);
+        }
+
+        balloon.appendChild(head);
+        balloon.appendChild(body);
+        balloon.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.body.appendChild(balloon);
+
+        var rect = el.getBoundingClientRect();
+        var width = balloon.offsetWidth;
+        var height = balloon.offsetHeight;
+        var left = rect.left + rect.width / 2 - width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+        var top = rect.top - height - 10;
+        var below = false;
+        if (top < 10) {
+            top = rect.bottom + 10;
+            below = true;
+        }
+        balloon.style.left = left + 'px';
+        balloon.style.top = top + 'px';
+        balloon.classList.toggle('below', below);
+        var arrow = rect.left + rect.width / 2 - left;
+        balloon.style.setProperty('--arrow-left', Math.max(14, Math.min(width - 14, arrow)) + 'px');
+    }
+
+    keywords.forEach(function (el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-expanded', 'false');
+        el.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (active === el) closeBalloon(true);
+            else openBalloon(el);
+        });
+        el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (active === el) closeBalloon(true);
+                else openBalloon(el);
+            }
+        });
+    });
+
+    document.addEventListener('click', function () { closeBalloon(false); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && balloon) {
+            e.preventDefault();
+            closeBalloon(true);
+        }
+    });
+    window.addEventListener('scroll', function () {
+        /* Ignore the burst of scroll events a smooth anchor jump produces just
+           after the balloon opens, or the balloon closes under the reader. */
+        if (balloon && Date.now() - openedAt > 400) closeBalloon(false);
+    }, true);
+    window.addEventListener('resize', function () {
+        if (balloon) closeBalloon(false);
+    });
+})();
+</script>
+
+</body>
+</html>

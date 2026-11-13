@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 12: AI at Work: Tasks and Jobs</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+                :root {
+            --primary: #4a3122;
+            --primary-light: #7a5a42;
+            --accent: #a94e27;
+            --accent-light: #f4ddcb;
+            --warm: #8b5a1e;
+            --warm-light: #f7e3c0;
+            --bg: #f1eae0;
+            --card-bg: #fffdf9;
+            --text: #2a241e;
+            --text-light: #6a5f54;
+            --border: #ded2c2;
+            --success: #2f6b4a;
+            --success-bg: #e9f2ea;
+            --info-bg: #f3eadf;
+            --vocab-bg: #fbf0de;
+            --task-bg: #edf3ea;
+            --homework-bg: #fbede9;
+            --error: #a3352b;
+            --overlay-a: rgba(45, 35, 27, 0.86);
+            --overlay-b: rgba(45, 35, 27, 0.93);
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .course-header {
+            background:
+                linear-gradient(var(--overlay-a), var(--overlay-b)),
+                url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+        .course-header h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.35rem;
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            font-style: italic;
+            opacity: 0.93;
+        }
+        .course-header .meta {
+            margin-top: 1.1rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            opacity: 0.85;
+        }
+        .course-header .meta span { margin: 0 0.55rem; }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1rem;
+            justify-content: center;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.55rem;
+            border-radius: 4px;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1.8rem 1rem 3.5rem;
+        }
+
+        .lead {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            font-size: 1rem;
+        }
+        .lead p + p { margin-top: 0.6rem; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.4rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--primary);
+            padding-bottom: 0.55rem;
+            border-bottom: 2px solid var(--accent-light);
+            margin-bottom: 0.9rem;
+        }
+        .card-icon { font-size: 1.15rem; }
+        .card-info { border-left: 4px solid var(--accent); }
+        .card-vocab { border-left: 4px solid var(--warm); }
+        .card-task { border-left: 4px solid var(--success); }
+        .card-homework { border-left: 4px solid var(--error); }
+
+        h2.section-title {
+            font-size: 1.65rem;
+            line-height: 1.25;
+            color: var(--primary);
+            margin: 2rem 0 0.7rem;
+            letter-spacing: -0.01em;
+        }
+        h3.subhead {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1.3rem 0 0.45rem;
+        }
+
+        .article {
+            font-size: 1.03rem;
+            line-height: 1.85;
+        }
+        .article p { margin: 0 0 1rem; }
+        .article strong { color: var(--primary); }
+        .article .dropcap::first-letter {
+            float: left;
+            font-size: 3.4rem;
+            line-height: 0.8;
+            padding: 0.15rem 0.55rem 0 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.8rem;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .video-caption {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.9rem;
+        }
+        .example-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            font-size: 0.96rem;
+        }
+        .example-box strong { color: var(--success); }
+
+        .task-list {
+            list-style: none;
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.6rem;
+        }
+        .task-list li {
+            position: relative;
+            padding-left: 1.45rem;
+            line-height: 1.6;
+        }
+        .task-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .quiz {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            margin: 0.8rem 0;
+        }
+        .quiz p { margin-bottom: 0.5rem; }
+        .quiz ol, .quiz ul { margin: 0.35rem 0 0 1.3rem; }
+        .quiz li { margin: 0.2rem 0; }
+
+        details.answer {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            margin: 0.7rem 0;
+            font-size: 0.95rem;
+        }
+        details.answer summary {
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        details.answer[open] summary { margin-bottom: 0.45rem; }
+
+        .table-wrap { overflow-x: auto; margin-top: 0.8rem; }
+        table.vocab {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.vocab th, table.vocab td {
+            border: 1px solid var(--border);
+            padding: 0.55rem 0.65rem;
+            vertical-align: top;
+            text-align: left;
+        }
+        table.vocab thead th {
+            background: var(--accent-light);
+            color: var(--primary);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        table.vocab tbody tr:nth-child(even) { background: var(--bg); }
+        table.vocab .word { font-weight: 700; color: var(--primary); }
+        table.vocab .zh { color: var(--text-light); font-size: 0.88rem; }
+
+        .pill {
+            display: inline-block;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin: 0.25rem 0.35rem 0.25rem 0;
+        }
+        .pill-primary { background: var(--accent); color: #ffffff; }
+        .pill-primary:hover { background: var(--primary); }
+        .pill-soft { background: var(--accent-light); color: var(--primary); border: 1px solid var(--accent); }
+        .pill-soft:hover { background: var(--accent); color: #ffffff; }
+        .pill-game { background: var(--warm); color: #ffffff; }
+        .pill-game:hover { background: var(--primary); }
+
+        .footer-nav {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            justify-content: space-between;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.88rem;
+        }
+        .footer-nav a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        .footer-nav a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .course-header { padding: 2.1rem 1rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .container { padding: 1.2rem 0.75rem 2.5rem; }
+            .card { padding: 1.05rem 1rem; }
+            .toc { padding: 0.65rem 0.5rem; }
+            .toc a { font-size: 0.68rem; }
+            table.vocab { font-size: 0.82rem; }
+        }
+
+        @media print {
+            .toc, .video-wrap { display: none; }
+            .card { break-inside: avoid; box-shadow: none; }
+        }
+    
+        /* -- Read-along narration --------------------------- */
+        .audio-note {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            margin: 0 0 0.9rem;
+        }
+        .para-play {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            margin: 0 0 0.15rem;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--accent);
+            font-size: 0.72rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background-color .15s ease, border-color .15s ease;
+        }
+        .para-play:hover { background: var(--accent-light); border-color: var(--accent); }
+        .para-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .para-play.is-playing { background: var(--accent); border-color: var(--accent); color: var(--card-bg); }
+        .readalong-para.active {
+            background: var(--warm-light);
+            border-radius: 6px;
+            box-shadow: 0 0 0 6px var(--warm-light);
+        }
+
+        /* -- Balloon glossary for highlighted terms ---------- */
+        .keyword {
+            cursor: pointer;
+            border-bottom: 1px dotted var(--accent);
+        }
+        .keyword:hover { background: var(--accent-light); }
+        .keyword:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        .keyword[aria-expanded="true"] { background: var(--warm-light); }
+
+        .gloss-balloon {
+            position: fixed;
+            z-index: 10050;
+            width: min(320px, calc(100vw - 24px));
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 0.85rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .gloss-balloon::after {
+            content: '';
+            position: absolute;
+            left: var(--arrow-left, 50%);
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .gloss-balloon.below::after {
+            bottom: auto;
+            top: -7px;
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .gloss-balloon-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.3rem;
+        }
+        .gloss-balloon-term {
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: capitalize;
+        }
+        .gloss-zh {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+        .gloss-close {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+        .gloss-close:hover { color: var(--primary); }
+        .gloss-balloon-def { color: var(--text); }
+
+        @media print {
+            .para-play, .audio-note { display: none; }
+        }
+</style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>AI at Work: Tasks and Jobs</h1>
+    <div class="subtitle">Reading a data story: what was measured, what was predicted, what is still uncertain</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Dept. of Information Management</span>
+        <span>·</span>
+        <span>Week 12</span>
+    </div>
+</header>
+
+<nav class="toc" aria-label="Lesson sections">
+    <ul>
+        <li><a href="#before">Before you read</a></li>
+        <li><a href="#objectives">Objectives</a></li>
+        <li><a href="#reading">Read: Will Your Job Be Replaced by AI?</a></li>
+        <li><a href="#skills">Skim</a></li>
+        <li><a href="#scan">Scan</a></li>
+        <li><a href="#vocabulary">Vocabulary</a></li>
+        <li><a href="#grammar">Grammar</a></li>
+        <li><a href="#rephrase">Rephrasing</a></li>
+        <li><a href="#games">Game</a></li>
+        <li><a href="#homework">Homework</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+
+    <section class="lead" id="before">
+        <p><strong>This week:</strong> AI companies claim their tools can replace human labour. This week you will read a data story about which jobs are most exposed, learn to separate <em>measured</em> facts from <em>predicted</em> ones, and practise the conditionals and hedging words that make a claim honest.</p>
+        <p><strong>Before you read:</strong> Think of one task in your daily life that a machine already does for you. Did it replace anything, or did it change what you do with the time?</p>
+    </section>
+
+    <section class="card card-info" id="objectives">
+        <div class="card-header"><span class="card-icon">🎯</span>By the end of this week, you will be able to</div>
+        <ul class="task-list">
+            <li>separate <strong>tasks</strong> from <strong>jobs</strong> when reading about automation;</li>
+            <li>read numbers with their caveats: who measured what, and who disagrees;</li>
+            <li>use <strong>first and second conditionals</strong> to talk about likely and imagined futures;</li>
+            <li>hedge a claim with <em>may</em>, <em>might</em>, <em>could</em> and <em>is likely to</em>;</li>
+            <li>explain what a <strong>benchmark</strong> can and cannot tell you.</li>
+        </ul>
+    </section>
+
+    <h2 class="section-title" id="reading">Read: Will Your Job Be Replaced by AI?</h2>
+
+    <section class="card">
+        <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <div class="article">
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para dropcap" id="para-1">Artificial-intelligence companies are making large claims about their tools. Some jobs, they say, will be <span class="keyword" data-def="To make a process run without a person doing it." data-zh="自動化">automated</span> completely. Others will be <span class="keyword" data-def="To add to something rather than replace it." data-zh="增強">augmented</span>: the person stays, but the work changes. Company bosses are spending enormous sums on these tools, partly because they expect to save money on <span class="keyword" data-def="The number of people employed by a company." data-zh="員工人數">headcount</span>.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-2">"Flat is the new up," one saying goes: a company whose workforce stays the same size is now considered a success. If even half of this is true, there will be an impact on all of us — and perhaps sooner than we think.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-3">The clearest evidence comes from software. A <span class="keyword" data-def="A standard test used to compare systems." data-zh="基準">benchmark</span> measures how much of a task a model can complete, grouped by how long a human expert would take. Three years ago, models could finish tasks that took a person seconds or minutes. The newest models can complete many tasks that take an hour, and some that take longer. Software is only the first field; financial analysis and early legal work show the same pattern at an earlier stage.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-4">What does that mean for jobs? Stanford University analysed four years of employment data. It found a <strong>2.7%</strong> fall in employment for workers aged 22 to 25 since ChatGPT became widely used. In the most <span class="keyword" data-def="Likely to be affected by a risk." data-zh="受影響的">exposed</span> sectors — finance, software and creative industries — the fall was <strong>12.8%</strong>. Not all economists agree: interest-rate rises, they argue, could explain part of it.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-5">There is a second reason for caution. AI use is measured in <span class="keyword" data-def="A small piece of text that a model reads or produces." data-zh="詞元">tokens</span>, small pieces of text. Token use grew enormously in 2026, and some companies set up "token leaderboards" to push staff to use the tools more. Then the bills arrived, and many began to ration access. If virtual workers cost more than human ones, <span class="keyword" data-def="The act of starting to use something." data-zh="採用">adoption</span> may slow down. That is a real <span class="keyword" data-def="A warning that limits how a claim should be read." data-zh="但書；注意事項">caveat</span>, not a detail: the <span class="keyword" data-def="A statement about what is likely to happen." data-zh="預測">forecast</span> depends on the price.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-6">So the honest summary is a conditional one. If routine tasks are automated, junior roles will change, and some will disappear. If the costs stay high, the change will be slower than the headlines suggest. Either way, workers who can check, supervise and correct the output will be in a stronger position than workers who can only produce it.</p>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Adapted from “Will your job be replaced by AI? Here are the roles most affected”, BBC News, 22 July 2026. (<a href="https://www.bbc.com/news/articles/cn7nllr4vd6o" target="_blank" rel="noopener">source</a>).</p>
+    </section>
+
+    <section class="card card-task" id="skills">
+        <div class="card-header"><span class="card-icon">🔭</span>Skim: the big picture</div>
+        <p>Skim the article in 60–90 seconds. Do not stop for every word. Read the title, the first and last sentences of each paragraph, and the words in bold.</p>
+        <div class="quiz">
+            <p><strong>1. What is the article mainly about?</strong></p>
+            <ol type="a">
+                <li>Evidence that AI is changing some jobs, and the uncertainty around it.</li>
+                <li>How to get a job at an AI company.</li>
+                <li>Why AI will replace every job by 2030.</li>
+                <li>How to write a CV for a software company.</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>a.</strong> The article presents findings, then the counter-arguments and the price problem.</p></details>
+        <div class="quiz">
+            <p><strong>2. Headline hunt: which headline best matches the article?</strong></p>
+            <ol type="a">
+                <li>“AI Will Replace Us All by Friday”</li>
+                <li>“Some Jobs, More Tasks: What the Data Shows”</li>
+                <li>“How to Train Your Own Chatbot”</li>
+                <li>“The End of Software Jobs”</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>b.</strong> The article distinguishes tasks from jobs and keeps the uncertainty visible.</p></details>
+        <div class="quiz">
+            <p><strong>3. Which sentence states a <em>prediction</em> rather than a measurement?</strong></p>
+            <ol type="a">
+                <li>“Employment for workers aged 22 to 25 fell by 2.7%.”</li>
+                <li>“The newest models can complete tasks that take an hour.”</li>
+                <li>“If costs stay high, adoption may slow down.”</li>
+                <li>“In exposed sectors the fall was 12.8%.”</li>
+            </ol>
+        </div>
+        <details class="answer"><summary>Show answer</summary><p><strong>c.</strong> Only the third sentence is a conditional forecast; the others report measurements.</p></details>
+    </section>
+
+    <section class="card card-task" id="scan">
+        <div class="card-header"><span class="card-icon">🔍</span>Scan: find the detail</div>
+        <p>Scan the article for the exact information. Look for names, numbers, definitions and lists — do not read every sentence.</p>
+        <ul class="task-list">
+            <li>What is the difference between an automated job and an augmented one?</li>
+            <li>What does “flat is the new up” mean here?</li>
+            <li>What does the benchmark measure?</li>
+            <li>How large was the employment fall for 22–25 year-olds, and in which sectors was it largest?</li>
+            <li>Who disagrees with the Stanford interpretation, and why?</li>
+            <li>Why did some companies start to ration AI access?</li>
+            <li>According to the last paragraph, which workers are in a stronger position?</li>
+        </ul>
+        <details class="answer">
+            <summary>Show answers</summary>
+            <ol>
+                <li>Automated: the job goes. Augmented: the person stays but the work changes.</li>
+                <li>A company whose workforce does not grow is now seen as successful.</li>
+                <li>How much of a task a model can complete, grouped by how long a human expert would take.</li>
+                <li>A 2.7% fall; 12.8% in finance, software and creative industries.</li>
+                <li>Some economists, who say interest-rate rises may explain part of it.</li>
+                <li>The bills were enormous — tokens cost more than expected.</li>
+                <li>Workers who can check, supervise and correct the output.</li>
+            </ol>
+        </details>
+    </section>
+
+    <section class="card card-vocab" id="vocabulary">
+        <div class="card-header"><span class="card-icon">📚</span>Vocabulary: work and automation</div>
+        <p>These words appear in the article. Read the definition and the example, then find the word in the text.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Word</th><th>Meaning</th><th>Example</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="word">automate</span><br><span class="zh">自動化</span></td><td>To make a process run without a person doing it.</td><td>Some jobs will be automated completely.</td></tr>
+                    <tr><td><span class="word">augment</span><br><span class="zh">增強</span></td><td>To add to something rather than replace it.</td><td>Other jobs will be augmented: the work changes.</td></tr>
+                    <tr><td><span class="word">displace</span><br><span class="zh">取代（人力）</span></td><td>To remove a worker from a job.</td><td>The report asks whether AI will displace younger workers.</td></tr>
+                    <tr><td><span class="word">headcount</span><br><span class="zh">員工人數</span></td><td>The number of people employed by a company.</td><td>They expect to save money on headcount.</td></tr>
+                    <tr><td><span class="word">exposed</span><br><span class="zh">受影響的</span></td><td>Likely to be affected by a risk.</td><td>The most exposed sectors are finance and software.</td></tr>
+                    <tr><td><span class="word">benchmark</span><br><span class="zh">基準</span></td><td>A standard test used to compare systems.</td><td>The benchmark measures how much of a task a model can finish.</td></tr>
+                    <tr><td><span class="word">productivity</span><br><span class="zh">生產力</span></td><td>The amount produced for a given amount of work.</td><td>The tools are sold as a way to raise productivity.</td></tr>
+                    <tr><td><span class="word">forecast</span><br><span class="zh">預測</span></td><td>A statement about what is likely to happen.</td><td>The forecast depends on the price of the tools.</td></tr>
+                    <tr><td><span class="word">adoption</span><br><span class="zh">採用</span></td><td>The act of starting to use something.</td><td>Adoption may slow down if costs stay high.</td></tr>
+                    <tr><td><span class="word">reskill</span><br><span class="zh">重新培訓技能</span></td><td>To learn new skills for a new kind of work.</td><td>Some workers will need to reskill.</td></tr>
+                    <tr><td><span class="word">caveat</span><br><span class="zh">但書；注意事項</span></td><td>A warning that limits how a claim should be read.</td><td>There is one important caveat: the data is only four years long.</td></tr>
+                    <tr><td><span class="word">routine</span><br><span class="zh">例行的</span></td><td>Ordinary and repeated, not special.</td><td>If routine tasks are automated, junior roles will change.</td></tr>
+                    <tr><td><span class="word">token</span><br><span class="zh">詞元</span></td><td>A small piece of text that a model reads or produces.</td><td>AI use is measured in tokens.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <details class="answer">
+            <summary>Quick check: choose three words and explain them without looking at the table</summary>
+            <p>Useful pattern: “<em>Failover</em> means moving traffic to a working copy. For example, when the first region slows down, traffic is sent to the second one.”</p>
+        </details>
+    </section>
+
+    <section class="card" id="grammar">
+        <div class="card-header"><span class="card-icon">📐</span>Grammar: First and Second Conditionals (with hedging)</div>
+        <p>Conditionals let you say how likely something is. Hedging words let you say how sure you are. News writing needs both.</p>
+        <div class="table-wrap">
+            <table class="vocab">
+                <thead><tr><th>Form</th><th>Example</th></tr></thead>
+                <tbody>
+                <tr><td><strong>If + present, … will …</strong></td><td>If companies <strong>automate</strong> routine tasks, junior roles <strong>will change</strong>.</td></tr>
+                <tr><td><strong>If + past, … would …</strong></td><td>If I <strong>were</strong> a graduate, I <strong>would learn</strong> to supervise the tools.</td></tr>
+                <tr><td><strong>may / might / could + verb</strong></td><td>The effect <strong>might be</strong> smaller than the headline.</td></tr>
+                <tr><td><strong>It is likely that …</strong></td><td>It is likely that some tasks will disappear.</td></tr>
+                <tr><td><strong>Unless …</strong></td><td><strong>Unless</strong> the costs fall, companies will ration access.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 class="subhead">Key rules</h3>
+        <ul class="task-list">
+            <li>First conditional: a real, possible future. <em>If the costs fall, adoption will rise.</em></li>
+            <li>Second conditional: imagined or unlikely. <em>If I were a graduate, I would reskill now.</em> Use <em>were</em> for every person.</li>
+            <li>Hedge a claim when the evidence is not final: <em>may, might, could, is likely to, appears to</em>.</li>
+            <li><em>Unless</em> means <em>if not</em>: <em>Unless the costs fall</em> = <em>If the costs do not fall</em>.</li>
+            <li>Do not use <em>will</em> in the if-clause. The future meaning is already there.</li>
+        </ul>
+        <h3 class="subhead">Common mistakes</h3>
+        <p>The classic error is <em>will</em> in both halves: <em>✗ If AI will replace the task, workers will need new skills.</em> → <em>✓ If AI replaces the task, workers will need new skills.</em><br><br>The second error is over-claiming. <em>✗ The study proves that young workers are losing jobs.</em> → <em>✓ The study suggests that young workers in exposed sectors have been affected.</em></p>
+        <h3 class="subhead">Activity A: Complete the conditional</h3>
+        <p>Put the verb in the correct form. Decide first whether the sentence is real or imagined.</p>
+        <div class="quiz"><ol>
+                <li>If a task ___ (take) five minutes, the model completes it almost every time.</li>
+                <li>If companies ___ (automate) routine work, junior roles will change.</li>
+                <li>If I ___ (be) a graduate, I would learn to check the output.</li>
+                <li>Other economists say the effect ___ be smaller than the headline.</li>
+                <li>Unless the costs ___ (fall), companies will ration access.</li>
+        </ol></div>
+        <details class="answer"><summary>Show answers</summary><ol>
+                <li>takes</li>
+                <li>automate</li>
+                <li>were</li>
+                <li>might</li>
+                <li>fall</li>
+        </ol></details>
+        <h3 class="subhead">Activity B: Hedge it</h3>
+        <p>Rewrite each over-claim so that it is honest. Use a conditional and a hedging word.</p>
+        <div class="example-box"><em>✗ “AI will replace all junior software jobs.”</em> → <em>✓ “If companies automate routine coding tasks, some junior roles may change.”</em></div>
+    </section>
+
+    <section class="card" id="rephrase">
+        <div class="card-header"><span class="card-icon">🔁</span>Rephrasing</div>
+        <p>Hedging is rephrasing with a purpose: the same idea, an honest amount of certainty.</p>
+        <div class="grid-2">
+            <div class="example-box">
+                <strong>Over-claim → hedged</strong><br>
+                Original: AI will take these jobs.<br>
+                Rephrased: AI <strong>may change</strong> many of these jobs.
+            </div>
+            <div class="example-box">
+                <strong>Certain → conditional</strong><br>
+                Original: Young workers are losing jobs.<br>
+                Rephrased: <strong>If</strong> the Stanford data is right, young workers <strong>in exposed sectors</strong> are losing jobs.
+            </div>
+        </div>
+        <h3 class="subhead">Try it</h3>
+        <div class="quiz"><ol>
+                <li>AI will replace all of these jobs.</li>
+                <li>The numbers prove the effect.</li>
+                <li>Companies will use it more if the costs fall.</li>
+        </ol></div>
+        <details class="answer"><summary>Show model answers</summary><ol>
+                <li>AI may change many of these jobs.</li>
+                <li>The numbers suggest an effect, but other economists disagree.</li>
+                <li>If the costs fall, companies will use it more.</li>
+        </ol></details>
+    </section>
+
+    <section class="card" id="games">
+        <div class="card-header"><span class="card-icon">🎮</span>Practice game</div>
+        <p>The Gomoku challenge draws its questions from this week's pool, which reviews the language of Week 11. Two teams, one board, and a spoken answer for every square.</p>
+        <p style="margin-top:0.8rem;">
+            <a class="pill pill-game" href="gomoku.html">🎮 Week 12 Gomoku →</a>
+        </p>
+    </section>
+
+    <section class="card card-homework" id="homework">
+        <div class="card-header"><span class="card-icon">📝</span>Homework &amp; practice</div>
+        <ul class="task-list">
+            <li>Find one number in the article and write two sentences about it: one reporting the number and one explaining its caveat.</li>
+            <li>Write four conditional sentences about your own studies: two real and two imagined.</li>
+            <li>Play the <a href="gomoku.html">Week 12 Gomoku challenge</a> and review the Week 11 language.</li>
+        </ul>
+    </section>
+
+    <nav class="footer-nav">
+        <a href="../Wk11/Week11_Cloud_and_Data_Centres.html">← Week 11: Cloud &amp; Data Centres</a>
+        <a href="gomoku.html">Week 12 Gomoku →</a>
+        <a href="../index.html">← Back to home</a>
+    </nav>
+
+</main>
+
+
+<script>
+/* Read-along narration: one button per paragraph, one audio element. */
+(function () {
+    var paras = Array.prototype.slice.call(document.querySelectorAll('.readalong-para'));
+    if (!paras.length) return;
+    var audio = new Audio();
+    audio.preload = 'metadata';
+    var playing = -1;
+
+    function reset(btn) {
+        if (!btn) return;
+        btn.innerHTML = '\u25b6';
+        btn.classList.remove('is-playing');
+        btn.setAttribute('aria-label', 'Play narration for this paragraph');
+    }
+
+    window.playThisPara = function (btn) {
+        var para = btn.nextElementSibling;
+        if (!para || !para.classList.contains('readalong-para')) return;
+        var i = paras.indexOf(para);
+        if (i < 0) return;
+        if (playing === i && !audio.paused) {
+            audio.pause();
+            reset(btn);
+            para.classList.remove('active');
+            playing = -1;
+            return;
+        }
+        paras.forEach(function (p) { p.classList.remove('active'); });
+        Array.prototype.forEach.call(document.querySelectorAll('.para-play'), reset);
+        para.classList.add('active');
+        btn.classList.add('is-playing');
+        btn.innerHTML = '\u23f8';
+        btn.setAttribute('aria-label', 'Pause narration');
+        playing = i;
+        audio.src = 'audio/para-' + ('0' + (i + 1)).slice(-2) + '.mp3';
+        audio.onended = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.onerror = function () { reset(btn); para.classList.remove('active'); playing = -1; };
+        audio.play().catch(function () {});
+    };
+})();
+
+/* Balloon glossary: the definition travels with the term. */
+(function () {
+    var keywords = Array.prototype.slice.call(document.querySelectorAll('.keyword'));
+    if (!keywords.length) return;
+    var balloon = null;
+    var active = null;
+    var openedAt = 0;
+
+    function closeBalloon(returnFocus) {
+        if (!balloon) return;
+        if (active) {
+            active.setAttribute('aria-expanded', 'false');
+            if (returnFocus) active.focus();
+        }
+        balloon.remove();
+        balloon = null;
+        active = null;
+    }
+
+    function openBalloon(el) {
+        var term = el.textContent.trim();
+        var definition = el.getAttribute('data-def');
+        if (!definition) return;
+        if (balloon) closeBalloon(false);
+
+        active = el;
+        el.setAttribute('aria-expanded', 'true');
+        openedAt = Date.now();
+
+        balloon = document.createElement('div');
+        balloon.className = 'gloss-balloon';
+        balloon.setAttribute('role', 'tooltip');
+
+        var head = document.createElement('div');
+        head.className = 'gloss-balloon-head';
+        var title = document.createElement('span');
+        title.className = 'gloss-balloon-term';
+        title.textContent = term;
+        var close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'gloss-close';
+        close.setAttribute('aria-label', 'Close definition');
+        close.innerHTML = '&times;';
+        close.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeBalloon(true);
+        });
+        head.appendChild(title);
+        head.appendChild(close);
+
+        var body = document.createElement('div');
+        body.className = 'gloss-balloon-def';
+        body.textContent = definition;
+        var zh = el.getAttribute('data-zh');
+        if (zh) {
+            var zhEl = document.createElement('span');
+            zhEl.className = 'gloss-zh';
+            zhEl.textContent = zh;
+            body.appendChild(zhEl);
+        }
+
+        balloon.appendChild(head);
+        balloon.appendChild(body);
+        balloon.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.body.appendChild(balloon);
+
+        var rect = el.getBoundingClientRect();
+        var width = balloon.offsetWidth;
+        var height = balloon.offsetHeight;
+        var left = rect.left + rect.width / 2 - width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+        var top = rect.top - height - 10;
+        var below = false;
+        if (top < 10) {
+            top = rect.bottom + 10;
+            below = true;
+        }
+        balloon.style.left = left + 'px';
+        balloon.style.top = top + 'px';
+        balloon.classList.toggle('below', below);
+        var arrow = rect.left + rect.width / 2 - left;
+        balloon.style.setProperty('--arrow-left', Math.max(14, Math.min(width - 14, arrow)) + 'px');
+    }
+
+    keywords.forEach(function (el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-expanded', 'false');
+        el.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (active === el) closeBalloon(true);
+            else openBalloon(el);
+        });
+        el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (active === el) closeBalloon(true);
+                else openBalloon(el);
+            }
+        });
+    });
+
+    document.addEventListener('click', function () { closeBalloon(false); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && balloon) {
+            e.preventDefault();
+            closeBalloon(true);
+        }
+    });
+    window.addEventListener('scroll', function () {
+        /* Ignore the burst of scroll events a smooth anchor jump produces just
+           after the balloon opens, or the balloon closes under the reader. */
+        if (balloon && Date.now() - openedAt > 400) closeBalloon(false);
+    }, true);
+    window.addEventListener('resize', function () {
+        if (balloon) closeBalloon(false);
+    });
+})();
+</script>
+
+</body>
+</html>

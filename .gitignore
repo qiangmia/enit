@@ -11,6 +11,11 @@
 !Wk7/
 !Wk9/
 !Wk10/
+!Wk11/
+!Wk12/
+!Wk13/
+!Wk14/
+!Wk15/
 !README.md
 !index.html
 !theme.js
@@ -36,6 +41,11 @@
 !Wk7/**
 !Wk9/**
 !Wk10/**
+!Wk11/**
+!Wk12/**
+!Wk13/**
+!Wk14/**
+!Wk15/**
 
 # NOTE: the week list above is explicit on purpose and must be extended
 # each time a new week is published. A blanket !Wk*/ would also un-ignore
@@ -72,3 +82,13 @@ Wk10/Skimming and Scanning - wk10.pptx
 
 # Week 10 source transcript: reference material, not part of the site.
 Wk10/What_Is_Prompt_Injection.md
+
+# Weeks 11-14 hold last year's teaching decks and LingoLeap Offline exports.
+# They are source material for planning, not this year's pages, and the lesson
+# exports alone are 8-11 MB each. Blocked here, after the !Wk1N/** whitelists,
+# so that `git add Wk11` cannot publish them by accident.
+Wk1[1-4]/*.pptx
+Wk1[1-4]/*_lesson.html
+Wk1[1-4]/vocabulary*.html
+Wk1[1-4]/Read Aloud.html
+Wk1[1-4]/dialogue.html

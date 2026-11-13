@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11 Supplementary: The Global Microsoft Outage</title>
+    <style>
+        /* ── Reset & Base ─────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #2b6cb0;
+            --accent-light: #bee3f8;
+            --warm: #c05621;
+            --warm-light: #fefcbf;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #276749;
+            --success-bg: #f0fff4;
+            --info-bg: #ebf8ff;
+            --grammar-bg: #faf5ff;
+            --vocab-bg: #fffaf0;
+            --task-bg: #f0fff4;
+            --homework-bg: #fff5f5;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0;
+        }
+
+        /* ── Header ────────────────────────────────────── */
+        .course-header {
+            background: linear-gradient(rgba(10, 25, 45, 0.42), rgba(10, 25, 45, 0.62)), url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1600&h=500&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .course-header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            position: relative;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+        .course-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            font-style: italic;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        .course-header .meta {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+            position: relative;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        .course-header .meta span {
+            margin: 0 0.8rem;
+        }
+        .header-home-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.75);
+            position: relative;
+            z-index: 2;
+        }
+        .header-home-link:hover { border-bottom-style: solid; }
+
+        /* ── Navigation ────────────────────────────────── */
+        .toc {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .toc ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            justify-content: center;
+        }
+        .toc a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .toc a:hover { background: var(--accent-light); color: var(--primary); }
+
+        /* ── Main Container ────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* ── Section Headings (Accordion) ──────────────── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: left;
+        }
+        .section-toggle:hover { opacity: 0.8; }
+        .section-toggle .extract-btn {
+            margin-left: auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .section-toggle:hover .extract-btn { opacity: 1; }
+
+        .section-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease;
+            padding: 0;
+        }
+        .section-content.open {
+            max-height: 40000px;
+            padding: 1rem 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .card-header {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.8rem;
+        }
+        .card-info { border-left: 4px solid var(--accent); background: var(--info-bg); }
+        .card-grammar { border-left: 4px solid #805ad5; background: var(--grammar-bg); }
+        .card-vocab { border-left: 4px solid var(--warm); background: var(--vocab-bg); }
+        .card-task { border-left: 4px solid var(--success); background: var(--task-bg); }
+        .card-homework { border-left: 4px solid #e53e3e; background: var(--homework-bg); }
+
+        /* ── Tables ─────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        tbody td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+        /* ── Article ────────────────────────────────────── */
+        .article {
+            position: relative;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--primary);
+            border-radius: 10px;
+            padding: 0 2rem 2rem;
+            margin: 1.25rem 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .article::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, var(--accent-light) 0%, transparent 42%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .article > * { position: relative; z-index: 1; }
+        .article-hero {
+            margin: 0 -2rem 1.6rem;
+            position: relative;
+        }
+        .article-hero img {
+            display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            margin: 0;
+        }
+        .article-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+        }
+        .article-title::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            margin-top: 0.55rem;
+            border-radius: 2px;
+            background: var(--warm);
+        }
+        .article-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.6rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .article-meta span {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.15rem 0.7rem;
+            background: rgba(255,255,255,0.35);
+        }
+        .article-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.6rem 0;
+            color: var(--warm);
+            font-size: 0.9rem;
+        }
+        .article-divider::before,
+        .article-divider::after {
+            content: '';
+            height: 1px;
+            flex: 0 1 130px;
+            background: var(--border);
+        }
+        .article-time {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            color: var(--warm);
+        }
+        .article h4 {
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            color: var(--primary);
+        }
+        .article p {
+            text-indent: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .article p:first-of-type { text-indent: 0; }
+        .article p:first-of-type::first-letter {
+            float: left;
+            font-size: 3.1rem;
+            line-height: 0.82;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 0.15rem 0.5rem 0 0;
+        }
+        .article blockquote {
+            position: relative;
+            margin: 1.5rem 0;
+            padding: 1.2rem 1.5rem 1rem 3rem;
+            border-left: 4px solid var(--warm);
+            background: var(--warm-light);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        .article blockquote::before {
+            content: '\201C';
+            position: absolute;
+            top: 0.1rem;
+            left: 0.8rem;
+            font-size: 3rem;
+            line-height: 1;
+            color: var(--warm);
+            opacity: 0.45;
+        }
+        .article blockquote cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+        }
+
+        /* ── Images ─────────────────────────────────────── */
+        .article-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .article-img-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Audio Player ──────────────────────────────── */
+        .audio-player {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .audio-player-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .audio-player-text {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .audio-player audio {
+            flex: 1;
+            height: 36px;
+            min-width: 0;
+        }
+
+        /* ── Job Role Cards ────────────────────────────── */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .job-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-card-title {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        .job-card-chinese {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+        }
+        .job-card-def {
+            font-size: 0.8rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── Section Icons ──────────────────────────────── */
+        .section-icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+            vertical-align: middle;
+        }
+
+        /* ── Quiz ────────────────────────────────────────── */
+        .quiz-question {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--info-bg);
+            border-radius: 8px;
+        }
+        .quiz-question p { margin-bottom: 0.5rem; font-weight: 600; }
+        .quiz-options { margin-left: 1rem; }
+        .quiz-options label {
+            display: block;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] { margin-right: 0.5rem; }
+
+        /* ── Answers ────────────────────────────────────── */
+        .answers-toggle {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .answers-toggle:hover { background: var(--primary); }
+        .answers { display: none; margin-top: 0.5rem; }
+        .answers.show { display: block; }
+
+        /* ── Example Box ────────────────────────────────── */
+        .example-box {
+            background: var(--warm-light);
+            border: 1px solid #feebc8;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+        }
+        .example-box .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--warm);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Two Column Layout ──────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── Grammar Tags ───────────────────────────────── */
+        .grammartag {
+            display: inline-block;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.7rem;
+            background: #805ad5;
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* ── Keywords ────────────────────────────────────── */
+        .keyword {
+            background: var(--accent-light);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ── Print ─────────────────────────────────────── */
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .toc, .section-toggle .extract-btn { display: none; }
+            .section-content { max-height: none !important; padding: 1rem 0; overflow: visible; }
+            .section-toggle { cursor: default; border-bottom: 2px solid #333; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+            .course-header { background: var(--primary) !important; background-image: none !important; -webkit-print-color-adjust: exact; }
+            #extract-overlay { position: static !important; background: none !important; }
+            #extract-overlay > div { max-height: none !important; box-shadow: none !important; border: none !important; }
+            #extract-overlay button { display: none !important; }
+        }
+
+        /* ── Responsive: Tablet ≤ 768px ──────────────────── */
+        @media (max-width: 768px) {
+            .course-header { padding: 2rem 1.2rem 1.8rem; }
+            .course-header h1 { font-size: 1.8rem; }
+            .course-header .subtitle { font-size: 1rem; }
+            .course-header .meta { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0; }
+            .course-header .meta span { margin: 0 0.4rem; }
+
+            .toc { padding: 0.7rem 1rem; }
+            .toc ul { gap: 0.2rem 0.6rem; }
+            .toc a { font-size: 0.72rem; padding: 0.2rem 0.4rem; }
+
+            .container { padding: 1.2rem 1rem 3rem; }
+
+            h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+            h3 { font-size: 1.1rem; }
+
+            .card { padding: 1.2rem; }
+
+            .article { padding: 0 1.2rem 1.2rem; }
+            .article-hero { margin: 0 -1.2rem 1.6rem; }
+            .article-meta { flex-direction: column; gap: 0.3rem; align-items: center; }
+
+            .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0; }
+
+            .two-col { gap: 0.8rem; }
+
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.65rem; padding: 0.25rem 0.5rem; }
+
+            .job-cards { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .job-card { padding: 1rem; }
+            .job-card-icon { font-size: 1.8rem; }
+
+            .article-img { max-height: 250px; }
+
+            .audio-player { flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem; }
+            .audio-player audio { width: 100%; }
+        }
+
+        /* ── Responsive: Phone ≤ 480px ───────────────────── */
+        @media (max-width: 480px) {
+            .course-header { padding: 1.5rem 1rem 1.2rem; }
+            .course-header h1 { font-size: 1.4rem; letter-spacing: -0.01em; }
+            .course-header .subtitle { font-size: 0.88rem; }
+            .course-header .meta { font-size: 0.72rem; }
+            .course-header .meta span { margin: 0 0.25rem; }
+
+            .toc { padding: 0.5rem 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .toc ul { flex-wrap: nowrap; gap: 0.15rem 0.4rem; justify-content: flex-start; }
+            .toc a { font-size: 0.68rem; padding: 0.2rem 0.35rem; }
+
+            .container { padding: 0.8rem 0.7rem 2rem; }
+
+            h2 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
+            h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+            h4 { font-size: 0.95rem; }
+
+            .card { padding: 0.8rem; margin: 0.6rem 0; border-radius: 6px; }
+            .card-header { font-size: 0.75rem; margin-bottom: 0.6rem; }
+
+            .article { padding: 0 0.9rem 0.9rem; margin: 1rem 0; }
+            .article-hero { margin: 0 -0.9rem 1.6rem; }
+            .article-title { font-size: 1.2rem; }
+            .article-subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            .article-meta { font-size: 0.75rem; padding: 0.5rem; }
+            .article p { text-indent: 1rem; font-size: 0.92rem; }
+
+            table { font-size: 0.8rem; }
+            thead th { padding: 0.5rem; font-size: 0.7rem; }
+            tbody td { padding: 0.4rem 0.5rem; }
+
+            .section-toggle { padding: 0.6rem 0; gap: 0.4rem; flex-wrap: wrap; }
+            .section-toggle .extract-btn { opacity: 1; font-size: 0.6rem; padding: 0.2rem 0.45rem; margin-left: 0; }
+
+            .quiz-options { margin-left: 0.5rem; }
+            .quiz-options label { font-size: 0.88rem; padding: 0.1rem 0; }
+
+            .example-box { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+
+            ul, ol { margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; font-size: 0.92rem; }
+
+            .two-col { grid-template-columns: 1fr; gap: 0.6rem; }
+
+            .job-cards { grid-template-columns: 1fr; gap: 0.6rem; }
+            .job-card { padding: 0.8rem; }
+            .job-card-icon { font-size: 1.5rem; }
+            .job-card-title { font-size: 0.8rem; }
+
+            .article-img { max-height: 200px; }
+
+            .audio-player { flex-direction: column; align-items: stretch; padding: 0.6rem; }
+            .audio-player-text { text-align: center; }
+            .audio-player audio { width: 100%; height: 32px; }
+        }
+    
+        /* ── Video ─────────────────────────────────────── */
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.6rem;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .video-caption {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .activity-answer {
+            margin-top: 0.9rem;
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.94rem;
+        }
+        .activity-answer summary {
+            cursor: pointer;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        .activity-answer[open] summary { margin-bottom: 0.5rem; }
+
+        /* ── Balloon glossary for highlighted terms ─────── */
+        .glossary-hint {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin: 0.4rem 0 0.9rem;
+        }
+        .keyword {
+            cursor: pointer;
+            border-bottom: 1px dotted var(--accent);
+        }
+        .keyword:hover { background: var(--accent-light); }
+        .keyword:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        .keyword[aria-expanded="true"] { background: var(--warm-light); }
+
+        .gloss-balloon {
+            position: fixed;
+            z-index: 10050;
+            width: min(320px, calc(100vw - 24px));
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 0.85rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .gloss-balloon::after {
+            content: '';
+            position: absolute;
+            left: var(--arrow-left, 50%);
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .gloss-balloon.below::after {
+            bottom: auto;
+            top: -7px;
+            border-right: 0;
+            border-bottom: 0;
+            border-left: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .gloss-balloon-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.3rem;
+        }
+        .gloss-balloon-term {
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: capitalize;
+        }
+        .gloss-close {
+            appearance: none;
+            border: 0;
+            background: transparent;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+        }
+        .gloss-close:hover { color: var(--primary); }
+        .gloss-balloon-def { color: var(--text); }
+
+</style>
+    <script src="../theme.js"></script>
+</head>
+<body>
+
+<header class="course-header">
+    <h1>Supplementary Unit: The Global Microsoft Outage</h1>
+    <div class="subtitle">Reading an incident report · cloud services · the passive voice</div>
+    <div class="meta">
+        <span><a class="header-home-link" href="../index.html" title="Back to Home">English for Information Technology</a></span>
+        <span>·</span>
+        <span>Week 11</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <nav class="toc">
+        <strong>Contents</strong>
+        <ul>
+            <li><a href="#before">Before You Read</a></li>
+            <li><a href="#reading">Reading</a></li>
+            <li><a href="#watch">Watch the Video</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+            <li><a href="#questions">Reading Questions</a></li>
+            <li><a href="#answers">Answer Key</a></li>
+            <li><a href="#activity">Activity: The Passive and the Blame</a></li>
+        </ul>
+    </nav>
+
+    <section id="before">
+        <button class="section-toggle" aria-expanded="true">
+            <span class="section-icon">📖</span>
+            <span>Before You Read</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content open">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">🤔</span>Two questions first</div>
+                <ul>
+                    <li>Have you ever lost email for most of a day? What did you do instead?</li>
+                    <li>When a service breaks, who should tell the users what happened — the company, the news, or nobody?</li>
+                </ul>
+                <p style="margin-top:0.8rem;">This week's lesson is a story about one small outage inside one company. This is a report about a real one, in the same week, at a much larger scale. Read it with the same three questions: <strong>what failed, what was done, and did it work?</strong></p>
+                <p style="margin-top:0.6rem;"><a href="Week11_Cloud_and_Data_Centres.html">← Back to the Week 11 lesson</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="reading">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">📰</span>
+            <span>Reading</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card">
+                <h2 style="font-size:1.45rem;color:var(--primary);margin-bottom:0.3rem;">What we know about the global Microsoft outage</h2>
+                <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;">Adapted from BBC News, 13 November 2026. Details were correct when the report was published and may have changed since.</p>
+
+                <h3 style="font-size:1.05rem;color:var(--primary);margin:1rem 0 0.4rem;">What happened</h3>
+                <p>A major global outage at Microsoft has caused problems, or in some cases disabled entire services, including email and artificial intelligence products. Microsoft 365 services — Teams, Outlook and its AI software Copilot — have been affected by “connectivity problems”. Many users have not been able to send or receive email, view certain files or see details in their calendar apps. Some users have been able to use Teams messaging and online meetings without problems.</p>
+                <p>Microsoft said the <span class="keyword">outage</span> was not caused by a cyber-security incident. Its efforts to fix the issues have so far been largely unsuccessful.</p>
+
+                <h3 style="font-size:1.05rem;color:var(--primary);margin:1rem 0 0.4rem;">How many people have been affected?</h3>
+                <p>More than 430 million people use Microsoft 365 apps, according to Microsoft’s website. The full scale of the outage has not been confirmed, but the monitoring website Downdetector had 140,000 reports from 74 countries about Outlook alone on Thursday evening. The real figure is likely to be much higher. OpenAI and Anthropic, two AI companies, both reported problems as a result of the outage. Government agencies, including the Singaporean government and Australia’s spy agency, also said they had been affected, and several doctors’ practices in the UK told patients to make urgent queries by phone instead of by email.</p>
+
+                <h3 style="font-size:1.05rem;color:var(--primary);margin:1rem 0 0.4rem;">What has Microsoft said?</h3>
+                <p>Microsoft has ruled out a cyber-attack and attributed the outage to <span class="keyword">elevated load</span> — when servers are handling a much higher volume of stress than they usually do. In this case, a large number of servers became “unexpectedly <span class="keyword">unavailable</span>”, the company said, which sent added traffic to the remaining servers and strained them.</p>
+                <p>On Friday morning, Microsoft said it had seen “<span class="keyword">marginal</span> success” in its efforts to treat the incident. In an earlier statement, the company had said that its attempted fixes were “not taking as expected”. It added that it was continuing to monitor activity across regions to evaluate server status and to decide what actions it could take to improve <span class="keyword">capacity</span>.</p>
+
+                <h3 style="font-size:1.05rem;color:var(--primary);margin:1rem 0 0.4rem;">What have experts said?</h3>
+                <p>Australian cyber-security expert Troy Hunt told the BBC that the outage could have far-reaching consequences. “Microsoft is a massive part of the internet <span class="keyword">backbone</span> and reminds us how critical email still is,” he said. “Not only does this outage affect many people’s ability to work, but also things like the ability to communicate about appointments, purchase things that need verification, create or access accounts and services.”</p>
+                <p>Paul Spain, from the New Zealand advisory firm Gorilla Technology, said that with email and services offline, companies had practically “lost a business day”, which was frustrating for users.</p>
+
+                <h3 style="font-size:1.05rem;color:var(--primary);margin:1rem 0 0.4rem;">Why it matters</h3>
+                <p>The cause was not an attack. It was <span class="keyword">capacity</span>: too few servers, more traffic pushed onto the rest, and fixes that did not work as expected. A <span class="keyword">knock-on effect</span> reached companies, governments and hospitals that do not run Microsoft’s systems themselves — they simply depend on them.</p>
+
+                <p style="font-size:0.85rem;color:var(--text-light);margin-top:1rem;">Source: “What we know about the global Microsoft outage”, BBC News, 13 November 2026 (<a href="https://www.bbc.com/news/articles/cwvg238zrnm5o" target="_blank" rel="noopener">bbc.com</a>). Adapted for classroom use.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="watch">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🎬</span>
+            <span>Watch the Video</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="video-wrap">
+                <iframe src="https://www.youtube.com/embed/YJoicYGqtU4" title="Global Microsoft outage hits Outlook users — ABC News (Australia)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <p class="video-caption">Video: “Global Microsoft outage hits Outlook users” — ABC News (Australia), 2:25. This is not the BBC clip; the BBC report and its own 1:09 video are linked at the end.</p>
+
+            <div class="card card-task" style="margin-top:1rem;">
+                <div class="card-header"><span class="card-icon">👀</span>While You Watch</div>
+                <ol style="padding-left:1.4rem;">
+                    <li>Which Microsoft services does the report name?</li>
+                    <li>What does Microsoft say it is doing to the infrastructure?</li>
+                    <li>Does the report give a cause? If not, what does it give instead?</li>
+                </ol>
+                <details class="answer">
+                    <summary>Show suggested answers</summary>
+                    <ol>
+                        <li>Outlook, Teams and OneDrive; the article adds Copilot and other Microsoft 365 services.</li>
+                        <li>It says parts of Microsoft’s infrastructure are being restarted and restored to bring services back online.</li>
+                        <li>No cause is confirmed. The report gives the company’s statements and the effect on users, not an explanation.</li>
+                    </ol>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section id="glossary">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">📚</span>
+            <span>Glossary</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.7rem;">Tap a highlighted word in the reading for the same definition.</p>
+            <div class="job-cards">
+                <div class="job-card"><div class="job-card-icon">⚡</div><div class="job-card-title">elevated load</div><div class="job-card-chinese">負載升高</div><div class="job-card-def">Servers having to handle much more work than usual.</div></div>
+                <div class="job-card"><div class="job-card-icon">🖥</div><div class="job-card-title">infrastructure</div><div class="job-card-chinese">基礎設施</div><div class="job-card-def">The servers, networks and services a company runs.</div></div>
+                <div class="job-card"><div class="job-card-icon">🔗</div><div class="job-card-title">backbone</div><div class="job-card-chinese">骨幹</div><div class="job-card-def">The main part of a network that everything else depends on.</div></div>
+                <div class="job-card"><div class="job-card-icon">🌀</div><div class="job-card-title">knock-on effect</div><div class="job-card-chinese">連鎖影響</div><div class="job-card-def">A second problem caused by the first one.</div></div>
+                <div class="job-card"><div class="job-card-icon">📏</div><div class="job-card-title">marginal</div><div class="job-card-chinese">微小的</div><div class="job-card-def">Very small; not much at all.</div></div>
+                <div class="job-card"><div class="job-card-icon">📦</div><div class="job-card-title">capacity</div><div class="job-card-chinese">容量</div><div class="job-card-def">The amount of work or traffic a system can handle.</div></div>
+                <div class="job-card"><div class="job-card-icon">🚫</div><div class="job-card-title">unavailable</div><div class="job-card-chinese">無法使用</div><div class="job-card-def">Not able to be reached or used.</div></div>
+                <div class="job-card"><div class="job-card-icon">🔌</div><div class="job-card-title">outage</div><div class="job-card-chinese">服務中斷</div><div class="job-card-def">A period when a service is not working.</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="questions">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">❓</span>
+            <span>Reading Questions</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">✅</span>Choose the best answer</div>
+                <div class="quiz-question" style="margin-top:0.8rem;">
+                    <p><strong>1.</strong> What did Microsoft say caused the outage?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q1"> A) A cyber-attack</label>
+                        <label><input type="radio" name="q1"> B) Elevated load after a large number of servers became unavailable</label>
+                        <label><input type="radio" name="q1"> C) A software update that failed</label>
+                        <label><input type="radio" name="q1"> D) Too many people signing in at once</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>2.</strong> How many Outlook reports did Downdetector receive, and from how many countries?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q2"> A) 430 reports from 74 countries</label>
+                        <label><input type="radio" name="q2"> B) 140,000 reports from 74 countries</label>
+                        <label><input type="radio" name="q2"> C) 74,000 reports from 140 countries</label>
+                        <label><input type="radio" name="q2"> D) 140,000 reports from 430 countries</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>3.</strong> What does “marginal success” tell us about the fix?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q3"> A) It worked completely</label>
+                        <label><input type="radio" name="q3"> B) It helped only a little</label>
+                        <label><input type="radio" name="q3"> C) It made the outage worse</label>
+                        <label><input type="radio" name="q3"> D) No fix has been attempted</label>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p><strong>4.</strong> Which two AI companies reported problems because of the outage?</p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q4"> A) Google and Meta</label>
+                        <label><input type="radio" name="q4"> B) OpenAI and Anthropic</label>
+                        <label><input type="radio" name="q4"> C) Apple and Amazon</label>
+                        <label><input type="radio" name="q4"> D) Nvidia and Intel</label>
+                    </div>
+                </div>
+
+                <div class="card-header" style="margin-top:1.4rem;"><span class="card-icon">✍️</span>Answer in one or two sentences</div>
+                <ol style="padding-left:1.4rem;">
+                    <li>Why would one group of servers failing put extra pressure on the others?</li>
+                    <li>What did Troy Hunt mean when he called Microsoft “a massive part of the internet backbone”?</li>
+                    <li>Microsoft published updates before it knew the cause. Why might a company do that?</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="answers">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🔑</span>
+            <span>Answer Key</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card">
+                <p><strong>Multiple choice:</strong> 1 b · 2 b · 3 b · 4 b</p>
+                <p style="margin-top:0.8rem;"><strong>Short answers (suggested):</strong></p>
+                <ol>
+                    <li>Traffic that would have gone to the failed servers is sent to the remaining ones, so they must handle more work than they were sized for.</li>
+                    <li>Microsoft’s services are used by so much of the internet — and by other companies’ products — that when they fail, many unrelated services fail too.</li>
+                    <li>Users need to know what is happening now. Saying “we are investigating” is honest and stops rumours; waiting for certainty can take days.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section id="activity">
+        <button class="section-toggle" aria-expanded="false">
+            <span class="section-icon">🧪</span>
+            <span>Activity: The Passive and the Blame</span>
+            <span class="extract-btn" onclick="event.stopPropagation(); window.extractSection(this)" title="Extract this section">Extract</span>
+        </button>
+        <div class="section-content">
+            <div class="card card-task">
+                <div class="card-header"><span class="card-icon">🔎</span>Find five sentences</div>
+                <p>Four of these sentences from the report are passive and one is active. Mark them, then say who or what is hidden — and why the writer might hide it.</p>
+                <div class="table-wrap">
+                    <table class="vocab">
+                        <thead><tr><th>Sentence</th><th>Passive?</th><th>Who or what is hidden?</th></tr></thead>
+                        <tbody>
+                            <tr><td>Microsoft 365 services <strong>have been affected</strong> by “connectivity problems”.</td><td></td><td></td></tr>
+                            <tr><td>The full scale of the outage <strong>has not been confirmed</strong>.</td><td></td><td></td></tr>
+                            <tr><td>The outage <strong>was not caused by</strong> a cyber-security incident.</td><td></td><td></td></tr>
+                            <tr><td>The outage <strong>has been attributed to</strong> elevated load.</td><td></td><td></td></tr>
+                            <tr><td>A large number of servers <strong>became</strong> “unexpectedly unavailable”.</td><td></td><td></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <details class="answer">
+                    <summary>Show notes</summary>
+                    <p>1 passive — the actor (Microsoft, or the connectivity problem) is not named. 2 passive — nobody has confirmed it, and the writer does not say who would. 3 passive — the cause is denied without naming who checked. 4 passive — “has been attributed” reports the claim without saying who made it. 5 active — the servers are the subject and nothing is hidden; this is the sentence that states the fact most directly.</p>
+                </details>
+            </div>
+
+            <div class="card" style="margin-top:1.2rem;">
+                <div class="card-header"><span class="card-icon">📊</span>Story vs. real outage</div>
+                <div class="table-wrap">
+                    <table class="vocab">
+                        <thead><tr><th></th><th>The 3 a.m. Rollout (Week 11 story)</th><th>The Microsoft outage</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Cause</strong></td><td>A new routing rule sent all traffic to one zone.</td><td>A large number of servers became unavailable.</td></tr>
+                            <tr><td><strong>What was done</strong></td><td>The change was rolled back.</td><td>Servers restarted; capacity increased; attempts continued.</td></tr>
+                            <tr><td><strong>Did it work?</strong></td><td>Yes — service restored in 15 minutes.</td><td>Only partly — “marginal success”.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top:0.9rem;"><strong>Discuss:</strong> why does a rollback fix the story but not the outage? Then answer for your own project: what would you have written on the status page at 03:11, and what would you write on Friday morning?</p>
+            </div>
+        </div>
+    </section>
+
+    <p style="font-size:0.85rem;color:var(--text-light);margin-top:1.6rem;">
+        Original report: <a href="https://www.bbc.com/news/articles/cwvg238zrnm5o" target="_blank" rel="noopener">BBC News — What we know about the global Microsoft outage</a>
+        · BBC video (1:09): <a href="https://www.bbc.com/news/videos/cwm2591k27e2o" target="_blank" rel="noopener">What happened overnight with the global Microsoft outage</a>
+    </p>
+
+</div>
+
+<script>
+(function(){
+    document.querySelectorAll('.section-toggle').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var content = btn.nextElementSibling;
+            var open = content.classList.contains('open');
+            if(open){ content.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+            else { content.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+        });
+    });
+    // Extract — modal overlay, same as Weeks 1-7 (print styles target #extract-overlay)
+    window.extractSection = function(btn){
+        var section = btn.closest('section');
+        if(!section) return;
+        var content = section.querySelector('.section-content');
+        var title = section.querySelector('.section-toggle').textContent.replace('Extract', '').trim();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'extract-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:white;border-radius:12px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+        header.innerHTML = '<h3 style="margin:0;font-size:1.1rem;color:#1a365d;">' + title + '</h3>';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.textContent = '\u2715';
+        closeBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem 0.5rem;color:#718096;';
+        closeBtn.onclick = function(){ document.body.removeChild(overlay); };
+        header.appendChild(closeBtn);
+
+        var contentDiv = document.createElement('div');
+        contentDiv.style.cssText = 'padding:1.5rem;overflow-y:auto;flex:1;font-family:Georgia,serif;line-height:1.7;color:#2d3748;';
+        contentDiv.innerHTML = content.innerHTML;
+
+        var footer = document.createElement('div');
+        footer.style.cssText = 'padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;flex-shrink:0;';
+
+        var printBtn = document.createElement('button');
+        printBtn.textContent = '\uD83D\uDDA8\uFE0F Print';
+        printBtn.style.cssText = 'background:#1a365d;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        printBtn.onclick = function(){ window.print(); };
+
+        var closeFooterBtn = document.createElement('button');
+        closeFooterBtn.textContent = 'Close';
+        closeFooterBtn.style.cssText = 'background:#e2e8f0;color:#2d3748;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-size:0.9rem;';
+        closeFooterBtn.onclick = function(){ document.body.removeChild(overlay); };
+
+        footer.appendChild(printBtn);
+        footer.appendChild(closeFooterBtn);
+        modal.appendChild(header);
+        modal.appendChild(contentDiv);
+        modal.appendChild(footer);
+        overlay.appendChild(modal);
+        overlay.onclick = function(e){ if(e.target === overlay) document.body.removeChild(overlay); };
+        document.body.appendChild(overlay);
+    };
+})();
+
+
+(function(){
+    var definitions = {"elevated load": "When servers have to handle much more work than usual, so they slow down or fail.", "infrastructure": "The servers, networks and services a company runs in order to operate.", "backbone": "The main part of a network that everything else depends on.", "knock-on effect": "A second problem caused by the first one.", "marginal": "Very small; not much at all.", "capacity": "The amount of work or traffic a system can handle.", "outage": "A period when a service is not working.", "unavailable": "Not able to be reached or used."};
+    var keywords = Array.prototype.slice.call(document.querySelectorAll('.keyword'));
+    if (!keywords.length) return;
+    var balloon = null;
+    var active = null;
+
+    function closeBalloon(returnFocus) {
+        if (!balloon) return;
+        if (active) {
+            active.setAttribute('aria-expanded', 'false');
+            if (returnFocus) active.focus();
+        }
+        balloon.remove();
+        balloon = null;
+        active = null;
+    }
+
+    function openBalloon(el) {
+        var term = el.textContent.trim();
+        var definition = definitions[term.toLowerCase()];
+        if (!definition) return;
+        if (balloon) closeBalloon(false);
+
+        active = el;
+        el.setAttribute('aria-expanded', 'true');
+
+        balloon = document.createElement('div');
+        balloon.className = 'gloss-balloon';
+        balloon.setAttribute('role', 'tooltip');
+
+        var head = document.createElement('div');
+        head.className = 'gloss-balloon-head';
+        var title = document.createElement('span');
+        title.className = 'gloss-balloon-term';
+        title.textContent = term;
+        var close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'gloss-close';
+        close.setAttribute('aria-label', 'Close definition');
+        close.textContent = '×';
+        close.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeBalloon(true);
+        });
+        head.appendChild(title);
+        head.appendChild(close);
+
+        var body = document.createElement('div');
+        body.className = 'gloss-balloon-def';
+        body.textContent = definition;
+
+        balloon.appendChild(head);
+        balloon.appendChild(body);
+        balloon.addEventListener('click', function(e) { e.stopPropagation(); });
+        document.body.appendChild(balloon);
+
+        var rect = el.getBoundingClientRect();
+        var width = balloon.offsetWidth;
+        var height = balloon.offsetHeight;
+        var left = rect.left + rect.width / 2 - width / 2;
+        left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+        var top = rect.top - height - 10;
+        var below = false;
+        if (top < 10) {
+            top = rect.bottom + 10;
+            below = true;
+        }
+        balloon.style.left = left + 'px';
+        balloon.style.top = top + 'px';
+        balloon.classList.toggle('below', below);
+        var arrow = rect.left + rect.width / 2 - left;
+        balloon.style.setProperty('--arrow-left', Math.max(14, Math.min(width - 14, arrow)) + 'px');
+    }
+
+    keywords.forEach(function(el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-expanded', 'false');
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (active === el) closeBalloon(true);
+            else openBalloon(el);
+        });
+        el.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (active === el) closeBalloon(true);
+                else openBalloon(el);
+            }
+        });
+    });
+
+    document.addEventListener('click', function() { closeBalloon(false); });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && balloon) {
+            e.preventDefault();
+            closeBalloon(true);
+        }
+    });
+    window.addEventListener('scroll', function() { if (balloon) closeBalloon(false); }, { passive: true });
+    window.addEventListener('resize', function() { if (balloon) closeBalloon(false); });
+})();
+</script>
+</body>
+</html>
