@@ -447,6 +447,45 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Figures and pull quotes ------------------------- */
+        .fig { margin: 0 0 1.2rem; }
+        .fig-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .fig-cap {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+        }
+        .pull {
+            margin: 1.2rem 0;
+            padding: 0.95rem 1.1rem;
+            border-left: 4px solid var(--accent);
+            background: var(--bg);
+            border-radius: 0 8px 8px 0;
+        }
+        .article .pull p {
+            margin: 0;
+            font-size: 1.12rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--primary);
+        }
+        .pull cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-style: normal;
+            color: var(--text);
+        }
+
         @media print {
             .para-play, .audio-note { display: none; }
         }
@@ -504,24 +543,72 @@
 
     <section class="card">
         <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <figure class="fig"><svg viewBox="0 0 800 310" role="img" aria-labelledby="fig14t fig14d" class="fig-svg">
+  <title id="fig14t">Who said what in the age-ban story</title>
+  <desc id="fig14d">Four speakers — the government, Ofcom, YouTube and a professor — each with a reporting verb and a claim.</desc>
+  <g font-family="Helvetica Neue, Arial, sans-serif">
+    <text x="60" y="32" font-size="11" font-weight="700" letter-spacing="1" fill="var(--primary)">WHO SAID WHAT</text>
+
+    <rect x="60" y="52" width="330" height="104" rx="10" fill="var(--bg)" stroke="var(--border)"/>
+    <text x="78" y="78" font-size="13" font-weight="700" fill="var(--primary)">The government</text>
+    <rect x="286" y="64" width="86" height="20" rx="10" fill="var(--accent-light)" stroke="var(--accent)"/>
+    <text x="329" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">SAID</text>
+    <text x="78" y="104" font-size="12" fill="var(--text)">Age checks will be enforced.</text>
+    <text x="78" y="126" font-size="11" fill="var(--text)">It will use “highly effective age assurance”.</text>
+
+    <rect x="410" y="52" width="330" height="104" rx="10" fill="var(--bg)" stroke="var(--border)"/>
+    <text x="428" y="78" font-size="13" font-weight="700" fill="var(--primary)">Ofcom</text>
+    <rect x="636" y="64" width="86" height="20" rx="10" fill="var(--accent-light)" stroke="var(--accent)"/>
+    <text x="679" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">TOLD</text>
+    <text x="428" y="104" font-size="12" fill="var(--text)">Checks at 16 are harder than at 18.</text>
+    <text x="428" y="126" font-size="11" fill="var(--text)">There is less identity data to compare.</text>
+
+    <rect x="60" y="176" width="330" height="104" rx="10" fill="var(--bg)" stroke="var(--border)"/>
+    <text x="78" y="202" font-size="13" font-weight="700" fill="var(--primary)">YouTube</text>
+    <rect x="286" y="188" width="86" height="20" rx="10" fill="var(--accent-light)" stroke="var(--accent)"/>
+    <text x="329" y="202" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">ARGUED</text>
+    <text x="78" y="228" font-size="12" fill="var(--text)">A ban pushes children to less safe services.</text>
+    <text x="78" y="250" font-size="11" fill="var(--text)">The site is “a vital resource for young people”.</text>
+
+    <rect x="410" y="176" width="330" height="104" rx="10" fill="var(--bg)" stroke="var(--border)"/>
+    <text x="428" y="202" font-size="13" font-weight="700" fill="var(--primary)">A law professor</text>
+    <rect x="636" y="188" width="86" height="20" rx="10" fill="var(--accent-light)" stroke="var(--accent)"/>
+    <text x="679" y="202" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">WARNED</text>
+    <text x="428" y="228" font-size="12" fill="var(--text)">The law can be challenged in court.</text>
+    <text x="428" y="250" font-size="11" fill="var(--text)">That could delay the timetable.</text>
+
+    <text x="60" y="300" font-size="11" fill="var(--text)">Read the verb, not just the claim: <tspan font-weight="700">said</tspan> reports, <tspan font-weight="700">told</tspan> directs, <tspan font-weight="700">argued</tspan> defends, <tspan font-weight="700">warned</tspan> expects trouble.</text>
+  </g>
+</svg><figcaption class="fig-cap">Four voices, four reporting verbs, four different claims. The verb is the writer’s opinion of the claim.</figcaption></figure>
         <div class="article">
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para dropcap" id="para-1">The UK government has announced a <span class="keyword" data-def="An official rule that something is not allowed." data-zh="禁令">ban</span> on social media for under-16s. The apps named so far are Snapchat, TikTok, YouTube, Instagram, Facebook and X. Australia has gone further: its list also includes Kick, Reddit, Threads and Twitch. Messaging apps such as WhatsApp and Signal are not expected to be included, and gaming sites such as Roblox sit in an unclear middle.</p>
+            <p class="readalong-para dropcap" id="para-1">The UK government has announced a <span class="keyword" data-def="An official rule that something is not allowed." data-zh="禁令">ban</span> on social media for under-16s. The apps named so far are Snapchat, TikTok, YouTube, Instagram, Facebook and X. Australia has gone further: its list also includes Kick, Reddit, Threads and Twitch.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-2">The details matter, because a <span class="keyword" data-def="An official rule that something is not allowed." data-zh="禁令">ban</span> needs an <span class="keyword" data-def="Official permission not to follow a rule." data-zh="豁免">exemption</span> list and a way to check ages. The government says it will use “highly effective <span class="keyword" data-def="A method for checking or estimating a user’s age." data-zh="年齡保證">age assurance</span>”, a term that covers facial age estimation, photo ID matching and digital identity services. The <span class="keyword" data-def="An official body that supervises an industry." data-zh="監管機關">regulator</span>, Ofcom, will be expected to <span class="keyword" data-def="To make people obey a rule." data-zh="執行">enforce</span> it.</p>
+            <p class="readalong-para" id="para-2">Messaging apps such as WhatsApp and Signal are not expected to be included, and gaming sites such as Roblox sit in an unclear middle.</p>
+
+        <blockquote class="pull"><p>A company says; a regulator tells; a professor warns; a minister claims.</p><cite>The closing line of the report</cite></blockquote>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-3">Not everyone is comfortable. YouTube <strong>said</strong> it was “a vital resource for young people” and <strong>argued</strong> that a ban risked pushing children towards “anonymous, less safe services”. Ofcom <strong>told</strong> the government that checks at 16 are harder than checks at 18, because there is less identity data to compare. Roblox <strong>said</strong> it had already expanded its own tools to estimate a user’s age.</p>
+            <p class="readalong-para" id="para-3">The details matter, because a <span class="keyword" data-def="An official rule that something is not allowed." data-zh="禁令">ban</span> needs an <span class="keyword" data-def="Official permission not to follow a rule." data-zh="豁免">exemption</span> list and a way to check ages. The government says it will use “highly effective <span class="keyword" data-def="A method for checking or estimating a user’s age." data-zh="年齡保證">age assurance</span>”, a term that covers facial age estimation, photo ID matching and digital identity services. The <span class="keyword" data-def="An official body that supervises an industry." data-zh="監管機關">regulator</span>, Ofcom, will be expected to <span class="keyword" data-def="To make people obey a rule." data-zh="執行">enforce</span> it.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-4">Then there is the question of <span class="keyword" data-def="To avoid a rule or a check." data-zh="繞過">bypassing</span>. A VPN can disguise a user’s location, and some children already use one. The children’s minister <strong>said</strong> there were “options” for age-gating VPN use. The prime minister <strong>said</strong> it was inevitable that some teenagers would try to get around the rules, but that this did not mean the <span class="keyword" data-def="A law or a set of laws." data-zh="法規">legislation</span> was wrong.</p>
+            <p class="readalong-para" id="para-4">Not everyone is comfortable. YouTube <strong>said</strong> it was “a vital resource for young people” and <strong>argued</strong> that a ban risked pushing children towards “anonymous, less safe services”.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-5">The timetable is tight. The government <strong>said</strong> it wanted a vote by the end of 2026 and the rules in force early in 2027. A professor of internet law <strong>warned</strong> that secondary legislation can be challenged in the courts, which could delay it. Meanwhile, Australia’s early results are not encouraging: one survey <strong>found</strong> that 61% of 12–15-year-olds who had used restricted platforms still had access to at least one account.</p>
+            <p class="readalong-para" id="para-5">Ofcom <strong>told</strong> the government that checks at 16 are harder than checks at 18, because there is less identity data to compare. Roblox <strong>said</strong> it had already expanded its own tools to estimate a user’s age.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-6">Read the verbs and you can hear the argument. A company <em>says</em>; a regulator <em>tells</em>; a professor <em>warns</em>; a minister <em>claims</em>. Reported speech is not just grammar — it is how a news story keeps its distance from what people want you to believe.</p>
+            <p class="readalong-para" id="para-6">Then there is the question of <span class="keyword" data-def="To avoid a rule or a check." data-zh="繞過">bypassing</span>. A VPN can disguise a user’s location, and some children already use one. The children’s minister <strong>said</strong> there were “options” for age-gating VPN use. The prime minister <strong>said</strong> it was inevitable that some teenagers would try to get around the rules, but that this did not mean the <span class="keyword" data-def="A law or a set of laws." data-zh="法規">legislation</span> was wrong.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-7">The timetable is tight. The government <strong>said</strong> it wanted a vote by the end of 2026 and the rules in force early in 2027. A professor of internet law <strong>warned</strong> that secondary legislation can be challenged in the courts, which could delay it.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-8">Meanwhile, Australia’s early results are not encouraging: one survey <strong>found</strong> that 61% of 12–15-year-olds who had used restricted platforms still had access to at least one account.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-9">Read the verbs and you can hear the argument. A company <em>says</em>; a regulator <em>tells</em>; a professor <em>warns</em>; a minister <em>claims</em>. Reported speech is not just grammar — it is how a news story keeps its distance from what people want you to believe.</p>
         </div>
         <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Adapted from “Five big questions about the UK’s under-16s social media ban”, BBC News, 16 June 2026. (<a href="https://www.bbc.com/news/articles/c9824zvpz9po" target="_blank" rel="noopener">source</a>).</p>
     </section>

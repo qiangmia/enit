@@ -447,6 +447,45 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Figures and pull quotes ------------------------- */
+        .fig { margin: 0 0 1.2rem; }
+        .fig-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .fig-cap {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+        }
+        .pull {
+            margin: 1.2rem 0;
+            padding: 0.95rem 1.1rem;
+            border-left: 4px solid var(--accent);
+            background: var(--bg);
+            border-radius: 0 8px 8px 0;
+        }
+        .article .pull p {
+            margin: 0;
+            font-size: 1.12rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--primary);
+        }
+        .pull cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-style: normal;
+            color: var(--text);
+        }
+
         @media print {
             .para-play, .audio-note { display: none; }
         }
@@ -504,6 +543,42 @@
 
     <section class="card">
         <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <figure class="fig"><svg viewBox="0 0 800 300" role="img" aria-labelledby="fig12t fig12d" class="fig-svg">
+  <title id="fig12t">Model capability by task length, 2023 and 2026</title>
+  <desc id="fig12d">Bars showing models completing 85, 15 and 0 percent of 5-minute, hour and longer tasks in 2023, and 99, 96 and 67 percent in 2026.</desc>
+  <g font-family="Helvetica Neue, Arial, sans-serif">
+    <text x="60" y="34" font-size="11" font-weight="700" letter-spacing="1" fill="var(--primary)">SHARE OF TASKS COMPLETED</text>
+    <rect x="500" y="24" width="14" height="10" rx="2" fill="var(--border)"/>
+    <text x="520" y="34" font-size="11" fill="var(--text)">2023</text>
+    <rect x="590" y="24" width="14" height="10" rx="2" fill="var(--accent)"/>
+    <text x="610" y="34" font-size="11" fill="var(--text)">2026</text>
+
+    <line x1="60" y1="220" x2="740" y2="220" stroke="var(--border)" stroke-width="2"/>
+    <line x1="60" y1="140" x2="740" y2="140" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 4"/>
+    <text x="46" y="144" text-anchor="end" font-size="10" fill="var(--text)">50</text>
+    <text x="46" y="224" text-anchor="end" font-size="10" fill="var(--text)">0</text>
+
+    <rect x="125" y="84" width="50" height="136" rx="3" fill="var(--border)"/>
+    <text x="150" y="76" text-anchor="middle" font-size="11" fill="var(--text)">85</text>
+    <rect x="185" y="62" width="50" height="158" rx="3" fill="var(--accent)"/>
+    <text x="210" y="54" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">99</text>
+    <text x="180" y="244" text-anchor="middle" font-size="12" fill="var(--text)">up to 5 min</text>
+
+    <rect x="345" y="196" width="50" height="24" rx="3" fill="var(--border)"/>
+    <text x="370" y="188" text-anchor="middle" font-size="11" fill="var(--text)">15</text>
+    <rect x="405" y="66" width="50" height="154" rx="3" fill="var(--accent)"/>
+    <text x="430" y="58" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">96</text>
+    <text x="400" y="244" text-anchor="middle" font-size="12" fill="var(--text)">5 to 59 min</text>
+
+    <rect x="565" y="218" width="50" height="2" rx="1" fill="var(--border)"/>
+    <text x="590" y="210" text-anchor="middle" font-size="11" fill="var(--text)">0</text>
+    <rect x="625" y="113" width="50" height="107" rx="3" fill="var(--accent)"/>
+    <text x="650" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">67</text>
+    <text x="620" y="244" text-anchor="middle" font-size="12" fill="var(--text)">over 1 hour</text>
+
+    <text x="60" y="282" font-size="11" fill="var(--text)">Software tasks. The gap closes from the bottom: short tasks first, long tasks last.</text>
+  </g>
+</svg><figcaption class="fig-cap">What changed in three years: the share of tasks a model finishes, grouped by how long the task takes a human expert.</figcaption></figure>
         <div class="article">
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
             <p class="readalong-para dropcap" id="para-1">Artificial-intelligence companies are making large claims about their tools. Some jobs, they say, will be <span class="keyword" data-def="To make a process run without a person doing it." data-zh="自動化">automated</span> completely. Others will be <span class="keyword" data-def="To add to something rather than replace it." data-zh="增強">augmented</span>: the person stays, but the work changes. Company bosses are spending enormous sums on these tools, partly because they expect to save money on <span class="keyword" data-def="The number of people employed by a company." data-zh="員工人數">headcount</span>.</p>
@@ -511,17 +586,25 @@
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
             <p class="readalong-para" id="para-2">"Flat is the new up," one saying goes: a company whose workforce stays the same size is now considered a success. If even half of this is true, there will be an impact on all of us — and perhaps sooner than we think.</p>
 
+        <blockquote class="pull"><p>Flat is the new up: a company whose workforce stays the same size is now considered a success.</p><cite>A saying quoted in the report</cite></blockquote>
+
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
             <p class="readalong-para" id="para-3">The clearest evidence comes from software. A <span class="keyword" data-def="A standard test used to compare systems." data-zh="基準">benchmark</span> measures how much of a task a model can complete, grouped by how long a human expert would take. Three years ago, models could finish tasks that took a person seconds or minutes. The newest models can complete many tasks that take an hour, and some that take longer. Software is only the first field; financial analysis and early legal work show the same pattern at an earlier stage.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-4">What does that mean for jobs? Stanford University analysed four years of employment data. It found a <strong>2.7%</strong> fall in employment for workers aged 22 to 25 since ChatGPT became widely used. In the most <span class="keyword" data-def="Likely to be affected by a risk." data-zh="受影響的">exposed</span> sectors — finance, software and creative industries — the fall was <strong>12.8%</strong>. Not all economists agree: interest-rate rises, they argue, could explain part of it.</p>
+            <p class="readalong-para" id="para-4">What does that mean for jobs? Stanford University analysed four years of employment data. It found a <strong>2.7%</strong> fall in employment for workers aged 22 to 25 since ChatGPT became widely used. In the most <span class="keyword" data-def="Likely to be affected by a risk." data-zh="受影響的">exposed</span> sectors — finance, software and creative industries — the fall was <strong>12.8%</strong>.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-5">There is a second reason for caution. AI use is measured in <span class="keyword" data-def="A small piece of text that a model reads or produces." data-zh="詞元">tokens</span>, small pieces of text. Token use grew enormously in 2026, and some companies set up "token leaderboards" to push staff to use the tools more. Then the bills arrived, and many began to ration access. If virtual workers cost more than human ones, <span class="keyword" data-def="The act of starting to use something." data-zh="採用">adoption</span> may slow down. That is a real <span class="keyword" data-def="A warning that limits how a claim should be read." data-zh="但書；注意事項">caveat</span>, not a detail: the <span class="keyword" data-def="A statement about what is likely to happen." data-zh="預測">forecast</span> depends on the price.</p>
+            <p class="readalong-para" id="para-5">Not all economists agree: interest-rate rises, they argue, could explain part of it.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-6">So the honest summary is a conditional one. If routine tasks are automated, junior roles will change, and some will disappear. If the costs stay high, the change will be slower than the headlines suggest. Either way, workers who can check, supervise and correct the output will be in a stronger position than workers who can only produce it.</p>
+            <p class="readalong-para" id="para-6">There is a second reason for caution. AI use is measured in <span class="keyword" data-def="A small piece of text that a model reads or produces." data-zh="詞元">tokens</span>, small pieces of text. Token use grew enormously in 2026, and some companies set up "token leaderboards" to push staff to use the tools more. Then the bills arrived, and many began to ration access.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-7">If virtual workers cost more than human ones, <span class="keyword" data-def="The act of starting to use something." data-zh="採用">adoption</span> may slow down. That is a real <span class="keyword" data-def="A warning that limits how a claim should be read." data-zh="但書；注意事項">caveat</span>, not a detail: the <span class="keyword" data-def="A statement about what is likely to happen." data-zh="預測">forecast</span> depends on the price.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-8">So the honest summary is a conditional one. If routine tasks are automated, junior roles will change, and some will disappear. If the costs stay high, the change will be slower than the headlines suggest. Either way, workers who can check, supervise and correct the output will be in a stronger position than workers who can only produce it.</p>
         </div>
         <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Adapted from “Will your job be replaced by AI? Here are the roles most affected”, BBC News, 22 July 2026. (<a href="https://www.bbc.com/news/articles/cn7nllr4vd6o" target="_blank" rel="noopener">source</a>).</p>
     </section>

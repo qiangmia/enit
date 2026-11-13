@@ -447,6 +447,45 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Figures and pull quotes ------------------------- */
+        .fig { margin: 0 0 1.2rem; }
+        .fig-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .fig-cap {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+        }
+        .pull {
+            margin: 1.2rem 0;
+            padding: 0.95rem 1.1rem;
+            border-left: 4px solid var(--accent);
+            background: var(--bg);
+            border-radius: 0 8px 8px 0;
+        }
+        .article .pull p {
+            margin: 0;
+            font-size: 1.12rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--primary);
+        }
+        .pull cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-style: normal;
+            color: var(--text);
+        }
+
         @media print {
             .para-play, .audio-note { display: none; }
         }
@@ -503,6 +542,35 @@
     <section class="card" id="moves">
         <div class="card-header"><span class="card-icon">🔁</span>The Five Moves</div>
         <p>A rephrase is not a synonym hunt. It is a change of structure that keeps the information. These are the five moves, with a sentence from Week 11.</p>
+                <figure class="fig">
+                <svg viewBox="0 0 800 250" role="img" aria-labelledby="fig15t fig15d" class="fig-svg">
+                  <title id="fig15t">One sentence, three rephrasings</title>
+                  <desc id="fig15d">The original sentence in a box on the left, with arrows to three rewritten versions, each labelled with the move it uses.</desc>
+                  <g font-family="Helvetica Neue, Arial, sans-serif">
+                    <rect x="30" y="80" width="290" height="96" rx="10" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>
+                    <text x="50" y="106" font-size="11" font-weight="700" letter-spacing="1" fill="var(--accent)">ORIGINAL</text>
+                    <text x="50" y="132" font-size="13" fill="var(--text)">The team rolled back the</text>
+                    <text x="50" y="152" font-size="13" fill="var(--text)">change at 03:06.</text>
+
+                    <line x1="326" y1="128" x2="404" y2="46" stroke="var(--border)" stroke-width="2"/>
+                    <line x1="326" y1="128" x2="404" y2="128" stroke="var(--border)" stroke-width="2"/>
+                    <line x1="326" y1="128" x2="404" y2="210" stroke="var(--border)" stroke-width="2"/>
+
+                    <rect x="410" y="14" width="360" height="62" rx="10" fill="var(--card-bg)" stroke="var(--border)"/>
+                    <text x="426" y="36" font-size="10" font-weight="700" letter-spacing="1" fill="var(--primary)">CHANGE THE SUBJECT</text>
+                    <text x="426" y="60" font-size="13" fill="var(--text)">The change was rolled back at 03:06.</text>
+
+                    <rect x="410" y="97" width="360" height="62" rx="10" fill="var(--card-bg)" stroke="var(--border)"/>
+                    <text x="426" y="119" font-size="10" font-weight="700" letter-spacing="1" fill="var(--primary)">SWAP THE VOCABULARY</text>
+                    <text x="426" y="143" font-size="13" fill="var(--text)">At 03:06 the team undid the change.</text>
+
+                    <rect x="410" y="180" width="360" height="62" rx="10" fill="var(--card-bg)" stroke="var(--border)"/>
+                    <text x="426" y="202" font-size="10" font-weight="700" letter-spacing="1" fill="var(--primary)">SPLIT THE SENTENCE</text>
+                    <text x="426" y="226" font-size="13" fill="var(--text)">The team rolled the change back. It was 03:06.</text>
+                  </g>
+                </svg>
+                <figcaption class="fig-cap">Three moves, one meaning. The facts — who, what, when, and the negative, if there is one — do not change.</figcaption>
+                </figure>
                 <div class="grid-2">
                     <div class="example-box"><strong>1. Change the subject</strong><br>Original: “The team rolled back the change.”<br>Rephrased: “The change <strong>was rolled back</strong>.”</div>
                     <div class="example-box"><strong>2. Change the voice</strong><br>Original: “The replica was saturated.”<br>Rephrased: “The replica <strong>could not handle the traffic</strong>.”</div>

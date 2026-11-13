@@ -447,6 +447,45 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Figures and pull quotes ------------------------- */
+        .fig { margin: 0 0 1.2rem; }
+        .fig-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .fig-cap {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+        }
+        .pull {
+            margin: 1.2rem 0;
+            padding: 0.95rem 1.1rem;
+            border-left: 4px solid var(--accent);
+            background: var(--bg);
+            border-radius: 0 8px 8px 0;
+        }
+        .article .pull p {
+            margin: 0;
+            font-size: 1.12rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--primary);
+        }
+        .pull cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-style: normal;
+            color: var(--text);
+        }
+
         @media print {
             .para-play, .audio-note { display: none; }
         }
@@ -504,24 +543,80 @@
 
     <section class="card">
         <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <figure class="fig"><svg viewBox="0 0 800 300" role="img" aria-labelledby="fig11t fig11d" class="fig-svg">
+  <title id="fig11t">Incident timeline and what the traffic did</title>
+  <desc id="fig11d">A timeline from the 02:50 deploy to service restored at 03:19, with Singapore traffic falling, Frankfurt rising, and replica load rising to 97 percent.</desc>
+  <g font-family="Helvetica Neue, Arial, sans-serif">
+    <line x1="70" y1="58" x2="730" y2="58" stroke="var(--border)" stroke-width="2"/>
+    <circle cx="90" cy="58" r="6" fill="var(--primary)"/>
+    <text x="90" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="var(--primary)">02:50</text>
+    <text x="90" y="82" text-anchor="middle" font-size="12" fill="var(--text)">deploy</text>
+
+    <circle cx="300" cy="58" r="6" fill="var(--primary)"/>
+    <text x="300" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="var(--primary)">03:04</text>
+    <text x="300" y="82" text-anchor="middle" font-size="12" fill="var(--text)">alert</text>
+
+    <circle cx="510" cy="58" r="6" fill="var(--accent)"/>
+    <text x="510" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">03:11</text>
+    <text x="510" y="82" text-anchor="middle" font-size="12" fill="var(--text)">rollback</text>
+
+    <circle cx="710" cy="58" r="6" fill="var(--success)"/>
+    <text x="710" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="var(--success)">03:19</text>
+    <text x="710" y="82" text-anchor="middle" font-size="12" fill="var(--text)">restored</text>
+
+    <text x="70" y="122" font-size="11" font-weight="700" letter-spacing="1" fill="var(--primary)">TRAFFIC AND LOAD</text>
+    <rect x="560" y="112" width="14" height="10" rx="2" fill="var(--border)"/>
+    <text x="580" y="122" font-size="11" fill="var(--text)">before 03:04</text>
+    <rect x="660" y="112" width="14" height="10" rx="2" fill="var(--accent)"/>
+    <text x="680" y="122" font-size="11" fill="var(--text)">after</text>
+
+    <text x="70" y="152" font-size="12" fill="var(--text)">Singapore</text>
+    <rect x="180" y="141" width="200" height="13" rx="3" fill="var(--border)"/>
+    <text x="390" y="152" font-size="11" fill="var(--text)">100</text>
+    <rect x="180" y="159" width="80" height="13" rx="3" fill="var(--accent)"/>
+    <text x="270" y="170" font-size="11" fill="var(--text)">40</text>
+
+    <text x="70" y="197" font-size="12" fill="var(--text)">Frankfurt</text>
+    <rect x="180" y="186" width="80" height="13" rx="3" fill="var(--border)"/>
+    <text x="270" y="197" font-size="11" fill="var(--text)">40</text>
+    <rect x="180" y="204" width="520" height="13" rx="3" fill="var(--accent)"/>
+    <text x="708" y="215" text-anchor="end" font-size="11" fill="var(--text)">260</text>
+
+    <text x="70" y="242" font-size="12" fill="var(--text)">Replica load</text>
+    <rect x="180" y="231" width="82" height="13" rx="3" fill="var(--border)"/>
+    <text x="272" y="242" font-size="11" fill="var(--text)">41</text>
+    <rect x="180" y="249" width="194" height="13" rx="3" fill="var(--warm)"/>
+    <text x="384" y="260" font-size="11" font-weight="700" fill="var(--text)">97 — saturated</text>
+
+    <text x="70" y="288" font-size="11" fill="var(--text)">Requests by region, before and after the routing rule. Bars are percentages of the normal Singapore load.</text>
+  </g>
+</svg><figcaption class="fig-cap">The shape of the incident: four moments on the status page, and what the traffic did between them.</figcaption></figure>
         <div class="article">
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para dropcap" id="para-1">On Thursday at 02:50, Lin Yu-Ting started a routine rollout. She is 24 and works on the cloud operations team of a software company in Taipei. The new routing rule had been tested in the <span class="keyword" data-def="A test copy of a system, used before a change goes live." data-zh="預備環境">staging environment</span>, and two engineers had signed it off. It was pushed to the Singapore <span class="keyword" data-def="One large area of a cloud provider’s network, such as Singapore or Frankfurt." data-zh="區域">region</span> first, because that region carries the least <span class="keyword" data-def="The requests arriving at a service." data-zh="流量">traffic</span> at that hour.</p>
+            <p class="readalong-para dropcap" id="para-1">On Thursday at 02:50, Lin Yu-Ting started a routine rollout. She is 24 and works on the cloud operations team of a software company in Taipei.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-2">At 03:04 the first alert arrived. Requests to one <span class="keyword" data-def="A separate set of machines inside a region, so one failure cannot take everything down." data-zh="可用區">availability zone</span> were timing out. The dashboard showed healthy servers, which made no sense: the machines were running, but traffic was not reaching them.</p>
+            <p class="readalong-para" id="para-2">The new routing rule had been tested in the <span class="keyword" data-def="A test copy of a system, used before a change goes live." data-zh="預備環境">staging environment</span>, and two engineers had signed it off. It was pushed to the Singapore <span class="keyword" data-def="One large area of a cloud provider’s network, such as Singapore or Frankfurt." data-zh="區域">region</span> first, because that region carries the least <span class="keyword" data-def="The requests arriving at a service." data-zh="流量">traffic</span> at that hour.</p>
+
+        <blockquote class="pull"><p>When something breaks at three in the morning, the last thing users need is a name. They need to know what happened, when it will be fixed, and whether their data is safe.</p><cite>Lin Yu-Ting, cloud operations engineer</cite></blockquote>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-3">Yu-Ting opened the routing table. The new rule sent all traffic to the older zone, where the <span class="keyword" data-def="A copy of the data kept on another machine." data-zh="副本">replica</span> was already under heavy load. The replica was not down. It was <span class="keyword" data-def="Still running, but unable to handle more work." data-zh="滿載的">saturated</span>: still running, but unable to answer fast enough. <span class="keyword" data-def="The delay before a response arrives." data-zh="延遲">Latency</span> climbed for four minutes before anyone noticed.</p>
+            <p class="readalong-para" id="para-3">At 03:04 the first alert arrived. Requests to one <span class="keyword" data-def="A separate set of machines inside a region, so one failure cannot take everything down." data-zh="可用區">availability zone</span> were timing out. The dashboard showed healthy servers, which made no sense: the machines were running, but traffic was not reaching them.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-4">At 03:11 she <span class="keyword" data-def="To return a system to the version before a change." data-zh="回滾">rolled the change back</span>. Normal traffic returned at 03:19. The <span class="keyword" data-def="A public page that says whether a service is working." data-zh="狀態頁">status page</span> was updated once, and it was three sentences long: “A routing change was rolled back. Service was restored at 03:19. No data was lost.” The <span class="keyword" data-def="Time when a service is not available." data-zh="停機時間">downtime</span> was fifteen minutes: customers in the affected zone saw an error page, and everyone else noticed nothing.</p>
+            <p class="readalong-para" id="para-4">Yu-Ting opened the routing table. The new rule sent all traffic to the older zone, where the <span class="keyword" data-def="A copy of the data kept on another machine." data-zh="副本">replica</span> was already under heavy load. The replica was not down. It was <span class="keyword" data-def="Still running, but unable to handle more work." data-zh="滿載的">saturated</span>: still running, but unable to answer fast enough. <span class="keyword" data-def="The delay before a response arrives." data-zh="延遲">Latency</span> climbed for four minutes before anyone noticed.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-5">On Friday morning the team held a <span class="keyword" data-def="A meeting after an incident to find the cause without blaming people." data-zh="事後檢討">post-mortem</span>. Nobody was blamed. The question was why the staging test had passed. The answer was simple: it had been run against one region, and the problem only appeared when two regions were compared.</p>
+            <p class="readalong-para" id="para-5">At 03:11 she <span class="keyword" data-def="To return a system to the version before a change." data-zh="回滾">rolled the change back</span>. Normal traffic returned at 03:19. The <span class="keyword" data-def="A public page that says whether a service is working." data-zh="狀態頁">status page</span> was updated once, and it was three sentences long: “A routing change was rolled back. Service was restored at 03:19. No data was lost.”</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-6">Yu-Ting wrote the report in the passive on purpose. “When something breaks at three in the morning,” she says, “the last thing users need is a name. They need to know what happened, when it will be fixed, and whether their data is safe.”</p>
+            <p class="readalong-para" id="para-6">The <span class="keyword" data-def="Time when a service is not available." data-zh="停機時間">downtime</span> was fifteen minutes: customers in the affected zone saw an error page, and everyone else noticed nothing.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-7">On Friday morning the team held a <span class="keyword" data-def="A meeting after an incident to find the cause without blaming people." data-zh="事後檢討">post-mortem</span>. Nobody was blamed. The question was why the staging test had passed. The answer was simple: it had been run against one region, and the problem only appeared when two regions were compared.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-8">Yu-Ting wrote the report in the passive on purpose. “When something breaks at three in the morning,” she says, “the last thing users need is a name. They need to know what happened, when it will be fixed, and whether their data is safe.”</p>
         </div>
         <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Original story for this course.</p>
     </section>

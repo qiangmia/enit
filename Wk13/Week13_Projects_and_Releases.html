@@ -447,6 +447,45 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Figures and pull quotes ------------------------- */
+        .fig { margin: 0 0 1.2rem; }
+        .fig-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .fig-cap {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+        }
+        .pull {
+            margin: 1.2rem 0;
+            padding: 0.95rem 1.1rem;
+            border-left: 4px solid var(--accent);
+            background: var(--bg);
+            border-radius: 0 8px 8px 0;
+        }
+        .article .pull p {
+            margin: 0;
+            font-size: 1.12rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--primary);
+        }
+        .pull cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            font-style: normal;
+            color: var(--text);
+        }
+
         @media print {
             .para-play, .audio-note { display: none; }
         }
@@ -504,21 +543,65 @@
 
     <section class="card">
         <p class="audio-note">Read along: tap ▶ for narration. Tap a highlighted word for its definition.</p>
+        <figure class="fig"><svg viewBox="0 0 800 300" role="img" aria-labelledby="fig13t fig13d" class="fig-svg">
+  <title id="fig13t">Scope creep and the Wednesday cut</title>
+  <desc id="fig13d">A line rising from the Monday request through a date filter and a file format to a logo, then dropping on Wednesday when the logo and filters were cut.</desc>
+  <g font-family="Helvetica Neue, Arial, sans-serif">
+    <text x="60" y="32" font-size="11" font-weight="700" letter-spacing="1" fill="var(--primary)">WHAT THE TEAM AGREED TO BUILD</text>
+    <line x1="60" y1="240" x2="740" y2="240" stroke="var(--border)" stroke-width="2"/>
+
+    <polyline points="120,205 300,168 460,126 620,84" fill="none" stroke="var(--accent)" stroke-width="3"/>
+    <polyline points="620,84 700,150" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 5"/>
+
+    <circle cx="120" cy="205" r="5" fill="var(--accent)"/>
+    <text x="120" y="192" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">export</text>
+    <text x="120" y="262" text-anchor="middle" font-size="11" fill="var(--text)">Monday</text>
+
+    <circle cx="300" cy="168" r="5" fill="var(--accent)"/>
+    <text x="300" y="155" text-anchor="middle" font-size="12" fill="var(--text)">+ date filter</text>
+    <text x="300" y="262" text-anchor="middle" font-size="11" fill="var(--text)">Tuesday am</text>
+
+    <circle cx="460" cy="126" r="5" fill="var(--accent)"/>
+    <text x="460" y="113" text-anchor="middle" font-size="12" fill="var(--text)">+ file format</text>
+    <text x="460" y="262" text-anchor="middle" font-size="11" fill="var(--text)">Tuesday pm</text>
+
+    <circle cx="620" cy="84" r="5" fill="var(--accent)"/>
+    <text x="620" y="71" text-anchor="middle" font-size="12" fill="var(--text)">+ logo</text>
+    <text x="620" y="262" text-anchor="middle" font-size="11" fill="var(--text)">Wednesday</text>
+
+    <circle cx="700" cy="150" r="5" fill="var(--success)"/>
+    <text x="700" y="137" text-anchor="middle" font-size="12" font-weight="700" fill="var(--success)">shipped</text>
+    <text x="700" y="262" text-anchor="middle" font-size="11" fill="var(--text)">Thursday</text>
+
+    <line x1="742" y1="60" x2="742" y2="244" stroke="var(--warm)" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="734" y="52" text-anchor="end" font-size="11" font-weight="700" fill="var(--warm)">demo</text>
+
+    <text x="60" y="288" font-size="11" fill="var(--text)">The logo and the filters were dropped; the basic export shipped. “Small requests are still requests.”</text>
+  </g>
+</svg><figcaption class="fig-cap">Scope rising one reasonable request at a time, and the cut that protected the demo.</figcaption></figure>
         <div class="article">
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
             <p class="readalong-para dropcap" id="para-1">Chen Po-Han is 25 and works as a junior developer at a small app studio in Taipei. His team has four people and one <span class="keyword" data-def="A short, fixed period of work, usually one to four weeks." data-zh="衝刺（開發週期）">sprint</span> of two weeks. On Monday, three days before a client demo, the <span class="keyword" data-def="The list of work waiting to be done." data-zh="待辦清單">backlog</span> was empty enough to feel calm. Then a message arrived.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-2">The client’s marketing manager wanted “one small export feature” before the demo. Po-Han estimated it at two days. His <span class="keyword" data-def="Anyone affected by a project or able to ask for changes." data-zh="利害關係人">stakeholder</span> said it would take one. The team agreed to try. By Tuesday afternoon the feature had grown: first a date filter, then a choice of file format, then a logo on every page. This is <span class="keyword" data-def="A project growing slowly through small additions." data-zh="範圍蔓延">scope creep</span>: a project that gets larger one reasonable request at a time.</p>
+            <p class="readalong-para" id="para-2">The client’s marketing manager wanted “one small export feature” before the demo. Po-Han estimated it at two days. His <span class="keyword" data-def="Anyone affected by a project or able to ask for changes." data-zh="利害關係人">stakeholder</span> said it would take one. The team agreed to try.</p>
+
+        <blockquote class="pull"><p>Small requests are still requests.</p><cite>The team’s retrospective, written on the board</cite></blockquote>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-3">On Wednesday morning the team met for twenty minutes. Their <span class="keyword" data-def="An important point in a plan, such as a demo." data-zh="里程碑">milestone</span> — the demo — could not move. The new feature was now a <span class="keyword" data-def="Something that stops other work from finishing." data-zh="阻礙">blocker</span> for two other <span class="keyword" data-def="Something the team must produce for the client." data-zh="交付項目">deliverables</span>. “We have two options,” the team lead said. “We can delay the export, or we can ship it without the filters.”</p>
+            <p class="readalong-para" id="para-3">By Tuesday afternoon the feature had grown: first a date filter, then a choice of file format, then a logo on every page. This is <span class="keyword" data-def="A project growing slowly through small additions." data-zh="範圍蔓延">scope creep</span>: a project that gets larger one reasonable request at a time.</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-4">They decided to cut the logo, postpone the filters, and keep the basic export. Po-Han avoided estimating in front of the client again; he wrote the estimate down instead. The team <span class="keyword" data-def="To decide what matters most and do it first." data-zh="排優先順序">prioritised</span> the demo, <span class="keyword" data-def="To give official approval to a plan or a release." data-zh="核准">signed off</span> the shorter scope in writing, and shipped on Thursday night.</p>
+            <p class="readalong-para" id="para-4">On Wednesday morning the team met for twenty minutes. Their <span class="keyword" data-def="An important point in a plan, such as a demo." data-zh="里程碑">milestone</span> — the demo — could not move. The new feature was now a <span class="keyword" data-def="Something that stops other work from finishing." data-zh="阻礙">blocker</span> for two other <span class="keyword" data-def="Something the team must produce for the client." data-zh="交付項目">deliverables</span>. “We have two options,” the team lead said. “We can delay the export, or we can ship it without the filters.”</p>
 
         <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
-            <p class="readalong-para" id="para-5">On Friday the demo went well. The client asked when the filters would arrive, and the answer was a date, not a promise. In the <span class="keyword" data-def="A short meeting after a sprint to improve the next one." data-zh="回顧會議">retrospective</span> that afternoon, the team wrote one sentence on the board: “Small requests are still requests.” The <span class="keyword" data-def="Passing work and information to the next person or sprint." data-zh="交接">handover</span> note for the next sprint listed the postponed work, with the estimate that had been ignored on Monday.</p>
+            <p class="readalong-para" id="para-5">They decided to cut the logo, postpone the filters, and keep the basic export. Po-Han avoided estimating in front of the client again; he wrote the estimate down instead. The team <span class="keyword" data-def="To decide what matters most and do it first." data-zh="排優先順序">prioritised</span> the demo, <span class="keyword" data-def="To give official approval to a plan or a release." data-zh="核准">signed off</span> the shorter scope in writing, and shipped on Thursday night.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-6">On Friday the demo went well. The client asked when the filters would arrive, and the answer was a date, not a promise.</p>
+
+        <button type="button" class="para-play" onclick="playThisPara(this)" aria-label="Play narration for this paragraph">&#9654;</button>
+            <p class="readalong-para" id="para-7">In the <span class="keyword" data-def="A short meeting after a sprint to improve the next one." data-zh="回顧會議">retrospective</span> that afternoon, the team wrote one sentence on the board: “Small requests are still requests.” The <span class="keyword" data-def="Passing work and information to the next person or sprint." data-zh="交接">handover</span> note for the next sprint listed the postponed work, with the estimate that had been ignored on Monday.</p>
         </div>
         <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.8rem;">Original story for this course.</p>
     </section>
