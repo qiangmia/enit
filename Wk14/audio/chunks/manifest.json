@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "kind": "read-aloud chunks",
+  "generated_at": "2026-11-25T12:12:57Z",
+  "model": "heygen/heygen-voice-1-turbo:free",
+  "voice": "nadine",
+  "chunks": [
+    {
+      "file": "c01.mp3",
+      "text": "The UK government has announced a ban on social media for under-16s. The apps named so far are Snapchat, TikTok, YouTube, Instagram, Facebook and X."
+    },
+    {
+      "file": "c02.mp3",
+      "text": "Australia has gone further: its list also includes Kick, Reddit, Threads and Twitch."
+    },
+    {
+      "file": "c03.mp3",
+      "text": "Messaging apps such as WhatsApp and Signal are not expected to be included, and gaming sites such as Roblox sit in an unclear middle."
+    },
+    {
+      "file": "c04.mp3",
+      "text": "The details matter, because a ban needs an exemption list and a way to check ages."
+    },
+    {
+      "file": "c05.mp3",
+      "text": "The government says it will use “highly effective age assurance”, a term that covers facial age estimation, photo ID matching and digital identity services. The regulator, Ofcom, will be expected to enforce it."
+    },
+    {
+      "file": "c06.mp3",
+      "text": "Not everyone is comfortable. YouTube said it was “a vital resource for young people” and argued that a ban risked pushing children towards “anonymous, less safe services”."
+    },
+    {
+      "file": "c07.mp3",
+      "text": "Ofcom told the government that checks at 16 are harder than checks at 18, because there is less identity data to compare."
+    },
+    {
+      "file": "c08.mp3",
+      "text": "Roblox said it had already expanded its own tools to estimate a user’s age."
+    },
+    {
+      "file": "c09.mp3",
+      "text": "Then there is the question of bypassing. A VPN can disguise a user’s location, and some children already use one."
+    },
+    {
+      "file": "c10.mp3",
+      "text": "The children’s minister said there were “options” for age-gating VPN use."
+    },
+    {
+      "file": "c11.mp3",
+      "text": "The prime minister said it was inevitable that some teenagers would try to get around the rules, but that this did not mean the legislation was wrong."
+    },
+    {
+      "file": "c12.mp3",
+      "text": "The timetable is tight. The government said it wanted a vote by the end of 2026 and the rules in force early in 2027."
+    },
+    {
+      "file": "c13.mp3",
+      "text": "A professor of internet law warned that secondary legislation can be challenged in the courts, which could delay it."
+    },
+    {
+      "file": "c14.mp3",
+      "text": "Meanwhile, Australia’s early results are not encouraging: one survey found that 61% of 12–15-year-olds who had used restricted platforms still had access to at least one account."
+    },
+    {
+      "file": "c15.mp3",
+      "text": "Read the verbs and you can hear the argument. A company says; a regulator tells; a professor warns; a minister claims."
+    }
+  ]
+}

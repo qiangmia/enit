@@ -447,6 +447,25 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Banner ------------------------------------------- */
+        .banner { margin: 0 0 1.4rem; }
+        .banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card-bg);
+        }
+        .banner figcaption {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+        .banner a { color: var(--accent); }
+
         /* -- Figures and pull quotes ------------------------- */
         .fig { margin: 0 0 1.2rem; }
         .fig-svg {
@@ -752,6 +771,7 @@
 
 </main>
 
+<script src="../seating.js"></script>
 
 <script>
 /* Read-along narration: one button per paragraph, one audio element. */
@@ -917,5 +937,7 @@
 })();
 </script>
 
+
+<script src="../read-aloud.js?v=2e95fbb3" defer></script>
 </body>
 </html>

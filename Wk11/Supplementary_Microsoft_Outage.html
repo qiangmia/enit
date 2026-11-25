@@ -662,6 +662,24 @@
             font-style: italic;
             line-height: 1.6;
         }
+
+        /* News banner: the photograph is the story's face, so it sits at the top
+           of the page, above the reading. */
+        .article-banner { margin: 0 0 1.4rem; }
+        .article-banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .article-banner figcaption {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            color: var(--text);
+            line-height: 1.5;
+        }
         .activity-answer {
             margin-top: 0.9rem;
             background: var(--info-bg);
@@ -789,6 +807,13 @@
             <li><a href="#activity">Activity: The Passive and the Blame</a></li>
         </ul>
     </nav>
+
+    <figure class="article-banner">
+        <img src="microsoft-outage.jpg"
+             alt="A news graphic showing the Microsoft logo on a dark screen, with the words “Global Outage” in red beneath it."
+             loading="lazy">
+        <figcaption>Microsoft 365, Teams and Outlook went down worldwide on 12–13 November 2026. Photo: Reuters.</figcaption>
+    </figure>
 
     <section id="before">
         <button class="section-toggle" aria-expanded="true">

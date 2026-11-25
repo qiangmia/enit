@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "kind": "read-aloud chunks",
+  "generated_at": "2026-11-25T12:06:33Z",
+  "model": "heygen/heygen-voice-1-turbo:free",
+  "voice": "nadine",
+  "chunks": [
+    {
+      "file": "c01.mp3",
+      "text": "Chen Po-Han is 25 and works as a junior developer at a small app studio in Taipei. His team has four people and one sprint of two weeks."
+    },
+    {
+      "file": "c02.mp3",
+      "text": "On Monday, three days before a client demo, the backlog was empty enough to feel calm. Then a message arrived."
+    },
+    {
+      "file": "c03.mp3",
+      "text": "The client’s marketing manager wanted “one small export feature” before the demo. Po-Han estimated it at two days."
+    },
+    {
+      "file": "c04.mp3",
+      "text": "His stakeholder said it would take one. The team agreed to try."
+    },
+    {
+      "file": "c05.mp3",
+      "text": "By Tuesday afternoon the feature had grown: first a date filter, then a choice of file format, then a logo on every page."
+    },
+    {
+      "file": "c06.mp3",
+      "text": "This is scope creep: a project that gets larger one reasonable request at a time."
+    },
+    {
+      "file": "c07.mp3",
+      "text": "On Wednesday morning the team met for twenty minutes. Their milestone — the demo — could not move."
+    },
+    {
+      "file": "c08.mp3",
+      "text": "The new feature was now a blocker for two other deliverables. “We have two options,” the team lead said."
+    },
+    {
+      "file": "c09.mp3",
+      "text": "“We can delay the export, or we can ship it without the filters.”"
+    },
+    {
+      "file": "c10.mp3",
+      "text": "They decided to cut the logo, postpone the filters, and keep the basic export. Po-Han avoided estimating in front of the client again; he wrote the estimate down instead."
+    },
+    {
+      "file": "c11.mp3",
+      "text": "The team prioritised the demo, signed off the shorter scope in writing, and shipped on Thursday night."
+    },
+    {
+      "file": "c12.mp3",
+      "text": "On Friday the demo went well. The client asked when the filters would arrive, and the answer was a date, not a promise."
+    },
+    {
+      "file": "c13.mp3",
+      "text": "In the retrospective that afternoon, the team wrote one sentence on the board: “Small requests are still requests.” The handover note for the next sprint listed the postponed work, with the estimate that had been ignored on Monday."
+    }
+  ]
+}

@@ -447,6 +447,25 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Banner ------------------------------------------- */
+        .banner { margin: 0 0 1.4rem; }
+        .banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card-bg);
+        }
+        .banner figcaption {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+        .banner a { color: var(--accent); }
+
         /* -- Figures and pull quotes ------------------------- */
         .fig { margin: 0 0 1.2rem; }
         .fig-svg {
@@ -798,6 +817,7 @@
 
 </main>
 
+<script src="../seating.js"></script>
 
 <script>
 /* Read-along narration: one button per paragraph, one audio element. */
@@ -963,5 +983,7 @@
 })();
 </script>
 
+<script type="application/json" id="read-aloud-data">{"week": 12, "chunks": [{"i": 1, "para": 1, "text": "Artificial-intelligence companies are making large claims about their tools. Some jobs, they say, will be automated completely.", "audio": "audio/chunks/c01.mp3"}, {"i": 2, "para": 1, "text": "Others will be augmented: the person stays, but the work changes. Company bosses are spending enormous sums on these tools, partly because they expect to save money on headcount.", "audio": "audio/chunks/c02.mp3"}, {"i": 3, "para": 2, "text": "\"Flat is the new up,\" one saying goes: a company whose workforce stays the same size is now considered a success.", "audio": "audio/chunks/c03.mp3"}, {"i": 4, "para": 2, "text": "If even half of this is true, there will be an impact on all of us — and perhaps sooner than we think.", "audio": "audio/chunks/c04.mp3"}, {"i": 5, "para": 3, "text": "The clearest evidence comes from software. A benchmark measures how much of a task a model can complete, grouped by how long a human expert would take.", "audio": "audio/chunks/c05.mp3"}, {"i": 6, "para": 3, "text": "Three years ago, models could finish tasks that took a person seconds or minutes. The newest models can complete many tasks that take an hour, and some that take longer.", "audio": "audio/chunks/c06.mp3"}, {"i": 7, "para": 3, "text": "Software is only the first field; financial analysis and early legal work show the same pattern at an earlier stage.", "audio": "audio/chunks/c07.mp3"}, {"i": 8, "para": 4, "text": "What does that mean for jobs? Stanford University analysed four years of employment data.", "audio": "audio/chunks/c08.mp3"}, {"i": 9, "para": 4, "text": "It found a 2.7% fall in employment for workers aged 22 to 25 since ChatGPT became widely used. In the most exposed sectors — finance, software and creative industries — the fall was 12.8%.", "audio": "audio/chunks/c09.mp3"}, {"i": 10, "para": 5, "text": "Not all economists agree: interest-rate rises, they argue, could explain part of it.", "audio": "audio/chunks/c10.mp3"}, {"i": 11, "para": 6, "text": "There is a second reason for caution. AI use is measured in tokens, small pieces of text.", "audio": "audio/chunks/c11.mp3"}, {"i": 12, "para": 6, "text": "Token use grew enormously in 2026, and some companies set up \"token leaderboards\" to push staff to use the tools more. Then the bills arrived, and many began to ration access.", "audio": "audio/chunks/c12.mp3"}, {"i": 13, "para": 7, "text": "If virtual workers cost more than human ones, adoption may slow down. That is a real caveat, not a detail: the forecast depends on the price.", "audio": "audio/chunks/c13.mp3"}, {"i": 14, "para": 8, "text": "So the honest summary is a conditional one. If routine tasks are automated, junior roles will change, and some will disappear.", "audio": "audio/chunks/c14.mp3"}, {"i": 15, "para": 8, "text": "If the costs stay high, the change will be slower than the headlines suggest.", "audio": "audio/chunks/c15.mp3"}, {"i": 16, "para": 8, "text": "Either way, workers who can check, supervise and correct the output will be in a stronger position than workers who can only produce it.", "audio": "audio/chunks/c16.mp3"}]}</script>
+<script src="../read-aloud.js?v=2e95fbb3" defer></script>
 </body>
 </html>

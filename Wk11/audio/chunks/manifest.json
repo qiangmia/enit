@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "kind": "read-aloud chunks",
+  "generated_at": "2026-11-25T12:05:49Z",
+  "model": "heygen/heygen-voice-1-turbo:free",
+  "voice": "nadine",
+  "chunks": [
+    {
+      "file": "c01.mp3",
+      "text": "On Thursday at 02:50, Lin Yu-Ting started a routine rollout. She is 24 and works on the cloud operations team of a software company in Taipei."
+    },
+    {
+      "file": "c02.mp3",
+      "text": "The new routing rule had been tested in the staging environment, and two engineers had signed it off."
+    },
+    {
+      "file": "c03.mp3",
+      "text": "It was pushed to the Singapore region first, because that region carries the least traffic at that hour."
+    },
+    {
+      "file": "c04.mp3",
+      "text": "At 03:04 the first alert arrived. Requests to one availability zone were timing out."
+    },
+    {
+      "file": "c05.mp3",
+      "text": "The dashboard showed healthy servers, which made no sense: the machines were running, but traffic was not reaching them."
+    },
+    {
+      "file": "c06.mp3",
+      "text": "Yu-Ting opened the routing table. The new rule sent all traffic to the older zone, where the replica was already under heavy load."
+    },
+    {
+      "file": "c07.mp3",
+      "text": "The replica was not down. It was saturated: still running, but unable to answer fast enough."
+    },
+    {
+      "file": "c08.mp3",
+      "text": "Latency climbed for four minutes before anyone noticed."
+    },
+    {
+      "file": "c09.mp3",
+      "text": "At 03:11 she rolled the change back. Normal traffic returned at 03:19."
+    },
+    {
+      "file": "c10.mp3",
+      "text": "The status page was updated once, and it was three sentences long: “A routing change was rolled back. Service was restored at 03:19."
+    },
+    {
+      "file": "c11.mp3",
+      "text": "No data was lost.”"
+    },
+    {
+      "file": "c12.mp3",
+      "text": "The downtime was fifteen minutes: customers in the affected zone saw an error page, and everyone else noticed nothing."
+    },
+    {
+      "file": "c13.mp3",
+      "text": "On Friday morning the team held a post-mortem. Nobody was blamed."
+    },
+    {
+      "file": "c14.mp3",
+      "text": "The question was why the staging test had passed. The answer was simple: it had been run against one region, and the problem only appeared when two regions were compared."
+    },
+    {
+      "file": "c15.mp3",
+      "text": "Yu-Ting wrote the report in the passive on purpose. “When something breaks at three in the morning,” she says, “the last thing users need is a name."
+    },
+    {
+      "file": "c16.mp3",
+      "text": "They need to know what happened, when it will be fixed, and whether their data is safe.”"
+    }
+  ]
+}

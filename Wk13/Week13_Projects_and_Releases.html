@@ -447,6 +447,25 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Banner ------------------------------------------- */
+        .banner { margin: 0 0 1.4rem; }
+        .banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card-bg);
+        }
+        .banner figcaption {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+        .banner a { color: var(--accent); }
+
         /* -- Figures and pull quotes ------------------------- */
         .fig { margin: 0 0 1.2rem; }
         .fig-svg {
@@ -794,6 +813,7 @@
 
 </main>
 
+<script src="../seating.js"></script>
 
 <script>
 /* Read-along narration: one button per paragraph, one audio element. */
@@ -959,5 +979,7 @@
 })();
 </script>
 
+<script type="application/json" id="read-aloud-data">{"week": 13, "chunks": [{"i": 1, "para": 1, "text": "Chen Po-Han is 25 and works as a junior developer at a small app studio in Taipei. His team has four people and one sprint of two weeks.", "audio": "audio/chunks/c01.mp3"}, {"i": 2, "para": 1, "text": "On Monday, three days before a client demo, the backlog was empty enough to feel calm. Then a message arrived.", "audio": "audio/chunks/c02.mp3"}, {"i": 3, "para": 2, "text": "The client’s marketing manager wanted “one small export feature” before the demo. Po-Han estimated it at two days.", "audio": "audio/chunks/c03.mp3"}, {"i": 4, "para": 2, "text": "His stakeholder said it would take one. The team agreed to try.", "audio": "audio/chunks/c04.mp3"}, {"i": 5, "para": 3, "text": "By Tuesday afternoon the feature had grown: first a date filter, then a choice of file format, then a logo on every page.", "audio": "audio/chunks/c05.mp3"}, {"i": 6, "para": 3, "text": "This is scope creep: a project that gets larger one reasonable request at a time.", "audio": "audio/chunks/c06.mp3"}, {"i": 7, "para": 4, "text": "On Wednesday morning the team met for twenty minutes. Their milestone — the demo — could not move.", "audio": "audio/chunks/c07.mp3"}, {"i": 8, "para": 4, "text": "The new feature was now a blocker for two other deliverables. “We have two options,” the team lead said.", "audio": "audio/chunks/c08.mp3"}, {"i": 9, "para": 4, "text": "“We can delay the export, or we can ship it without the filters.”", "audio": "audio/chunks/c09.mp3"}, {"i": 10, "para": 5, "text": "They decided to cut the logo, postpone the filters, and keep the basic export. Po-Han avoided estimating in front of the client again; he wrote the estimate down instead.", "audio": "audio/chunks/c10.mp3"}, {"i": 11, "para": 5, "text": "The team prioritised the demo, signed off the shorter scope in writing, and shipped on Thursday night.", "audio": "audio/chunks/c11.mp3"}, {"i": 12, "para": 6, "text": "On Friday the demo went well. The client asked when the filters would arrive, and the answer was a date, not a promise.", "audio": "audio/chunks/c12.mp3"}, {"i": 13, "para": 7, "text": "In the retrospective that afternoon, the team wrote one sentence on the board: “Small requests are still requests.” The handover note for the next sprint listed the postponed work, with the estimate that had been ignored on Monday.", "audio": "audio/chunks/c13.mp3"}]}</script>
+<script src="../read-aloud.js?v=2e95fbb3" defer></script>
 </body>
 </html>

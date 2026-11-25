@@ -447,6 +447,25 @@
         .gloss-close:hover { color: var(--primary); }
         .gloss-balloon-def { color: var(--text); }
 
+        /* -- Banner ------------------------------------------- */
+        .banner { margin: 0 0 1.4rem; }
+        .banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--card-bg);
+        }
+        .banner figcaption {
+            margin-top: 0.45rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+        .banner a { color: var(--accent); }
+
         /* -- Figures and pull quotes ------------------------- */
         .fig { margin: 0 0 1.2rem; }
         .fig-svg {
@@ -522,6 +541,11 @@
 </nav>
 
 <main class="container">
+
+    <figure class="banner">
+        <img src="data-centre-campus.jpg" alt="An isometric illustration of a data centre campus: transmission lines and transformers feeding server racks, with switchgear, battery storage, a gas-fired plant and a pipeline." loading="lazy">
+        <figcaption>A data centre is a power station with racks inside: transmission, transformation, switchgear, batteries and cooling all have to work before a request can be served. <a href="https://entrustsol.com/wp-content/uploads/2025/08/Data_Centers_Illustration-03-1024x576.jpg" target="_blank" rel="noopener">Illustration: Entrust Solutions</a></figcaption>
+    </figure>
 
     <section class="lead" id="before">
         <p><strong>This week:</strong> A routine deployment goes wrong at three in the morning. You will read an incident timeline from a cloud operations team, learn how engineers describe what happened without naming who did it, and write the three sentences of a status update.</p>
@@ -810,6 +834,7 @@
 
 </main>
 
+<script src="../seating.js"></script>
 
 <script>
 /* Read-along narration: one button per paragraph, one audio element. */
@@ -975,5 +1000,7 @@
 })();
 </script>
 
+<script type="application/json" id="read-aloud-data">{"week": 11, "chunks": [{"i": 1, "para": 1, "text": "On Thursday at 02:50, Lin Yu-Ting started a routine rollout. She is 24 and works on the cloud operations team of a software company in Taipei.", "audio": "audio/chunks/c01.mp3"}, {"i": 2, "para": 2, "text": "The new routing rule had been tested in the staging environment, and two engineers had signed it off.", "audio": "audio/chunks/c02.mp3"}, {"i": 3, "para": 2, "text": "It was pushed to the Singapore region first, because that region carries the least traffic at that hour.", "audio": "audio/chunks/c03.mp3"}, {"i": 4, "para": 3, "text": "At 03:04 the first alert arrived. Requests to one availability zone were timing out.", "audio": "audio/chunks/c04.mp3"}, {"i": 5, "para": 3, "text": "The dashboard showed healthy servers, which made no sense: the machines were running, but traffic was not reaching them.", "audio": "audio/chunks/c05.mp3"}, {"i": 6, "para": 4, "text": "Yu-Ting opened the routing table. The new rule sent all traffic to the older zone, where the replica was already under heavy load.", "audio": "audio/chunks/c06.mp3"}, {"i": 7, "para": 4, "text": "The replica was not down. It was saturated: still running, but unable to answer fast enough.", "audio": "audio/chunks/c07.mp3"}, {"i": 8, "para": 4, "text": "Latency climbed for four minutes before anyone noticed.", "audio": "audio/chunks/c08.mp3"}, {"i": 9, "para": 5, "text": "At 03:11 she rolled the change back. Normal traffic returned at 03:19.", "audio": "audio/chunks/c09.mp3"}, {"i": 10, "para": 5, "text": "The status page was updated once, and it was three sentences long: “A routing change was rolled back. Service was restored at 03:19.", "audio": "audio/chunks/c10.mp3"}, {"i": 11, "para": 5, "text": "No data was lost.”", "audio": "audio/chunks/c11.mp3"}, {"i": 12, "para": 6, "text": "The downtime was fifteen minutes: customers in the affected zone saw an error page, and everyone else noticed nothing.", "audio": "audio/chunks/c12.mp3"}, {"i": 13, "para": 7, "text": "On Friday morning the team held a post-mortem. Nobody was blamed.", "audio": "audio/chunks/c13.mp3"}, {"i": 14, "para": 7, "text": "The question was why the staging test had passed. The answer was simple: it had been run against one region, and the problem only appeared when two regions were compared.", "audio": "audio/chunks/c14.mp3"}, {"i": 15, "para": 8, "text": "Yu-Ting wrote the report in the passive on purpose. “When something breaks at three in the morning,” she says, “the last thing users need is a name.", "audio": "audio/chunks/c15.mp3"}, {"i": 16, "para": 8, "text": "They need to know what happened, when it will be fixed, and whether their data is safe.”", "audio": "audio/chunks/c16.mp3"}]}</script>
+<script src="../read-aloud.js?v=2e95fbb3" defer></script>
 </body>
 </html>

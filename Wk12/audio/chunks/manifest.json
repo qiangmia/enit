@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "kind": "read-aloud chunks",
+  "generated_at": "2026-11-25T11:58:28Z",
+  "model": "heygen/heygen-voice-1-turbo:free",
+  "voice": "nadine",
+  "chunks": [
+    {
+      "file": "c01.mp3",
+      "text": "Artificial-intelligence companies are making large claims about their tools. Some jobs, they say, will be automated completely."
+    },
+    {
+      "file": "c02.mp3",
+      "text": "Others will be augmented: the person stays, but the work changes. Company bosses are spending enormous sums on these tools, partly because they expect to save money on headcount."
+    },
+    {
+      "file": "c03.mp3",
+      "text": "\"Flat is the new up,\" one saying goes: a company whose workforce stays the same size is now considered a success."
+    },
+    {
+      "file": "c04.mp3",
+      "text": "If even half of this is true, there will be an impact on all of us — and perhaps sooner than we think."
+    },
+    {
+      "file": "c05.mp3",
+      "text": "The clearest evidence comes from software. A benchmark measures how much of a task a model can complete, grouped by how long a human expert would take."
+    },
+    {
+      "file": "c06.mp3",
+      "text": "Three years ago, models could finish tasks that took a person seconds or minutes. The newest models can complete many tasks that take an hour, and some that take longer."
+    },
+    {
+      "file": "c07.mp3",
+      "text": "Software is only the first field; financial analysis and early legal work show the same pattern at an earlier stage."
+    },
+    {
+      "file": "c08.mp3",
+      "text": "What does that mean for jobs? Stanford University analysed four years of employment data."
+    },
+    {
+      "file": "c09.mp3",
+      "text": "It found a 2.7% fall in employment for workers aged 22 to 25 since ChatGPT became widely used. In the most exposed sectors — finance, software and creative industries — the fall was 12.8%."
+    },
+    {
+      "file": "c10.mp3",
+      "text": "Not all economists agree: interest-rate rises, they argue, could explain part of it."
+    },
+    {
+      "file": "c11.mp3",
+      "text": "There is a second reason for caution. AI use is measured in tokens, small pieces of text."
+    },
+    {
+      "file": "c12.mp3",
+      "text": "Token use grew enormously in 2026, and some companies set up \"token leaderboards\" to push staff to use the tools more. Then the bills arrived, and many began to ration access."
+    },
+    {
+      "file": "c13.mp3",
+      "text": "If virtual workers cost more than human ones, adoption may slow down. That is a real caveat, not a detail: the forecast depends on the price."
+    },
+    {
+      "file": "c14.mp3",
+      "text": "So the honest summary is a conditional one. If routine tasks are automated, junior roles will change, and some will disappear."
+    },
+    {
+      "file": "c15.mp3",
+      "text": "If the costs stay high, the change will be slower than the headlines suggest."
+    },
+    {
+      "file": "c16.mp3",
+      "text": "Either way, workers who can check, supervise and correct the output will be in a stronger position than workers who can only produce it."
+    }
+  ]
+}
