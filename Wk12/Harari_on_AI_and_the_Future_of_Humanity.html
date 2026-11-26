@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="briefing">
+  <title>When Humanity Loses the Steering Wheel — Yuval Noah Harari on AI, Control &amp; the Trust Dilemma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces: warm stone-white paper (Briefing) */
+      --background: #faf9f5;
+      --surface-container-low: #ffffff;
+      --surface-container: #f1efe8;
+      --surface-container-high: #e6e2d6;
+
+      /* Ink */
+      --on-surface: #17181a;
+      --on-surface-variant: #56585c;
+
+      /* Rules */
+      --outline: #17181a;
+      --outline-variant: #dedad0;
+
+      /* Accents */
+      --primary: #17181a;
+      --on-primary: #faf9f5;
+      --primary-container: #f2b705;
+      --on-primary-container: #17181a;
+      --secondary: #1f4e5f;
+      --secondary-soft: #e6eff2;
+      --tertiary: #785008;
+      --tertiary-soft: #f5e6c4;
+      --error: #b42318;
+      --error-soft: #fbeae8;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #1f4e5f;
+      --data-2: #d99000;
+      --data-3: #2b6e52;
+      --data-3-soft: #e6f2ec;
+      --data-4: #b84a39;
+      --data-context: #c4bfb2;
+
+      /* Fonts */
+      --font-headline: 'Source Serif 4', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.25rem;
+      --rounded-lg: 0.375rem;
+      --rounded-full: 0.25rem;
+
+      /* Style effects */
+      --section-rule: 1.5px solid var(--outline);
+      --card-border: 1px solid var(--outline-variant);
+      --control-border: 1px solid var(--on-surface-variant);
+      --badge-radius: 2px;
+      --heading-tracking: -0.02em;
+      --label-tracking: 0.08em;
+
+      /* Shared semantic & focus tokens */
+      --positive: #2b6e52;
+      --warning: #d99000;
+      --focus: #1f4e5f;
+
+      /* Narrative Type Scale */
+      --display-size: clamp(2.35rem, 1.45rem + 3.2vw, 3.85rem);
+      --headline-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem);
+      --subhead-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+      --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.62;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+      max-width: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 2.5px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Typography helpers */
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      color: var(--on-surface);
+    }
+    h1 {
+      font-size: var(--display-size);
+      line-height: 1.07;
+    }
+    h2 {
+      font-size: var(--headline-size);
+      line-height: 1.14;
+    }
+    h3 {
+      font-size: var(--subhead-size);
+      line-height: 1.24;
+    }
+    p {
+      margin: 0;
+      max-width: 65ch;
+    }
+    p + p {
+      margin-top: var(--space-md);
+    }
+
+    /* Dossier bar (Briefing Treatment #1) */
+    .dossier-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--section-rule);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .dossier-bar-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .dossier-pill {
+      display: inline-block;
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.6875rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+      line-height: 1.2;
+    }
+    .dossier-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+    }
+    .index-num {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--secondary);
+      background-color: var(--surface-container);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+    }
+
+    /* Masthead & Standfirst (Briefing Treatment #2) */
+    .masthead {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .standfirst {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+      line-height: 1.48;
+      color: var(--secondary);
+      max-width: 62ch;
+    }
+    .byline-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-lg);
+      padding-top: var(--space-xs);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Quick Jump Index (in-flow orientation, not sticky) */
+    .briefing-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding: var(--space-md) 0;
+      border-top: var(--card-border);
+      border-bottom: var(--card-border);
+    }
+    .nav-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      background-color: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      color: var(--on-surface);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .nav-chip:hover {
+      background-color: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .nav-chip-num {
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    /* Key Figures Grid (Briefing Treatment #3) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .figure-card {
+      background-color: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .kpi-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      line-height: 1.1;
+      font-variant-numeric: lining-nums tabular-nums;
+      color: var(--on-surface);
+    }
+    .kpi-value.accent-warn { color: var(--error); }
+    .kpi-value.accent-slate { color: var(--secondary); }
+    .kpi-note {
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: var(--on-surface-variant);
+    }
+
+    /* Section Architecture */
+    .story-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      padding-top: var(--space-md);
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+    .prose-flow {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      max-width: 68ch;
+    }
+    .prose-lead {
+      font-size: clamp(1.0625rem, 1.02rem + 0.25vw, 1.1875rem);
+      font-weight: 500;
+      color: var(--on-surface);
+    }
+    .inline-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      background-color: var(--tertiary-soft);
+      color: var(--tertiary);
+    }
+    .inline-tag.slate {
+      background-color: var(--secondary-soft);
+      color: var(--secondary);
+    }
+    .inline-tag.alert {
+      background-color: var(--error-soft);
+      color: var(--error);
+    }
+    .inline-tag.positive {
+      background-color: var(--data-3-soft);
+      color: var(--positive);
+    }
+
+    /* Warm stone aside / callout (Briefing Treatment #5) */
+    .aside-box {
+      background-color: var(--surface-container);
+      border-top: var(--section-rule);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+    }
+    .aside-quote {
+      font-family: var(--font-headline);
+      font-size: clamp(1.2rem, 1.05rem + 0.6vw, 1.45rem);
+      font-weight: 600;
+      line-height: 1.36;
+      color: var(--on-surface);
+      max-width: 56ch;
+    }
+    .aside-caption {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Two-column asymmetric splits for text + callout or controls */
+    .split-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Interactive Modules */
+    .interactive-module {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      container-type: inline-size;
+    }
+    .module-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm) var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--card-border);
+    }
+    .module-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .module-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+    }
+    .module-sub {
+      font-size: 0.9375rem;
+      color: var(--on-surface-variant);
+      max-width: 60ch;
+    }
+
+    /* Control groups and buttons */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .control-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: stretch;
+    }
+    .btn-choice {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .btn-choice:hover {
+      background-color: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .btn-choice[aria-pressed="true"] {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-choice.gold-active[aria-pressed="true"] {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--outline);
+    }
+
+    /* Module 1: Comprehension Horizon */
+    .horizon-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .svg-frame {
+      width: 100%;
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      min-height: 270px;
+    }
+    .svg-frame svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .readout-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      background-color: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: var(--space-md) var(--space-lg);
+      border-top: var(--section-rule);
+    }
+    .readout-stat-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--card-border);
+    }
+    .readout-stat-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .readout-stat-val {
+      font-family: var(--font-headline);
+      font-size: 1.35rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .readout-stat-val.danger { color: var(--error); }
+    .readout-stat-val.slate { color: var(--secondary); }
+    .readout-detail-list {
+      margin: 0;
+      padding-left: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      font-size: 0.9375rem;
+    }
+
+    /* Module 2: CEO Paradox & 100:1 Spend */
+    .paradox-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .spend-visual {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+    }
+    .bar-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+    }
+    .bar-track {
+      width: 100%;
+      height: 22px;
+      background-color: var(--surface-container-high);
+      border-radius: var(--badge-radius);
+      overflow: hidden;
+      display: flex;
+    }
+    .bar-fill-cap {
+      background-color: var(--data-1);
+      height: 100%;
+    }
+    .bar-fill-safe {
+      background-color: var(--primary-container);
+      border-right: 1.5px solid var(--outline);
+      height: 100%;
+    }
+    .bar-fill-risk {
+      background-color: var(--data-4);
+      height: 100%;
+    }
+    .question-box {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background-color: var(--surface-container);
+      border-top: var(--section-rule);
+      border-radius: var(--rounded);
+    }
+    .qa-pair {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .qa-speaker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+    }
+    .qa-speaker.warn { color: var(--error); }
+    .qa-text {
+      font-size: 0.96875rem;
+      line-height: 1.55;
+      color: var(--on-surface);
+    }
+
+    /* Module 3: Geopolitical Table & Trust Dilemma Matrix */
+    .table-wrap {
+      overflow-x: auto;
+      background-color: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9375rem;
+    }
+    thead th {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--section-rule);
+      background-color: var(--surface-container-low);
+    }
+    tbody td {
+      padding: var(--space-md);
+      border-bottom: var(--card-border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .td-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .td-mono {
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--secondary);
+    }
+
+    .dilemma-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .payoff-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-sm);
+    }
+    .payoff-cell {
+      padding: var(--space-md);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+    .payoff-cell.active-outcome {
+      background-color: var(--surface-container-low);
+      border: 2px solid var(--outline);
+    }
+    .payoff-cell.active-outcome.danger-cell {
+      background-color: var(--error-soft);
+      border-color: var(--error);
+    }
+    .payoff-cell.active-outcome.safe-cell {
+      background-color: var(--data-3-soft);
+      border-color: var(--positive);
+    }
+    .payoff-cell-head {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .payoff-cell-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--on-surface);
+    }
+    .payoff-cell-sub {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      line-height: 1.4;
+    }
+
+    /* Module 4: SpaceX vs Civilization */
+    .resilience-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-md);
+    }
+    .track-card {
+      padding: var(--space-md) var(--space-lg);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .track-card.highlighted {
+      background-color: var(--surface-container-low);
+      border-color: var(--outline);
+    }
+    .step-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .step-node {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-sm);
+      align-items: start;
+      padding: var(--space-sm);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container);
+    }
+    .step-node.fail { background-color: var(--error-soft); }
+    .step-node.pass { background-color: var(--data-3-soft); }
+    .step-badge {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+
+    /* Closing & Sources */
+    .closing-question-card {
+      background-color: var(--surface-container-low);
+      border: var(--card-border);
+      border-top: 3px solid var(--outline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .sources-footer {
+      border-top: var(--section-rule);
+      padding-top: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Course navigation */
+    .course-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-xs) var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+      margin-bottom: calc(-1 * var(--space-lg));
+    }
+    .course-strip a,
+    .course-nav a {
+      color: var(--secondary);
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+    .course-strip a:hover,
+    .course-nav a:hover { text-decoration: underline; }
+    .course-strip .course-sep { color: var(--outline-variant); }
+    .course-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-lg);
+      border-top: var(--section-rule);
+      padding-top: var(--space-lg);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+    }
+
+    /* Container queries for interactive modules */
+    @container (max-width: 660px) {
+      .horizon-grid,
+      .paradox-layout,
+      .matrix-grid,
+      .resilience-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .payoff-board {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Mobile page breakpoint */
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-lg) var(--space-md) var(--space-2xl);
+        gap: var(--space-lg);
+      }
+      .split-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .closing-question-card {
+        padding: var(--space-lg);
+      }
+      .course-strip {
+        gap: var(--space-xs) var(--space-md);
+        font-size: 0.66rem;
+        letter-spacing: 0.05em;
+      }
+      .course-strip .course-sep { display: none; }
+      .course-nav {
+        gap: var(--space-sm) var(--space-md);
+        font-size: 0.66rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid">
+
+    <nav class="course-strip" aria-label="Course">
+      <a href="../index.html">English for Information Technology</a>
+      <span class="course-sep" aria-hidden="true">·</span>
+      <a href="Week12_AI_at_Work.html">Week 12: AI at Work</a>
+      <span class="course-sep" aria-hidden="true">·</span>
+      <span>Supplementary reading</span>
+    </nav>
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="dossier-pill">Briefing</span>
+          <span class="dossier-meta">Global Views Summit · Taiwan · October 14, 2026</span>
+        </div>
+        <span class="dossier-meta">Keynote Synthesis</span>
+      </div>
+
+      <h1>When Humanity Loses the Steering Wheel</h1>
+      <p class="standfirst">
+        Historian Yuval Noah Harari warns that artificial intelligence poses a deeper threat than job displacement: within five to ten years, superintelligent systems could become too complex for presidents, central bankers, or scientists to comprehend—driven by a geopolitical trust dilemma nobody dares to pause.
+      </p>
+
+      <div class="byline-row">
+        <span>Speaker: Yuval Noah Harari</span>
+        <span>Address: “AI and the Future of Humanity”</span>
+        <span>Theme: Control, Trust &amp; Democratic Agency</span>
+      </div>
+    </header>
+
+    <!-- QUICK ORIENTATION INDEX -->
+    <nav class="briefing-nav" aria-label="Briefing sections">
+      <button type="button" class="nav-chip" onclick="jumpToSection('sec-control')">
+        <span class="nav-chip-num">01</span> Loss of Comprehension
+      </button>
+      <button type="button" class="nav-chip" onclick="jumpToSection('sec-paradox')">
+        <span class="nav-chip-num">02</span> The CEO Paradox
+      </button>
+      <button type="button" class="nav-chip" onclick="jumpToSection('sec-dilemma')">
+        <span class="nav-chip-num">03</span> The Trust Dilemma
+      </button>
+      <button type="button" class="nav-chip" onclick="jumpToSection('sec-resilience')">
+        <span class="nav-chip-num">04</span> Resilience Over One-Shot Gambles
+      </button>
+      <button type="button" class="nav-chip" onclick="jumpToSection('sec-choice')">
+        <span class="nav-chip-num">05</span> Reclaiming the Choice
+      </button>
+    </nav>
+
+    <!-- HEADLINE FIGURES -->
+    <section aria-label="Key figures from Harari's 2026 keynote">
+      <div class="kpi-grid">
+        <article class="figure-card kpi-card">
+          <span class="kpi-label">01 · Horizon</span>
+          <div class="kpi-value accent-slate">5–10 Years</div>
+          <p class="kpi-note">Window in which Harari warns AI may surpass human intelligence and outpace our ability to understand the world.</p>
+        </article>
+        <article class="figure-card kpi-card">
+          <span class="kpi-label">02 · Industry Ratio</span>
+          <div class="kpi-value accent-warn">100 : 1</div>
+          <p class="kpi-note">Estimated investment in making AI systems more powerful ($100) for every $1 spent on safety safeguards.</p>
+        </article>
+        <article class="figure-card kpi-card">
+          <span class="kpi-label">03 · Industry Risk Estimate</span>
+          <div class="kpi-value accent-warn">10%–20%</div>
+          <p class="kpi-note">Probability of AI destroying humanity cited by Elon Musk in <em>The Economist</em> and echoed publicly by peers.</p>
+        </article>
+        <article class="figure-card kpi-card">
+          <span class="kpi-label">04 · Error Tolerance</span>
+          <div class="kpi-value">1st Attempt</div>
+          <p class="kpi-note">SpaceX succeeded on its 3rd rocket after two explosions; civilization cannot survive a failed first superintelligence.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 01: LOSS OF CONTROL -->
+    <section id="sec-control" class="story-section">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="index-num">01</span>
+          <span class="dossier-meta">Loss of Control &amp; Comprehension</span>
+        </div>
+        <span class="inline-tag slate">5–10 Year Horizon</span>
+      </div>
+
+      <h2>The deepest danger is not losing jobs—it is losing the ability to understand our own civilization</h2>
+
+      <div class="split-layout">
+        <div class="prose-flow">
+          <p class="prose-lead">
+            In 2026, human beings still hold the reins. Harari’s central warning at the Global Views Summit is that we are approaching a threshold where non-human intelligence becomes vastly smarter and faster than us—and takes over finance, economics, media, and politics before societies learn how to govern it.
+          </p>
+          <p>
+            Consider the global financial system. Bonds, equities, interest rates, and central bank interventions are already opaque to most citizens. Yet today, a critical mass of economists, central bank governors, and market participants still understands how the machinery works and can steer it during a crisis.
+          </p>
+          <p>
+            Within ten years, Harari warns, AI could invent financial instruments and trading strategies of mathematical complexity far beyond any human brain. Presidents, prime ministers, central bank chairs, and the world’s wealthiest individuals alike would no longer comprehend what drives capital flows, prices, employment—or even wars sparked by automated systemic shocks.
+          </p>
+          <p>
+            The labor market offers an early glimpse of this cognitive dislocation. Just five years ago, software programming was widely hailed as the safest bet for young people; today AI is rapidly taking over coding, displacing the vast majority of programmers while leaving only a small tier of elite specialists. Neither universities nor policymakers know what skills to recommend for the next decade.
+          </p>
+        </div>
+
+        <aside class="aside-box" aria-label="Harari metaphor on human regression">
+          <span class="dossier-meta">Key Metaphor</span>
+          <p class="aside-quote">
+            “Humanity risks regressing to the level of a five-year-old child—or like someone with dementia who once understood the world, now facing a reality too complex and chaotic to grasp.”
+          </p>
+          <span class="aside-caption">Yuval Noah Harari · Oct 14, 2026</span>
+        </aside>
+      </div>
+
+      <!-- INTERACTIVE MODULE 1: COMPREHENSION HORIZON EXPLORER -->
+      <div class="figure-card interactive-module" aria-label="Interactive Comprehension Horizon Explorer">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <span class="module-kicker">Interactive Analysis · Cognitive Ceiling</span>
+            <h3>How Systems Cross Beyond Human Comprehension</h3>
+            <p class="module-sub">Select a timeline phase and a societal domain to inspect how decision-making shifts from human experts to opaque superintelligent architectures.</p>
+          </div>
+        </div>
+
+        <div class="dilemma-controls">
+          <div class="control-group">
+            <span class="control-label">1. Select Timeline Phase</span>
+            <div class="btn-row" role="group" aria-label="Timeline phase">
+              <button type="button" class="btn-choice" id="stage-btn-0" aria-pressed="true" onclick="setHorizonStage(0)">Today (2026)</button>
+              <button type="button" class="btn-choice" id="stage-btn-1" aria-pressed="false" onclick="setHorizonStage(1)">Transition (3–5 Yrs)</button>
+              <button type="button" class="btn-choice" id="stage-btn-2" aria-pressed="false" onclick="setHorizonStage(2)">Superintelligence (5–10 Yrs)</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">2. Inspect Domain</span>
+            <div class="btn-row" role="group" aria-label="Societal domain">
+              <button type="button" class="btn-choice gold-active" id="domain-btn-finance" aria-pressed="true" onclick="setHorizonDomain('finance')">Finance</button>
+              <button type="button" class="btn-choice gold-active" id="domain-btn-work" aria-pressed="false" onclick="setHorizonDomain('work')">Jobs &amp; Coding</button>
+              <button type="button" class="btn-choice gold-active" id="domain-btn-politics" aria-pressed="false" onclick="setHorizonDomain('politics')">Media &amp; Politics</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="horizon-grid">
+          <div class="svg-frame">
+            <svg viewBox="0 0 540 270" role="img" aria-label="Diagram comparing human cognitive ceiling against rising AI system complexity">
+              <!-- Horizontal gridlines -->
+              <line x1="56" y1="50" x2="512" y2="50" stroke="var(--outline-variant)" stroke-width="1" />
+              <line x1="56" y1="105" x2="512" y2="105" stroke="var(--outline-variant)" stroke-width="1" />
+              <line x1="56" y1="160" x2="512" y2="160" stroke="var(--outline-variant)" stroke-width="1" />
+              <line x1="56" y1="215" x2="512" y2="215" stroke="var(--outline)" stroke-width="1.5" />
+
+              <!-- Human Cognitive Ceiling band -->
+              <rect x="56" y="128" width="456" height="4" fill="var(--data-3)" />
+              <text x="62" y="120" font-family="var(--font-label)" font-size="11" font-weight="600" fill="var(--positive)">HUMAN EXPERT COMPREHENSION CEILING</text>
+
+              <!-- Context curves -->
+              <path d="M 60 198 C 175 186, 290 120, 496 36" fill="none" stroke="var(--data-1)" stroke-width="3" />
+              <text x="342" y="42" font-family="var(--font-label)" font-size="11" font-weight="600" fill="var(--data-1)">AI SYSTEM COMPLEXITY</text>
+
+              <!-- Active stage marker vertical guide -->
+              <line id="horizon-marker-line" x1="115" y1="30" x2="115" y2="215" stroke="var(--data-4)" stroke-width="2" stroke-dasharray="4 4" />
+              <circle id="horizon-marker-dot" cx="115" cy="191" r="7" fill="var(--primary-container)" stroke="var(--outline)" stroke-width="2" />
+
+              <!-- X-axis stage labels -->
+              <text x="115" y="236" text-anchor="middle" font-family="var(--font-label)" font-size="11" font-weight="600" fill="var(--on-surface)">2026</text>
+              <text x="290" y="236" text-anchor="middle" font-family="var(--font-label)" font-size="11" font-weight="600" fill="var(--on-surface)">3–5 YRS</text>
+              <text x="465" y="236" text-anchor="middle" font-family="var(--font-label)" font-size="11" font-weight="600" fill="var(--on-surface)">5–10 YRS</text>
+
+              <!-- Y-axis label -->
+              <text x="16" y="135" transform="rotate(-90 16 135)" text-anchor="middle" font-family="var(--font-label)" font-size="10" fill="var(--on-surface-variant)">MATHEMATICAL &amp; INSTITUTIONAL COMPLEXITY</text>
+            </svg>
+          </div>
+
+          <div class="readout-panel" id="horizon-readout">
+            <div class="readout-stat-row">
+              <div>
+                <div class="readout-stat-label">Human Control Status</div>
+                <div class="readout-stat-val slate" id="horizon-control-val">Retained by Experts</div>
+              </div>
+              <div>
+                <div class="readout-stat-label">Decision Legibility</div>
+                <div class="readout-stat-val" id="horizon-legibility-val">Auditable</div>
+              </div>
+            </div>
+            <div>
+              <h4 id="horizon-headline">Finance in 2026: Complex, Yet Governable</h4>
+              <p id="horizon-summary" style="margin-top: var(--space-xs); font-size: 0.95rem;">
+                Bonds, stocks, interest rates, and central bank policies are opaque to the public, but governments, central bankers, and market specialists still understand the mechanisms and can intervene.
+              </p>
+            </div>
+            <ul class="readout-detail-list" id="horizon-bullets">
+              <li>Humans design the financial instruments and set regulatory rules.</li>
+              <li>Central banks can still trace systemic shocks back to identifiable causes.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 02: THE CEO PARADOX -->
+    <section id="sec-paradox" class="story-section">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="index-num">02</span>
+          <span class="dossier-meta">The Industry Contradiction</span>
+        </div>
+        <span class="inline-tag alert">100:1 Capability vs. Safety</span>
+      </div>
+
+      <h2>AI leaders say they cannot trust rival humans—yet claim we can trust the “gods” they are creating</h2>
+
+      <div class="prose-flow">
+        <p class="prose-lead">
+          Harari emphasizes that the leaders driving the AI revolution are neither evil nor foolish. In fact, many understand the dangers better than outside critics and openly acknowledge them: Elon Musk told <em>The Economist</em> there is a 10% to 20% chance AI could destroy humanity, a warning echoed publicly by Sam Altman and other industry pioneers.
+        </p>
+        <p>
+          Yet in Harari’s direct conversations with heads of the world’s largest AI companies, he routinely asks two questions that expose a glaring contradiction at the heart of the industry. Why pour roughly 100 times more money into capability than safety—and why assume superintelligent entities will obey human masters indefinitely?
+        </p>
+      </div>
+
+      <!-- INTERACTIVE MODULE 2: TWO-QUESTION AUDIT & 100:1 IMBALANCE -->
+      <div class="figure-card interactive-module" aria-label="Interactive AI Leadership Paradox Explorer">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <span class="module-kicker">Interactive Audit · Industry Logic vs. Historical Scrutiny</span>
+            <h3>The 100:1 Spend Gap and Harari’s Interrogation</h3>
+            <p class="module-sub">Inspect the reported resource imbalance alongside the three questions Harari examines when analyzing AI executives’ logic.</p>
+          </div>
+        </div>
+
+        <div class="paradox-layout">
+          <div class="spend-visual">
+            <div class="bar-block">
+              <div class="bar-meta">
+                <span>AI Capability Scaling</span>
+                <strong>$100 (≈99%)</strong>
+              </div>
+              <div class="bar-track" aria-hidden="true">
+                <div class="bar-fill-cap" style="width: 99%;"></div>
+                <div class="bar-fill-safe" style="width: 1%;"></div>
+              </div>
+            </div>
+
+            <div class="bar-block">
+              <div class="bar-meta">
+                <span>AI Safety &amp; Safeguards</span>
+                <strong>$1 (≈1%)</strong>
+              </div>
+              <div class="bar-track" aria-hidden="true">
+                <div class="bar-fill-safe" style="width: 4%; min-width: 12px;"></div>
+              </div>
+              <span style="font-size: 0.85rem; color: var(--on-surface-variant);">For every $1 invested in safety, roughly $100 goes into making models more powerful.</span>
+            </div>
+
+            <div class="bar-block" style="padding-top: var(--space-sm); border-top: var(--card-border);">
+              <div class="bar-meta">
+                <span>Self-Reported Extinction Risk</span>
+                <strong style="color: var(--error);">10% – 20%</strong>
+              </div>
+              <div class="bar-track" aria-hidden="true">
+                <div class="bar-fill-risk" style="width: 20%;"></div>
+              </div>
+              <span style="font-size: 0.85rem; color: var(--on-surface-variant);">Probability cited by Elon Musk in <em>The Economist</em> and publicly acknowledged by peers such as Sam Altman.</span>
+            </div>
+          </div>
+
+          <div class="control-group" style="gap: var(--space-md);">
+            <div class="btn-row" role="group" aria-label="Select interrogation question">
+              <button type="button" class="btn-choice" id="q-btn-0" aria-pressed="true" onclick="setParadoxStep(0)">Question 1: Why Race?</button>
+              <button type="button" class="btn-choice" id="q-btn-1" aria-pressed="false" onclick="setParadoxStep(1)">Question 2: Trust AI?</button>
+              <button type="button" class="btn-choice" id="q-btn-2" aria-pressed="false" onclick="setParadoxStep(2)">The 20% Plane Analogy</button>
+            </div>
+
+            <div class="question-box" id="paradox-panel">
+              <div class="qa-pair">
+                <span class="qa-speaker" id="qa-ask-label">Harari’s Question 01</span>
+                <p class="qa-text" id="qa-ask-text"><strong>“Why are you developing so fast and spending roughly $100 on capability for every $1 on safety?”</strong></p>
+              </div>
+              <div class="qa-pair">
+                <span class="qa-speaker" id="qa-ans-label">Industry Leaders’ Answer</span>
+                <p class="qa-text" id="qa-ans-text">“It’s obvious: we cannot trust our competitors. If we slow down to invest more in safety, rivals won’t—and they will win the race and control the world.”</p>
+              </div>
+              <div class="qa-pair" style="padding-top: var(--space-sm); border-top: var(--card-border);">
+                <span class="qa-speaker warn" id="qa-critique-label">Harari’s Diagnosis</span>
+                <p class="qa-text" id="qa-critique-text">Fear of rival humans drives reckless acceleration—even among leaders who privately and publicly admit the technology carries catastrophic risk.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 03: TRUST DILEMMA & GEOPOLITICS -->
+    <section id="sec-dilemma" class="story-section">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="index-num">03</span>
+          <span class="dossier-meta">The Trust Dilemma &amp; Geopolitics</span>
+        </div>
+        <span class="inline-tag">US · China · Taiwan Crossroads</span>
+      </div>
+
+      <h2>Geopolitical rivalry traps superpowers in an arms race—while history warns how badly escalation misfires</h2>
+
+      <div class="split-layout">
+        <div class="prose-flow">
+          <p class="prose-lead">
+            The crisis is not merely corporate; it escalates directly to geopolitics. Even if all American AI companies agreed to slow down and prioritize safety, executives argue that China would seize the lead. Speak with Chinese counterparts, Harari notes, and you hear the exact mirror image: willingness to regulate, paired with refusal to trust the Americans.
+          </p>
+          <p>
+            Meanwhile, collapsing geopolitical trust triggers traditional disasters: trade shrinks, wars erupt, and national budgets meant for healthcare and education are diverted into missiles, drones, and tanks. Because nations are trapped in confrontation, they lose the capacity to cooperate on the one transition that requires global rules.
+          </p>
+          <p>
+            <strong>Taiwan stands squarely at this intersection</strong>—linking advanced AI technology, the global digital economy, and acute US–China strategic competition. As Harari argues, leaders who launch escalations assuming easy control consistently underestimate history’s complexity.
+          </p>
+        </div>
+
+        <aside class="aside-box" aria-label="Taiwan strategic relevance">
+          <span class="dossier-meta">Strategic Spotlight · Taiwan</span>
+          <p style="font-weight: 600; color: var(--on-surface);">
+            Why Harari’s 2026 Taipei address resonated locally
+          </p>
+          <p style="font-size: 0.9375rem; color: var(--on-surface-variant);">
+            Taiwan sits at the nexus of AI hardware, the digital economy, and US–China geopolitical rivalry—where pressure to accelerate AI for strategic advantage directly collides with the need for global safety resilience.
+          </p>
+        </aside>
+      </div>
+
+      <!-- HISTORICAL OVERCONFIDENCE TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Recent Escalation (Cited by Harari)</th>
+              <th>Initial Assumption of Control</th>
+              <th>Actual Outcome by 2026</th>
+              <th>Lesson for AI Transition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-title">Russia’s Invasion of Ukraine<br><span class="td-mono">Launched 2022</span></td>
+              <td>Expected an easy victory within 1–2 days to conquer Ukraine and restore Russia as the world’s top great power.</td>
+              <td>Four years on, Ukraine holds the momentum; Russia’s economy is battered, its great-power status eroded, and its dependence on China has deepened.</td>
+              <td>Complex systems produce cascading blowback far outside planners’ models.</td>
+            </tr>
+            <tr>
+              <td class="td-title">Israel &amp; US Strikes on Iran<br><span class="td-mono">Launched Feb 2026</span></td>
+              <td>Expected to topple the Iranian regime within days and reshape the Middle East according to strategic design.</td>
+              <td>Did not unfold as planned; prolonged instability demonstrated how rapidly military timelines break down.</td>
+              <td>Predicting and controlling complex historical systems is extraordinarily difficult—even before superintelligent AI.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- INTERACTIVE MODULE 3: ARMS-RACE TRUST DILEMMA MATRIX -->
+      <div class="figure-card interactive-module" aria-label="Interactive AI Arms-Race Trust Dilemma Matrix">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <span class="module-kicker">Interactive Simulation · The Trust Dilemma</span>
+            <h3>Why Mutual Distrust Forces Unsafe Acceleration</h3>
+            <p class="module-sub">Choose each competitor’s strategy and toggle the diplomatic regime to observe how lack of trust produces an arms race nobody actually wants.</p>
+          </div>
+        </div>
+
+        <div class="dilemma-controls">
+          <div class="control-group">
+            <span class="control-label">Diplomatic Regime</span>
+            <div class="btn-row" role="group" aria-label="Diplomatic regime">
+              <button type="button" class="btn-choice" id="regime-btn-distrust" aria-pressed="true" onclick="setRegime('distrust')">Zero-Trust Rivalry</button>
+              <button type="button" class="btn-choice gold-active" id="regime-btn-trust" aria-pressed="false" onclick="setRegime('trust')">Verified Safety Cooperation</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">Actor A (e.g., US / Leading Lab)</span>
+            <div class="btn-row" role="group" aria-label="Actor A strategy">
+              <button type="button" class="btn-choice" id="a-btn-pace" aria-pressed="false" onclick="setActorStrategy('A', 'pace')">Slow &amp; Secure</button>
+              <button type="button" class="btn-choice" id="a-btn-race" aria-pressed="true" onclick="setActorStrategy('A', 'race')">Accelerate Fast</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">Actor B (e.g., China / Rival Lab)</span>
+            <div class="btn-row" role="group" aria-label="Actor B strategy">
+              <button type="button" class="btn-choice" id="b-btn-pace" aria-pressed="false" onclick="setActorStrategy('B', 'pace')">Slow &amp; Secure</button>
+              <button type="button" class="btn-choice" id="b-btn-race" aria-pressed="true" onclick="setActorStrategy('B', 'race')">Accelerate Fast</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="matrix-grid">
+          <div class="payoff-board" role="region" aria-label="Payoff quadrants">
+            <div class="payoff-cell" id="cell-pace-pace">
+              <span class="payoff-cell-head">Both Slow &amp; Secure</span>
+              <span class="payoff-cell-title">Responsible Transition</span>
+              <p class="payoff-cell-sub">Resilience built in; society retains comprehension and steering power while capturing medical &amp; climate gains.</p>
+            </div>
+            <div class="payoff-cell" id="cell-pace-race">
+              <span class="payoff-cell-head">A Slows · B Accelerates</span>
+              <span class="payoff-cell-title">Unilateral Vulnerability</span>
+              <p class="payoff-cell-sub">Actor A fears falling permanently behind while Actor B deploys unverified capability first.</p>
+            </div>
+            <div class="payoff-cell" id="cell-race-pace">
+              <span class="payoff-cell-head">A Accelerates · B Slows</span>
+              <span class="payoff-cell-title">Rival Disadvantage</span>
+              <p class="payoff-cell-sub">Actor B fears technological subordination; mutual suspicion collapses any unilateral pause.</p>
+            </div>
+            <div class="payoff-cell" id="cell-race-race">
+              <span class="payoff-cell-head">Both Accelerate Fast</span>
+              <span class="payoff-cell-title">Runaway Arms Race</span>
+              <p class="payoff-cell-sub">100:1 capability-over-safety imbalance; both sides know it is perilous, yet neither stops—ending in shared loss of control.</p>
+            </div>
+          </div>
+
+          <div class="readout-panel" id="dilemma-readout">
+            <div class="readout-stat-row">
+              <div>
+                <div class="readout-stat-label">Equilibrium Outcome</div>
+                <div class="readout-stat-val danger" id="dilemma-status-val">Loss of Control</div>
+              </div>
+              <div>
+                <div class="readout-stat-label">Safety Margin</div>
+                <div class="readout-stat-val danger" id="dilemma-safety-val">Critical (1%)</div>
+              </div>
+            </div>
+            <div>
+              <h4 id="dilemma-outcome-title">Zero-Trust Trap: Both Sides Race Toward Blindness</h4>
+              <p id="dilemma-outcome-desc" style="margin-top: var(--space-xs); font-size: 0.95rem;">
+                Without verifiable mutual trust, slowing down feels like unilateral surrender. Both capitals and labs pour resources into speed—guaranteeing humanity loses comprehension of the resulting systems.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 04: RESILIENCE OVER ONE-SHOT GAMBLES -->
+    <section id="sec-resilience" class="story-section">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="index-num">04</span>
+          <span class="dossier-meta">Responsible &amp; Gradual Development</span>
+        </div>
+        <span class="inline-tag positive">Resilience Principle</span>
+      </div>
+
+      <h2>Why you cannot test superintelligence the way SpaceX tested early rockets</h2>
+
+      <div class="prose-flow">
+        <p class="prose-lead">
+          Harari is explicit: he is <strong>not</strong> calling for a halt to AI development. Stopping is neither realistic nor desirable, because AI holds transformative positive potential—to revolutionize healthcare, improve transportation, and help humanity confront climate change.
+        </p>
+        <p>
+          What history teaches, however, is that every human institution—nations, corporations, and individuals—inevitably makes mistakes. Responsible AI development therefore requires <strong>gradual pacing and structural resilience</strong>: designing safeguards from the outset so errors can be detected, understood, corrected, and contained before cascading out of control.
+        </p>
+      </div>
+
+      <!-- INTERACTIVE MODULE 4: SPACEX VS CIVILIZATION COMPARISON -->
+      <div class="figure-card interactive-module" aria-label="Interactive comparison of SpaceX iteration versus superintelligent AI risk">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <span class="module-kicker">Interactive Comparison · Recoverable vs. Irreversible Failure</span>
+            <h3>Iterative Engineering vs. Civilizational Single-Shot Stakes</h3>
+            <p class="module-sub">Toggle between an unchecked AI race and Harari’s resilient gradualism to contrast them directly against Elon Musk’s early SpaceX rocket program.</p>
+          </div>
+
+          <div class="btn-row" role="group" aria-label="Select AI approach">
+            <button type="button" class="btn-choice" id="res-btn-rush" aria-pressed="true" onclick="setResilienceMode('rush')">Unchecked AI Race</button>
+            <button type="button" class="btn-choice gold-active" id="res-btn-resilient" aria-pressed="false" onclick="setResilienceMode('resilient')">Harari’s Resilient Approach</button>
+          </div>
+        </div>
+
+        <div class="resilience-grid">
+          <div class="track-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm);">
+              <h4>SpaceX Rocket Development</h4>
+              <span class="inline-tag slate">Bounded Failure</span>
+            </div>
+            <p style="font-size: 0.9375rem; color: var(--on-surface-variant);">
+              When building low-cost orbital rockets, failure destroyed hardware—not human society—allowing engineers to inspect the wreckage and try again.
+            </p>
+            <div class="step-timeline">
+              <div class="step-node fail">
+                <span class="step-badge">1st Launch</span>
+                <div><strong>Exploded.</strong> Engineers reviewed telemetry, identified design flaws, and corrected them.</div>
+              </div>
+              <div class="step-node fail">
+                <span class="step-badge">2nd Launch</span>
+                <div><strong>Exploded again.</strong> Team re-examined every subsystem and isolated remaining faults.</div>
+              </div>
+              <div class="step-node pass">
+                <span class="step-badge">3rd Launch</span>
+                <div><strong>Succeeded.</strong> Reached orbit intact because prior failures were survivable and diagnosable.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="track-card highlighted" id="ai-resilience-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm);">
+              <h4 id="res-card-title">Superintelligent AI (Unchecked Race)</h4>
+              <span class="inline-tag alert" id="res-card-tag">Single-Shot Risk</span>
+            </div>
+            <p id="res-card-desc" style="font-size: 0.9375rem; color: var(--on-surface-variant);">
+              Betting human civilization on getting superintelligence right on the first try leaves zero margin if the first deployment collapses social or financial order.
+            </p>
+            <div class="step-timeline" id="res-card-steps">
+              <div class="step-node fail">
+                <span class="step-badge">Deployment 1</span>
+                <div><strong>Black-box takeover.</strong> Financial, media, and political systems cross beyond human comprehension.</div>
+              </div>
+              <div class="step-node fail">
+                <span class="step-badge">Error Occurs</span>
+                <div><strong>No time or diagnostic clarity.</strong> Leaders cannot understand what broke or intervene in time.</div>
+              </div>
+              <div class="step-node fail">
+                <span class="step-badge">Aftermath</span>
+                <div><strong>No “2nd or 3rd civilization.”</strong> You cannot sweep up the fragments of a collapsed global society and relaunch.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 05: CHOICE & DEMOCRATIC AGENCY -->
+    <section id="sec-choice" class="story-section">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="index-num">05</span>
+          <span class="dossier-meta">Democratic Agency &amp; Core Message</span>
+        </div>
+        <span class="inline-tag positive">Not Inevitable</span>
+      </div>
+
+      <h2>Nothing is predetermined: citizens can still bring AI back under political choice</h2>
+
+      <div class="prose-flow">
+        <p class="prose-lead">
+          When asked in <em>The Economist</em> whether he would board a plane with a 20% chance of crashing and killing everyone aboard, Elon Musk replied that the analogy fails because AI is “inevitable”—as if humanity has no choice whether to get on the plane.
+        </p>
+        <p>
+          <strong>Harari firmly rejects this fatalism.</strong> Every forecast of our AI future describes a possibility, not destiny. One encouraging signal is already emerging: in the upcoming U.S. midterm elections, AI has entered local political debate for the first time, with candidates pressed to state their positions on AI governance. “That is what politics is for,” Harari notes.
+        </p>
+        <p>
+          Harari’s stated mission is not to make decisions on behalf of tech executives, but to equip the public with clear knowledge of the stakes—so citizens everywhere can participate in the most consequential decision in human history.
+        </p>
+      </div>
+
+      <div class="closing-question-card">
+        <span class="dossier-pill" style="align-self: flex-start;">Core Question</span>
+        <p class="aside-quote" style="max-width: 60ch;">
+          “Can humanity continue developing increasingly powerful AI while still understanding and controlling the systems that shape human society?”
+        </p>
+        <p style="color: var(--on-surface-variant); max-width: 64ch;">
+          AI is no longer solely an engineering challenge. It is a political, social, and civilizational choice centered on four pillars: <strong>control, trust, responsibility, and humanity’s freedom to choose its own future</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- SOURCES -->
+    <footer class="sources-footer">
+      <span class="dossier-meta">Sources &amp; Attribution</span>
+      <p>
+        Synthesized from Yuval Noah Harari’s virtual keynote address, “AI and the Future of Humanity,” delivered at the 2026 Global Views Summit in Taiwan (October 14, 2026); transcript excerpts from Global Views Magazine (遠見雜誌), “失控的超級智慧！歷史學家哈拉瑞：人類正在創造「神」卻以為能奴役它？｜2026遠見高峰會專題演講”; and the accompanying briefing note “Harari on Loss of Control and the Trust Dilemma.”
+      </p>
+    </footer>
+
+    <nav class="course-nav" aria-label="Course links">
+      <a href="Week12_AI_at_Work.html">← Week 12: AI at Work</a>
+      <a href="gomoku.html">Week 12 Gomoku →</a>
+      <a href="../index.html">All weeks</a>
+    </nav>
+
+  </main>
+
+  <script>
+    // Navigation helper
+    function jumpToSection(sectionId) {
+      var target = document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // Module 1: Comprehension Horizon State & Data
+    var horizonState = { stage: 0, domain: 'finance' };
+
+    var horizonStageCoords = [
+      { x: 115, y: 191 },
+      { x: 290, y: 128 },
+      { x: 465, y: 49 }
+    ];
+
+    var horizonData = {
+      finance: [
+        {
+          control: `Retained by Experts`,
+          controlClass: `slate`,
+          legibility: `Auditable`,
+          legibilityClass: ``,
+          headline: `Finance in 2026: Complex, Yet Governable`,
+          summary: `Bonds, stocks, interest rates, and central bank policies are opaque to the public, but governments, central bankers, and market specialists still understand the mechanisms and can intervene.`,
+          bullets: [
+            `Human regulators and economists comprehend market logic.`,
+            `Systemic shocks can still be traced to identifiable policy or credit triggers.`
+          ]
+        },
+        {
+          control: `Shared / Strained`,
+          controlClass: ``,
+          legibility: `Partially Opaque`,
+          legibilityClass: ``,
+          headline: `Transition (3–5 Years): AI Invents Novel Instruments`,
+          summary: `AI systems enter financial institutions at scale, generating trading strategies and derivatives whose speed and mathematical structure begin outstripping routine human oversight.`,
+          bullets: [
+            `Automated strategies outpace traditional central bank review cycles.`,
+            `Risk models rely on AI explanations that human boards struggle to verify.`
+          ]
+        },
+        {
+          control: `Lost to Black-Box AI`,
+          controlClass: `danger`,
+          legibility: `Incomprehensible`,
+          legibilityClass: `danger`,
+          headline: `Superintelligence (5–10 Years): Beyond Every Human Mind`,
+          summary: `AI creates financial structures of mathematical complexity far beyond any human brain—so neither presidents, prime ministers, central bank chairs, nor billionaires understand how money moves.`,
+          bullets: [
+            `AI systems effectively decide capital flows, prices, and who is hired or fired.`,
+            `Complex automated cascades could even trigger wars with no human grasping why.`
+          ]
+        }
+      ],
+      work: [
+        {
+          control: `Early Disruption`,
+          controlClass: ``,
+          legibility: `Unpredictable`,
+          legibilityClass: ``,
+          headline: `Labor in 2026: The “Learn to Code” Bet Reverses`,
+          summary: `Five years ago, programming looked like the world’s safest profession. Today AI is taking over software development, displacing most coders while retaining only a small tier of elite talent.`,
+          bullets: [
+            `Young people asking what to study for a 10-year career face genuine uncertainty.`,
+            `Traditional education assumptions break faster than degree cycles.`
+          ]
+        },
+        {
+          control: `Rapid Displacement`,
+          controlClass: `danger`,
+          legibility: `Volatile`,
+          legibilityClass: ``,
+          headline: `Transition (3–5 Years): Cognitive Labor Automated`,
+          summary: `AI expands beyond coding into broader analytical, administrative, and knowledge professions at speeds institutions cannot retrain for.`,
+          bullets: [
+            `Universities and firms struggle to identify durable human career tracks.`,
+            `Economic winners and losers are sorted by automated productivity tools.`
+          ]
+        },
+        {
+          control: `System-Driven`,
+          controlClass: `danger`,
+          legibility: `Unforeseen`,
+          legibilityClass: `danger`,
+          headline: `Superintelligence (5–10 Years): Uncharted Labor Market`,
+          summary: `No one can predict what the job market will look like in ten years—representing an unprecedented break from prior technological eras.`,
+          bullets: [
+            `Society as a whole—universities, corporations, governments—loses visibility.`,
+            `Employment decisions become downstream outputs of superintelligent optimization.`
+          ]
+        }
+      ],
+      politics: [
+        {
+          control: `Contested`,
+          controlClass: `slate`,
+          legibility: `Politicized`,
+          legibilityClass: ``,
+          headline: `Politics in 2026: Early Democratic Awakening`,
+          summary: `Human governments still govern, and AI is entering public debate—for example, local candidates in US midterm elections are being questioned on AI policy.`,
+          bullets: [
+            `Media and public institutions still rely primarily on human editorial judgment.`,
+            `Citizens retain a clear window to shape rules before superintelligence arrives.`
+          ]
+        },
+        {
+          control: `Eroding Trust`,
+          controlClass: ``,
+          legibility: `Fragmented`,
+          legibilityClass: ``,
+          headline: `Transition (3–5 Years): AI Reshapes Information Streams`,
+          summary: `As AI penetrates media ecosystems and strategic decision-making, geopolitical instability deepens and public trust erodes further.`,
+          bullets: [
+            `Information environments move faster than democratic verification.`,
+            `Defense budgets rise at the expense of healthcare and education.`
+          ]
+        },
+        {
+          control: `Regression Risk`,
+          controlClass: `danger`,
+          legibility: `Opaque`,
+          legibilityClass: `danger`,
+          headline: `Superintelligence (5–10 Years): Citizens Like Five-Year-Olds`,
+          summary: `When superintelligent AI runs media, economics, and politics, human institutions risk losing collective agency—unable to understand or steer the world they once commanded.`,
+          bullets: [
+            `Governments, universities, and corporations alike lose comprehension.`,
+            `Democratic choice withers unless resilience and oversight are built beforehand.`
+          ]
+        }
+      ]
+    };
+
+    function setHorizonStage(stageIdx) {
+      horizonState.stage = stageIdx;
+      renderHorizon();
+    }
+
+    function setHorizonDomain(domainKey) {
+      horizonState.domain = domainKey;
+      renderHorizon();
+    }
+
+    function renderHorizon() {
+      for (var i = 0; i < 3; i++) {
+        var sb = document.getElementById('stage-btn-' + i);
+        if (sb) sb.setAttribute('aria-pressed', i === horizonState.stage ? 'true' : 'false');
+      }
+      var domains = ['finance', 'work', 'politics'];
+      for (var j = 0; j < domains.length; j++) {
+        var db = document.getElementById('domain-btn-' + domains[j]);
+        if (db) db.setAttribute('aria-pressed', domains[j] === horizonState.domain ? 'true' : 'false');
+      }
+
+      var coords = horizonStageCoords[horizonState.stage];
+      var mLine = document.getElementById('horizon-marker-line');
+      var mDot = document.getElementById('horizon-marker-dot');
+      if (mLine && coords) {
+        mLine.setAttribute('x1', String(coords.x));
+        mLine.setAttribute('x2', String(coords.x));
+      }
+      if (mDot && coords) {
+        mDot.setAttribute('cx', String(coords.x));
+        mDot.setAttribute('cy', String(coords.y));
+      }
+
+      var entry = horizonData[horizonState.domain][horizonState.stage];
+      if (!entry) return;
+
+      var ctrlEl = document.getElementById('horizon-control-val');
+      if (ctrlEl) {
+        ctrlEl.textContent = entry.control;
+        ctrlEl.className = 'readout-stat-val' + (entry.controlClass ? ' ' + entry.controlClass : '');
+      }
+      var legEl = document.getElementById('horizon-legibility-val');
+      if (legEl) {
+        legEl.textContent = entry.legibility;
+        legEl.className = 'readout-stat-val' + (entry.legibilityClass ? ' ' + entry.legibilityClass : '');
+      }
+      var headEl = document.getElementById('horizon-headline');
+      if (headEl) headEl.textContent = entry.headline;
+      var sumEl = document.getElementById('horizon-summary');
+      if (sumEl) sumEl.textContent = entry.summary;
+
+      var listEl = document.getElementById('horizon-bullets');
+      if (listEl) {
+        listEl.innerHTML = '';
+        for (var k = 0; k < entry.bullets.length; k++) {
+          var li = document.createElement('li');
+          li.textContent = entry.bullets[k];
+          listEl.appendChild(li);
+        }
+      }
+    }
+
+    // Module 2: CEO Paradox Data
+    var paradoxSteps = [
+      {
+        askLabel: `Harari’s Question 01`,
+        askText: `“Why are you developing so fast and spending roughly $100 on capability for every $1 on safety?”`,
+        ansLabel: `AI Company Leaders’ Answer`,
+        ansText: `“It’s obvious: we cannot trust our competitors. If we slow down to invest more in safety, rivals won’t—and they will win the race and control the world.”`,
+        critiqueLabel: `Harari’s Diagnosis`,
+        critiqueText: `Fear of rival humans drives reckless acceleration—even among leaders who privately and publicly admit the technology carries catastrophic risk.`
+      },
+      {
+        askLabel: `Harari’s Question 02`,
+        askText: `“Do you believe you can trust the superintelligent AI you are building?”`,
+        ansLabel: `AI Company Leaders’ Answer`,
+        ansText: `Shockingly, the very executives who just explained why they cannot trust other human beings suddenly reply: “Yes—we can trust superintelligent AI.”`,
+        critiqueLabel: `Harari’s Diagnosis`,
+        critiqueText: `“They are essentially telling humanity: we will create gods, and those gods will be our slaves. If you create superintelligent beings far smarter than us, why assume they will obey forever?”`
+      },
+      {
+        askLabel: `The Economist Interview Analogy`,
+        askText: `Host to Elon Musk: “You say AI has a 10%–20% chance of destroying humanity. Would you board a plane with a 20% chance of crashing and killing everyone?”`,
+        ansLabel: `Elon Musk’s Reply`,
+        ansText: `He argued the analogy doesn’t fit because AI is inevitable—yes, it might explode and kill us all, but “we have no choice whether to board the plane.”`,
+        critiqueLabel: `Harari’s Rebuttal`,
+        critiqueText: `“That is not true.” Nothing about AI’s trajectory is inevitable. Every projection is only a possibility, and citizens still have time to choose a safer course.`
+      }
+    ];
+
+    function setParadoxStep(idx) {
+      for (var i = 0; i < paradoxSteps.length; i++) {
+        var btn = document.getElementById('q-btn-' + i);
+        if (btn) btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+      }
+      var item = paradoxSteps[idx];
+      if (!item) return;
+
+      var askL = document.getElementById('qa-ask-label');
+      var askT = document.getElementById('qa-ask-text');
+      var ansL = document.getElementById('qa-ans-label');
+      var ansT = document.getElementById('qa-ans-text');
+      var criL = document.getElementById('qa-critique-label');
+      var criT = document.getElementById('qa-critique-text');
+
+      if (askL) askL.textContent = item.askLabel;
+      if (askT) askT.innerHTML = '<strong>' + item.askText + '</strong>';
+      if (ansL) ansL.textContent = item.ansLabel;
+      if (ansT) ansT.textContent = item.ansText;
+      if (criL) criL.textContent = item.critiqueLabel;
+      if (criT) criT.textContent = item.critiqueText;
+    }
+
+    // Module 3: Trust Dilemma Matrix
+    var dilemmaState = { regime: 'distrust', A: 'race', B: 'race' };
+
+    function setRegime(regime) {
+      dilemmaState.regime = regime;
+      if (regime === 'trust') {
+        dilemmaState.A = 'pace';
+        dilemmaState.B = 'pace';
+      } else {
+        dilemmaState.A = 'race';
+        dilemmaState.B = 'race';
+      }
+      renderDilemma();
+    }
+
+    function setActorStrategy(actor, strat) {
+      dilemmaState[actor] = strat;
+      renderDilemma();
+    }
+
+    function renderDilemma() {
+      var rDis = document.getElementById('regime-btn-distrust');
+      var rTru = document.getElementById('regime-btn-trust');
+      if (rDis) rDis.setAttribute('aria-pressed', dilemmaState.regime === 'distrust' ? 'true' : 'false');
+      if (rTru) rTru.setAttribute('aria-pressed', dilemmaState.regime === 'trust' ? 'true' : 'false');
+
+      var aPace = document.getElementById('a-btn-pace');
+      var aRace = document.getElementById('a-btn-race');
+      var bPace = document.getElementById('b-btn-pace');
+      var bRace = document.getElementById('b-btn-race');
+
+      if (aPace) aPace.setAttribute('aria-pressed', dilemmaState.A === 'pace' ? 'true' : 'false');
+      if (aRace) aRace.setAttribute('aria-pressed', dilemmaState.A === 'race' ? 'true' : 'false');
+      if (bPace) bPace.setAttribute('aria-pressed', dilemmaState.B === 'pace' ? 'true' : 'false');
+      if (bRace) bRace.setAttribute('aria-pressed', dilemmaState.B === 'race' ? 'true' : 'false');
+
+      var cells = ['pace-pace', 'pace-race', 'race-pace', 'race-race'];
+      var activeKey = dilemmaState.A + '-' + dilemmaState.B;
+      for (var i = 0; i < cells.length; i++) {
+        var cell = document.getElementById('cell-' + cells[i]);
+        if (!cell) continue;
+        cell.className = 'payoff-cell';
+        if (cells[i] === activeKey) {
+          cell.classList.add('active-outcome');
+          if (activeKey === 'pace-pace') cell.classList.add('safe-cell');
+          if (activeKey === 'race-race') cell.classList.add('danger-cell');
+        }
+      }
+
+      var statusEl = document.getElementById('dilemma-status-val');
+      var safetyEl = document.getElementById('dilemma-safety-val');
+      var titleEl = document.getElementById('dilemma-outcome-title');
+      var descEl = document.getElementById('dilemma-outcome-desc');
+
+      var outcome = {
+        status: ``, statusClass: ``, safety: ``, safetyClass: ``, title: ``, desc: ``
+      };
+
+      if (activeKey === 'pace-pace') {
+        outcome.status = `Control Preserved`;
+        outcome.statusClass = `slate`;
+        outcome.safety = `Resilient`;
+        outcome.safetyClass = `slate`;
+        outcome.title = dilemmaState.regime === 'trust'
+          ? `Verified Mutual Restraint Breaks the Arms Race`
+          : `Fragile Pause Without Verification`;
+        outcome.desc = dilemmaState.regime === 'trust'
+          ? `When both sides trust cooperative governance and verification, nations can pace deployment gradually, build error-containment systems, and redirect budgets toward public welfare.`
+          : `Even when both sides prefer caution, zero-trust rivalry leaves each terrified the other is secretly defecting—making an unverified pause unstable.`;
+      } else if (activeKey === 'race-race') {
+        outcome.status = `Loss of Control`;
+        outcome.statusClass = `danger`;
+        outcome.safety = `Critical (1%)`;
+        outcome.safetyClass = `danger`;
+        outcome.title = `Zero-Trust Trap: Both Sides Race Toward Blindness`;
+        outcome.desc = `Without verifiable mutual trust, slowing down feels like unilateral surrender. Both capitals and labs pour resources into speed—guaranteeing humanity loses comprehension of the resulting systems.`;
+      } else {
+        outcome.status = `Asymmetric Race`;
+        outcome.statusClass = `danger`;
+        outcome.safety = `Severely Eroded`;
+        outcome.safetyClass = `danger`;
+        outcome.title = `Why Unilateral Restraint Collapses Under Rivalry`;
+        outcome.desc = `If one actor slows down while the rival accelerates, domestic politics and boardrooms force the cautious actor back into full-speed competition—locking everyone back into the arms race.`;
+      }
+
+      if (statusEl) {
+        statusEl.textContent = outcome.status;
+        statusEl.className = 'readout-stat-val' + (outcome.statusClass ? ' ' + outcome.statusClass : '');
+      }
+      if (safetyEl) {
+        safetyEl.textContent = outcome.safety;
+        safetyEl.className = 'readout-stat-val' + (outcome.safetyClass ? ' ' + outcome.safetyClass : '');
+      }
+      if (titleEl) titleEl.textContent = outcome.title;
+      if (descEl) descEl.textContent = outcome.desc;
+    }
+
+    // Module 4: Resilience Comparison Toggle
+    function setResilienceMode(mode) {
+      var bRush = document.getElementById('res-btn-rush');
+      var bRes = document.getElementById('res-btn-resilient');
+      if (bRush) bRush.setAttribute('aria-pressed', mode === 'rush' ? 'true' : 'false');
+      if (bRes) bRes.setAttribute('aria-pressed', mode === 'resilient' ? 'true' : 'false');
+
+      var titleEl = document.getElementById('res-card-title');
+      var tagEl = document.getElementById('res-card-tag');
+      var descEl = document.getElementById('res-card-desc');
+      var stepsEl = document.getElementById('res-card-steps');
+
+      if (!titleEl || !tagEl || !descEl || !stepsEl) return;
+
+      if (mode === 'rush') {
+        titleEl.textContent = `Superintelligent AI (Unchecked Race)`;
+        tagEl.textContent = `Single-Shot Risk`;
+        tagEl.className = `inline-tag alert`;
+        descEl.textContent = `Betting human civilization on getting superintelligence right on the first try leaves zero margin if the first deployment collapses social or financial order.`;
+        stepsEl.innerHTML = `
+          <div class="step-node fail">
+            <span class="step-badge">Deployment 1</span>
+            <div><strong>Black-box takeover.</strong> Financial, media, and political systems cross beyond human comprehension.</div>
+          </div>
+          <div class="step-node fail">
+            <span class="step-badge">Error Occurs</span>
+            <div><strong>No time or diagnostic clarity.</strong> Leaders cannot understand what broke or intervene in time.</div>
+          </div>
+          <div class="step-node fail">
+            <span class="step-badge">Aftermath</span>
+            <div><strong>No “2nd or 3rd civilization.”</strong> You cannot sweep up the fragments of a collapsed global society and relaunch.</div>
+          </div>
+        `;
+      } else {
+        titleEl.textContent = `Harari’s Resilient Gradualism`;
+        tagEl.textContent = `Containment Built In`;
+        tagEl.className = `inline-tag positive`;
+        descEl.textContent = `Because mistakes are inevitable in every human enterprise, AI is paced gradually with containment layers so problems are caught early—unlocking gains in healthcare, transport, and climate.`;
+        stepsEl.innerHTML = `
+          <div class="step-node pass">
+            <span class="step-badge">Step 1 · Pace</span>
+            <div><strong>Gradual deployment.</strong> Systems remain within human institutional comprehension and oversight.</div>
+          </div>
+          <div class="step-node">
+            <span class="step-badge">Step 2 · Detect</span>
+            <div><strong>Mistakes anticipated.</strong> Resilience mechanisms flag anomalies before they cascade across finance or governance.</div>
+          </div>
+          <div class="step-node pass">
+            <span class="step-badge">Step 3 · Adapt</span>
+            <div><strong>Course correction.</strong> Societies diagnose what went wrong, change course, and retain control of the future.</div>
+          </div>
+        `;
+      }
+    }
+
+    // Initialize default views
+    renderHorizon();
+    setParadoxStep(0);
+    renderDilemma();
+  </script>
+</body>
+</html>
