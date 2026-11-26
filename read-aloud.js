@@ -98,13 +98,13 @@
         '.ra-overlay.setup .ra-meta{visibility:hidden}',
         '.ra-stage{flex:1;display:flex;flex-direction:column;justify-content:center;',
         'padding:1.6rem 2.6rem;position:relative;min-height:0}',
-        '.ra-inner{width:min(54rem,100%);margin:0 auto}',
+        '.ra-inner{width:min(64rem,100%);margin:0 auto}',
         '.ra-overlay.setup .ra-inner{visibility:hidden}',
         '.ra-prev{font-family:Georgia,"Times New Roman",serif;font-size:1rem;line-height:1.5;',
         'color:var(--text-light,#6a5f54);opacity:.4;margin:0 0 1.4rem;max-height:3rem;overflow:hidden}',
         '.ra-prev[hidden]{display:none}',
         '.ra-chunk{font-family:Georgia,"Times New Roman",serif;',
-        'font-size:clamp(1.5rem,2.4vw,2.2rem);line-height:1.45;margin:0;text-wrap:balance}',
+        'font-size:clamp(2.1rem,3.9vw,3.4rem);line-height:1.32;margin:0;text-wrap:balance}',
         '.ra-turn{display:flex;align-items:center;gap:.6rem;margin-top:1.9rem;flex-wrap:wrap}',
         '.ra-badge{display:inline-flex;align-items:center;justify-content:center;min-width:1.75rem;',
         'height:1.75rem;padding:0 .45rem;border-radius:7px;font-size:.72rem;font-weight:800;',
@@ -174,6 +174,7 @@
 
         '@media (max-width:720px){',
         '.ra-stage{padding:1.2rem}.ra-frame{height:min(90vh,720px)}',
+        '.ra-chunk{font-size:clamp(1.55rem,5.6vw,2.2rem);line-height:1.4}',
         '.ra-top{padding:.7rem .9rem}.ra-controls{padding:.7rem .9rem .9rem}',
         '.ra-hint{display:none}.ra-prev{font-size:.9rem}',
         '.ra-teams{flex-direction:column}.ra-setup{padding:.9rem}',
@@ -272,7 +273,7 @@
         if (!hasRoster) {
             return {
                 team: null,
-                name: 'Reader ' + (((state.pass - 1) * CHUNKS.length + i) % state.readers) + 1,
+                name: 'Reader ' + ((((state.pass - 1) * CHUNKS.length + i) % state.readers) + 1),
                 roster: false,
                 id: null
             };
