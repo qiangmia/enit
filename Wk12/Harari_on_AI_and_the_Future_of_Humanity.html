@@ -814,6 +814,52 @@
       text-transform: uppercase;
     }
 
+    /* Quiz call to action */
+    .quiz-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md) var(--space-xl);
+      border: 1px solid var(--outline-variant);
+      border-left: 4px solid var(--primary-container);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container-low);
+      padding: var(--space-lg);
+    }
+    .quiz-cta-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      flex: 1 1 26rem;
+    }
+    .quiz-cta h2 { font-size: var(--subhead-size); }
+    .quiz-cta p {
+      max-width: 62ch;
+      font-size: 0.9375rem;
+      color: var(--on-surface-variant);
+    }
+    .quiz-cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex: 0 0 auto;
+      background: var(--on-surface);
+      color: var(--background);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.7rem 1rem;
+      border-radius: var(--rounded);
+      white-space: nowrap;
+      transition: background-color var(--dur-short) var(--ease-out);
+    }
+    .quiz-cta-button:hover { background: var(--secondary); }
+
     /* Container queries for interactive modules */
     @container (max-width: 660px) {
       .horizon-grid,
@@ -848,6 +894,11 @@
       .course-nav {
         gap: var(--space-sm) var(--space-md);
         font-size: 0.66rem;
+      }
+      .quiz-cta { padding: var(--space-md); }
+      .quiz-cta-button {
+        width: 100%;
+        justify-content: center;
       }
     }
 
@@ -892,6 +943,16 @@
         <span>Theme: Control, Trust &amp; Democratic Agency</span>
       </div>
     </header>
+
+    <!-- QUIZ -->
+    <section class="quiz-cta" id="quiz" aria-labelledby="quiz-title">
+      <div class="quiz-cta-copy">
+        <span class="dossier-pill">Quiz</span>
+        <h2 id="quiz-title">Check what you understood</h2>
+        <p>A short NotebookLM quiz on the briefing: Harari’s main claim, the numbers he uses, and the choice he says is still open. Take it after you read, then return to any section you missed.</p>
+      </div>
+      <a class="quiz-cta-button" href="https://notebooklm.link.google/oDyos43LG7eP" target="_blank" rel="noopener">Take the quiz <span aria-hidden="true">→</span></a>
+    </section>
 
     <!-- QUICK ORIENTATION INDEX -->
     <nav class="briefing-nav" aria-label="Briefing sections">
@@ -1435,6 +1496,7 @@
     <nav class="course-nav" aria-label="Course links">
       <a href="Week12_AI_at_Work.html">← Week 12: AI at Work</a>
       <a href="gomoku.html">Week 12 Gomoku →</a>
+      <a href="https://notebooklm.link.google/oDyos43LG7eP" target="_blank" rel="noopener">Quiz ↗</a>
       <a href="../index.html">All weeks</a>
     </nav>
 
