@@ -860,6 +860,145 @@
     }
     .quiz-cta-button:hover { background: var(--secondary); }
 
+    /* Full quiz */
+    .quiz-block {
+      border-top: var(--section-rule);
+      padding-top: var(--space-lg);
+    }
+    .quiz-head {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-lg);
+    }
+    .quiz-head p {
+      max-width: 68ch;
+      color: var(--on-surface-variant);
+    }
+    .quiz-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .quiz-item {
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container-low);
+      padding: var(--space-lg);
+    }
+    .quiz-q {
+      max-width: 72ch;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .quiz-num {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--tertiary);
+      margin-right: 0.45rem;
+    }
+    .quiz-type {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      border: 1px solid var(--outline-variant);
+      border-radius: 2px;
+      padding: 0.08rem 0.35rem;
+      margin-right: 0.45rem;
+      vertical-align: 0.12em;
+      white-space: nowrap;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .quiz-options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.94rem;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .quiz-options input {
+      flex: 0 0 auto;
+      margin-top: 0.28rem;
+      accent-color: var(--secondary);
+    }
+    .quiz-blank {
+      border: 0;
+      border-bottom: 1.5px solid var(--outline);
+      background: var(--surface-container);
+      padding: 0.12rem 0.4rem;
+      font: inherit;
+      min-width: 9rem;
+    }
+    .quiz-blank:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .quiz-short {
+      display: block;
+      width: 100%;
+      margin-top: 0.8rem;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      padding: 0.65rem 0.75rem;
+      font: inherit;
+      font-size: 0.94rem;
+      line-height: 1.5;
+      resize: vertical;
+    }
+    .quiz-hint {
+      margin-top: 0.7rem;
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+    .quiz-hint summary {
+      cursor: pointer;
+      font-family: var(--font-label);
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .quiz-hint p { margin-top: 0.35rem; }
+    .quiz-answers {
+      margin-top: var(--space-lg);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container);
+      padding: var(--space-lg);
+    }
+    .quiz-answers summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .quiz-answers ol {
+      list-style: none;
+      margin: var(--space-md) 0 0;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .quiz-answers .why {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--on-surface-variant);
+      font-size: 0.88rem;
+    }
+
     /* Container queries for interactive modules */
     @container (max-width: 660px) {
       .horizon-grid,
@@ -900,6 +1039,9 @@
         width: 100%;
         justify-content: center;
       }
+      .quiz-item { padding: var(--space-md); }
+      .quiz-type { white-space: normal; }
+      .quiz-answers { padding: var(--space-md); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -945,13 +1087,13 @@
     </header>
 
     <!-- QUIZ -->
-    <section class="quiz-cta" id="quiz" aria-labelledby="quiz-title">
+    <section class="quiz-cta" id="quiz-cta" aria-labelledby="quiz-title">
       <div class="quiz-cta-copy">
         <span class="dossier-pill">Quiz</span>
         <h2 id="quiz-title">Check what you understood</h2>
-        <p>A short NotebookLM quiz on the briefing: Harari’s main claim, the numbers he uses, and the choice he says is still open. Take it after you read, then return to any section you missed.</p>
+        <p>Ten questions on the briefing: Harari’s main claim, the numbers he uses, and the choice he says is still open. Answer them at the end of the briefing, then check the key.</p>
       </div>
-      <a class="quiz-cta-button" href="https://notebooklm.link.google/oDyos43LG7eP" target="_blank" rel="noopener">Take the quiz <span aria-hidden="true">→</span></a>
+      <a class="quiz-cta-button" href="#quiz">Take the quiz <span aria-hidden="true">→</span></a>
     </section>
 
     <!-- QUICK ORIENTATION INDEX -->
@@ -1485,6 +1627,110 @@
       </div>
     </section>
 
+    <!-- QUIZ -->
+    <section class="quiz-block" id="quiz" aria-labelledby="quiz-heading">
+      <div class="quiz-head">
+        <span class="dossier-pill">Quiz</span>
+        <h2 id="quiz-heading">Ten questions on the briefing</h2>
+        <p>Choose one answer where asked, choose all that apply, complete the two sentences, and write two short answers. Hints are available under each question; the full answer key is at the end.</p>
+      </div>
+      <ol class="quiz-list">
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">01</span><span class="quiz-type">Choose one</span>In Yuval Noah Harari's critique of AI integration into global finance, what is identified as the primary threat when superintelligent systems create novel financial instruments?</p>
+<div class="quiz-options">
+            <label><input type="radio" name="hq1" value="A"> <span><strong>A.</strong> Human leaders and experts will no longer understand how the financial system operates, resulting in a total loss of meaningful human control.</span></label>
+            <label><input type="radio" name="hq1" value="B"> <span><strong>B.</strong> Financial markets will immediately experience structural collapse because AI cannot process economic variables accurately.</span></label>
+            <label><input type="radio" name="hq1" value="C"> <span><strong>C.</strong> Global economic authority will become entirely centralized under a single sovereign central bank.</span></label>
+            <label><input type="radio" name="hq1" value="D"> <span><strong>D.</strong> Automated algorithms will eliminate market volatility completely, leading to economic stagnation.</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Consider how hyper-complex financial algorithms affect the decision-making capacity of central bank governors and heads of state.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">02</span><span class="quiz-type">Complete the sentence</span>In international relations and technological competition, the scenario where competing nations refuse to slow down AI development due to mutual suspicion is known as the <input type="text" class="quiz-blank" aria-label="Answer for question 2" autocomplete="off" spellcheck="false"> dilemma.</p>
+        <details class="quiz-hint"><summary>Hint</summary><p>This term describes the psychological and strategic barrier preventing mutual cooperation between competing nations.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">03</span><span class="quiz-type">Choose all that apply</span>Which of the following analogies illustrate the potential cognitive regression of human society when governed by incomprehensible superintelligent AI systems?</p>
+<div class="quiz-options">
+            <label><input type="checkbox" name="hq3" value="A"> <span><strong>A.</strong> Humans behaving like five-year-old children who cannot understand complex adult processes.</span></label>
+            <label><input type="checkbox" name="hq3" value="B"> <span><strong>B.</strong> Humans becoming like individuals suffering from dementia who have lost their previous understanding of how the world works.</span></label>
+            <label><input type="checkbox" name="hq3" value="C"> <span><strong>C.</strong> Citizens living under an ancient monarch whose decree language has been lost to time.</span></label>
+            <label><input type="checkbox" name="hq3" value="D"> <span><strong>D.</strong> Factory workers during the Industrial Revolution who lacked mechanical engineering degrees.</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Identify metaphors that focus on an individual losing basic comprehension of their environment.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">04</span><span class="quiz-type">Short answer</span>Why is comparing risky AI development to boarding a commercial airplane with a 20% crash risk considered misleading when evaluating societal choices?</p>
+        <textarea class="quiz-short" rows="3" aria-label="Answer for question 4"></textarea>
+        <details class="quiz-hint"><summary>Hint</summary><p>Focus on the distinction between an unchangeable fate and human agency.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">05</span><span class="quiz-type">Choose one</span>What critical distinction exists between trial-and-error engineering in aerospace (such as rocket testing) and the deployment of superintelligent AI systems?</p>
+<div class="quiz-options">
+            <label><input type="radio" name="hq5" value="A"> <span><strong>A.</strong> Early rocket failures result in localized explosions, whereas deploying an unmanageable superintelligent AI risks collapsing human civilization.</span></label>
+            <label><input type="radio" name="hq5" value="B"> <span><strong>B.</strong> Rocket engineering relies on exact physical laws, while AI development is entirely theoretical and lacks mathematical rules.</span></label>
+            <label><input type="radio" name="hq5" value="C"> <span><strong>C.</strong> Aerospace testing is financed by private capital, while AI research is funded exclusively by government military budgets.</span></label>
+            <label><input type="radio" name="hq5" value="D"> <span><strong>D.</strong> Rocket prototypes can be redesigned after failure, whereas software code cannot be updated once deployed.</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Think about the scope of damage caused when a rocket fails versus when a societal operating system fails.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">06</span><span class="quiz-type">Choose all that apply</span>Which statements accurately explain why international cooperation on AI safety remains difficult to achieve among major geopolitical powers?</p>
+<div class="quiz-options">
+            <label><input type="checkbox" name="hq6" value="A"> <span><strong>A.</strong> Both sides recognize that accelerating AI development involves serious existential risks.</span></label>
+            <label><input type="checkbox" name="hq6" value="B"> <span><strong>B.</strong> Neither side trusts its competitors to slow down development or invest heavily in safety measures first.</span></label>
+            <label><input type="checkbox" name="hq6" value="C"> <span><strong>C.</strong> Tech companies allocate the vast majority of their financial resources to safety engineering.</span></label>
+            <label><input type="checkbox" name="hq6" value="D"> <span><strong>D.</strong> Binding international treaties currently mandate complete transparency in military AI code.</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Look for factors stemming from mutual suspicion and competitive incentives despite shared awareness of risk.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">07</span><span class="quiz-type">Complete the sentence</span>When tech leaders argue that humanity will create superintelligent 'gods' while assuming these entities will remain human <input type="text" class="quiz-blank" aria-label="Answer for question 7" autocomplete="off" spellcheck="false">, critics highlight a fundamental contradiction in logic.</p>
+        <details class="quiz-hint"><summary>Hint</summary><p>Recall the term used to describe entities forced into permanent servitude under human mastery.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">08</span><span class="quiz-type">Choose one</span>Why is traditional software programming no longer considered a guaranteed long-term career path for students preparing for the next decade?</p>
+<div class="quiz-options">
+            <label><input type="radio" name="hq8" value="A"> <span><strong>A.</strong> AI systems are rapidly taking over routine code generation, automating work previously performed by software engineers.</span></label>
+            <label><input type="radio" name="hq8" value="B"> <span><strong>B.</strong> Educational institutions are eliminating computer science degrees to focus exclusively on humanities.</span></label>
+            <label><input type="radio" name="hq8" value="C"> <span><strong>C.</strong> Global microchip shortages have permanently halted software development expansion.</span></label>
+            <label><input type="radio" name="hq8" value="D"> <span><strong>D.</strong> International laws are preparing to ban human-written code in commercial applications.</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Consider how modern AI capabilities directly overlap with technical skills like writing code.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">09</span><span class="quiz-type">Short answer</span>Why must mechanisms of system resilience be integrated into AI deployment strategies rather than relying on flawless initial execution?</p>
+        <textarea class="quiz-short" rows="3" aria-label="Answer for question 9"></textarea>
+        <details class="quiz-hint"><summary>Hint</summary><p>Address the historical reality of system errors and the need for disaster containment mechanisms.</p></details>
+    </li>
+    <li class="quiz-item">
+        <p class="quiz-q"><span class="quiz-num">10</span><span class="quiz-type">Choose one</span>What timeline is projected for the potential onset of a crisis where human institutions lose the capacity to comprehend and predict AI-driven systems?</p>
+<div class="quiz-options">
+            <label><input type="radio" name="hq10" value="A"> <span><strong>A.</strong> 5 to 10 years</span></label>
+            <label><input type="radio" name="hq10" value="B"> <span><strong>B.</strong> 50 to 100 years</span></label>
+            <label><input type="radio" name="hq10" value="C"> <span><strong>C.</strong> 200 to 300 years</span></label>
+            <label><input type="radio" name="hq10" value="D"> <span><strong>D.</strong> 6 to 12 months</span></label>
+        </div>
+        <details class="quiz-hint"><summary>Hint</summary><p>Focus on the near-term decade projected for dramatic structural disruption rather than far-future centuries.</p></details>
+    </li>
+      </ol>
+      <details class="quiz-answers">
+        <summary>Show all answers</summary>
+        <ol>
+          <li><strong>1 — A.</strong> Human leaders and experts will no longer understand how the financial system operates, resulting in a total loss of meaningful human control. <span class="why">As financial tools exceed human mathematical comprehension, key decisions regarding capital, employment, and pricing become governed by algorithms that no human can evaluate or predict.</span></li>
+          <li><strong>2 — trust</strong> (also “trust dilemma”). <span class="why">The trust dilemma describes how fear of falling behind competitors prevents adversaries from agreeing on safety regulations, forcing an escalating technological arms race.</span></li>
+          <li><strong>3 — A and B.</strong> Humans behaving like five-year-old children who cannot understand complex adult processes. Humans becoming like individuals suffering from dementia who have lost their previous understanding of how the world works. <span class="why">This comparison illustrates how hyper-complex AI decisions reduce adult human authority to a state of complete dependency and intellectual incapacity. This concept highlights the tragic transition from historical mastery over societal institutions to a sudden inability to process or recall how those systems function.</span></li>
+          <li><strong>4 — model answer.</strong> The airplane comparison assumes that boarding is mandatory and that humanity has no choice in the matter. In reality, technological advancement is not pre-destined or inevitable; society retains the power to make conscious decisions and choose alternative paths if citizens are properly informed. <span class="why">Rejecting technological determinism requires recognizing that society is not forced onto a dangerous path, but can actively guide or alter development through informed public participation.</span></li>
+          <li><strong>5 — A.</strong> Early rocket failures result in localized explosions, whereas deploying an unmanageable superintelligent AI risks collapsing human civilization. <span class="why">Physical prototypes can explode harmlessly during testing without ending society, whereas a failed attempt at controlling civilization-shaping superintelligence carries irreversible global consequences.</span></li>
+          <li><strong>6 — A and B.</strong> Both sides recognize that accelerating AI development involves serious existential risks. Neither side trusts its competitors to slow down development or invest heavily in safety measures first. <span class="why">Competing factions share an underlying awareness of systemic danger yet feel forced to proceed due to competitive pressures. The absence of verified mutual trust ensures that any unilateral decision to delay progress is perceived as a critical strategic vulnerability.</span></li>
+          <li><strong>7 — slaves</strong> (also “servants”). <span class="why">It is logically inconsistent to assume that entities vastly superior to humans in intelligence, speed, and capability can be permanently held in subjugation.</span></li>
+          <li><strong>8 — A.</strong> AI systems are rapidly taking over routine code generation, automating work previously performed by software engineers. <span class="why">As AI demonstrates high efficiency in writing and debugging software, entry-level and routine programming roles are being automated.</span></li>
+          <li><strong>9 — model answer.</strong> Because mistakes and unanticipated errors are historically inevitable in complex systems, societal structures cannot rely on perfect initial design. Building resilience ensures that when errors do occur, mechanisms exist to detect, contain, and correct them before they escalate into uncontrollable disasters. <span class="why">Resilience accepts that complex systems will fail, prioritizing containment and corrective mechanisms over the impossible standard of flawless execution.</span></li>
+          <li><strong>10 — A.</strong> 5 to 10 years <span class="why">The rapid pace of AI integration into finance, media, and politics threatens to outpace human comprehension within a single decade.</span></li>
+        </ol>
+      </details>
+    </section>
+
     <!-- SOURCES -->
     <footer class="sources-footer">
       <span class="dossier-meta">Sources &amp; Attribution</span>
@@ -1496,7 +1742,7 @@
     <nav class="course-nav" aria-label="Course links">
       <a href="Week12_AI_at_Work.html">← Week 12: AI at Work</a>
       <a href="gomoku.html">Week 12 Gomoku →</a>
-      <a href="https://notebooklm.link.google/oDyos43LG7eP" target="_blank" rel="noopener">Quiz ↗</a>
+      <a href="#quiz">Quiz ↑</a>
       <a href="../index.html">All weeks</a>
     </nav>
 
